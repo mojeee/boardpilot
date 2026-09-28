@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Relay module with Nordic nRF52840 DK: wiring and code</title>
+    <meta name="description" content="How to connect the Relay module to the Nordic nRF52840 DK: which pins to use (IN → P1.03), 5 V supply, the checks that matter on this board, and Arduino code to test it." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/relay-1ch/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/relay-1ch/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/nrf52840-dk/relay-1ch/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/relay-1ch/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/relay-1ch/" />
+    <meta property="og:title" content="Relay module with Nordic nRF52840 DK: wiring and code" />
+    <meta property="og:description" content="How to connect the Relay module to the Nordic nRF52840 DK: which pins to use (IN → P1.03), 5 V supply, the checks that matter on this board, and Arduino code to test it." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"Relay module with Nordic nRF52840 DK","description":"How to connect the Relay module to the Nordic nRF52840 DK: which pins to use (IN → P1.03), 5 V supply, the checks that matter on this board, and Arduino code to test it.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/relay-1ch/","tool":[{"@type":"HowToTool","name":"Nordic nRF52840 DK"},{"@type":"HowToTool","name":"Relay module 1 channel (5 V)"}],"step":[{"@type":"HowToStep","position":1,"name":"IN → P1.03","text":"IN (Input to the part) → P1.03"},{"@type":"HowToStep","position":2,"name":"GND → GND","text":"GND (Ground) → GND"},{"@type":"HowToStep","position":3,"name":"VCC → 5V","text":"VCC (Power) → 5V"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which Nordic nRF52840 DK pins do I use for the Relay module?","acceptedAnswer":{"@type":"Answer","text":"IN → P1.03, GND → GND, VCC → 5V."}},{"@type":"Question","name":"Does the Relay module work with the Nordic nRF52840 DK at 3.3 V?","acceptedAnswer":{"@type":"Answer","text":"Yes: the Relay module runs at 5 V and the Nordic nRF52840 DK uses 3.3 V signals, so no level shifting is needed."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"Nordic nRF52840 DK","item":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"},{"@type":"ListItem","position":4,"name":"Relay module 1 channel (5 V)","item":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/relay-1ch/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/#how" data-i18n="nav.how">How it works</a>
+          <a href="/#safety" data-i18n="nav.safety">Safety</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/boards/" hreflang="en" class="on">EN</a><a href="/it/boards/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/boards/">Board pinouts</a> / <a href="/boards/nrf52840-dk/">Nordic nRF52840 DK</a> / <span>Relay module 1 channel (5 V)</span></nav>
+        <h1>Relay module with Nordic nRF52840 DK</h1>
+        <p class="lead">Wiring for the Relay module 1 channel (5 V) on the Nordic nRF52840 DK (nRF52840-QIAA, 3.3 V logic), chosen with the same pin rules BoardPilot uses: default buses first, and no pins that are used for flash, USB, the debugger or booting.</p>
+        <h2>Wiring</h2>
+        <div class="table-wrap"><table class="pin-table">
+          <thead><tr><th>Relay module pin</th><th>Role</th><th>Nordic nRF52840 DK pin</th><th>Notes</th></tr></thead>
+          <tbody>
+<tr><td class="mono">IN</td><td>Input to the part</td><td class="mono">P1.03</td><td>Many modules switch on with IN LOW. Some do not react to 3.3 V: check with a test</td></tr>
+<tr><td class="mono">GND</td><td>Ground</td><td class="mono">GND</td><td></td></tr>
+<tr><td class="mono">VCC</td><td>Power</td><td class="mono">5V</td><td>Needs 5 V for the coil: use 5V</td></tr>
+<tr><td class="mono">COM</td><td>Not wired to the board</td><td class="mono"><span class="dim">not connected</span></td><td>Relay common contact. Mains voltage is dangerous</td></tr>
+<tr><td class="mono">NO</td><td>Not wired to the board</td><td class="mono"><span class="dim">not connected</span></td><td>Normally open contact</td></tr>
+<tr><td class="mono">NC</td><td>Not wired to the board</td><td class="mono"><span class="dim">not connected</span></td><td>Normally closed contact</td></tr>
+          </tbody>
+        </table></div>
+        <h2>Check before you power it on</h2>
+        <ul class="checks"><li>Supply: 5 V from the 5V pin.</li><li>Motors, servos, relays and LED strips can draw more current than the Nordic nRF52840 DK’s pins or USB can give. Power them separately and connect the grounds together.</li></ul>
+        <h2>Test code (Arduino)</h2>
+        <p>The Arduino core for this board numbers its pins differently from the chip names, so no code is shown here. Use the pin names from your core’s variant file.</p>
+        <p class="fine">Arduino board: adafruit:nrf52:pca10056. Plug USB into the port on the short edge (interface MCU, J2) and set the power switch to ON; before the first Arduino sketch, burn the Adafruit bootloader and SoftDevice once.</p>
+        <h2>Questions</h2>
+        <details><summary>Which Nordic nRF52840 DK pins do I use for the Relay module?</summary><p>IN → P1.03, GND → GND, VCC → 5V.</p></details>
+        <details><summary>Does the Relay module work with the Nordic nRF52840 DK at 3.3 V?</summary><p>Yes: the Relay module runs at 5 V and the Nordic nRF52840 DK uses 3.3 V signals, so no level shifting is needed.</p></details>
+        <div class="cta-box">
+          <p>BoardPilot checks this wiring in 3D as you build it, and finds crossed or missing wires on the real board.</p>
+          <a class="btn primary" href="/#download">Download BoardPilot</a>
+        </div>
+        <p><a href="/boards/nrf52840-dk/">Full Nordic nRF52840 DK pinout</a> · <a href="/parts/relay-1ch/">Relay module 1 channel (5 V): all pins and data</a></p>
+        <h2>The Relay module on other boards</h2>
+        <p class="link-cloud"><a href="/parts/relay-1ch/">ESP32 DevKit</a> <a href="/boards/arduino-mega-2560/relay-1ch/">Arduino Mega 2560 R3</a> <a href="/boards/arduino-nano/relay-1ch/">Arduino Nano</a> <a href="/boards/arduino-uno-r3/relay-1ch/">Arduino Uno R3</a> <a href="/boards/blackpill-f411ce/relay-1ch/">WeAct Black Pill STM32F411CE</a> <a href="/boards/esp32-c3-devkitm-1/relay-1ch/">ESP32-C3-DevKitM-1</a> <a href="/boards/esp32-s3-devkitc-1/relay-1ch/">ESP32-S3-DevKitC-1</a> <a href="/boards/nucleo-f401re/relay-1ch/">NUCLEO-F401RE</a> <a href="/boards/rpi-pico-2/relay-1ch/">Raspberry Pi Pico 2</a> <a href="/boards/rpi-pico-w/relay-1ch/">Raspberry Pi Pico W</a> <a href="/boards/rpi-pico/relay-1ch/">Raspberry Pi Pico</a> <a href="/boards/teensy-41/relay-1ch/">Teensy 4.1</a></p>
+        <h2>Other parts on the Nordic nRF52840 DK</h2>
+        <p class="link-cloud"><a href="/boards/nrf52840-dk/bme280-gy/">BME280</a> <a href="/boards/nrf52840-dk/bmp280-gy/">BMP280</a> <a href="/boards/nrf52840-dk/dht22/">DHT22</a> <a href="/boards/nrf52840-dk/dht11/">DHT11</a> <a href="/boards/nrf52840-dk/hc-sr04/">HC-SR04</a> <a href="/boards/nrf52840-dk/ssd1306-i2c/">SSD1306 OLED</a> <a href="/boards/nrf52840-dk/mpu6050/">MPU6050</a> <a href="/boards/nrf52840-dk/ds18b20-probe/">DS18B20</a> <a href="/boards/nrf52840-dk/ws2812b-strip/">WS2812B LED strip</a> <a href="/boards/nrf52840-dk/servo-sg90/">SG90 servo</a> <a href="/boards/nrf52840-dk/hc-sr501/">HC-SR501 PIR</a> <a href="/boards/nrf52840-dk/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/boards/nrf52840-dk/ina219/">INA219</a> <a href="/boards/nrf52840-dk/vl53l0x/">VL53L0X</a> <a href="/boards/nrf52840-dk/bh1750-gy302/">BH1750</a> <a href="/boards/nrf52840-dk/max30102/">MAX30102</a> <a href="/boards/nrf52840-dk/rc522-rfid/">RC522 RFID</a> <a href="/boards/nrf52840-dk/neo-6m-gps/">NEO-6M GPS</a> <a href="/boards/nrf52840-dk/soil-moisture-capacitive/">Capacitive soil moisture sensor</a> <a href="/boards/nrf52840-dk/ads1115/">ADS1115</a> <a href="/boards/nrf52840-dk/tm1637-4digit/">TM1637</a> <a href="/boards/nrf52840-dk/stepper-28byj48-uln2003/">28BYJ-48 stepper</a> <a href="/boards/nrf52840-dk/l298n-driver/">L298N</a> <a href="/boards/nrf52840-dk/potentiometer/">Potentiometer</a> <a href="/boards/nrf52840-dk/push-button/">Push button</a> <a href="/boards/nrf52840-dk/led-resistor/">LED</a> <a href="/boards/nrf52840-dk/joystick-ky023/">Joystick module</a> <a href="/boards/nrf52840-dk/sd-card-module/">SD card module</a> <a href="/boards/nrf52840-dk/aht20/">AHT20</a></p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -49,6 +49,7 @@ const T = {
     codeH: 'Starter code (Arduino)',
     sourcesH: 'Sources',
     related: 'Related parts',
+    otherBoards: (name) => `${name} on other boards: wiring and code`,
     cta: 'Try it in 3D in BoardPilot',
     json: 'Part data (JSON)',
     home: 'BoardPilot',
@@ -77,6 +78,7 @@ const T = {
     codeH: 'Codice di partenza (Arduino)',
     sourcesH: 'Fonti',
     related: 'Componenti simili',
+    otherBoards: (name) => `${name} su altre schede: collegamenti e codice`,
     cta: 'Provalo in 3D in BoardPilot',
     json: 'Dati del componente (JSON)',
     home: 'BoardPilot',
@@ -187,7 +189,7 @@ function partSvg(p) {
   return `<svg viewBox="0 0 ${w} ${h}" class="part-svg" style="max-width:${Math.min(560, Math.round(w * 1.25))}px" role="img" aria-label="${esc(p.name)} pins"><rect x="20" y="16" width="${w - 40}" height="112" rx="10" fill="${esc(p.model.color)}" stroke="rgba(255,255,255,.18)"/><rect x="${w / 2 - 20}" y="36" width="40" height="30" rx="4" fill="#15181c" opacity=".85"/>${pins}</svg>`;
 }
 
-export function buildParts({ parts, lang, site, header, footer, IT_MEASURES, head }) {
+export function buildParts({ parts, lang, site, header, footer, IT_MEASURES, head, boardLinks = () => '' }) {
   const t = T[lang];
   const pre = lang === 'it' ? '/it' : '';
   const byId = new Map(parts.map((p) => [p.id, p]));
@@ -342,6 +344,7 @@ ${footer}
         ${code ? `<h2>${esc(t.codeH)}</h2><pre class="code"><code>${esc(code)}</code></pre>` : ''}
         ${p.sources?.length ? `<h2>${esc(t.sourcesH)}</h2><ul class="sources">${p.sources.map((s) => `<li>${esc(s.title)}${s.section ? `, ${esc(s.section)}` : ''}</li>`).join('')}</ul>` : ''}
         <div class="cta-box"><h2>${esc(t.cta)}</h2><p><a class="btn primary" href="${pre}/#download">BoardPilot</a> <a class="btn" href="/parts/${p.id}.json">${esc(t.json)}</a></p></div>
+        ${boardLinks(p) ? `<h2>${esc(t.otherBoards(p.name))}</h2><p class="link-cloud">${boardLinks(p)}</p>` : ''}
         ${related ? `<h2>${esc(t.related)}</h2><div class="part-grid">${related}</div>` : ''}
         <p class="fine">${esc(t.license)}</p>
       </div>

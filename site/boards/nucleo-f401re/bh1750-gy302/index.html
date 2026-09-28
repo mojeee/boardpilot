@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BH1750 with NUCLEO-F401RE: wiring and code</title>
+    <meta name="description" content="How to connect the BH1750 to the NUCLEO-F401RE: which pins to use (SCL → SCL/D15, SDA → SDA/D14), 3.3-5 V supply, the checks that matter on this board, and Arduino code to test it." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/bh1750-gy302/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/bh1750-gy302/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/nucleo-f401re/bh1750-gy302/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/bh1750-gy302/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/bh1750-gy302/" />
+    <meta property="og:title" content="BH1750 with NUCLEO-F401RE: wiring and code" />
+    <meta property="og:description" content="How to connect the BH1750 to the NUCLEO-F401RE: which pins to use (SCL → SCL/D15, SDA → SDA/D14), 3.3-5 V supply, the checks that matter on this board, and Arduino code to test it." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"BH1750 with NUCLEO-F401RE","description":"How to connect the BH1750 to the NUCLEO-F401RE: which pins to use (SCL → SCL/D15, SDA → SDA/D14), 3.3-5 V supply, the checks that matter on this board, and Arduino code to test it.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/nucleo-f401re/bh1750-gy302/","tool":[{"@type":"HowToTool","name":"ST NUCLEO-F401RE"},{"@type":"HowToTool","name":"GY-302 BH1750 light sensor"}],"step":[{"@type":"HowToStep","position":1,"name":"VCC → 3V3","text":"VCC (Power) → 3V3"},{"@type":"HowToStep","position":2,"name":"GND → GND","text":"GND (Ground) → GND"},{"@type":"HowToStep","position":3,"name":"SCL → SCL/D15","text":"SCL (I2C clock (SCL)) → SCL/D15 (PB8)"},{"@type":"HowToStep","position":4,"name":"SDA → SDA/D14","text":"SDA (I2C data (SDA)) → SDA/D14 (PB9)"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which NUCLEO-F401RE pins do I use for the BH1750?","acceptedAnswer":{"@type":"Answer","text":"VCC → 3V3, GND → GND, SCL → SCL/D15 (PB8), SDA → SDA/D14 (PB9)."}},{"@type":"Question","name":"Does the BH1750 work with the NUCLEO-F401RE at 3.3 V?","acceptedAnswer":{"@type":"Answer","text":"Yes: the BH1750 runs at 3.3-5 V and the NUCLEO-F401RE uses 3.3 V signals, so no level shifting is needed."}},{"@type":"Question","name":"What is the I2C address of the BH1750?","acceptedAnswer":{"@type":"Answer","text":"0x23 or 0x5C. An I2C scan (BoardPilot does it for you) shows which one your module uses."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"ST NUCLEO-F401RE","item":"https://boardpilot.agentflowbind.com/boards/nucleo-f401re/"},{"@type":"ListItem","position":4,"name":"GY-302 BH1750 light sensor","item":"https://boardpilot.agentflowbind.com/boards/nucleo-f401re/bh1750-gy302/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/#how" data-i18n="nav.how">How it works</a>
+          <a href="/#safety" data-i18n="nav.safety">Safety</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/boards/" hreflang="en" class="on">EN</a><a href="/it/boards/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/boards/">Board pinouts</a> / <a href="/boards/nucleo-f401re/">ST NUCLEO-F401RE</a> / <span>GY-302 BH1750 light sensor</span></nav>
+        <h1>BH1750 with NUCLEO-F401RE</h1>
+        <p class="lead">Wiring for the GY-302 BH1750 light sensor on the NUCLEO-F401RE (STM32F401RE, 3.3 V logic), chosen with the same pin rules BoardPilot uses: default buses first, and no pins that are used for flash, USB, the debugger or booting.</p>
+        <h2>Wiring</h2>
+        <div class="table-wrap"><table class="pin-table">
+          <thead><tr><th>BH1750 pin</th><th>Role</th><th>NUCLEO-F401RE pin</th><th>Notes</th></tr></thead>
+          <tbody>
+<tr><td class="mono">VCC</td><td>Power</td><td class="mono">3V3</td><td></td></tr>
+<tr><td class="mono">GND</td><td>Ground</td><td class="mono">GND</td><td></td></tr>
+<tr><td class="mono">SCL</td><td>I2C clock (SCL)</td><td class="mono">SCL/D15 (PB8)</td><td></td></tr>
+<tr><td class="mono">SDA</td><td>I2C data (SDA)</td><td class="mono">SDA/D14 (PB9)</td><td></td></tr>
+<tr><td class="mono">ADDR</td><td>Not wired to the board</td><td class="mono"><span class="dim">not connected</span></td><td>Address select: LOW or open = 0x23, HIGH = 0x5C</td></tr>
+          </tbody>
+        </table></div>
+        <h2>Check before you power it on</h2>
+        <ul class="checks"><li>Supply: 3.3 V from the 3V3 pin.</li><li>I2C uses the board’s default pins SDA/D14 (SDA) and SCL/D15 (SCL). Most modules include pull-up resistors; if the part is not found, check them and swap-test SDA/SCL.</li></ul>
+        <h2>Test code (Arduino)</h2>
+        <pre class="code"><code>#include &lt;Wire.h&gt;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();  // SDA = SDA/D14, SCL = SCL/D15 (the board's default I2C pins)
+  Wire.beginTransmission(0x23);
+  bool found = Wire.endTransmission() == 0;
+  Serial.println(found ? &quot;GY-302 BH1750 light sensor found at 0x23&quot; : &quot;Not found: check power, GND and SDA/SCL&quot;);
+}
+
+void loop() {}</code></pre>
+        <p class="fine">Arduino board: STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F401RE. Plug the USB cable into the mini-USB port on the ST-LINK end. No button press is needed.</p>
+        <h2>Questions</h2>
+        <details><summary>Which NUCLEO-F401RE pins do I use for the BH1750?</summary><p>VCC → 3V3, GND → GND, SCL → SCL/D15 (PB8), SDA → SDA/D14 (PB9).</p></details>
+        <details><summary>Does the BH1750 work with the NUCLEO-F401RE at 3.3 V?</summary><p>Yes: the BH1750 runs at 3.3-5 V and the NUCLEO-F401RE uses 3.3 V signals, so no level shifting is needed.</p></details>
+        <details><summary>What is the I2C address of the BH1750?</summary><p>0x23 or 0x5C. An I2C scan (BoardPilot does it for you) shows which one your module uses.</p></details>
+        <div class="cta-box">
+          <p>BoardPilot checks this wiring in 3D as you build it, and finds crossed or missing wires on the real board.</p>
+          <a class="btn primary" href="/#download">Download BoardPilot</a>
+        </div>
+        <p><a href="/boards/nucleo-f401re/">Full NUCLEO-F401RE pinout</a> · <a href="/parts/bh1750-gy302/">GY-302 BH1750 light sensor: all pins and data</a></p>
+        <h2>The BH1750 on other boards</h2>
+        <p class="link-cloud"><a href="/parts/bh1750-gy302/">ESP32 DevKit</a> <a href="/boards/arduino-mega-2560/bh1750-gy302/">Arduino Mega 2560 R3</a> <a href="/boards/arduino-nano/bh1750-gy302/">Arduino Nano</a> <a href="/boards/arduino-uno-r3/bh1750-gy302/">Arduino Uno R3</a> <a href="/boards/blackpill-f411ce/bh1750-gy302/">WeAct Black Pill STM32F411CE</a> <a href="/boards/esp32-c3-devkitm-1/bh1750-gy302/">ESP32-C3-DevKitM-1</a> <a href="/boards/esp32-s3-devkitc-1/bh1750-gy302/">ESP32-S3-DevKitC-1</a> <a href="/boards/nrf52840-dk/bh1750-gy302/">Nordic nRF52840 DK</a> <a href="/boards/rpi-pico-2/bh1750-gy302/">Raspberry Pi Pico 2</a> <a href="/boards/rpi-pico-w/bh1750-gy302/">Raspberry Pi Pico W</a> <a href="/boards/rpi-pico/bh1750-gy302/">Raspberry Pi Pico</a> <a href="/boards/teensy-41/bh1750-gy302/">Teensy 4.1</a></p>
+        <h2>Other parts on the NUCLEO-F401RE</h2>
+        <p class="link-cloud"><a href="/boards/nucleo-f401re/bme280-gy/">BME280</a> <a href="/boards/nucleo-f401re/bmp280-gy/">BMP280</a> <a href="/boards/nucleo-f401re/dht22/">DHT22</a> <a href="/boards/nucleo-f401re/dht11/">DHT11</a> <a href="/boards/nucleo-f401re/hc-sr04/">HC-SR04</a> <a href="/boards/nucleo-f401re/ssd1306-i2c/">SSD1306 OLED</a> <a href="/boards/nucleo-f401re/mpu6050/">MPU6050</a> <a href="/boards/nucleo-f401re/ds18b20-probe/">DS18B20</a> <a href="/boards/nucleo-f401re/ws2812b-strip/">WS2812B LED strip</a> <a href="/boards/nucleo-f401re/servo-sg90/">SG90 servo</a> <a href="/boards/nucleo-f401re/relay-1ch/">Relay module</a> <a href="/boards/nucleo-f401re/hc-sr501/">HC-SR501 PIR</a> <a href="/boards/nucleo-f401re/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/boards/nucleo-f401re/ina219/">INA219</a> <a href="/boards/nucleo-f401re/vl53l0x/">VL53L0X</a> <a href="/boards/nucleo-f401re/max30102/">MAX30102</a> <a href="/boards/nucleo-f401re/rc522-rfid/">RC522 RFID</a> <a href="/boards/nucleo-f401re/neo-6m-gps/">NEO-6M GPS</a> <a href="/boards/nucleo-f401re/soil-moisture-capacitive/">Capacitive soil moisture sensor</a> <a href="/boards/nucleo-f401re/ads1115/">ADS1115</a> <a href="/boards/nucleo-f401re/tm1637-4digit/">TM1637</a> <a href="/boards/nucleo-f401re/stepper-28byj48-uln2003/">28BYJ-48 stepper</a> <a href="/boards/nucleo-f401re/l298n-driver/">L298N</a> <a href="/boards/nucleo-f401re/potentiometer/">Potentiometer</a> <a href="/boards/nucleo-f401re/push-button/">Push button</a> <a href="/boards/nucleo-f401re/led-resistor/">LED</a> <a href="/boards/nucleo-f401re/joystick-ky023/">Joystick module</a> <a href="/boards/nucleo-f401re/sd-card-module/">SD card module</a> <a href="/boards/nucleo-f401re/aht20/">AHT20</a></p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

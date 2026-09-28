@@ -245,3 +245,12 @@ pre.code { background: var(--bg2); border: 1px solid var(--line); border-radius:
 .board-card b { font-size: 16px; }
 .board-card .small { color: var(--muted); font-size: 13.5px; line-height: 1.45; }
 .board-card .meta { margin-top: auto; font: 12px var(--mono); color: var(--ok); }
+
+/* wiring guides, comparisons, link clouds */
+.link-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+.link-cloud a { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 4px 12px; font-size: 14px; color: var(--text); text-decoration: none; }
+.link-cloud a:hover { border-color: var(--ok); color: var(--ok); }
+ul.checks { padding-left: 20px; }
+ul.checks li { margin: 6px 0; color: var(--muted); }
+.compare-table th:first-child { color: var(--muted); font-weight: 500; white-space: nowrap; }
+.compare-table td { vertical-align: top; }

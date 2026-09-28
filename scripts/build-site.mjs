@@ -10,6 +10,7 @@ import { IT } from './site/i18n-it.mjs';
 import { renderPinout } from './site/pinout.mjs';
 import { buildParts } from './site/parts.mjs';
 import { buildBoards, boardCards } from './site/boards.mjs';
+import { buildCompare, buildGuides, compareLinks, partBoardLinks } from './site/guides.mjs';
 import { readdirSync } from 'node:fs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -221,7 +222,7 @@ ${body}
 }
 const partPaths = { en: '/parts/', it: '/it/parts/' };
 for (const [lang, html] of [['en', en], ['it', it]]) {
-  const pages = buildParts({ parts, lang, site: SITE, IT_MEASURES, head, ...chrome(html, lang, partPaths) });
+  const pages = buildParts({ parts, lang, site: SITE, IT_MEASURES, head, boardLinks: (p) => partBoardLinks(lang, p, boards), ...chrome(html, lang, partPaths) });
   for (const [rel, content] of Object.entries(pages)) write(rel, content);
 }
 write('boards.json', JSON.stringify({ name: 'BoardPilot board library', license: 'CC-BY-4.0', source: `${REPO}/tree/main/boards`, generated: today, count: boards.length, boards }, null, 1));
@@ -229,9 +230,24 @@ write('parts.json', JSON.stringify({ name: 'BoardPilot parts library', license: 
 for (const p of parts) write(`parts/${p.id}.json`, JSON.stringify(p, null, 2));
 
 const boardPaths = { en: '/boards/', it: '/it/boards/' };
+const extraPages = [];
 for (const [lang, html] of [['en', en], ['it', it]]) {
-  const pages = buildBoards({ lang, boards, site: SITE, repo: REPO, head, IT: BOARD_IT, ...chrome(html, lang, boardPaths) });
+  const pages = buildBoards({ lang, boards, parts, site: SITE, repo: REPO, head, IT: BOARD_IT, ...chrome(html, lang, boardPaths) });
   for (const [rel, content] of Object.entries(pages)) write(rel, content);
+  // Wiring guides: part names and notes translated with the parts dictionaries, board texts with the board one.
+  const guides = buildGuides({ lang, boards, parts, site: SITE, head, IT: { ...IT_MEASURES, ...BOARD_IT }, ...chrome(html, lang, boardPaths) });
+  for (const [rel, content] of Object.entries(guides.pages)) write(rel, content);
+  const compare = buildCompare({ lang, boards, site: SITE, head, ...chrome(html, lang, boardPaths) });
+  for (const [rel, content] of Object.entries(compare.pages)) write(rel, content);
+  extraPages.push(...guides.sitemap, ...compare.sitemap);
+}
+// The hand-written ESP32 page links to its comparisons too.
+for (const [rel, lang] of [['esp32-pinout/index.html', 'en'], ['it/esp32-pinout/index.html', 'it']]) {
+  const file = join(root, 'site', rel);
+  const html = readFileSync(file, 'utf8');
+  const links = compareLinks(lang, 'esp32-devkitc-30', boards);
+  const h = lang === 'it' ? 'Confronti' : 'Compare';
+  if (links && !html.includes('class="link-cloud"')) writeFileSync(file, html.replace('<div class="cta-box">', `<h2>${h}</h2><p class="link-cloud">${links}</p>\n        <div class="cta-box">`));
 }
 
 /* sitemap with language alternates */
@@ -241,6 +257,7 @@ const pages = [
   { en: '/esp32-pinout/', it: '/it/esp32-pinout/', priority: '0.8' },
   { en: '/boards/', it: '/it/boards/', priority: '0.9' },
   ...boards.filter((b) => b.id !== 'esp32-devkitc-30').map((b) => ({ en: `/boards/${b.id}/`, it: `/it/boards/${b.id}/`, priority: '0.8' })),
+  ...extraPages.map((p) => ({ ...p, priority: '0.6' })),
   ...parts.map((p) => ({ en: `/parts/${p.id}/`, it: `/it/parts/${p.id}/`, priority: '0.6' })),
 ];
 const urlEntry = (loc, p) => `  <url>
@@ -260,4 +277,4 @@ ${pages.flatMap((p) => [urlEntry(p.en, p), urlEntry(p.it, p)]).join('\n')}
 `,
 );
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`site built: ${4 + 2 + parts.length * 2 + boards.length * 2} pages, ${boards.length} boards (${parts.length} parts), sitemap, robots, parts.json (version ${pkg.version})`);
+console.log(`site built: ${pages.length * 2} pages in the sitemap, ${boards.length} boards, ${extraPages.length} guide and comparison pages per language (${parts.length} parts), sitemap, robots, parts.json (version ${pkg.version})`);
