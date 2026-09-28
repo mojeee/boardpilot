@@ -1,0 +1,157 @@
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "cores": {
+    "arduino:avr": "1.8.8",
+    "STMicroelectronics:stm32": "3.0.0",
+    "esp32:esp32": "3.3.12",
+    "rp2040:rp2040": "6.1.1",
+    "teensy:avr": "1.62.0",
+    "adafruit:nrf52": "1.7.0"
+  },
+  "boards": [
+    {
+      "board": "arduino-mega-2560",
+      "ver": "0.2",
+      "fqbn": "arduino:avr:mega",
+      "core": "arduino:avr",
+      "coreVersion": "1.8.8",
+      "format": "hex",
+      "flashBytes": 25706,
+      "ramBytes": 1816,
+      "ramFreeBytes": 6376
+    },
+    {
+      "board": "arduino-nano",
+      "ver": "0.2",
+      "fqbn": "arduino:avr:nano",
+      "core": "arduino:avr",
+      "coreVersion": "1.8.8",
+      "format": "hex",
+      "flashBytes": 24516,
+      "ramBytes": 911,
+      "ramFreeBytes": 1137
+    },
+    {
+      "board": "arduino-uno-r3",
+      "ver": "0.2",
+      "fqbn": "arduino:avr:uno",
+      "core": "arduino:avr",
+      "coreVersion": "1.8.8",
+      "format": "hex",
+      "flashBytes": 24516,
+      "ramBytes": 889,
+      "ramFreeBytes": 1159
+    },
+    {
+      "board": "blackpill-f411ce",
+      "ver": "0.2",
+      "fqbn": "STMicroelectronics:stm32:GenF4:pnum=BLACKPILL_F411CE,usb=CDCgen,upload_method=dfuMethod",
+      "core": "STMicroelectronics:stm32",
+      "coreVersion": "3.0.0",
+      "format": "bin",
+      "flashBytes": 60848,
+      "ramBytes": 6776,
+      "ramFreeBytes": 124296
+    },
+    {
+      "board": "esp32-c3-devkitm-1",
+      "ver": "0.2",
+      "fqbn": "esp32:esp32:esp32c3",
+      "core": "esp32:esp32",
+      "coreVersion": "3.3.12",
+      "format": "bin",
+      "flashBytes": 376274,
+      "ramBytes": 16560,
+      "ramFreeBytes": 311120
+    },
+    {
+      "board": "esp32-devkitc-30",
+      "ver": "0.2",
+      "fqbn": "esp32:esp32:esp32",
+      "core": "esp32:esp32",
+      "coreVersion": "3.3.12",
+      "format": "bin",
+      "flashBytes": 334995,
+      "ramBytes": 25232,
+      "ramFreeBytes": 302448
+    },
+    {
+      "board": "esp32-s3-devkitc-1",
+      "ver": "0.2",
+      "fqbn": "esp32:esp32:esp32s3",
+      "core": "esp32:esp32",
+      "coreVersion": "3.3.12",
+      "format": "bin",
+      "flashBytes": 368169,
+      "ramBytes": 25496,
+      "ramFreeBytes": 302184
+    },
+    {
+      "board": "nrf52840-dk",
+      "ver": "0.2",
+      "fqbn": "adafruit:nrf52:pca10056",
+      "core": "adafruit:nrf52",
+      "coreVersion": "1.7.0",
+      "format": "hex",
+      "flashBytes": 88944,
+      "ramBytes": 10808,
+      "ramFreeBytes": 226760
+    },
+    {
+      "board": "nucleo-f401re",
+      "ver": "0.2",
+      "fqbn": "STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F401RE",
+      "core": "STMicroelectronics:stm32",
+      "coreVersion": "3.0.0",
+      "format": "bin",
+      "flashBytes": 50740,
+      "ramBytes": 4060,
+      "ramFreeBytes": 94244
+    },
+    {
+      "board": "rpi-pico",
+      "ver": "0.2",
+      "fqbn": "rp2040:rp2040:rpipico",
+      "core": "rp2040:rp2040",
+      "coreVersion": "6.1.1",
+      "format": "uf2",
+      "flashBytes": 70704,
+      "ramBytes": 10420,
+      "ramFreeBytes": 251724
+    },
+    {
+      "board": "rpi-pico-2",
+      "ver": "0.2",
+      "fqbn": "rp2040:rp2040:rpipico2",
+      "core": "rp2040:rp2040",
+      "coreVersion": "6.1.1",
+      "format": "uf2",
+      "flashBytes": 67660,
+      "ramBytes": 11300,
+      "ramFreeBytes": 512988
+    },
+    {
+      "board": "rpi-pico-w",
+      "ver": "0.2",
+      "fqbn": "rp2040:rp2040:rpipicow",
+      "core": "rp2040:rp2040",
+      "coreVersion": "6.1.1",
+      "format": "uf2",
+      "flashBytes": 328972,
+      "ramBytes": 71084,
+      "ramFreeBytes": 191060
+    },
+    {
+      "board": "teensy-41",
+      "ver": "0.2",
+      "fqbn": "teensy:avr:teensy41",
+      "core": "teensy:avr",
+      "coreVersion": "1.62.0",
+      "format": "hex",
+      "flashBytes": 81916,
+      "ramBytes": 13504,
+      "ramFreeBytes": 445248
+    }
+  ]
+}

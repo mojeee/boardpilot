@@ -105,23 +105,43 @@ export function agentErrorText(code: string): { humanMessage: string; hint: stri
   switch (code) {
     case 'flash_pin':
       return {
-        humanMessage: t('GPIO 6 to 11 are wired to the board’s internal flash memory.'),
-        hint: t('Pick another pin. Using these crashes the board.'),
+        humanMessage: t('This pin is wired to the board’s flash memory.'),
+        hint: t('Pick another pin. Using the flash pins crashes the board.'),
       };
     case 'input_only':
       return {
-        humanMessage: t('GPIO 34 to 39 can only read signals. They cannot drive an output.'),
-        hint: t('Move this wire to an output-capable pin such as D25, D26 or D27.'),
+        humanMessage: t('This pin can only read signals. It cannot drive an output.'),
+        hint: t('Move this wire to an output-capable pin (see the board’s safe pins in the pin card).'),
       };
     case 'uart_pin':
       return {
-        humanMessage: t('GPIO 1 and 3 carry the USB serial link the app uses to talk to the board.'),
-        hint: t('Leave TX0 and RX0 free while the app is connected.'),
+        humanMessage: t('This pin carries the USB serial link the app uses to talk to the board.'),
+        hint: t('Leave the USB serial pins free while the app is connected.'),
+      };
+    case 'reserved_pin':
+      return {
+        humanMessage: t('This pin is used for USB or the debug port, so the agent does not touch it.'),
+        hint: t('Pick another pin.'),
       };
     case 'not_adc':
       return {
         humanMessage: t('This pin cannot measure voltage.'),
-        hint: t('Use an ADC pin. GPIO 32 to 39 work even with Wi-Fi on.'),
+        hint: t('Use an analog (ADC) pin. On ESP32 boards, ADC1 pins keep working with Wi-Fi on.'),
+      };
+    case 'analog_only':
+      return {
+        humanMessage: t('This pin is analog only: it can measure a voltage but has no digital input or output.'),
+        hint: t('Use it with an analog reading, or pick another pin for digital signals.'),
+      };
+    case 'not_pwm':
+      return {
+        humanMessage: t('This pin cannot output PWM on this board.'),
+        hint: t('Pick a pin marked PWM on the board, such as the ones with ~ on Arduino boards.'),
+      };
+    case 'bus_error':
+      return {
+        humanMessage: t('The I2C lines did not go HIGH: the bus is stuck or has no pull-up resistors.'),
+        hint: t('Check that the sensor is powered and that SDA and SCL have pull-ups (most breakout boards include them).'),
       };
     case 'nack':
       return {
@@ -129,7 +149,7 @@ export function agentErrorText(code: string): { humanMessage: string; hint: stri
         hint: t('Check power, ground and that SDA and SCL are not swapped.'),
       };
     case 'bad_pin':
-      return { humanMessage: t('That pin number does not exist on the ESP32.'), hint: t('Pick a pin from the board view.') };
+      return { humanMessage: t('That pin number does not exist on this board.'), hint: t('Pick a pin from the board view.') };
     default:
       return { humanMessage: t('The board agent reported “{code}”.', { code }), hint: t('Try again. If it repeats, reconnect the board.') };
   }

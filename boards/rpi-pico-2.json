@@ -998,7 +998,7 @@
     "core": "rp2040:rp2040",
     "coreUrl": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
     "imageFormat": "uf2",
-    "agent": false,
+    "agent": true,
     "link": "usb-bootloader",
     "uploadNote": "If the board is not found, hold the BOOTSEL button while plugging in the USB cable."
   },

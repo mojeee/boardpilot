@@ -68,7 +68,7 @@
           <dt>Logic level</dt><dd>3.3 V. Not 5 V tolerant unless marked below.</dd>
           <dt>Flashing tool</dt><dd>STM32CubeProgrammer, stlink or dfu-util</dd>
           <dt>Arduino board (FQBN)</dt><dd class="mono">STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F401RE</dd>
-          <dt>Live pin view in BoardPilot</dt><dd>Wiring checks, flashing and serial monitor; live pin view coming later</dd>
+          <dt>Live pin view in BoardPilot</dt><dd>Yes (diagnostic agent available)</dd>
         </dl>
         <h2>Pins to avoid or use with care</h2>
         <div class="facts"><div class="fact"><h3>Strapping pins: BOOT0, PB2</h3><p>Their level at reset changes how the board boots. Usually fine after boot.</p></div><div class="fact"><h3>USB serial: RX/D0 (PA3), TX/D1 (PA2)</h3><p>Used for uploading and the serial monitor. Anything connected here can break uploads.</p></div><div class="fact"><h3>Debug port: PA13, PA14</h3><p>SWD/JTAG. Using them can stop a debugger from reaching the chip.</p></div><div class="fact"><h3>Used on the board: RX/D0 (PA3), TX/D1 (PA2), PC13, PC14, PC15, PH0, PH1</h3><p>Already connected to something on the board (see the notes in the table).</p></div></div>

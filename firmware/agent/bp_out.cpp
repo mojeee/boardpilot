@@ -4,68 +4,105 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "bp_port.h"
 #include "bp_req.h"
 
 namespace bpout {
 
-void raw(const char* s) { Serial.print(s); }
+namespace {
 
-void ch(char c) { Serial.write((uint8_t)c); }
+void escChar(char c) {
+  switch (c) {
+    case '"': BpSerial.print('\\'); BpSerial.print('"'); break;
+    case '\\': BpSerial.print('\\'); BpSerial.print('\\'); break;
+    case '\n': BpSerial.print('\\'); BpSerial.print('n'); break;
+    case '\r': BpSerial.print('\\'); BpSerial.print('r'); break;
+    case '\t': BpSerial.print('\\'); BpSerial.print('t'); break;
+    default:
+      if ((uint8_t)c < 0x20) {
+        char b[8];
+        bp_snprintf(b, sizeof(b), "\\u%04x", (unsigned)(uint8_t)c);
+        BpSerial.print(b);
+      } else {
+        BpSerial.write((uint8_t)c);
+      }
+  }
+}
 
-void num(long v) { Serial.print(v); }
+}  // namespace
 
-void unum(unsigned long v) { Serial.print(v); }
+void raw(const char* s) {
+#if defined(BP_AVR)
+  BpSerial.print((const __FlashStringHelper*)s);
+#else
+  BpSerial.print(s);
+#endif
+}
+
+void rawRam(const char* s) { BpSerial.print(s); }
+
+void ch(char c) { BpSerial.write((uint8_t)c); }
+
+void num(long v) { BpSerial.print(v); }
+
+void unum(unsigned long v) { BpSerial.print(v); }
 
 void dec(double v) {
   if (!isfinite(v)) {
-    raw("null");
+    raw(BPS("null"));
     return;
   }
   if (v == floor(v) && fabs(v) < 2147483647.0) {
-    Serial.print((long)v);
+    BpSerial.print((long)v);
     return;
   }
-  char buf[24];
-  snprintf(buf, sizeof(buf), "%.3f", v);
-  // Trim trailing zeros ("62.500" -> "62.5").
-  char* e = buf + strlen(buf) - 1;
-  while (e > buf && *e == '0') *e-- = '\0';
-  if (*e == '.') *e = '\0';
-  raw(buf);
+  // Three decimals, trailing zeros trimmed ("62.500" -> "62.5"). Written by hand because the
+  // AVR printf has no %f.
+  if (v < 0) {
+    ch('-');
+    v = -v;
+  }
+  unsigned long ip = (unsigned long)v;
+  unsigned long frac = (unsigned long)lround((v - (double)ip) * 1000.0);
+  if (frac >= 1000) {
+    ip++;
+    frac -= 1000;
+  }
+  BpSerial.print(ip);
+  if (frac == 0) return;
+  char d[4] = {(char)('0' + frac / 100), (char)('0' + (frac / 10) % 10), (char)('0' + frac % 10), 0};
+  for (int i = 2; i > 0 && d[i] == '0'; i--) d[i] = 0;
+  ch('.');
+  BpSerial.print(d);
 }
 
 void str(const char* s) {
   ch('"');
   if (s) {
-    for (; *s; ++s) {
-      const char c = *s;
-      switch (c) {
-        case '"': raw("\\\""); break;
-        case '\\': raw("\\\\"); break;
-        case '\n': raw("\\n"); break;
-        case '\r': raw("\\r"); break;
-        case '\t': raw("\\t"); break;
-        default:
-          if ((uint8_t)c < 0x20) {
-            char b[8];
-            snprintf(b, sizeof(b), "\\u%04x", (unsigned)(uint8_t)c);
-            raw(b);
-          } else {
-            ch(c);
-          }
-      }
+    for (;; ++s) {
+      const char c = (char)bp_rd8(s);
+      if (!c) break;
+      escChar(c);
     }
+  }
+  ch('"');
+}
+
+void strRam(const char* s) {
+  ch('"');
+  if (s) {
+    for (; *s; ++s) escChar(*s);
   }
   ch('"');
 }
 
 void hexByte(uint8_t v) {
   char b[8];
-  snprintf(b, sizeof(b), "\"0x%02X\"", (unsigned)v);
-  raw(b);
+  bp_snprintf(b, sizeof(b), "\"0x%02X\"", (unsigned)v);
+  BpSerial.print(b);
 }
 
-void boolVal(bool b) { raw(b ? "true" : "false"); }
+void boolVal(bool b) { raw(b ? BPS("true") : BPS("false")); }
 
 void key(const char* k) {
   ch(',');
@@ -76,41 +113,51 @@ void key(const char* k) {
 void pinKey(int gpio) {
   ch('"');
   num(gpio);
-  raw("\":");
+  ch('"');
+  ch(':');
 }
 
-void begin(const BpReq& r, bool okFlag) {
-  raw("{\"id\":");
-  if (r.hasId) {
-    num(r.id);
+static void beginId(bool hasId, long id, bool okFlag) {
+  raw(BPS("{\"id\":"));
+  if (hasId) {
+    num(id);
   } else {
-    raw("null");
+    raw(BPS("null"));
   }
-  raw(",\"ok\":");
+  raw(BPS(",\"ok\":"));
   boolVal(okFlag);
 }
 
-void end() { raw("}\n"); }
+void begin(const BpReq& r, bool okFlag) { beginId(r.hasId, r.id, okFlag); }
 
-void error(const BpReq& r, const char* code, const char* msg, int pin) {
-  begin(r, false);
-  key("error");
+void end() { raw(BPS("}\n")); }
+
+static void errorImpl(bool hasId, long id, const char* code, const char* msg, bool msgInRam, int pin) {
+  beginId(hasId, id, false);
+  key(BPS("error"));
   str(code);
-  key("msg");
-  str(msg);
+  key(BPS("msg"));
+  if (msgInRam) {
+    strRam(msg);
+  } else {
+    str(msg);
+  }
   if (pin >= 0) {
-    key("pin");
+    key(BPS("pin"));
     num(pin);
   }
   end();
 }
 
-void errorNoId(const char* code, const char* msg) {
-  BpReq r;
-  r.hasId = false;
-  r.id = 0;
-  error(r, code, msg);
+void error(const BpReq& r, const char* code, const char* msg, int pin) {
+  errorImpl(r.hasId, r.id, code, msg, false, pin);
 }
+
+void errorRam(const BpReq& r, const char* code, const char* msg, int pin) {
+  errorImpl(r.hasId, r.id, code, msg, true, pin);
+}
+
+void errorNoId(const char* code, const char* msg) { errorImpl(false, 0, code, msg, false, -1); }
 
 void ok(const BpReq& r) {
   begin(r, true);

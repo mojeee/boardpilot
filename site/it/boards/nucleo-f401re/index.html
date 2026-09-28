@@ -68,7 +68,7 @@
           <dt>Livello logico</dt><dd>3,3 V. Non tollera i 5 V, salvo i pin indicati sotto.</dd>
           <dt>Strumento di programmazione</dt><dd>STM32CubeProgrammer, stlink or dfu-util</dd>
           <dt>Scheda Arduino (FQBN)</dt><dd class="mono">STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F401RE</dd>
-          <dt>Vista dei pin dal vivo in BoardPilot</dt><dd>Controllo del cablaggio, programmazione e monitor seriale; vista dal vivo in arrivo</dd>
+          <dt>Vista dei pin dal vivo in BoardPilot</dt><dd>Sì (agente diagnostico disponibile)</dd>
         </dl>
         <h2>Pin da evitare o da usare con attenzione</h2>
         <div class="facts"><div class="fact"><h3>Pin di strapping: BOOT0, PB2</h3><p>Il loro livello al reset cambia il modo di avvio. Di solito vanno bene dopo l’avvio.</p></div><div class="fact"><h3>Seriale USB: RX/D0 (PA3), TX/D1 (PA2)</h3><p>Usati per il caricamento e il monitor seriale. Qualsiasi cosa collegata qui può impedire il caricamento.</p></div><div class="fact"><h3>Porta di debug: PA13, PA14</h3><p>SWD/JTAG. Usarli può impedire al debugger di raggiungere il chip.</p></div><div class="fact"><h3>Usati sulla scheda: RX/D0 (PA3), TX/D1 (PA2), PC13, PC14, PC15, PH0, PH1</h3><p>Già collegati a qualcosa sulla scheda (vedi le note nella tabella).</p></div></div>

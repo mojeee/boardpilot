@@ -1,7 +1,7 @@
 {
   "name": "boardpilot",
   "productName": "BoardPilot",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Guided embedded software work on a real ESP32 board, with a live 3D view.",
   "private": true,
   "main": "out/main/index.js",
@@ -29,8 +29,11 @@
         "from": "resources/agent",
         "to": "agent",
         "filter": [
-          "*.bin",
-          "manifest.json"
+          "**/*.bin",
+          "**/*.uf2",
+          "**/*.hex",
+          "**/manifest.json",
+          "index.json"
         ]
       }
     ],

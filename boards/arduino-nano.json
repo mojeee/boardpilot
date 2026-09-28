@@ -689,7 +689,7 @@
       "baud": 115200
     },
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "link": "usb-serial",
     "uploadNote": "Clones with the old bootloader upload at 57600 baud: choose “ATmega328P (Old Bootloader)” if uploads fail."
   },

@@ -1,31 +1,117 @@
-# bp-agent: BoardPilot diagnostic agent (ESP32)
+# bp-agent: BoardPilot diagnostic agent
 
 A small firmware that BoardPilot flashes onto the board during **Debug** and
-**Test hardware**, but only after it has made a backup of the flash and the user
-has confirmed. It lets the app read live pin states, check pull-ups, scan and
-read I2C devices, and read ADC voltages. It can also drive outputs and PWM when
-the user asks for that in the app.
+**Test hardware**, but only after it has made a backup of the flash (where the
+board allows it) and the user has confirmed. It lets the app read live pin
+states, check pull-ups, scan and read I2C devices, and read ADC voltages. It can
+also drive outputs and PWM when the user asks for that in the app.
 
-- Target: ESP32 (ESP32-WROOM-32, 30-pin DevKit), Arduino core `esp32:esp32` 3.x
+- One portable Arduino sketch for every supported board family.
 - No third-party libraries. It includes its own small JSON parser.
-- Version: `0.1`
+- Version: `0.2` (protocol backward compatible with 0.1; only fields were added).
+
+## Supported boards
+
+Board facts (pin numbers, flash / UART / input-only / ADC / USB / debug pins,
+strapping pins, ADC full scale) come from `boards/<id>.json` through the
+generated header `bp_board.h`. The committed `bp_board.h` is for the ESP32
+DevKit, so the sketch also compiles on its own.
+
+| Board | Core (built with) | Image | Flash used | RAM used (free for stack) |
+| --- | --- | --- | --- | --- |
+| Arduino Mega 2560 R3 (`arduino-mega-2560`) | `arduino:avr` 1.8.8 | hex | 25 KB | 1816 B (6376 B) |
+| Arduino Nano (`arduino-nano`) | `arduino:avr` 1.8.8 | hex | 24 KB | 911 B (1137 B) |
+| Arduino Uno R3 (`arduino-uno-r3`) | `arduino:avr` 1.8.8 | hex | 24 KB | 889 B (1159 B) |
+| WeAct Black Pill STM32F411CE (`blackpill-f411ce`) | `STMicroelectronics:stm32` 3.0.0 | bin | 59 KB | 6776 B (124296 B) |
+| ESP32-C3-DevKitM-1 (`esp32-c3-devkitm-1`) | `esp32:esp32` 3.3.12 | bin | 367 KB | 16560 B (311120 B) |
+| ESP32 DevKit (30 pins) (`esp32-devkitc-30`) | `esp32:esp32` 3.3.12 | bin | 327 KB | 25232 B (302448 B) |
+| ESP32-S3-DevKitC-1 (`esp32-s3-devkitc-1`) | `esp32:esp32` 3.3.12 | bin | 360 KB | 25496 B (302184 B) |
+| Nordic nRF52840 DK (`nrf52840-dk`) | `adafruit:nrf52` 1.7.0 | hex | 87 KB | 10808 B (226760 B) |
+| ST NUCLEO-F401RE (`nucleo-f401re`) | `STMicroelectronics:stm32` 3.0.0 | bin | 50 KB | 4060 B (94244 B) |
+| Raspberry Pi Pico (`rpi-pico`) | `rp2040:rp2040` 6.1.1 | uf2 | 69 KB | 10420 B (251724 B) |
+| Raspberry Pi Pico 2 (`rpi-pico-2`) | `rp2040:rp2040` 6.1.1 | uf2 | 66 KB | 11300 B (512988 B) |
+| Raspberry Pi Pico W (`rpi-pico-w`) | `rp2040:rp2040` 6.1.1 | uf2 | 321 KB | 71084 B (191060 B) |
+| Teensy 4.1 (`teensy-41`) | `teensy:avr` 1.62.0 | hex | 80 KB | 13504 B (445248 B) |
+
+All images compile; they have been checked against a simulated I2C device on
+the host, not yet on every real board.
+
+Notes:
+
+- **Arduino Uno / Nano** (ATmega328P, 2 KB RAM): smaller buffers (request line
+  191 characters, 20 pins per list, 12 JSON fields). Every constant string is
+  kept in flash (`BPS()` / `PSTR`). All commands are available.
+- **Arduino Nano A6 / A7** are analog-only inputs (no digital port): they are
+  always in `adc` mode; `gpio_read` and `pullup_check` on them answer
+  `analog_only`.
+- **Raspberry Pi Pico / Pico W / Pico 2, Teensy 4.1, Black Pill**: `Serial` is
+  the chip's own USB port. The boot event is sent each time a host opens the
+  port (the host cannot be listening at power-up).
+- **Black Pill F411CE** is built with `usb=CDCgen` (Serial over USB).
+- **Nucleo-F401RE**: the agent talks through the ST-LINK virtual COM port
+  (USART2 on PA2/PA3). Pin numbers are STM32duino `PinName` values
+  (PA0 = 0, PB0 = 16, PC13 = 45), as in the board file.
+- **nRF52840 DK** (Adafruit nRF52 core, `pca10056`): the agent talks through the
+  J-Link virtual COM port (UART on P0.06/P0.08, `Serial2` in that core). The
+  image is an application `.hex`: the Adafruit bootloader and SoftDevice must be
+  on the board already (the board file's upload note says so).
+- **Pico W** is larger because the core links the Wi-Fi chip driver for that
+  board; the agent does not start Wi-Fi.
 
 ## Build
 
-End users never build this. The app ships prebuilt binaries in
-`resources/agent/`. To rebuild them:
+End users never build this. The app ships prebuilt images in
+`resources/agent/<boardId>/`. To rebuild them:
 
 ```sh
 brew install arduino-cli
-arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
-arduino-cli core install esp32:esp32 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
-npm run build:agent          # runs scripts/build-agent.sh
+npm run build:agent -- --install-cores     # first time: installs the cores the boards need
+npm run build:agent                        # every board in boards/*.json
+npm run build:agent -- rpi-pico arduino-uno-r3   # only these boards
 ```
 
-Or compile it by hand:
+`scripts/build-agent.sh` runs `scripts/build-agent.mjs`, which for each board:
+
+1. validates `boards/<id>.json` (`scripts/check-boards.mjs`),
+2. copies this sketch to `firmware/agent/build/<id>/agent/` and writes a
+   `bp_board.h` generated by `scripts/gen-agent-board.mjs <id>`,
+3. compiles it with `arduino-cli` and the board's `toolchain.fqbn`,
+4. writes `resources/agent/<id>/` with the images and a `manifest.json`, and
+   updates `resources/agent/index.json` (every board built, with agent and core
+   versions and memory use).
+
+`manifest.json`:
+
+```json
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "board": "esp32-devkitc-30",
+  "fqbn": "esp32:esp32:esp32",
+  "format": "bin",
+  "parts": [
+    { "offset": "0x1000", "file": "bootloader.bin" },
+    { "offset": "0x8000", "file": "partitions.bin" },
+    { "offset": "0xe000", "file": "boot_app0.bin" },
+    { "offset": "0x10000", "file": "agent.bin" }
+  ],
+  "chip": "esp32"
+}
+```
+
+- esptool boards: bootloader at `0x1000` (ESP32) or `0x0` (ESP32-S3, ESP32-C3),
+  partition table `0x8000`, `boot_app0.bin` `0xe000`, app `0x10000`; `chip` is
+  the esptool `--chip` name.
+- UF2 (RP2040/RP2350) and HEX (AVR, Teensy, nRF52): one part at `0x0`
+  (the addresses are inside the file).
+- STM32 `.bin`: one part at `0x08000000` (start of the internal flash).
+
+To compile one board by hand:
 
 ```sh
-arduino-cli compile --fqbn esp32:esp32:esp32 --output-dir firmware/agent/build firmware/agent
+node scripts/gen-agent-board.mjs rpi-pico      # rewrites firmware/agent/bp_board.h
+arduino-cli compile --fqbn rp2040:rp2040:rpipico firmware/agent
+node scripts/gen-agent-board.mjs esp32-devkitc-30   # put the default back
 ```
 
 ## Files
@@ -33,18 +119,26 @@ arduino-cli compile --fqbn esp32:esp32:esp32 --output-dir firmware/agent/build f
 | File | What it does |
 | --- | --- |
 | `agent.ino` | Calls `agentSetup()` and `agentLoop()`. |
+| `bp_board.h` | Generated board facts (default: ESP32 DevKit). |
+| `bp_port.h`, `bp_port.cpp` | Core detection, flash strings (`BPS`), pin number mapping, free RAM. |
 | `bp_agent.cpp` | Boot, strapping pin capture, line reader, command dispatch. |
 | `bp_commands.cpp` | One function per command, I2C trace, stream. |
-| `bp_pins.cpp` | Pin facts (with datasheet sources), safety checks, mode table. |
+| `bp_pins.cpp` | Safety checks, mode table, PWM and ADC per core (with datasheet sources). |
+| `bp_i2c.cpp` | I2C master: Wire on ESP32, bit-banged open-drain elsewhere. |
 | `bp_json.cpp` | Minimal JSON parser for request lines. |
-| `bp_out.cpp` | Writes JSON reply lines to Serial. |
-| `bp_config.h` | Baud rate (`AGENT_BAUD`), limits. |
+| `bp_out.cpp` | Writes JSON reply lines to the serial port. |
+| `bp_config.h` | Version, baud rate (`AGENT_BAUD`), buffer sizes per family, limits. |
 
 ## Protocol
 
-Serial at 115200 baud, 8N1. One JSON object per line, in both directions.
-Every request may carry an integer `id`. The reply echoes it (`"id":null` when
-the request had none). Request lines longer than 511 characters are rejected.
+Serial at 115200 baud, 8N1 (on native USB ports the baud rate is ignored). One
+JSON object per line, in both directions. Every request may carry an integer
+`id`. The reply echoes it (`"id":null` when the request had none). Request lines
+longer than 511 characters (191 on the Uno and Nano) are rejected.
+
+Pin numbers are the numbers used in Arduino code on that board (`PinDef.gpio`):
+GPIO numbers on ESP32 and RP2040/RP2350, Arduino pin numbers on AVR and Teensy,
+`PinName` values on STM32 (port x 16 + pin), port x 32 + pin on nRF52.
 
 The ROM bootloader prints plain text when the board resets. The app must ignore
 any line that is not a JSON object.
@@ -52,24 +146,27 @@ any line that is not a JSON object.
 At boot, the agent prints:
 
 ```json
-{"event":"boot","agent":"bp-agent","ver":"0.1","strapping":{"0":1,"2":0,"5":1,"12":0,"15":1},"strapReg":"0x13"}
+{"event":"boot","agent":"bp-agent","ver":"0.2","board":"esp32-devkitc-30","strapping":{"0":1,"2":0,"5":1,"12":0,"15":1},"strapReg":"0x13"}
 ```
 
-`strapping` holds the levels of GPIO 0, 2, 5, 12 and 15 read right after boot,
-before any pin is configured. `strapReg` is the raw `GPIO_STRAP_REG` value: the
-levels the chip latched at reset (the same number the ROM prints as `boot:0x..`).
+`board` is the board id the agent was built for. `strapping` holds the levels
+of the board's strapping pins (ESP32: GPIO 0, 2, 5, 12 and 15; ESP32-S3: 0, 3,
+45, 46; ESP32-C3: 2, 8, 9; STM32 boards: BOOT1/PB2) read right after boot,
+before any pin is configured. Boards without strapping pins leave the field
+out. `strapReg` (ESP32 only) is the raw `GPIO_STRAP_REG` value: the levels the
+chip latched at reset (the same number the ROM prints as `boot:0x..`).
 
 ### Commands
 
 | Request | Reply |
 | --- | --- |
-| `{"id":1,"cmd":"hello"}` | `{"id":1,"ok":true,"agent":"bp-agent","ver":"0.1","chip":"ESP32-D0WD-V3","heapFree":201344}` |
+| `{"id":1,"cmd":"hello"}` | `{"id":1,"ok":true,"agent":"bp-agent","ver":"0.2","chip":"ESP32-D0WD-V3","heapFree":201344,"board":"esp32-devkitc-30"}` |
 | `{"id":2,"cmd":"pins"}` | `{"id":2,"ok":true,"pins":{"21":{"mode":"in","level":1},...}}` |
-| `{"id":3,"cmd":"pullup_check","pins":[21,22]}` | `{"id":3,"ok":true,"external":{"21":true,"22":true},"levels":{"21":1,"22":1}}` |
+| `{"id":3,"cmd":"pullup_check","pins":[21,22]}` | `{"id":3,"ok":true,"external":{"21":true,"22":true},"levels":{"21":1,"22":1}}` (plus `"unconfirmed":[34]`, see below) |
 | `{"id":4,"cmd":"i2c_scan","sda":21,"scl":22,"hz":100000}` | `{"id":4,"ok":true,"found":["0x76"],"trace":[...]}` |
 | `{"id":5,"cmd":"i2c_read","sda":21,"scl":22,"addr":"0x76","reg":"0xD0","len":1}` | `{"id":5,"ok":true,"data":["0x60"],"trace":[...]}` |
-| `{"id":6,"cmd":"adc","pin":34}` | `{"id":6,"ok":true,"mv":1840,"raw":2283}` |
-| `{"id":7,"cmd":"pwm","pin":25,"duty":62,"hz":5000}` | `{"id":7,"ok":true}` (`"stop":true` detaches) |
+| `{"id":6,"cmd":"adc","pin":34}` | `{"id":6,"ok":true,"mv":1840,"raw":2283}` (non-ESP boards add `"ref":"nominal","fullScaleMv":5000,"bits":10`) |
+| `{"id":7,"cmd":"pwm","pin":25,"duty":62,"hz":5000}` | `{"id":7,"ok":true}` (`"stop":true` detaches). When the hardware runs at another frequency the reply has the real one: `{"id":7,"ok":true,"hz":490}` |
 | `{"id":8,"cmd":"gpio_write","pin":25,"level":1}` | `{"id":8,"ok":true}` |
 | `{"id":9,"cmd":"gpio_read","pin":21}` | `{"id":9,"ok":true,"pin":21,"level":1}` |
 | `{"id":10,"cmd":"stream","pins":[21,22,25,34],"hz":20}` | `{"id":10,"ok":true}`, then frames (below) |
@@ -91,7 +188,7 @@ Pin state objects in `pins` and stream frames:
 | `out` | `level` (what the pad reads back), `set` (what the agent drives) |
 | `pwm` | `duty` (percent), `hz` |
 | `adc` | `mv` (measured by the ADC) |
-| `uart` | none (GPIO 1 and 3 carry this serial link, reading them would break it) |
+| `uart` | none (the pins that carry this serial link, e.g. ESP32 GPIO 1 and 3; reading them would break it) |
 | `i2c` | none (only while a bus command runs) |
 
 A pin goes into `adc` mode after an `adc` command, and back to `in` after
@@ -101,6 +198,17 @@ A pin goes into `adc` mode after an `adc` command, and back to `in` after
 
 Each step is one of `{"t":"start"}`, `{"t":"restart"}`, `{"t":"stop"}`,
 `{"t":"addr","v":"0x76","rw":"w","ack":true}`, `{"t":"data","v":"0xD0","dir":"w","ack":true}`.
+
+On the ESP32 the core's `Wire` driver runs the bus (any GPIO pair works through
+the GPIO matrix). On every other board the agent uses its own **bit-banged
+open-drain I2C master** (`bp_i2c.cpp`), because hardware I2C on AVR, RP2040 and
+STM32 is tied to fixed pins and the SDA/SCL swap test needs any two pins. It
+drives a line LOW with `pinMode(OUTPUT)` + `LOW` and releases it with
+`pinMode(INPUT)` and **no internal pull-up**, so the bus only works when real
+pull-up resistors are present: a missing pull-up shows up as `bus_error`, as it
+would in the user's own firmware. It honours clock stretching (timeout 50 ms),
+frees a stuck SDA with up to nine clocks, and runs a little slower than `hz`
+(the `pinMode` calls take a few microseconds; about 50-100 kHz for 100000).
 The last byte of a read has `"ack":false`, because the master ends a read with a NACK
 (I2C specification, NXP UM10204).
 
@@ -120,14 +228,17 @@ plus `"pin":N` when a pin caused it.
 | code | meaning |
 | --- | --- |
 | `bad_json` | The line is not valid JSON (`id` is null). |
-| `too_long` | The line is longer than 511 characters (`id` is null). |
+| `too_long` | The line is longer than 511 characters, 191 on Uno/Nano (`id` is null). |
 | `bad_args` | A field is missing or out of range. |
 | `unknown_cmd` | The command name is not known. |
-| `bad_pin` | That GPIO does not exist on the ESP32. |
-| `flash_pin` | GPIO 6 to 11 are wired to the internal flash. |
-| `uart_pin` | GPIO 1 and 3 carry the serial link. |
-| `input_only` | GPIO 34 to 39 cannot drive a signal or be I2C lines. |
+| `bad_pin` | That pin number does not exist on this board. |
+| `flash_pin` | The pin is wired to the flash (ESP32: GPIO 6 to 11). |
+| `uart_pin` | The pin carries the agent's serial link (ESP32: GPIO 1 and 3). |
+| `reserved_pin` | USB data line or debug-port pin (SWD); the agent leaves it alone. |
+| `input_only` | The pin cannot drive a signal or be an I2C line (ESP32: GPIO 34 to 39). |
 | `not_adc` | That pin has no ADC. |
+| `analog_only` | The pin has no digital input (Nano A6/A7): use `adc`. |
+| `not_pwm` | The pin has no PWM output (AVR, STM32, Teensy). |
 | `pin_busy` | `gpio_read` on a pin that is producing PWM. |
 | `nack`, `read_failed`, `short_read`, `bus_error`, `i2c_init_failed` | I2C problems. |
 | `pwm_failed` | The PWM driver refused the frequency. |
@@ -137,6 +248,25 @@ plus `"pin":N` when a pin caused it.
 - Voltages (`mv`) are only reported for ADC pins, and only from a real ADC reading.
   Other pins report a digital level.
 - `pullup_check` turns off the internal pulls and reads the pin. HIGH means an
-  external pull-up. On pins that have an internal pull-down (all but GPIO 34 to 39)
-  the agent confirms with the internal pull-down on, so a floating pin that
-  happens to read HIGH is not reported as pulled up.
+  external pull-up. On pins that have an internal pull-down the agent confirms
+  with the internal pull-down on, so a floating pin that happens to read HIGH is
+  not reported as pulled up. Where that confirmation is impossible (ESP32 GPIO
+  34 to 39, every AVR pin: AVR has pull-ups only; every RP2350 pin: erratum
+  RP2350-E9 makes a pulled-down floating pad read HIGH) a HIGH pin is listed in
+  `"unconfirmed"`: it may be pulled up or just floating.
+- **ADC.** On ESP32 chips `mv` comes from `analogReadMilliVolts`, which applies
+  the chip's factory calibration. On every other board `mv` is computed from the
+  raw reading and the board's **nominal** full scale (`rules.adcMaxMv`: 5000 mV
+  on the Uno/Nano/Mega, which is really the USB supply and often 4.7-5.1 V;
+  3300 mV on 3.3 V boards; 3600 mV on the nRF52840 with the Adafruit core's
+  default reference): `mv = raw x fullScale / 2^bits`. The reference itself is
+  not measured, so the `adc` reply says `"ref":"nominal"` with `fullScaleMv` and
+  `bits`. The app should present these as approximate.
+- **PWM frequency.** AVR timers run at fixed frequencies (490 Hz, or 977 Hz on
+  Timer0 pins 5/6 on the Uno and 4/13 on the Mega); the RP2040 clamps to
+  100 Hz-10 MHz and pins of one PWM slice share a frequency; the nRF52 core runs
+  at 62745 Hz. The reply and the pin state always carry the frequency the
+  hardware really produces.
+- `heapFree` in `hello` is the best figure each core offers: free heap
+  (ESP32, RP2040, Teensy), free RAM between heap and stack (AVR), or unused
+  space above the heap plus freed blocks (STM32, nRF52).

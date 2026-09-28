@@ -299,7 +299,11 @@ export class HardwareHub extends EventEmitter<HubEvents> {
         const pin12 = pinByGpio(this.board, 12);
         this.log(
           high12 ? 'warning' : 'info',
-          t('Strapping pins at reset: {pins}.', { pins: Object.entries(s).map(([g, v]) => `GPIO ${g}=${v}`).join(', ') }) +
+          t('Strapping pins at reset: {pins}.', {
+            pins: Object.entries(s)
+              .map(([g, v]) => `${pinByGpio(this.board, Number(g))?.label ?? `GPIO ${g}`}=${v}`)
+              .join(', '),
+          }) +
             (high12 ? ' ' + t('GPIO 12 was HIGH at reset: this can select the wrong flash voltage.') : ''),
           'measured: agent boot report',
           high12 && pin12 ? `pin:${pin12.id}` : undefined,

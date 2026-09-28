@@ -1304,7 +1304,7 @@
     "core": "adafruit:nrf52",
     "coreUrl": "https://adafruit.github.io/arduino-board-index/package_adafruit_index.json",
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "uploadNote": "Plug USB into the port on the short edge (interface MCU, J2) and set the power switch to ON; before the first Arduino sketch, burn the Adafruit bootloader and SoftDevice once.",
     "link": "debug-probe"
   },

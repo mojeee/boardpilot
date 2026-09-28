@@ -68,7 +68,7 @@
           <dt>Logic level</dt><dd>3.3 V. Not 5 V tolerant unless marked below.</dd>
           <dt>Flashing tool</dt><dd>STM32CubeProgrammer, stlink or dfu-util</dd>
           <dt>Arduino board (FQBN)</dt><dd class="mono">STMicroelectronics:stm32:GenF4:pnum=BLACKPILL_F411CE,usb=CDCgen,upload_method=dfuMethod</dd>
-          <dt>Live pin view in BoardPilot</dt><dd>Wiring checks, flashing and serial monitor; live pin view coming later</dd>
+          <dt>Live pin view in BoardPilot</dt><dd>Yes (diagnostic agent available)</dd>
         </dl>
         <h2>Pins to avoid or use with care</h2>
         <div class="facts"><div class="fact"><h3>Strapping pins: B2</h3><p>Their level at reset changes how the board boots. Usually fine after boot.</p></div><div class="fact"><h3>Native USB: A11, A12</h3><p>The USB data lines. Using them breaks USB uploads and the serial monitor.</p></div><div class="fact"><h3>Debug port: SCK, DIO</h3><p>SWD/JTAG. Using them can stop a debugger from reaching the chip.</p></div><div class="fact"><h3>Used on the board: A0, C15, C14</h3><p>Already connected to something on the board (see the notes in the table).</p></div></div>

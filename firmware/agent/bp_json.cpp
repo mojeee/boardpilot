@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "bp_port.h"
+
 namespace bpjson {
 
 namespace {
@@ -41,7 +43,7 @@ bool parseString(P& s, const char** start, size_t* len) {
       s.p++;
       return true;
     }
-    if ((uint8_t)c < 0x20) return fail(s, "A text value contains a control character.");
+    if ((uint8_t)c < 0x20) return fail(s, BPS("A text value contains a control character."));
     if (c == '\\') {
       s.p++;
       if (s.p >= s.end) break;
@@ -49,39 +51,39 @@ bool parseString(P& s, const char** start, size_t* len) {
       if (e == 'u') {
         for (int i = 0; i < 4; i++) {
           s.p++;
-          if (s.p >= s.end || !isHex(*s.p)) return fail(s, "A \\u escape needs four hex digits.");
+          if (s.p >= s.end || !isHex(*s.p)) return fail(s, BPS("A \\u escape needs four hex digits."));
         }
       } else if (!(e == '"' || e == '\\' || e == '/' || e == 'b' || e == 'f' || e == 'n' ||
                    e == 'r' || e == 't')) {
-        return fail(s, "A text value contains an unknown escape.");
+        return fail(s, BPS("A text value contains an unknown escape."));
       }
     }
     s.p++;
   }
-  return fail(s, "A text value is missing its closing quote.");
+  return fail(s, BPS("A text value is missing its closing quote."));
 }
 
 bool parseNumber(P& s) {
   const char* p = s.p;
   const char* e = s.end;
   if (p < e && *p == '-') p++;
-  if (p >= e) return fail(s, "A number is cut off.");
+  if (p >= e) return fail(s, BPS("A number is cut off."));
   if (*p == '0') {
     p++;
   } else if (*p >= '1' && *p <= '9') {
     while (p < e && isDigit(*p)) p++;
   } else {
-    return fail(s, "A number is not written correctly.");
+    return fail(s, BPS("A number is not written correctly."));
   }
   if (p < e && *p == '.') {
     p++;
-    if (!(p < e && isDigit(*p))) return fail(s, "A number has no digits after the dot.");
+    if (!(p < e && isDigit(*p))) return fail(s, BPS("A number has no digits after the dot."));
     while (p < e && isDigit(*p)) p++;
   }
   if (p < e && (*p == 'e' || *p == 'E')) {
     p++;
     if (p < e && (*p == '+' || *p == '-')) p++;
-    if (!(p < e && isDigit(*p))) return fail(s, "A number has a bad exponent.");
+    if (!(p < e && isDigit(*p))) return fail(s, BPS("A number has a bad exponent."));
     while (p < e && isDigit(*p)) p++;
   }
   s.p = p;
@@ -89,9 +91,10 @@ bool parseNumber(P& s) {
 }
 
 bool literal(P& s, const char* word) {
-  size_t n = strlen(word);
-  if ((size_t)(s.end - s.p) < n || memcmp(s.p, word, n) != 0) {
-    return fail(s, "Unexpected word. Use true, false or null.");
+  // `word` is a flash string.
+  size_t n = bp_strlenP(word);
+  if ((size_t)(s.end - s.p) < n || bp_memcmpP(s.p, word, n) != 0) {
+    return fail(s, BPS("Unexpected word. Use true, false or null."));
   }
   s.p += n;
   return true;
@@ -111,12 +114,12 @@ bool parseContainer(P& s, int depth, bool isObj) {
   for (;;) {
     if (isObj) {
       ws(s);
-      if (s.p >= s.end || *s.p != '"') return fail(s, "Expected a key in double quotes.");
+      if (s.p >= s.end || *s.p != '"') return fail(s, BPS("Expected a key in double quotes."));
       const char* k;
       size_t kl;
       if (!parseString(s, &k, &kl)) return false;
       ws(s);
-      if (s.p >= s.end || *s.p != ':') return fail(s, "Expected ':' after a key.");
+      if (s.p >= s.end || *s.p != ':') return fail(s, BPS("Expected ':' after a key."));
       s.p++;
     }
     ValType t;
@@ -124,7 +127,7 @@ bool parseContainer(P& s, int depth, bool isObj) {
     size_t n;
     if (!parseValue(s, depth, &t, &v, &n)) return false;
     ws(s);
-    if (s.p >= s.end) return fail(s, "The line ends before the closing bracket.");
+    if (s.p >= s.end) return fail(s, BPS("The line ends before the closing bracket."));
     if (*s.p == ',') {
       s.p++;
       continue;
@@ -133,20 +136,20 @@ bool parseContainer(P& s, int depth, bool isObj) {
       s.p++;
       return true;
     }
-    return fail(s, "Expected ',' or a closing bracket.");
+    return fail(s, BPS("Expected ',' or a closing bracket."));
   }
 }
 
 bool parseValue(P& s, int depth, ValType* type, const char** vs, size_t* vl) {
   ws(s);
-  if (s.p >= s.end) return fail(s, "A value is missing.");
+  if (s.p >= s.end) return fail(s, BPS("A value is missing."));
   const char c = *s.p;
   if (c == '"') {
     *type = T_STRING;
     return parseString(s, vs, vl);
   }
   if (c == '{' || c == '[') {
-    if (depth >= MAX_DEPTH) return fail(s, "The request is nested too deeply.");
+    if (depth >= MAX_DEPTH) return fail(s, BPS("The request is nested too deeply."));
     const char* b = s.p;
     if (!parseContainer(s, depth + 1, c == '{')) return false;
     *type = (c == '{') ? T_OBJECT : T_ARRAY;
@@ -165,16 +168,16 @@ bool parseValue(P& s, int depth, ValType* type, const char** vs, size_t* vl) {
   const char* b = s.p;
   bool ok;
   if (c == 't') {
-    ok = literal(s, "true");
+    ok = literal(s, BPS("true"));
     *type = T_BOOL;
   } else if (c == 'f') {
-    ok = literal(s, "false");
+    ok = literal(s, BPS("false"));
     *type = T_BOOL;
   } else if (c == 'n') {
-    ok = literal(s, "null");
+    ok = literal(s, BPS("null"));
     *type = T_NULL;
   } else {
-    return fail(s, "Unexpected character.");
+    return fail(s, BPS("Unexpected character."));
   }
   *vs = b;
   *vl = (size_t)(s.p - b);
@@ -208,7 +211,7 @@ bool parse(const char* text, size_t len, Doc& doc, const char** err) {
   doc.n = 0;
   ws(s);
   if (s.p >= s.end || *s.p != '{') {
-    *err = "A request must be a JSON object that starts with '{'.";
+    *err = BPS("A request must be a JSON object that starts with '{'.");
     return false;
   }
   s.p++;
@@ -221,7 +224,7 @@ bool parse(const char* text, size_t len, Doc& doc, const char** err) {
   while (!done) {
     ws(s);
     if (s.p >= s.end || *s.p != '"') {
-      fail(s, "Expected a key in double quotes.");
+      fail(s, BPS("Expected a key in double quotes."));
       break;
     }
     const char* k;
@@ -229,7 +232,7 @@ bool parse(const char* text, size_t len, Doc& doc, const char** err) {
     if (!parseString(s, &k, &kl)) break;
     ws(s);
     if (s.p >= s.end || *s.p != ':') {
-      fail(s, "Expected ':' after a key.");
+      fail(s, BPS("Expected ':' after a key."));
       break;
     }
     s.p++;
@@ -238,7 +241,7 @@ bool parse(const char* text, size_t len, Doc& doc, const char** err) {
     size_t vl = 0;
     if (!parseValue(s, 1, &t, &v, &vl)) break;
     if (doc.n >= MAX_FIELDS) {
-      fail(s, "The request has too many fields.");
+      fail(s, BPS("The request has too many fields."));
       break;
     }
     Field& f = doc.f[doc.n++];
@@ -249,7 +252,7 @@ bool parse(const char* text, size_t len, Doc& doc, const char** err) {
     f.type = t;
     ws(s);
     if (s.p >= s.end) {
-      fail(s, "The line ends before the closing '}'.");
+      fail(s, BPS("The line ends before the closing '}'."));
       break;
     }
     if (*s.p == ',') {
@@ -261,26 +264,26 @@ bool parse(const char* text, size_t len, Doc& doc, const char** err) {
       done = true;
       break;
     }
-    fail(s, "Expected ',' or '}' after a value.");
+    fail(s, BPS("Expected ',' or '}' after a value."));
     break;
   }
   if (!done) {
-    *err = s.err ? s.err : "The request is not valid JSON.";
+    *err = s.err ? s.err : BPS("The request is not valid JSON.");
     return false;
   }
   ws(s);
   if (s.p != s.end) {
-    *err = "There is extra text after the closing '}'.";
+    *err = BPS("There is extra text after the closing '}'.");
     return false;
   }
   return true;
 }
 
 const Field* find(const Doc& doc, const char* key) {
-  const size_t kl = strlen(key);
+  const size_t kl = bp_strlenP(key);
   for (int i = 0; i < doc.n; i++) {
     const Field& f = doc.f[i];
-    if (f.keyLen == kl && memcmp(f.key, key, kl) == 0) return &f;
+    if (f.keyLen == kl && bp_memcmpP(f.key, key, kl) == 0) return &f;
   }
   return nullptr;
 }
