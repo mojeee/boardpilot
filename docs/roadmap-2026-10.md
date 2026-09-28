@@ -8,12 +8,15 @@ Three product steps this month, plus a personal career track that runs alongside
    visuals are ready, so first impressions are good.
 3. **Help users make fewer mistakes** (spread over the month, the top items before the launch):
    code vs wiring checks, electrical checks, live wiring verification.
+4. **Template projects that show what is happening when they run** (core in week 3, more in
+   November): ready-made projects built on any board, and a live run view on the 3D board with a
+   plain-language story of each step.
 - **Career track:** CV for embedded jobs, real-hardware proof, small projects that fill the usual
   gaps, job applications.
 
 October is full. If time runs short, the order to keep is: week 1 graphics, the code vs wiring
-checker, the pre-flight button, the part gotchas, real-hardware tests, the "before launch" list,
-launch. Everything else moves to the backlog at the end of this file, prioritised by what users
+checker, the pre-flight button, the part gotchas, the first 5 templates with the live run view in
+the simulator, real-hardware tests, the "before launch" list, launch. Everything else moves to the backlog at the end of this file, prioritised by what users
 ask for after the launch.
 
 Starting point: v0.5.0 (13 boards, diagnostic agent for every board, a pinout page per board).
@@ -250,6 +253,75 @@ suggestion with its source, as the honesty rules require). Two are in October; t
       the same wiring, address and memory checks; if it fails, the assistant fixes it or says so.
 - [ ] **Datasheet-grounded answers.** When the user uploads a datasheet, answers cite the page and
       table. Numbers not found in the datasheet are marked as not verified.
+
+---
+
+## Step 4 · Template projects that show what is happening when they run
+
+Added Sep 28. The idea: a beginner picks a ready-made project, the app builds it on their board
+(parts, wires, code), and when it runs, every step is visible, on the 3D board and in plain words.
+Week 3 has room for the core because the website SEO work was finished early; the rest goes to
+November.
+
+### A. Template projects
+
+- [ ] **Template files** (`templates/<id>.json`, same idea as boards and parts), each with:
+      - the parts, a difficulty level and time needed
+      - what you will learn
+      - the code, written per chip family (reusing the website guide generator)
+      - the "story" markers described below
+      - a behaviour model for the simulator
+      - sources
+- [ ] **Works on every board:** the wiring is generated from the board's rules (default buses, safe
+      pins, the right supply pin), and the wiring checker runs on it. A template that needs Wi-Fi
+      only offers Wi-Fi boards (ESP32 family, Pico W).
+- [ ] **"Start from a template" in New project.** Pick a template → the board is detected → the
+      scene appears in 3D with its wires → a step-by-step build guide, one wire at a time (checked
+      live when the agent is on the board) → pre-flight → backup and confirmation → flash → run.
+- [ ] **First templates (week 3):**
+      1. Blink and button (first steps)
+      2. Weather station: BME280 + OLED
+      3. Distance meter: HC-SR04 + TM1637
+      4. Motion alarm: PIR + buzzer
+      5. Plant watering: soil sensor + relay/pump
+- [ ] **More templates (November):**
+      - Smart night light: LDR + PWM LED
+      - Servo pointer with a knob
+      - RFID door lock: RC522 + servo
+      - SD card data logger
+      - Wi-Fi web dashboard (ESP32 and Pico W)
+      - MQTT sensor (ESP32 and Pico W)
+- [ ] **Each template on the website too:** a page per template and board, with a "Open in
+      BoardPilot" button. This adds to the SEO work.
+
+### B. Live run view: show what is happening
+
+- [ ] **"Story" markers in the code**, extending the BoardPilotProbe library:
+      - `probe.step("Read the soil sensor")` for each step
+      - `probe.state("WATERING")` for the current mode
+      - `probe.event("Pump on for 3 s")` for things that happen
+
+      Values and pin changes are sent too. Templates come with these markers already written; the
+      user can add them to their own code.
+- [ ] **On the 3D board:**
+      - pins light up when they change, and wires pulse when data goes through them
+      - parts react: the LED glows, the servo turns, the relay clicks, the OLED shows the same text
+        as the real one, the PIR shows a detection
+      - live values float above the parts
+- [ ] **Story log in plain words**, for example: "10:02:01 Soil moisture 32% (below 40%) → pump ON
+      (D25 HIGH) for 3 s". Each line can be clicked to focus the pin, wire or part.
+- [ ] **Code view with the running step highlighted**, driven by the `probe.step` markers, so the
+      user sees which part of the code is running now.
+- [ ] **Plots** of the values, coloured like the pins they come from (reusing Monitor).
+- [ ] **Simulator run:** each template has a behaviour model that runs the same steps without
+      hardware, with pause, step-by-step and speed controls. Everything it shows is labelled
+      "simulated"; on a real board the same view shows what the probe measured, labelled
+      "measured".
+- [ ] **"Why did that happen?"** Ask the assistant about any story line; it answers from the log
+      and the code, with sources, as the honesty rules require.
+- [ ] **The app's own work is narrated the same way:** flashing shows each stage (backup → erase →
+      write → verify → restart) with progress on the 3D USB cable, and the debug flows show each
+      check as it runs.
 
 ---
 
