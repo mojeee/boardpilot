@@ -18,6 +18,17 @@ export const PARTS: Record<string, PartDef> = Object.fromEntries(
   [bme280, ssd1306, led, button, pot, mpu6050, dht22].map((p) => [p.id, p as unknown as PartDef]),
 );
 
+/** Parts shipped with the app. User parts are added with registerPart and can be removed. */
+export const BUILTIN_PART_IDS = new Set(Object.keys(PARTS));
+
+export function registerPart(def: PartDef) {
+  PARTS[def.id] = def;
+}
+
+export function unregisterPart(id: string) {
+  if (!BUILTIN_PART_IDS.has(id)) delete PARTS[id];
+}
+
 export const DEFAULT_BOARD_ID = 'esp32-devkitc-30';
 
 export function getBoard(id: string = DEFAULT_BOARD_ID): BoardDef {

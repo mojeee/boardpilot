@@ -6,30 +6,9 @@ import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
 import { useScene, log } from '../state/store';
 import { PhotoInput } from '../components/PhotoInput';
+import { PartsLibrary } from '../components/PartsLibrary';
+import { addPart } from '../state/sceneActions';
 import { AssistantPanel } from '../components/AssistantPanel';
-
-const SLOTS: [number, number][] = [
-  [12, 44],
-  [-18, 44],
-  [40, 44],
-  [-2, -40],
-  [22, -42],
-  [-24, -40],
-  [48, -40],
-  [-46, 44],
-];
-
-export function addPart(partId: string, confirmed = true) {
-  const def = PARTS[partId];
-  useScene.getState().updateScene((s) => {
-    const base = partId.split('-')[0];
-    let n = 1;
-    while (s.parts.some((p) => p.id === `${base}${n}`)) n++;
-    const free = SLOTS.find(([x, z]) => !s.parts.some((p) => Math.abs(p.position[0] - x) < 10 && Math.abs(p.position[2] - z) < 10)) ?? [60 + n * 5, 50];
-    return { ...s, parts: [...s.parts, { id: `${base}${n}`, partId, position: [free[0], 0, free[1]], label: def.name.split(' ')[0], confirmed }] };
-  });
-  log('action', `Added ${def.name}.`);
-}
 
 export function NewProjectPanel() {
   const scene = useScene((s) => s.scene);
@@ -39,7 +18,7 @@ export function NewProjectPanel() {
 
   const assign = () => {
     const r = assignPins(scene, board, PARTS);
-    useScene.getState().setScene(r.scene);
+    useScene.getState().setScene(r.scene, true);
     if (!r.notes.length) log('info', 'Every part pin is already wired.');
     for (const n of r.notes) log('action', `Pin assigned: ${n}`, { source: 'pin rules (safe pins)' });
     useScene.getState().preset('home');
@@ -56,17 +35,8 @@ export function NewProjectPanel() {
             </div>
           </div>
           <div className="label">1. Add parts</div>
-          <div className="lib-grid">
-            {Object.values(PARTS).map((p) => (
-              <button key={p.id} className="lib-item" onClick={() => addPart(p.id)}>
-                <b>{p.name}</b>
-                <span>
-                  {p.bus?.toUpperCase()} · {p.voltage} V
-                </span>
-              </button>
-            ))}
-          </div>
-          <PhotoInput compact onConfirm={(id) => addPart(id, true)} />
+          <PartsLibrary />
+          <PhotoInput compact onConfirm={(id) => addPart(id, { confirmed: true })} />
           <div className="label">2. Wire them</div>
           <div className="row gap wrap">
             <button className="btn primary small" disabled={!scene.parts.length} onClick={assign}>
@@ -78,7 +48,7 @@ export function NewProjectPanel() {
             <button
               className="btn small ghost"
               onClick={() => {
-                useScene.getState().setScene({ ...scene, wires: [] });
+                useScene.getState().setScene({ ...scene, wires: [] }, true);
                 log('action', 'Removed all wires.');
               }}
             >

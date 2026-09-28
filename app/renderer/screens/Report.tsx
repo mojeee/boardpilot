@@ -148,7 +148,7 @@ export function Report() {
       </div>
       <div className="report-grid">
         <div className="report-3d">
-          <Viewport />
+          <Viewport compact />
         </div>
         <div className="card report-preview">
           {snapshot && <img src={snapshot} alt="3D snapshot" className="snap" />}
