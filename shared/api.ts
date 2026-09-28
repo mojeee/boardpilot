@@ -36,6 +36,8 @@ export interface BoardPilotApi {
   hw: {
     state(): Promise<ConnectionState>;
     setMode(mode: HardwareMode): Promise<Result<ConnectionState>>;
+    /** Pick the board (id from /boards). Clears the connection; the simulator bench follows. */
+    setBoard(boardId: string): Promise<Result<ConnectionState>>;
     listPorts(): Promise<Result<PortInfo[]>>;
     identify(port: string): Promise<Result<ChipInfo>>;
     installAgent(token: string): Promise<Result<HelloReply>>;

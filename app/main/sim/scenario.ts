@@ -5,9 +5,9 @@ import type { ChipInfo, Scene, AgentPinState, UsbBridge } from '@shared/types';
 
 export interface SimI2cDevice {
   addr: string;
-  /** ESP32 GPIO the device's SDA pin is physically connected to */
+  /** Board GPIO the device's SDA pin is physically connected to */
   sda: number;
-  /** ESP32 GPIO the device's SCL pin is physically connected to */
+  /** Board GPIO the device's SCL pin is physically connected to */
   scl: number;
   registers: Record<string, string>;
   pullups: boolean;
@@ -21,6 +21,8 @@ export interface SimPhysical {
 
 export interface Scenario {
   id: string;
+  /** Board this bench uses. Default: the ESP32 DevKit. */
+  board?: string;
   name: string;
   description: string;
   ports: { path: string; manufacturer?: string; vendorId?: string; productId?: string; serialNumber?: string }[];
@@ -38,5 +40,7 @@ export interface Scenario {
     mode: 'weather' | 'lines' | 'resetting';
     lines?: string[];
     intervalMs?: number;
+    /** GPIOs of the weather station's sensor bus and knob. Default: SDA 21, SCL 22, knob 34. */
+    pins?: { sda: number; scl: number; pot: number | null };
   };
 }

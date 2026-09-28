@@ -1,0 +1,1240 @@
+{
+  "id": "teensy-41",
+  "name": "Teensy 4.1",
+  "vendor": "PJRC",
+  "family": "imxrt",
+  "module": "i.MX RT1062",
+  "chip": "MIMXRT1062DVJ6B",
+  "cpu": "Arm Cortex-M7 at 600 MHz, 1024 KB RAM, 8 MB flash, native USB",
+  "logicVolt": 3.3,
+  "flashBytes": 8388608,
+  "ramBytes": 1048576,
+  "pcbMm": {
+    "length": 60.96,
+    "width": 17.78,
+    "thickness": 1.57
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "male-down",
+  "pcbColor": "#1F6B3A",
+  "summary": "A very fast (600 MHz) breadboard-friendly board with native USB, lots of serial, I2C and SPI ports and a microSD slot. 3.3 V logic; the pins are not 5 V tolerant.",
+  "pins": [
+    {
+      "id": "VIN",
+      "gpio": null,
+      "posMm": [
+        1.27,
+        1.27
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [
+        "VIN",
+        "VUSB"
+      ],
+      "flags": [],
+      "maxVolt": 5.5,
+      "supplies": 5.0,
+      "notes": "VIN (printed 5V): 5 V from USB when plugged in. Can also take 3.6 to 5.5 V input; cut the VUSB-VIN pad before using external power together with USB."
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        3.81,
+        1.27
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        6.35,
+        1.27
+      ],
+      "label": "3V",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V output from the on-board regulator (250 mA max for everything you connect)."
+    },
+    {
+      "id": "D23",
+      "gpio": 23,
+      "chipPin": "GPIO_AD_B1_09",
+      "posMm": [
+        8.89,
+        1.27
+      ],
+      "label": "23",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A9",
+        "CAN1_RX",
+        "I2S1_MCLK",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D22",
+      "gpio": 22,
+      "chipPin": "GPIO_AD_B1_08",
+      "posMm": [
+        11.43,
+        1.27
+      ],
+      "label": "22",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A8",
+        "CAN1_TX",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D21",
+      "gpio": 21,
+      "chipPin": "GPIO_AD_B1_11",
+      "posMm": [
+        13.97,
+        1.27
+      ],
+      "label": "21",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A7",
+        "Serial5_RX",
+        "I2S1_BCLK"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D20",
+      "gpio": 20,
+      "chipPin": "GPIO_AD_B1_10",
+      "posMm": [
+        16.51,
+        1.27
+      ],
+      "label": "20",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A6",
+        "Serial5_TX",
+        "I2S1_LRCLK"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D19",
+      "gpio": 19,
+      "chipPin": "GPIO_AD_B1_00",
+      "posMm": [
+        19.05,
+        1.27
+      ],
+      "label": "19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A5",
+        "I2C_SCL_default",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Default I2C clock (Wire SCL). Also analog A5."
+    },
+    {
+      "id": "D18",
+      "gpio": 18,
+      "chipPin": "GPIO_AD_B1_01",
+      "posMm": [
+        21.59,
+        1.27
+      ],
+      "label": "18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A4",
+        "I2C_SDA_default",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Default I2C data (Wire SDA). Also analog A4."
+    },
+    {
+      "id": "D17",
+      "gpio": 17,
+      "chipPin": "GPIO_AD_B1_06",
+      "posMm": [
+        24.13,
+        1.27
+      ],
+      "label": "17",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A3",
+        "Serial4_TX",
+        "I2C1_SDA"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D16",
+      "gpio": 16,
+      "chipPin": "GPIO_AD_B1_07",
+      "posMm": [
+        26.67,
+        1.27
+      ],
+      "label": "16",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A2",
+        "Serial4_RX",
+        "I2C1_SCL"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D15",
+      "gpio": 15,
+      "chipPin": "GPIO_AD_B1_03",
+      "posMm": [
+        29.21,
+        1.27
+      ],
+      "label": "15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A1",
+        "Serial3_RX",
+        "SPDIF_IN",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D14",
+      "gpio": 14,
+      "chipPin": "GPIO_AD_B1_02",
+      "posMm": [
+        31.75,
+        1.27
+      ],
+      "label": "14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A0",
+        "Serial3_TX",
+        "SPDIF_OUT",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D13",
+      "gpio": 13,
+      "chipPin": "GPIO_B0_03",
+      "posMm": [
+        34.29,
+        1.27
+      ],
+      "label": "13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_SCK_default",
+        "LED",
+        "PWM"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Orange on-board LED, and also the SPI clock (SCK). HIGH turns the LED on."
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        36.83,
+        1.27
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "D41",
+      "gpio": 41,
+      "chipPin": "GPIO_AD_B1_05",
+      "posMm": [
+        39.37,
+        1.27
+      ],
+      "label": "41",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A17"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D40",
+      "gpio": 40,
+      "chipPin": "GPIO_AD_B1_04",
+      "posMm": [
+        41.91,
+        1.27
+      ],
+      "label": "40",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A16"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D39",
+      "gpio": 39,
+      "chipPin": "GPIO_AD_B1_13",
+      "posMm": [
+        44.45,
+        1.27
+      ],
+      "label": "39",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A15",
+        "SPI1_MISO",
+        "I2S1_OUT1A"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D38",
+      "gpio": 38,
+      "chipPin": "GPIO_AD_B1_12",
+      "posMm": [
+        46.99,
+        1.27
+      ],
+      "label": "38",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A14",
+        "SPI1_CS",
+        "I2S1_IN1"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D37",
+      "gpio": 37,
+      "chipPin": "GPIO_B1_03",
+      "posMm": [
+        49.53,
+        1.27
+      ],
+      "label": "37",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_CS",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D36",
+      "gpio": 36,
+      "chipPin": "GPIO_B1_02",
+      "posMm": [
+        52.07,
+        1.27
+      ],
+      "label": "36",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_CS",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D35",
+      "gpio": 35,
+      "chipPin": "GPIO_B1_12",
+      "posMm": [
+        54.61,
+        1.27
+      ],
+      "label": "35",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial8_TX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D34",
+      "gpio": 34,
+      "chipPin": "GPIO_B1_13",
+      "posMm": [
+        57.15,
+        1.27
+      ],
+      "label": "34",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial8_RX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D33",
+      "gpio": 33,
+      "chipPin": "GPIO_EMC_07",
+      "posMm": [
+        59.69,
+        1.27
+      ],
+      "label": "33",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S2_MCLK",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        1.27,
+        16.51
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "D0",
+      "gpio": 0,
+      "chipPin": "GPIO_AD_B0_03",
+      "posMm": [
+        3.81,
+        16.51
+      ],
+      "label": "0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial1_RX",
+        "SPI1_CS",
+        "CAN2_RX",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Serial1 RX. The USB serial monitor does not use this pin (Teensy has native USB)."
+    },
+    {
+      "id": "D1",
+      "gpio": 1,
+      "chipPin": "GPIO_AD_B0_02",
+      "posMm": [
+        6.35,
+        16.51
+      ],
+      "label": "1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial1_TX",
+        "SPI1_MISO",
+        "CAN2_TX",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Serial1 TX. The USB serial monitor does not use this pin (Teensy has native USB)."
+    },
+    {
+      "id": "D2",
+      "gpio": 2,
+      "chipPin": "GPIO_EMC_04",
+      "posMm": [
+        8.89,
+        16.51
+      ],
+      "label": "2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S2_OUT",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D3",
+      "gpio": 3,
+      "chipPin": "GPIO_EMC_05",
+      "posMm": [
+        11.43,
+        16.51
+      ],
+      "label": "3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S2_LRCLK",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D4",
+      "gpio": 4,
+      "chipPin": "GPIO_EMC_06",
+      "posMm": [
+        13.97,
+        16.51
+      ],
+      "label": "4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S2_BCLK",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D5",
+      "gpio": 5,
+      "chipPin": "GPIO_EMC_08",
+      "posMm": [
+        16.51,
+        16.51
+      ],
+      "label": "5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S2_IN",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D6",
+      "gpio": 6,
+      "chipPin": "GPIO_B0_10",
+      "posMm": [
+        19.05,
+        16.51
+      ],
+      "label": "6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S1_OUT1D",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D7",
+      "gpio": 7,
+      "chipPin": "GPIO_B1_01",
+      "posMm": [
+        21.59,
+        16.51
+      ],
+      "label": "7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial2_RX",
+        "I2S1_OUT1A",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D8",
+      "gpio": 8,
+      "chipPin": "GPIO_B1_00",
+      "posMm": [
+        24.13,
+        16.51
+      ],
+      "label": "8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial2_TX",
+        "I2S1_IN1",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D9",
+      "gpio": 9,
+      "chipPin": "GPIO_B0_11",
+      "posMm": [
+        26.67,
+        16.51
+      ],
+      "label": "9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S1_OUT1C",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D10",
+      "gpio": 10,
+      "chipPin": "GPIO_B0_00",
+      "posMm": [
+        29.21,
+        16.51
+      ],
+      "label": "10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_CS_default",
+        "MQSR",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D11",
+      "gpio": 11,
+      "chipPin": "GPIO_B0_02",
+      "posMm": [
+        31.75,
+        16.51
+      ],
+      "label": "11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MOSI_default",
+        "CAN1_TX",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D12",
+      "gpio": 12,
+      "chipPin": "GPIO_B0_01",
+      "posMm": [
+        34.29,
+        16.51
+      ],
+      "label": "12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MISO_default",
+        "MQSL",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "3V3_2",
+      "gpio": null,
+      "posMm": [
+        36.83,
+        16.51
+      ],
+      "label": "3V",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V output from the on-board regulator (250 mA max for everything you connect)."
+    },
+    {
+      "id": "D24",
+      "gpio": 24,
+      "chipPin": "GPIO_AD_B0_12",
+      "posMm": [
+        39.37,
+        16.51
+      ],
+      "label": "24",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A10",
+        "Serial6_TX",
+        "I2C2_SCL",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D25",
+      "gpio": 25,
+      "chipPin": "GPIO_AD_B0_13",
+      "posMm": [
+        41.91,
+        16.51
+      ],
+      "label": "25",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A11",
+        "Serial6_RX",
+        "I2C2_SDA",
+        "PWM"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D26",
+      "gpio": 26,
+      "chipPin": "GPIO_AD_B1_14",
+      "posMm": [
+        44.45,
+        16.51
+      ],
+      "label": "26",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A12",
+        "SPI1_MOSI"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D27",
+      "gpio": 27,
+      "chipPin": "GPIO_AD_B1_15",
+      "posMm": [
+        46.99,
+        16.51
+      ],
+      "label": "27",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "A13",
+        "SPI1_SCK"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D28",
+      "gpio": 28,
+      "chipPin": "GPIO_EMC_32",
+      "posMm": [
+        49.53,
+        16.51
+      ],
+      "label": "28",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial7_RX",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D29",
+      "gpio": 29,
+      "chipPin": "GPIO_EMC_31",
+      "posMm": [
+        52.07,
+        16.51
+      ],
+      "label": "29",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial7_TX",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D30",
+      "gpio": 30,
+      "chipPin": "GPIO_EMC_37",
+      "posMm": [
+        54.61,
+        16.51
+      ],
+      "label": "30",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "CAN3_RX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D31",
+      "gpio": 31,
+      "chipPin": "GPIO_EMC_36",
+      "posMm": [
+        57.15,
+        16.51
+      ],
+      "label": "31",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "CAN3_TX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D32",
+      "gpio": 32,
+      "chipPin": "GPIO_B0_12",
+      "posMm": [
+        59.69,
+        16.51
+      ],
+      "label": "32",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2S1_OUT1B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "ONOFF",
+      "gpio": null,
+      "posMm": [
+        46.99,
+        3.81
+      ],
+      "label": "On/Off",
+      "kind": "enable",
+      "functions": [
+        "ON_OFF"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Power control: a button from here to GND held 4 s turns the 3.3 V power off, 0.5 s turns it back on."
+    },
+    {
+      "id": "PROGRAM",
+      "gpio": null,
+      "posMm": [
+        46.99,
+        6.35
+      ],
+      "label": "Program",
+      "kind": "enable",
+      "functions": [
+        "PROGRAM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Pulling this to GND does the same as the white button: enters programming mode. It is not a reset."
+    },
+    {
+      "id": "GND4",
+      "gpio": null,
+      "posMm": [
+        46.99,
+        8.89
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "3V3_3",
+      "gpio": null,
+      "posMm": [
+        46.99,
+        11.43
+      ],
+      "label": "3.3V",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V output from the on-board regulator (250 mA max for everything you connect)."
+    },
+    {
+      "id": "VBAT",
+      "gpio": null,
+      "posMm": [
+        46.99,
+        13.97
+      ],
+      "label": "VBAT",
+      "kind": "power",
+      "functions": [
+        "VBAT"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.0,
+      "notes": "Input for a 3 V coin cell (CR2032) to keep the real-time clock running. It does not supply power to parts."
+    }
+  ],
+  "components": [
+    {
+      "type": "mcu",
+      "label": "i.MX RT1062",
+      "rect": [
+        249,
+        39,
+        100,
+        100
+      ],
+      "color": "#1b1b1b"
+    },
+    {
+      "type": "usb",
+      "label": "micro-USB",
+      "rect": [
+        -6,
+        51,
+        56,
+        75
+      ],
+      "heightMm": 3.07
+    },
+    {
+      "type": "button",
+      "label": "Program",
+      "rect": [
+        412,
+        75,
+        34,
+        26
+      ],
+      "heightMm": 1.8,
+      "color": "#f2f2f2"
+    },
+    {
+      "type": "connector",
+      "label": "microSD",
+      "rect": [
+        492,
+        24,
+        116,
+        128
+      ],
+      "heightMm": 1.8,
+      "color": "#b8bcc0"
+    },
+    {
+      "type": "chip",
+      "label": "8 MB flash",
+      "rect": [
+        400,
+        103,
+        42,
+        40
+      ],
+      "color": "#1b1b1b"
+    },
+    {
+      "type": "connector",
+      "label": "USB host (5 pads)",
+      "rect": [
+        64,
+        123,
+        132,
+        26
+      ]
+    },
+    {
+      "type": "connector",
+      "label": "Ethernet (6 pads)",
+      "rect": [
+        128,
+        26,
+        50,
+        68
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "PJRC Teensy 4.1 pinout card",
+    "i2c": {
+      "sda": "D18",
+      "scl": "D19",
+      "remappable": false,
+      "note": "Wire only works on pins 18 (SDA) and 19 (SCL). Wire1 uses 17 (SDA1) and 16 (SCL1); Wire2 uses 25 (SDA2) and 24 (SCL2)."
+    },
+    "spi": {
+      "mosi": "D11",
+      "miso": "D12",
+      "sck": "D13",
+      "cs": "D10"
+    },
+    "safeIo": [
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D9",
+      "D28",
+      "D29",
+      "D30",
+      "D31",
+      "D32",
+      "D33"
+    ],
+    "adcPins": [
+      "D14",
+      "D15",
+      "D16",
+      "D17",
+      "D20",
+      "D21",
+      "D22",
+      "D23",
+      "D24",
+      "D25",
+      "D26",
+      "D27",
+      "D38",
+      "D39",
+      "D40",
+      "D41",
+      "D18",
+      "D19"
+    ],
+    "inputPins": [
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D9"
+    ],
+    "adcMaxMv": 3300
+  },
+  "toolchain": {
+    "flasher": "teensy",
+    "fqbn": "teensy:avr:teensy41",
+    "core": "teensy:avr",
+    "coreUrl": "https://www.pjrc.com/teensy/package_teensy_index.json",
+    "imageFormat": "hex",
+    "agent": false,
+    "uploadNote": "Press the white program button once if the upload waits for the board.",
+    "link": "usb-bootloader"
+  },
+  "usb": [
+    {
+      "vid": "16c0",
+      "pid": "0483",
+      "note": "Teensy running a sketch with USB Type \"Serial\" (the default)"
+    },
+    {
+      "vid": "16c0",
+      "pid": "0478",
+      "note": "Teensy HalfKay bootloader (program mode, after pressing the button)"
+    },
+    {
+      "vid": "16c0",
+      "pid": "0489",
+      "note": "Teensy with USB Type \"Serial + MIDI\""
+    }
+  ],
+  "links": [
+    {
+      "title": "Teensy 4.1 product page",
+      "url": "https://www.pjrc.com/store/teensy41.html"
+    },
+    {
+      "title": "Teensy 4.1 pinout card, front (PDF)",
+      "url": "https://www.pjrc.com/teensy/card11a_rev4_web.pdf"
+    },
+    {
+      "title": "Teensy 4.1 pinout card, back (PDF)",
+      "url": "https://www.pjrc.com/teensy/card11b_rev4_web.pdf"
+    },
+    {
+      "title": "Teensy dimensions",
+      "url": "https://www.pjrc.com/teensy/dimensions.html"
+    },
+    {
+      "title": "NXP i.MX RT1060 product page",
+      "url": "https://www.nxp.com/products/i.MX-RT1060"
+    }
+  ],
+  "sources": [
+    {
+      "title": "PJRC Teensy 4.1 pinout card (card11a rev4, card11b rev4)",
+      "section": "Pin order along both edges, alternate functions (Serial, I2C, SPI, CAN, I2S, PWM), analog A0-A17, On/Off / Program / GND / 3.3V / VBAT pins",
+      "url": "https://www.pjrc.com/teensy/card11a_rev4_web.pdf"
+    },
+    {
+      "title": "PJRC Teensy dimensions page, Teensy 4.1 drawing (dimensions_teensy41.png)",
+      "section": "60.96 x 17.78 mm, 1.57 mm PCB, pin 1 at 1.27 mm, rows 15.24 mm apart, 5-pin row 45.72 mm from pin 1, USB and button positions",
+      "url": "https://www.pjrc.com/teensy/dimensions.html"
+    },
+    {
+      "title": "PJRC Teensy 4.1 product page",
+      "section": "Pins not 5 V tolerant, LED on pin 13, VBAT, On/Off, Program pin, 8 MB flash, 1024 KB RAM",
+      "url": "https://www.pjrc.com/store/teensy41.html"
+    },
+    {
+      "title": "PaulStoffregen/cores teensy4/core_pins.h and pins_arduino.h",
+      "section": "CORE_PINn_CONFIG pad names (chipPin); A0-A17, LED_BUILTIN 13, SS/MOSI/MISO/SCK 10/11/12/13, SDA/SCL 18/19",
+      "url": "https://github.com/PaulStoffregen/cores/tree/master/teensy4"
+    },
+    {
+      "title": "PaulStoffregen/cores teensy4/usb_desc.h and teensy_loader_cli",
+      "section": "USB ids 16c0:0483 (Serial), 16c0:0489 (Serial + MIDI), 16c0:0478 (HalfKay bootloader)",
+      "url": "https://github.com/PaulStoffregen/teensy_loader_cli/blob/master/teensy_loader_cli.c"
+    },
+    {
+      "title": "PJRC 00-teensy.rules",
+      "section": "VID 16c0, PIDs 04xx",
+      "url": "https://www.pjrc.com/teensy/00-teensy.rules"
+    }
+  ]
+}

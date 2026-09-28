@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import type { I2cTraceStep, PinDef, TargetRef } from '@shared/types';
 import { PARTS, boardPinFor, getBoard, pinById, pinByGpio } from '@shared/board';
-import { useApp, useLive, useScene, log } from '../state/store';
+import { currentBoard, useApp, useLive, useScene, log } from '../state/store';
 import { agent, confirmGpioWrite, confirmInstallAgent } from '../state/hw';
 import { openTask } from '../components/TaskRail';
 import { t } from '@shared/i18n';
@@ -46,15 +46,15 @@ function useBus() {
   return useMemo(() => {
     const i2c = scene.parts.filter((p) => PARTS[p.partId]?.bus === 'i2c');
     const first = i2c[0];
-    const sdaPin = (first && boardPinFor(scene, first.id, 'SDA')) || 'D21';
-    const sclPin = (first && boardPinFor(scene, first.id, 'SCL')) || 'D22';
+    const sdaPin = (first && boardPinFor(scene, first.id, 'SDA')) || board.rules.i2c.sda;
+    const sclPin = (first && boardPinFor(scene, first.id, 'SCL')) || board.rules.i2c.scl;
     return {
       board,
       parts: i2c,
       sdaPin,
       sclPin,
-      sda: pinById(board, sdaPin)?.gpio ?? 21,
-      scl: pinById(board, sclPin)?.gpio ?? 22,
+      sda: pinById(board, sdaPin)?.gpio ?? pinById(board, board.rules.i2c.sda)?.gpio ?? 0,
+      scl: pinById(board, sclPin)?.gpio ?? pinById(board, board.rules.i2c.scl)?.gpio ?? 0,
       expected: i2c.flatMap((p) => PARTS[p.partId].addresses ?? []).map((a) => a.toLowerCase()),
     };
   }, [scene, board]);
@@ -182,7 +182,7 @@ function BusDiagram({ pullups }: { pullups: Record<string, boolean> | null }) {
       <svg viewBox={`0 0 ${W} ${H}`} className="bus-svg">
         <rect x={10} y={30} width={90} height={80} rx={6} fill="var(--pcb)" />
         <text x={55} y={24} textAnchor="middle" className="svg-small">
-          ESP32
+          {bus.board.chip}
         </text>
         {[
           { y: 55, pin: bus.sdaPin, g: bus.sda, color: 'var(--pin-sda)', name: 'SDA' },
@@ -280,7 +280,7 @@ export function DecodedBus() {
       sclPath += ` L ${s.x + s.w + 4} ${sclY(0)}`;
     }
   }
-  const board = getBoard();
+  const board = currentBoard();
   const sdaPin = trace ? pinByGpio(board, trace.sda)?.label : '';
   const sclPin = trace ? pinByGpio(board, trace.scl)?.label : '';
 

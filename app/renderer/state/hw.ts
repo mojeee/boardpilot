@@ -3,8 +3,8 @@
 
 import type { FlowHardware } from '@shared/flow';
 import type { AgentReplyMap, AgentRequest, Result, TargetRef } from '@shared/types';
-import { getBoard, pinByGpio, PARTS } from '@shared/board';
-import { useApp, useConfirm, useLive, useLog, useScene, log } from './store';
+import { canBackupFlash, getBoard, pinByGpio, pinById, PARTS } from '@shared/board';
+import { currentBoard, useApp, useConfirm, useLive, useLog, useScene, log } from './store';
 import { t } from '@shared/i18n';
 
 const bp = () => window.bp;
@@ -37,7 +37,7 @@ export async function wireEvents() {
   api.on.live((f) => useLive.getState().pushFrame(f));
   api.on.trace((tr) => {
     useLive.getState().pushTrace(tr);
-    const board = getBoard();
+    const board = currentBoard();
     const sda = pinByGpio(board, tr.sda);
     const scl = pinByGpio(board, tr.scl);
     const steps = tr.trace
@@ -52,6 +52,17 @@ export async function wireEvents() {
   const [conn, ai, scenarios] = await Promise.all([api.hw.state(), api.ai.status(), api.sim.scenarios()]);
   useApp.getState().set({ conn, ai, scenarios });
   if (conn.mode === 'sim') useScene.getState().setScene(await api.sim.scene());
+
+  // The project's board drives the hardware layer (chip tool, pin rules, simulated bench).
+  const sync = async (boardId: string) => {
+    if (useApp.getState().conn.board === boardId) return;
+    const r = await api.hw.setBoard(boardId);
+    if (r.ok) useApp.getState().set({ conn: r.value, scenarios: await api.sim.scenarios() });
+  };
+  await sync(useScene.getState().scene.board);
+  useScene.subscribe((s, prev) => {
+    if (s.scene.board !== prev.scene.board) void sync(s.scene.board);
+  });
 }
 
 /* ---------------- confirmed writes ---------------- */
@@ -61,11 +72,16 @@ export async function confirmInstallAgent(reason?: string): Promise<boolean> {
     kind: 'flash_agent',
     title: t('Install the diagnostic agent?'),
     body: reason ?? t('The app needs a small helper program on the board to see the pins. It replaces your program for now.'),
-    details: [
-      t('First, a full copy of the program on your board is saved on this Mac.'),
-      t('Then the diagnostic agent is written to the board.'),
-      t('“Restore my firmware” puts your program back with one click.'),
-    ],
+    details: canBackupFlash(currentBoard())
+      ? [
+          t('First, a full copy of the program on your board is saved on this computer.'),
+          t('Then the diagnostic agent is written to the board.'),
+          t('“Restore my firmware” puts your program back with one click.'),
+        ]
+      : [
+          t('This board cannot read its program back, so no backup is possible. Your current program will be replaced.'),
+          t('Then the diagnostic agent is written to the board.'),
+        ],
     confirmLabel: t('Back up and install'),
   });
   if (!token) {
@@ -81,12 +97,13 @@ export async function confirmInstallAgent(reason?: string): Promise<boolean> {
 }
 
 export async function confirmGpioWrite(gpio: number, level: 0 | 1, reason?: string): Promise<boolean> {
-  const pin = pinByGpio(getBoard(), gpio);
+  const board = currentBoard();
+  const pin = pinByGpio(board, gpio);
   const name = pin ? `${pin.label} (GPIO ${gpio})` : `GPIO ${gpio}`;
   const token = await useConfirm.getState().ask({
     kind: 'gpio_write',
     title: level ? t('Drive {pin} HIGH?', { pin: name }) : t('Drive {pin} LOW?', { pin: name }),
-    body: reason ?? t('The board will output {volts} on {pin}.', { volts: level ? '3.3 V' : '0 V', pin: name }),
+    body: reason ?? t('The board will output {volts} on {pin}.', { volts: level ? `${board.logicVolt} V` : '0 V', pin: name }),
     details: [
       t('Only do this if nothing connected to this pin drives it too (that could short two outputs).'),
       t('The agent refuses input-only and flash pins.'),
@@ -104,7 +121,7 @@ export async function confirmGpioWrite(gpio: number, level: 0 | 1, reason?: stri
 }
 
 export async function confirmPwm(gpio: number, duty: number, hz = 5000): Promise<boolean> {
-  const pin = pinByGpio(getBoard(), gpio);
+  const pin = pinByGpio(currentBoard(), gpio);
   const token = await useConfirm.getState().ask({
     kind: 'gpio_write',
     title: t('Run PWM on {pin}?', { pin: pin?.label ?? `GPIO ${gpio}` }),
@@ -145,9 +162,15 @@ export async function startStream(hz = 20) {
   for (const w of scene.wires) {
     const pid = w.from.part === 'board' ? w.from.pin : w.to.part === 'board' ? w.to.pin : null;
     const p = pid ? board.pins.find((x) => x.id === pid) : undefined;
-    if (p?.gpio !== null && p?.gpio !== undefined && p.gpio !== 1 && p.gpio !== 3) gpios.add(p.gpio);
+    if (p?.gpio !== null && p?.gpio !== undefined && p.kind === 'gpio' && !p.flags.includes('uart0')) gpios.add(p.gpio);
   }
-  if (!gpios.size) [21, 22, 25, 34].forEach((g) => gpios.add(g));
+  if (!gpios.size) {
+    const r = board.rules;
+    for (const id of [r.i2c.sda, r.i2c.scl, r.safeIo[0], r.adcPins[0]]) {
+      const g = id ? pinById(board, id)?.gpio : null;
+      if (g !== null && g !== undefined) gpios.add(g);
+    }
+  }
   for (const w of scene.wires) {
     const partEnd = w.from.part === 'board' ? w.to : w.from;
     const inst = scene.parts.find((p) => p.id === partEnd.part);

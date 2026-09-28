@@ -29,6 +29,8 @@ const P: Record<string, string> = {
   rotate: 'M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5',
   copy: 'M8 8h12v12H8zM4 16V4h12',
   box: 'M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9',
+  search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14M16 16l5 5',
+  board: 'M3 7h18v10H3zM7 10h4v4H7zM14 10h.01M17 10h.01M14 14h.01M17 14h.01M6 7V4M10 7V4M14 7V4M18 7V4M6 20v-3M10 20v-3M14 20v-3M18 20v-3',
 };
 
 export function Icon({ name, size = 18 }: { name: keyof typeof P | string; size?: number }) {

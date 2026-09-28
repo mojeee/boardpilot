@@ -550,3 +550,20 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 /* product photos for imported parts */
 .lib-thumb { width: 26px; height: 26px; border-radius: 5px; object-fit: cover; flex-shrink: 0; background: #fff; }
 .pe-photo { position: absolute; right: 10px; bottom: 10px; width: 96px; height: 96px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+
+/* board picker */
+.board-chip { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; margin-left: 4px; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board-chip:hover { border-color: var(--muted); color: var(--text); }
+.modal.board-picker { width: min(980px, 95vw); max-height: 90vh; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+.modal.board-picker .row.gap .text-in { flex: 1; }
+.board-groups { display: flex; flex-direction: column; gap: 14px; }
+.board-card-main .label { font-size: 10px; margin: 0; }
+.board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+.board-card { display: flex; gap: 12px; align-items: flex-start; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px; color: var(--text); cursor: pointer; font: inherit; }
+.board-card:hover { border-color: var(--muted); }
+.board-card.on { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); }
+.board-card.detected { border-color: var(--ai); }
+.board-card .board-thumb { flex: none; width: 110px; height: auto; margin-top: 2px; }
+.board-card-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.board-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.board-chips .chip { font-size: 10.5px; padding: 1px 6px; }

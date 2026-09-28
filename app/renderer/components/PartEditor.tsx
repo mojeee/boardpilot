@@ -38,7 +38,7 @@ const ROLE_LABEL: Record<PartPinRole, string> = {
   spi_miso: 'SPI MISO',
   spi_sck: 'SPI clock',
   spi_cs: 'SPI chip select',
-  digital_in: 'Input (ESP32 drives it)',
+  digital_in: 'Input (the board drives it)',
   digital_out: 'Output (part drives it)',
   analog_out: 'Analog output',
   onewire: 'One-wire data',

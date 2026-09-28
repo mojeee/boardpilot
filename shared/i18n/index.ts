@@ -15,6 +15,8 @@ import partsdata2 from './it/partsdata2';
 import partsdata3 from './it/partsdata3';
 import partsdata4 from './it/partsdata4';
 import partsdata5 from './it/partsdata5';
+import boardsUi from './it/boards-ui';
+import boardsData from './it/boards-data';
 
 export type Lang = 'en' | 'it';
 export const LANGS: { id: Lang; label: string }[] = [
@@ -22,7 +24,7 @@ export const LANGS: { id: Lang; label: string }[] = [
   { id: 'it', label: 'Italiano' },
 ];
 
-export const IT: Record<string, string> = { ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts, ...settings, ...partsdata, ...partsdata2, ...partsdata3, ...partsdata4, ...partsdata5 };
+export const IT: Record<string, string> = { ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts, ...settings, ...partsdata, ...partsdata2, ...partsdata3, ...partsdata4, ...partsdata5, ...boardsUi, ...boardsData };
 
 let current: Lang = 'en';
 const listeners = new Set<(l: Lang) => void>();

@@ -16,7 +16,7 @@ import type {
 } from '@shared/types';
 import type { TraceEvent } from '@shared/api';
 import { checkWiring } from '@shared/wiring';
-import { getBoard, PARTS, pinByGpio } from '@shared/board';
+import { DEFAULT_BOARD_ID, getBoard, PARTS, pinByGpio } from '@shared/board';
 import type { AiStatus } from '@shared/ai';
 
 export type Screen = 'home' | 'connect' | 'newProject' | 'flash' | 'debug' | 'monitor' | 'test' | 'report';
@@ -36,7 +36,7 @@ interface AppStore {
 
 export const useApp = create<AppStore>((set) => ({
   screen: 'home',
-  conn: { mode: 'sim', port: null, chip: null, agent: null, streaming: false, serialOpen: false, scenario: null, backups: [] },
+  conn: { mode: 'sim', board: DEFAULT_BOARD_ID, port: null, chip: null, agent: null, streaming: false, serialOpen: false, scenario: null, backups: [] },
   progress: null,
   ai: { enabled: false, provider: 'anthropic', model: '' },
   scenarios: [],
@@ -73,7 +73,12 @@ export const log = (type: LogType, text: string, opts?: { target?: TargetRef; so
 
 /* ---------------- scene + 3D selection ---------------- */
 
-const EMPTY_SCENE: Scene = { board: 'esp32-devkitc-30', parts: [], wires: [] };
+const EMPTY_SCENE: Scene = { board: DEFAULT_BOARD_ID, parts: [], wires: [] };
+
+/** The board of the open project. */
+export function currentBoard() {
+  return getBoard(useScene.getState().scene.board);
+}
 
 interface SceneStore {
   scene: Scene;
@@ -221,7 +226,7 @@ export const useLive = create<LiveStore>((set, get) => ({
     const st = get();
     if (!st.paused) {
       const series = st.series;
-      const board = getBoard();
+      const board = currentBoard();
       for (const [g, p] of Object.entries(f.pins)) {
         const pin = pinByGpio(board, Number(g));
         const label = pin ? `${pin.label} (GPIO ${g})` : `GPIO ${g}`;

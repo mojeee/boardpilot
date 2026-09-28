@@ -6,6 +6,7 @@ import type {
   AgentReplyMap,
   AgentRequest,
   BackupInfo,
+  BoardDef,
   ChipInfo,
   FirmwareImage,
   PortInfo,
@@ -15,6 +16,7 @@ import type { AgentClient, HardwareDriver, SerialStream } from '../hardware/driv
 import { DriverError } from '../hardware/errors';
 import { t } from '@shared/i18n';
 import { bridgeFromUsb } from '../hardware/ports';
+import { boardsForUsb, canBackupFlash } from '@shared/board';
 import { SimWorld, garble } from './simWorld';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -28,11 +30,16 @@ export class SimDriver implements HardwareDriver {
     private readonly backupDir: string,
   ) {}
 
+  setBoard(board: BoardDef) {
+    this.world.setBoard(board);
+  }
+
   async listPorts(): Promise<PortInfo[]> {
     await sleep(250);
     return this.world.scenario.ports.map((p) => {
       const bridge = bridgeFromUsb(p.vendorId, p.productId);
-      return { ...p, bridge, likelyEsp32: bridge !== 'unknown' };
+      const boardIds = boardsForUsb(p.vendorId, p.productId);
+      return { ...p, bridge, likelyBoard: bridge !== 'unknown' || boardIds.length > 0, boardIds };
     });
   }
 
@@ -65,6 +72,9 @@ export class SimDriver implements HardwareDriver {
 
   async backupFlash(port: string, chip: ChipInfo, onProgress?: (pct: number) => void): Promise<BackupInfo> {
     this.checkPort(port);
+    if (!canBackupFlash(this.world.board)) {
+      throw new DriverError('backup_unsupported', t('Teensy boards cannot read their program back, so no backup is possible.'), t('Keep a copy of your own firmware file to put it back later.'));
+    }
     for (let p = 0; p <= 100; p += 10) {
       onProgress?.(p);
       await sleep(120);
@@ -126,7 +136,7 @@ class SimAgentClient implements AgentClient {
   ) {
     setTimeout(() => {
       for (const cb of this.eventCbs)
-        cb('boot', { event: 'boot', agent: 'bp-agent', ver: '0.1', strapping: world.scenario.strappingAtBoot });
+        cb('boot', { event: 'boot', agent: 'bp-agent', ver: '0.2', board: world.board.id, strapping: world.scenario.strappingAtBoot });
     }, 50);
   }
 

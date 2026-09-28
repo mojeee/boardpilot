@@ -1,9 +1,9 @@
 import type { Evidence, FlowDef, FlowContext, ResultData } from '@shared/flow';
 import type { TargetRef } from '@shared/types';
-import { PARTS, wireFor } from '@shared/board';
+import { PARTS, pinById, wireFor } from '@shared/board';
 import { checkWiring } from '@shared/wiring';
 import { t } from '@shared/i18n';
-import { ensureBoardStep, fmtErr, i2cTarget, i2cTargets, installAgentStep } from './common';
+import { ensureBoardStep, fmtErr, i2cTarget, i2cTargets, installAgentSteps } from './common';
 
 interface Facts {
   pullups?: { sda: boolean; scl: boolean };
@@ -76,24 +76,27 @@ export const debugSensorNotResponding: FlowDef = {
           };
         }
         const id = `${partId.split('-')[0]}1`;
+        const { sda, scl } = ctx.board.rules.i2c;
+        const sdaLabel = pinById(ctx.board, sda)?.label ?? sda;
+        const sclLabel = pinById(ctx.board, scl)?.label ?? scl;
         ctx.updateScene((s) => ({
           ...s,
-          parts: [...s.parts.filter((p) => p.id !== id), { id, partId, position: [12, 0, 44], label: PARTS[partId].name, confirmed: true }],
+          parts: [...s.parts.filter((p) => p.id !== id), { id, partId, position: [12, 0, ctx.board.pcbMm.width / 2 + 30], label: PARTS[partId].name, confirmed: true }],
           wires: [
             ...s.wires.filter((w) => w.to.part !== id),
-            { id: `${id}-sda`, from: { part: 'board', pin: 'D21' }, to: { part: id, pin: 'SDA' }, color: '#3FB6E8' },
-            { id: `${id}-scl`, from: { part: 'board', pin: 'D22' }, to: { part: id, pin: 'SCL' }, color: '#9ADCF7' },
+            { id: `${id}-sda`, from: { part: 'board', pin: sda }, to: { part: id, pin: 'SDA' }, color: '#3FB6E8' },
+            { id: `${id}-scl`, from: { part: 'board', pin: scl }, to: { part: id, pin: 'SCL' }, color: '#9ADCF7' },
           ],
         }));
         ctx.data.partInstance = id;
-        ctx.log('info', t('Assuming the default pins: SDA on D21, SCL on D22. Change the wires in the 3D view if yours differ.'), {
+        ctx.log('info', t('Assuming the default pins: SDA on {sda}, SCL on {scl}. Change the wires in the 3D view if yours differ.', { sda: sdaLabel, scl: sclLabel }), {
           source: 'suggestion (default Arduino pins)',
         });
-        return { status: 'ok', summary: t('{part}, on the default pins D21 and D22.', { part: PARTS[partId].name }) };
+        return { status: 'ok', summary: t('{part}, on the default pins {sda} and {scl}.', { part: PARTS[partId].name, sda: sdaLabel, scl: sclLabel }) };
       },
       fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],
     },
-    installAgentStep(),
+    ...installAgentSteps(),
     {
       id: 'pullups',
       type: 'auto',
@@ -171,7 +174,7 @@ export const debugSensorNotResponding: FlowDef = {
       id: 'swap',
       type: 'auto',
       title: 'Swap test: SDA and SCL exchanged',
-      body: 'The ESP32 can move I2C to any pins in software, so the app scans again with the two lines exchanged. If the sensor answers only now, the wires are crossed.',
+      body: 'The diagnostic agent can run I2C on any two pins, so the app scans again with the two lines exchanged. If the sensor answers only now, the wires are crossed.',
       when: (ctx) => !facts(ctx).addr,
       highlight: (ctx) => i2cTargets(ctx),
       async run(ctx) {
@@ -260,7 +263,7 @@ export const debugSensorNotResponding: FlowDef = {
               : 'No rule found a problem in the drawing. To check the real wires, the app needs the diagnostic agent.',
             confidence: 'documented',
             evidence: findings.map((f) => ({ text: `${f.message} ${f.hint}`, source: f.source ?? 'wiring rules', target: f.targets[0], confidence: 'documented' as const })),
-            sources: ['ESP32 Series Datasheet', t('Parts library')],
+            sources: [ctx.board.rules.datasheet, t('Parts library')],
             nextSteps: ['Install the agent to measure the real wires'],
             highlight: findings.flatMap((f) => f.targets),
           },

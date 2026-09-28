@@ -1,7 +1,7 @@
 // Starter Arduino sketch for a scene. Uses BoardPilotProbe so Monitor can plot the values.
 
 import type { BoardDef, PartDef, Scene } from './types';
-import { boardPinFor, pinById } from './board';
+import { boardPinFor, isEspFamily, pinById } from './board';
 
 const ident = (s: string) => s.replace(/[^A-Za-z0-9]/g, '_').toUpperCase();
 
@@ -19,17 +19,41 @@ export function generateSketch(scene: Scene, board: BoardDef, parts: Record<stri
     const p = bp ? pinById(board, bp) : undefined;
     return p?.gpio ?? null;
   };
+  /** How the pin is written in code: the GPIO number, or the pin name on STM32 (STM32duino macros like PA5). */
+  const expr = (g: number) => {
+    const p = board.pins.find((x) => x.gpio === g && x.kind === 'gpio');
+    return board.family === 'stm32' && p?.chipPin ? p.chipPin : String(g);
+  };
+  const esp = isEspFamily(board);
+  const avr = board.family === 'avr';
+  let adcSetup = false;
+  const readMv = (pinConst: string) => {
+    if (esp) return `analogReadMilliVolts(${pinConst})`;
+    if (!avr && !adcSetup) {
+      setup.push('  analogReadResolution(12);');
+      adcSetup = true;
+    }
+    // Nominal reference: the result is only as exact as the board's supply.
+    return `(long)analogRead(${pinConst}) * ${board.rules.adcMaxMv}L / ${avr ? 1023 : 4095}`;
+  };
+  const defaultSda = pinById(board, board.rules.i2c.sda);
+  const defaultScl = pinById(board, board.rules.i2c.scl);
 
   for (const inst of scene.parts) {
     const def = parts[inst.partId];
     if (!def) continue;
     const N = ident(inst.id);
     if (def.bus === 'i2c') {
-      const sda = gpio(inst.id, 'SDA') ?? 21;
-      const scl = gpio(inst.id, 'SCL') ?? 22;
+      const sda = gpio(inst.id, 'SDA') ?? defaultSda?.gpio ?? 0;
+      const scl = gpio(inst.id, 'SCL') ?? defaultScl?.gpio ?? 0;
       if (!wireBegun) {
-        defines.push(`#define I2C_SDA ${sda}`, `#define I2C_SCL ${scl}`);
-        setup.push('  Wire.begin(I2C_SDA, I2C_SCL);');
+        defines.push(`#define I2C_SDA ${expr(sda)}`, `#define I2C_SCL ${expr(scl)}`);
+        if (esp) setup.push('  Wire.begin(I2C_SDA, I2C_SCL);');
+        else if (board.family === 'rp2040' || board.family === 'rp2350' || board.family === 'stm32') {
+          setup.push('  Wire.setSDA(I2C_SDA);', '  Wire.setSCL(I2C_SCL);', '  Wire.begin();');
+        } else {
+          setup.push(`  Wire.begin();  // this board's I2C pins are fixed: SDA = ${defaultSda?.label ?? '?'}, SCL = ${defaultScl?.label ?? '?'}`);
+        }
         wireBegun = true;
       }
     }
@@ -43,11 +67,14 @@ export function generateSketch(scene: Scene, board: BoardDef, parts: Record<stri
           `    Serial.println("BME280 not found. Run Debug > A sensor does not respond in BoardPilot.");`,
           '  }',
         );
-        loop.push(
-          `  probe.value("temperature", ${inst.id}.readTemperature(), I2C_SDA);`,
-          `  probe.value("humidity", ${inst.id}.readHumidity(), I2C_SDA);`,
-          `  probe.value("pressure", ${inst.id}.readPressure() / 100.0F, I2C_SDA);`,
-        );
+        {
+          const g = gpio(inst.id, 'SDA') ?? defaultSda?.gpio ?? 0;
+          loop.push(
+            `  probe.value("temperature", ${inst.id}.readTemperature(), ${g});`,
+            `  probe.value("humidity", ${inst.id}.readHumidity(), ${g});`,
+            `  probe.value("pressure", ${inst.id}.readPressure() / 100.0F, ${g});`,
+          );
+        }
         break;
       case 'ssd1306':
         includes.add('#include <Adafruit_SSD1306.h>');
@@ -58,7 +85,7 @@ export function generateSketch(scene: Scene, board: BoardDef, parts: Record<stri
       case 'led': {
         const g = gpio(inst.id, 'A');
         if (g === null) break;
-        defines.push(`#define ${N}_PIN ${g}`);
+        defines.push(`#define ${N}_PIN ${expr(g)}`);
         setup.push(`  pinMode(${N}_PIN, OUTPUT);`);
         loop.push(`  digitalWrite(${N}_PIN, (millis() / 500) % 2);  // blink`);
         break;
@@ -66,16 +93,16 @@ export function generateSketch(scene: Scene, board: BoardDef, parts: Record<stri
       case 'button': {
         const g = gpio(inst.id, '1');
         if (g === null) break;
-        defines.push(`#define ${N}_PIN ${g}`);
+        defines.push(`#define ${N}_PIN ${expr(g)}`);
         setup.push(`  pinMode(${N}_PIN, INPUT_PULLUP);  // pressed = LOW`);
-        loop.push(`  probe.value("${inst.id}", digitalRead(${N}_PIN) == LOW ? 1 : 0, ${N}_PIN);`);
+        loop.push(`  probe.value("${inst.id}", digitalRead(${N}_PIN) == LOW ? 1 : 0, ${g});`);
         break;
       }
       case 'pot': {
         const g = gpio(inst.id, 'OUT');
         if (g === null) break;
-        defines.push(`#define ${N}_PIN ${g}`);
-        loop.push(`  probe.value("${inst.id}", analogReadMilliVolts(${N}_PIN), ${N}_PIN);  // mV`);
+        defines.push(`#define ${N}_PIN ${expr(g)}`);
+        loop.push(`  probe.value("${inst.id}", ${readMv(`${N}_PIN`)}, ${g});  // mV`);
         break;
       }
       case 'mpu6050':
@@ -92,10 +119,10 @@ export function generateSketch(scene: Scene, board: BoardDef, parts: Record<stri
         if (g === null) break;
         includes.add('#include <DHT.h>');
         libs.add('DHT sensor library');
-        defines.push(`#define ${N}_PIN ${g}`);
+        defines.push(`#define ${N}_PIN ${expr(g)}`);
         globals.push(`DHT ${inst.id}(${N}_PIN, DHT22);`);
         setup.push(`  ${inst.id}.begin();`);
-        loop.push(`  probe.value("dht_temperature", ${inst.id}.readTemperature(), ${N}_PIN);`, `  probe.value("dht_humidity", ${inst.id}.readHumidity(), ${N}_PIN);`);
+        loop.push(`  probe.value("dht_temperature", ${inst.id}.readTemperature(), ${g});`, `  probe.value("dht_humidity", ${inst.id}.readHumidity(), ${g});`);
         break;
       }
     }
@@ -103,6 +130,7 @@ export function generateSketch(scene: Scene, board: BoardDef, parts: Record<stri
 
   return [
     `// Starter sketch generated by BoardPilot for ${board.name}.`,
+    `// Arduino board: ${board.toolchain.fqbn} (core ${board.toolchain.core}).`,
     `// Libraries to install (Arduino Library Manager): BoardPilotProbe (firmware/probe)${[...libs].map((l) => `, ${l}`).join('')}`,
     '',
     ...includes,

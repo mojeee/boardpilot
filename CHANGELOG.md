@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0 (unreleased)
+
+- 13 boards instead of one: ESP32 DevKit, ESP32-S3-DevKitC-1, ESP32-C3-DevKitM-1, Raspberry Pi Pico, Pico W and Pico 2, Arduino Uno R3, Nano and Mega 2560, STM32 NUCLEO-F401RE and Black Pill F411, Nordic nRF52840 DK and Teensy 4.1. Pin positions come from the vendors' mechanical files; every fact has a source (`boards/<id>.sources.md`).
+- Board files now carry their own rules (default I2C/SPI pins, safe pins, ADC pins, flags), toolchain and USB ids; nothing in the app is tied to the ESP32 any more.
+- Board picker with "Find my board" (USB id matching); switching boards moves wires to matching pins. Warnings when the plugged-in chip does not match the chosen board.
+- 3D: sockets on Arduino-style boards, upward pins, pads, more component types, board colors, camera framing by board size, 2D pinout labels on all four sides.
+- Flashing and identify per family: avrdude (AVR), picotool (RP2040/RP2350), STM32CubeProgrammer / stlink / dfu-util (STM32), nrfjprog (nRF52), Teensy Loader (Teensy, which cannot be backed up; the confirmation says so).
+- New wiring rules: 5 V / 3.3 V logic levels, native USB and debug pins, pins used on the board, power inputs that are dead on USB.
+- Simulator benches for every board; starter sketches per family (Wire pins, STM32 pin names, ADC scaling).
+- Website: a pinout page per board (English and Italian) and a boards index, /boards.json.
+
 ## 0.4.0 (2026-09-28)
 
 - New logo (a chip with a navigation arrow) in the app, app icon, website, favicon and social previews.

@@ -20,6 +20,7 @@ import { runDemo } from './demo';
 import { PartEditor } from './components/PartEditor';
 import { LicenseDialog, LockScreen, useLicense } from './components/License';
 import { AiSettingsDialog } from './components/AiSettings';
+import { BoardPickerDialog } from './components/BoardPicker';
 import { usePartsLib } from './state/partsLib';
 import { useScene } from './state/store';
 import { t } from '@shared/i18n';
@@ -124,6 +125,7 @@ export function App() {
       <PartEditor />
       <LicenseDialog />
       <AiSettingsDialog />
+      <BoardPickerDialog />
       <ConfirmDialog />
       <LockScreen />
     </div>

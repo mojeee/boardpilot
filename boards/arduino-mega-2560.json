@@ -1,0 +1,1771 @@
+{
+  "id": "arduino-mega-2560",
+  "name": "Arduino Mega 2560 R3",
+  "vendor": "Arduino (and many clones)",
+  "family": "avr",
+  "module": "ATmega2560",
+  "chip": "ATmega2560",
+  "cpu": "8-bit AVR ATmega2560 at 16 MHz, 8 KB SRAM, 256 KB flash, 4 KB EEPROM",
+  "logicVolt": 5,
+  "flashBytes": 262144,
+  "ramBytes": 8192,
+  "pcbMm": {
+    "length": 101.6,
+    "width": 53.34,
+    "thickness": 1.6
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "female-up",
+  "pcbColor": "#0F7C8C",
+  "summary": "A big Arduino with 54 digital pins, 16 analog inputs and 4 serial ports. It uses 5 V logic, so 3.3 V-only sensors need a level shifter.",
+  "pins": [
+    {
+      "id": "SCL",
+      "gpio": 21,
+      "chipPin": "PD0",
+      "posMm": [
+        18.796,
+        2.54
+      ],
+      "sameAs": "D21",
+      "label": "SCL",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default",
+        "INT0"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "Same signal as D21 (I2C clock). Has a 10 kΩ pull-up to 5 V on the board: 3.3 V-only I2C parts need a level shifter."
+    },
+    {
+      "id": "SDA",
+      "gpio": 20,
+      "chipPin": "PD1",
+      "posMm": [
+        21.336,
+        2.54
+      ],
+      "sameAs": "D20",
+      "label": "SDA",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SDA_default",
+        "INT1"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "Same signal as D20 (I2C data). Has a 10 kΩ pull-up to 5 V on the board: 3.3 V-only I2C parts need a level shifter."
+    },
+    {
+      "id": "AREF",
+      "gpio": null,
+      "posMm": [
+        23.876,
+        2.54
+      ],
+      "label": "AREF",
+      "kind": "power",
+      "functions": [
+        "ADC_REF"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "Analog reference input. Leave it unconnected unless your code calls analogReference(EXTERNAL); never power parts from it."
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        26.416,
+        2.54
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "D13",
+      "gpio": 13,
+      "chipPin": "PB7",
+      "posMm": [
+        28.956,
+        2.54
+      ],
+      "label": "~13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 5,
+      "notes": "The built-in LED \"L\" is on this pin."
+    },
+    {
+      "id": "D12",
+      "gpio": 12,
+      "chipPin": "PB6",
+      "posMm": [
+        31.496,
+        2.54
+      ],
+      "label": "~12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D11",
+      "gpio": 11,
+      "chipPin": "PB5",
+      "posMm": [
+        34.036,
+        2.54
+      ],
+      "label": "~11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D10",
+      "gpio": 10,
+      "chipPin": "PB4",
+      "posMm": [
+        36.576,
+        2.54
+      ],
+      "label": "~10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D9",
+      "gpio": 9,
+      "chipPin": "PH6",
+      "posMm": [
+        39.116,
+        2.54
+      ],
+      "label": "~9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D8",
+      "gpio": 8,
+      "chipPin": "PH5",
+      "posMm": [
+        41.656,
+        2.54
+      ],
+      "label": "~8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D7",
+      "gpio": 7,
+      "chipPin": "PH4",
+      "posMm": [
+        45.72,
+        2.54
+      ],
+      "label": "~7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D6",
+      "gpio": 6,
+      "chipPin": "PH3",
+      "posMm": [
+        48.26,
+        2.54
+      ],
+      "label": "~6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D5",
+      "gpio": 5,
+      "chipPin": "PE3",
+      "posMm": [
+        50.8,
+        2.54
+      ],
+      "label": "~5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D4",
+      "gpio": 4,
+      "chipPin": "PG5",
+      "posMm": [
+        53.34,
+        2.54
+      ],
+      "label": "~4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D3",
+      "gpio": 3,
+      "chipPin": "PE5",
+      "posMm": [
+        55.88,
+        2.54
+      ],
+      "label": "~3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "INT5",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D2",
+      "gpio": 2,
+      "chipPin": "PE4",
+      "posMm": [
+        58.42,
+        2.54
+      ],
+      "label": "~2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "INT4",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D1",
+      "gpio": 1,
+      "chipPin": "PE1",
+      "posMm": [
+        60.96,
+        2.54
+      ],
+      "label": "TX0→1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_TX"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 5,
+      "notes": "Serial TX. Shared with the USB link: using it for parts can break uploads and the serial monitor."
+    },
+    {
+      "id": "D0",
+      "gpio": 0,
+      "chipPin": "PE0",
+      "posMm": [
+        63.5,
+        2.54
+      ],
+      "label": "RX0←0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_RX"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 5,
+      "notes": "Serial RX. Shared with the USB link: using it for parts can break uploads and the serial monitor."
+    },
+    {
+      "id": "D14",
+      "gpio": 14,
+      "chipPin": "PJ1",
+      "posMm": [
+        68.58,
+        2.54
+      ],
+      "label": "TX3 14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART3_TX"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D15",
+      "gpio": 15,
+      "chipPin": "PJ0",
+      "posMm": [
+        71.12,
+        2.54
+      ],
+      "label": "RX3 15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART3_RX"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D16",
+      "gpio": 16,
+      "chipPin": "PH1",
+      "posMm": [
+        73.66,
+        2.54
+      ],
+      "label": "TX2 16",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART2_TX"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D17",
+      "gpio": 17,
+      "chipPin": "PH0",
+      "posMm": [
+        76.2,
+        2.54
+      ],
+      "label": "RX2 17",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART2_RX"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D18",
+      "gpio": 18,
+      "chipPin": "PD3",
+      "posMm": [
+        78.74,
+        2.54
+      ],
+      "label": "TX1 18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_TX",
+        "INT3"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D19",
+      "gpio": 19,
+      "chipPin": "PD2",
+      "posMm": [
+        81.28,
+        2.54
+      ],
+      "label": "RX1 19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_RX",
+        "INT2"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D20",
+      "gpio": 20,
+      "chipPin": "PD1",
+      "posMm": [
+        83.82,
+        2.54
+      ],
+      "label": "SDA 20",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SDA_default",
+        "INT1"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "Default I2C SDA. Has a 10 kΩ pull-up to 5 V on the board: 3.3 V-only I2C parts need a level shifter."
+    },
+    {
+      "id": "D21",
+      "gpio": 21,
+      "chipPin": "PD0",
+      "posMm": [
+        86.36,
+        2.54
+      ],
+      "label": "SCL 21",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default",
+        "INT0"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "Default I2C SCL. Has a 10 kΩ pull-up to 5 V on the board: 3.3 V-only I2C parts need a level shifter."
+    },
+    {
+      "id": "IOREF",
+      "gpio": null,
+      "posMm": [
+        30.48,
+        50.8
+      ],
+      "label": "IOREF",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "Tells shields that this board uses 5 V logic. Connected to 5V; not meant to power parts."
+    },
+    {
+      "id": "RESET",
+      "gpio": null,
+      "posMm": [
+        33.02,
+        50.8
+      ],
+      "label": "RESET",
+      "kind": "enable",
+      "functions": [
+        "RESET"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "Reset input. Pull it LOW (or press the button) to restart the board."
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        35.56,
+        50.8
+      ],
+      "label": "3.3V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V output, 50 mA max. Enough for one or two small sensors."
+    },
+    {
+      "id": "5V",
+      "gpio": null,
+      "posMm": [
+        38.1,
+        50.8
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "5 V output from USB or the on-board regulator."
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        40.64,
+        50.8
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        43.18,
+        50.8
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "VIN",
+      "gpio": null,
+      "posMm": [
+        45.72,
+        50.8
+      ],
+      "label": "Vin",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 12,
+      "supplies": 0,
+      "notes": "Power input (7-12 V recommended) from the barrel jack or an external supply. It is not fed from USB, so do not use it to power parts."
+    },
+    {
+      "id": "A0",
+      "gpio": 54,
+      "chipPin": "PF0",
+      "posMm": [
+        50.8,
+        50.8
+      ],
+      "label": "A0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC0"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A1",
+      "gpio": 55,
+      "chipPin": "PF1",
+      "posMm": [
+        53.34,
+        50.8
+      ],
+      "label": "A1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A2",
+      "gpio": 56,
+      "chipPin": "PF2",
+      "posMm": [
+        55.88,
+        50.8
+      ],
+      "label": "A2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A3",
+      "gpio": 57,
+      "chipPin": "PF3",
+      "posMm": [
+        58.42,
+        50.8
+      ],
+      "label": "A3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC3"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A4",
+      "gpio": 58,
+      "chipPin": "PF4",
+      "posMm": [
+        60.96,
+        50.8
+      ],
+      "label": "A4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC4"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A5",
+      "gpio": 59,
+      "chipPin": "PF5",
+      "posMm": [
+        63.5,
+        50.8
+      ],
+      "label": "A5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC5"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A6",
+      "gpio": 60,
+      "chipPin": "PF6",
+      "posMm": [
+        66.04,
+        50.8
+      ],
+      "label": "A6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC6"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A7",
+      "gpio": 61,
+      "chipPin": "PF7",
+      "posMm": [
+        68.58,
+        50.8
+      ],
+      "label": "A7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC7"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A8",
+      "gpio": 62,
+      "chipPin": "PK0",
+      "posMm": [
+        73.66,
+        50.8
+      ],
+      "label": "A8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC8"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A9",
+      "gpio": 63,
+      "chipPin": "PK1",
+      "posMm": [
+        76.2,
+        50.8
+      ],
+      "label": "A9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC9"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A10",
+      "gpio": 64,
+      "chipPin": "PK2",
+      "posMm": [
+        78.74,
+        50.8
+      ],
+      "label": "A10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC10"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A11",
+      "gpio": 65,
+      "chipPin": "PK3",
+      "posMm": [
+        81.28,
+        50.8
+      ],
+      "label": "A11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC11"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A12",
+      "gpio": 66,
+      "chipPin": "PK4",
+      "posMm": [
+        83.82,
+        50.8
+      ],
+      "label": "A12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC12"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A13",
+      "gpio": 67,
+      "chipPin": "PK5",
+      "posMm": [
+        86.36,
+        50.8
+      ],
+      "label": "A13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC13"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A14",
+      "gpio": 68,
+      "chipPin": "PK6",
+      "posMm": [
+        88.9,
+        50.8
+      ],
+      "label": "A14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC14"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A15",
+      "gpio": 69,
+      "chipPin": "PK7",
+      "posMm": [
+        91.44,
+        50.8
+      ],
+      "label": "A15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC15"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "5V2",
+      "gpio": null,
+      "posMm": [
+        93.98,
+        2.54
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "5 V, same rail as the 5V pin."
+    },
+    {
+      "id": "5V3",
+      "gpio": null,
+      "posMm": [
+        96.52,
+        2.54
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "5 V, same rail as the 5V pin."
+    },
+    {
+      "id": "D22",
+      "gpio": 22,
+      "chipPin": "PA0",
+      "posMm": [
+        93.98,
+        5.08
+      ],
+      "label": "22",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D23",
+      "gpio": 23,
+      "chipPin": "PA1",
+      "posMm": [
+        96.52,
+        5.08
+      ],
+      "label": "23",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D24",
+      "gpio": 24,
+      "chipPin": "PA2",
+      "posMm": [
+        93.98,
+        7.62
+      ],
+      "label": "24",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D25",
+      "gpio": 25,
+      "chipPin": "PA3",
+      "posMm": [
+        96.52,
+        7.62
+      ],
+      "label": "25",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D26",
+      "gpio": 26,
+      "chipPin": "PA4",
+      "posMm": [
+        93.98,
+        10.16
+      ],
+      "label": "26",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D27",
+      "gpio": 27,
+      "chipPin": "PA5",
+      "posMm": [
+        96.52,
+        10.16
+      ],
+      "label": "27",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D28",
+      "gpio": 28,
+      "chipPin": "PA6",
+      "posMm": [
+        93.98,
+        12.7
+      ],
+      "label": "28",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D29",
+      "gpio": 29,
+      "chipPin": "PA7",
+      "posMm": [
+        96.52,
+        12.7
+      ],
+      "label": "29",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D30",
+      "gpio": 30,
+      "chipPin": "PC7",
+      "posMm": [
+        93.98,
+        15.24
+      ],
+      "label": "30",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D31",
+      "gpio": 31,
+      "chipPin": "PC6",
+      "posMm": [
+        96.52,
+        15.24
+      ],
+      "label": "31",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D32",
+      "gpio": 32,
+      "chipPin": "PC5",
+      "posMm": [
+        93.98,
+        17.78
+      ],
+      "label": "32",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D33",
+      "gpio": 33,
+      "chipPin": "PC4",
+      "posMm": [
+        96.52,
+        17.78
+      ],
+      "label": "33",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D34",
+      "gpio": 34,
+      "chipPin": "PC3",
+      "posMm": [
+        93.98,
+        20.32
+      ],
+      "label": "34",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D35",
+      "gpio": 35,
+      "chipPin": "PC2",
+      "posMm": [
+        96.52,
+        20.32
+      ],
+      "label": "35",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D36",
+      "gpio": 36,
+      "chipPin": "PC1",
+      "posMm": [
+        93.98,
+        22.86
+      ],
+      "label": "36",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D37",
+      "gpio": 37,
+      "chipPin": "PC0",
+      "posMm": [
+        96.52,
+        22.86
+      ],
+      "label": "37",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D38",
+      "gpio": 38,
+      "chipPin": "PD7",
+      "posMm": [
+        93.98,
+        25.4
+      ],
+      "label": "38",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D39",
+      "gpio": 39,
+      "chipPin": "PG2",
+      "posMm": [
+        96.52,
+        25.4
+      ],
+      "label": "39",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D40",
+      "gpio": 40,
+      "chipPin": "PG1",
+      "posMm": [
+        93.98,
+        27.94
+      ],
+      "label": "40",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D41",
+      "gpio": 41,
+      "chipPin": "PG0",
+      "posMm": [
+        96.52,
+        27.94
+      ],
+      "label": "41",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D42",
+      "gpio": 42,
+      "chipPin": "PL7",
+      "posMm": [
+        93.98,
+        30.48
+      ],
+      "label": "42",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D43",
+      "gpio": 43,
+      "chipPin": "PL6",
+      "posMm": [
+        96.52,
+        30.48
+      ],
+      "label": "43",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D44",
+      "gpio": 44,
+      "chipPin": "PL5",
+      "posMm": [
+        93.98,
+        33.02
+      ],
+      "label": "44",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D45",
+      "gpio": 45,
+      "chipPin": "PL4",
+      "posMm": [
+        96.52,
+        33.02
+      ],
+      "label": "45",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D46",
+      "gpio": 46,
+      "chipPin": "PL3",
+      "posMm": [
+        93.98,
+        35.56
+      ],
+      "label": "46",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D47",
+      "gpio": 47,
+      "chipPin": "PL2",
+      "posMm": [
+        96.52,
+        35.56
+      ],
+      "label": "47",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D48",
+      "gpio": 48,
+      "chipPin": "PL1",
+      "posMm": [
+        93.98,
+        38.1
+      ],
+      "label": "48",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D49",
+      "gpio": 49,
+      "chipPin": "PL0",
+      "posMm": [
+        96.52,
+        38.1
+      ],
+      "label": "49",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D50",
+      "gpio": 50,
+      "chipPin": "PB3",
+      "posMm": [
+        93.98,
+        40.64
+      ],
+      "label": "50",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MISO_default"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D51",
+      "gpio": 51,
+      "chipPin": "PB2",
+      "posMm": [
+        96.52,
+        40.64
+      ],
+      "label": "51",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MOSI_default"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D52",
+      "gpio": 52,
+      "chipPin": "PB1",
+      "posMm": [
+        93.98,
+        43.18
+      ],
+      "label": "52",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_SCK_default"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D53",
+      "gpio": 53,
+      "chipPin": "PB0",
+      "posMm": [
+        96.52,
+        43.18
+      ],
+      "label": "53",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_CS_default"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "SPI chip select. Keep it an OUTPUT when using SPI, or SPI can stop working."
+    },
+    {
+      "id": "GND4",
+      "gpio": null,
+      "posMm": [
+        93.98,
+        45.72
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GND5",
+      "gpio": null,
+      "posMm": [
+        96.52,
+        45.72
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    }
+  ],
+  "components": [
+    {
+      "type": "mcu",
+      "label": "ATmega2560",
+      "rect": [
+        438,
+        180,
+        140,
+        140
+      ],
+      "color": "#1b1b1b"
+    },
+    {
+      "type": "usb",
+      "label": "USB-B",
+      "rect": [
+        -63,
+        92,
+        163,
+        120
+      ],
+      "heightMm": 11
+    },
+    {
+      "type": "jack",
+      "label": "DC jack",
+      "rect": [
+        -18,
+        405,
+        145,
+        90
+      ],
+      "heightMm": 11
+    },
+    {
+      "type": "bridge",
+      "label": "ATmega16U2",
+      "rect": [
+        174,
+        160,
+        50,
+        50
+      ]
+    },
+    {
+      "type": "regulator",
+      "label": "5V reg",
+      "rect": [
+        54,
+        321,
+        65,
+        70
+      ]
+    },
+    {
+      "type": "button",
+      "label": "RESET",
+      "rect": [
+        724,
+        224,
+        35,
+        60
+      ]
+    },
+    {
+      "type": "led",
+      "label": "PWR",
+      "rect": [
+        756,
+        155,
+        13,
+        20
+      ],
+      "color": "#5CCB8F"
+    },
+    {
+      "type": "led",
+      "label": "L",
+      "rect": [
+        273,
+        102,
+        13,
+        20
+      ],
+      "color": "#F2A93B"
+    },
+    {
+      "type": "led",
+      "label": "TX",
+      "rect": [
+        273,
+        158,
+        13,
+        20
+      ],
+      "color": "#F2A93B"
+    },
+    {
+      "type": "led",
+      "label": "RX",
+      "rect": [
+        273,
+        180,
+        13,
+        20
+      ],
+      "color": "#F2A93B"
+    },
+    {
+      "type": "crystal",
+      "label": "16 MHz",
+      "rect": [
+        378,
+        371,
+        13,
+        32
+      ]
+    },
+    {
+      "type": "connector",
+      "label": "ICSP",
+      "rect": [
+        624,
+        216,
+        56,
+        76
+      ]
+    },
+    {
+      "type": "connector",
+      "label": "ICSP 16U2",
+      "rect": [
+        145,
+        46,
+        76,
+        56
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "ATmega2560 datasheet",
+    "i2c": {
+      "sda": "D20",
+      "scl": "D21",
+      "remappable": false,
+      "note": "I2C only works on 20 (SDA) and 21 (SCL); the SDA/SCL pins near AREF are the same signals. Both have 10 kΩ pull-ups to 5 V on the board."
+    },
+    "spi": {
+      "mosi": "D51",
+      "miso": "D50",
+      "sck": "D52",
+      "cs": "D53"
+    },
+    "safeIo": [
+      "D22",
+      "D23",
+      "D24",
+      "D25",
+      "D26",
+      "D27",
+      "D28",
+      "D29",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7",
+      "D8",
+      "D9"
+    ],
+    "adcPins": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8",
+      "A9",
+      "A10",
+      "A11",
+      "A12",
+      "A13",
+      "A14",
+      "A15"
+    ],
+    "inputPins": [
+      "D2",
+      "D3",
+      "D18",
+      "D19",
+      "D30",
+      "D31",
+      "D32",
+      "D33"
+    ],
+    "adcMaxMv": 5000
+  },
+  "toolchain": {
+    "flasher": "avrdude",
+    "fqbn": "arduino:avr:mega",
+    "core": "arduino:avr",
+    "avrdude": {
+      "part": "m2560",
+      "programmer": "wiring",
+      "baud": 115200
+    },
+    "imageFormat": "hex",
+    "agent": false,
+    "link": "usb-serial"
+  },
+  "usb": [
+    {
+      "vid": "2341",
+      "pid": "0042",
+      "note": "Arduino Mega 2560 R3 (ATmega16U2 USB-serial)"
+    },
+    {
+      "vid": "2341",
+      "pid": "0010",
+      "note": "Arduino Mega 2560 (early, ATmega8U2)"
+    },
+    {
+      "vid": "2a03",
+      "pid": "0042",
+      "note": "Arduino Mega 2560 R3 made by arduino.org"
+    },
+    {
+      "vid": "2a03",
+      "pid": "0010",
+      "note": "Arduino Mega 2560 made by arduino.org"
+    },
+    {
+      "vid": "2341",
+      "pid": "0210",
+      "note": "Arduino Mega (also listed in the official boards.txt)"
+    },
+    {
+      "vid": "2341",
+      "pid": "0242",
+      "note": "Arduino Mega (also listed in the official boards.txt)"
+    },
+    {
+      "vid": "1a86",
+      "pid": "7523",
+      "note": "WCH CH340 USB-serial bridge on clones (also used by many other boards)"
+    },
+    {
+      "vid": "03eb",
+      "pid": "2fef",
+      "note": "ATmega16U2 in DFU mode (only while updating the USB chip firmware)"
+    }
+  ],
+  "links": [
+    {
+      "title": "Arduino Mega 2560 Rev3 product page",
+      "url": "https://docs.arduino.cc/hardware/mega-2560/"
+    },
+    {
+      "title": "Mega 2560 Rev3 full pinout (PDF)",
+      "url": "https://docs.arduino.cc/resources/pinouts/A000067-full-pinout.pdf"
+    },
+    {
+      "title": "Mega 2560 Rev3 datasheet (PDF)",
+      "url": "https://docs.arduino.cc/resources/datasheets/A000067-datasheet.pdf"
+    },
+    {
+      "title": "ATmega2560 datasheet",
+      "url": "https://ww1.microchip.com/downloads/en/devicedoc/atmel-2549-8-bit-avr-microcontroller-atmega640-1280-1281-2560-2561_datasheet.pdf"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Arduino MEGA 2560 Rev3 Eagle design files",
+      "section": "Board outline; header pads and nets (POWER, ADCL, ADCH, JP6, PWML, COMMUNICATION, XIO); RN1 10k pull-ups on SDA/SCL",
+      "url": "https://www.arduino.cc/en/uploads/Main/arduino-mega2560_R3-reference-design.zip"
+    },
+    {
+      "title": "Arduino Mega 2560 Rev3 datasheet (A000067)",
+      "section": "Connector pinouts; IOREF connected to 5V; VIN 7-12 V",
+      "url": "https://docs.arduino.cc/resources/datasheets/A000067-datasheet.pdf"
+    },
+    {
+      "title": "Arduino Mega 2560 Rev3 full pinout (A000067)",
+      "url": "https://docs.arduino.cc/resources/pinouts/A000067-full-pinout.pdf"
+    },
+    {
+      "title": "Microchip ATmega640/1280/1281/2560/2561 datasheet",
+      "section": "1 Pin Configurations; 13.3 Alternate Port Functions; 15 External Interrupts; 26 ADC",
+      "url": "https://ww1.microchip.com/downloads/en/devicedoc/atmel-2549-8-bit-avr-microcontroller-atmega640-1280-1281-2560-2561_datasheet.pdf"
+    },
+    {
+      "title": "arduino/ArduinoCore-avr variants/mega/pins_arduino.h",
+      "section": "Arduino pin to port table, PWM timers, SPI/I2C defaults, A0 = 54",
+      "url": "https://github.com/arduino/ArduinoCore-avr/blob/master/variants/mega/pins_arduino.h"
+    },
+    {
+      "title": "arduino/ArduinoCore-avr boards.txt",
+      "section": "USB VID/PID, upload protocol wiring at 115200",
+      "url": "https://github.com/arduino/ArduinoCore-avr/blob/master/boards.txt"
+    }
+  ]
+}

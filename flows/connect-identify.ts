@@ -1,7 +1,7 @@
 import type { FlowDef } from '@shared/flow';
 import type { PortInfo } from '@shared/types';
 import { t } from '@shared/i18n';
-import { fmtErr, pickPort } from './common';
+import { checkChipBoard, checkPortBoard, fmtErr, pickPort } from './common';
 
 const NO_PORT_BODY = [
   'The Mac does not see a board on USB yet. Try these one at a time, then press Done:',
@@ -14,7 +14,7 @@ const NO_PORT_BODY = [
 export const connectIdentify: FlowDef = {
   id: 'connect-identify',
   title: 'Connect and identify a board',
-  description: 'Find the board on USB and read its chip, flash size and MAC address.',
+  description: 'Find the board on USB and read its chip, flash size and ID.',
   steps: [
     {
       id: 'find-port',
@@ -26,12 +26,13 @@ export const connectIdentify: FlowDef = {
         ctx.data.ports = r.value;
         for (const p of r.value) {
           const msg = p.bridge !== 'unknown' ? t('Port {port} (USB chip: {chip})', { port: p.path, chip: p.bridge }) : t('Port {port}', { port: p.path });
-          ctx.log(p.likelyEsp32 ? 'found' : 'info', msg, { source: 'measured: USB port list' });
+          ctx.log(p.likelyBoard ? 'found' : 'info', msg, { source: 'measured: USB port list' });
         }
         if (!r.value.length) return { status: 'warning', summary: 'No board found on USB.', goto: 'no-port' };
-        const auto = pickPort(r.value);
+        const auto = pickPort(r.value, ctx.board.id);
         if (auto) {
           ctx.data.port = auto.path;
+          checkPortBoard(ctx, auto);
           const summary =
             auto.bridge !== 'unknown'
               ? t('Found {port} with a {chip} USB chip.', { port: auto.path, chip: auto.bridge })
@@ -52,7 +53,7 @@ export const connectIdentify: FlowDef = {
         const r = await ctx.hw.listPorts();
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         ctx.data.ports = r.value;
-        const p = pickPort(r.value);
+        const p = pickPort(r.value, ctx.board.id);
         if (!p) {
           return r.value.length
             ? { status: 'ok', summary: 'A port appeared.', goto: 'pick-port' }
@@ -62,7 +63,7 @@ export const connectIdentify: FlowDef = {
         ctx.log('found', t('Board appeared on {port}.', { port: p.path }), { source: 'measured: USB port list' });
         return { status: 'ok', summary: t('Found {port}.', { port: p.path }), goto: 'identify' };
       },
-      aiHelp: () => 'The Mac shows no serial port for my ESP32 board. What should I check, in order?',
+      aiHelp: (ctx) => `The computer shows no serial port for my ${ctx.board.name}. What should I check, in order?`,
       fallbacks: [
         { id: 'retry', label: 'I tried something else, check again', kind: 'retry' },
         { id: 'port', label: 'Pick a port by hand', kind: 'input', input: 'port' },
@@ -90,7 +91,7 @@ export const connectIdentify: FlowDef = {
       id: 'identify',
       type: 'auto',
       title: 'Read the chip',
-      body: 'The app asks the chip for its type, flash size and MAC address. This only reads.',
+      body: 'The app asks the chip for its type, flash size and ID. This only reads.',
       async run(ctx) {
         const port = ctx.data.port as string | undefined;
         if (!port) return { status: 'failed', summary: 'No port selected.' };
@@ -101,13 +102,13 @@ export const connectIdentify: FlowDef = {
         }
         const c = r.value;
         ctx.data.chip = c;
-        ctx.log('found', c.revision ? t('Chip {chip} (revision {rev})', { chip: c.chip, rev: c.revision }) : t('Chip {chip}', { chip: c.chip }), {
-          source: 'measured: esptool',
-        });
-        ctx.log('found', t('Flash {flash}, MAC {mac}, USB chip {chip}', { flash: c.flashSize, mac: c.mac, chip: c.bridge }), { source: 'measured: esptool' });
+        const src = `measured: ${c.toolVersion ?? 'chip tool'}`;
+        ctx.log('found', c.revision ? t('Chip {chip} (revision {rev})', { chip: c.chip, rev: c.revision }) : t('Chip {chip}', { chip: c.chip }), { source: src });
+        ctx.log('found', t('Flash {flash}, ID {mac}, USB chip {chip}', { flash: c.flashSize, mac: c.mac, chip: c.bridge }), { source: src });
+        checkChipBoard(ctx, c.chip);
         return { status: 'ok', summary: t('{chip}, {flash} flash.', { chip: c.chip, flash: c.flashSize }), goto: 'result' };
       },
-      aiHelp: (ctx) => `Identifying my ESP32 failed with error code ${String(ctx.data.identifyError)}. What does it mean and what should I do?`,
+      aiHelp: (ctx) => `Identifying my ${ctx.board.name} failed with error code ${String(ctx.data.identifyError)}. What does it mean and what should I do?`,
       fallbacks: [
         { id: 'retry', label: 'Try again', kind: 'retry' },
         { id: 'boot', label: 'Use the BOOT button trick', kind: 'goto', goto: 'boot-button' },
@@ -118,7 +119,7 @@ export const connectIdentify: FlowDef = {
       id: 'boot-button',
       type: 'action',
       title: 'Put the board in download mode',
-      body: 'Hold the BOOT button. While holding it, press and release EN. Then release BOOT and press Done.',
+      body: (ctx) => ctx.board.toolchain.uploadNote ?? 'Hold the BOOT button. While holding it, press and release EN. Then release BOOT and press Done.',
       when: () => false,
       highlight: () => ['part:board'],
       async run(ctx) {
@@ -126,9 +127,10 @@ export const connectIdentify: FlowDef = {
         const r = await ctx.hw.identify(port);
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         ctx.data.chip = r.value;
-        ctx.log('found', t('Chip {chip}, flash {flash}, MAC {mac}', { chip: r.value.chip, flash: r.value.flashSize, mac: r.value.mac }), {
-          source: 'measured: esptool',
+        ctx.log('found', t('Chip {chip}, flash {flash}, ID {mac}', { chip: r.value.chip, flash: r.value.flashSize, mac: r.value.mac }), {
+          source: `measured: ${r.value.toolVersion ?? 'chip tool'}`,
         });
+        checkChipBoard(ctx, r.value.chip);
         return { status: 'ok', summary: t('{chip}, {flash} flash.', { chip: r.value.chip, flash: r.value.flashSize }), goto: 'result' };
       },
       fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],
@@ -140,6 +142,8 @@ export const connectIdentify: FlowDef = {
       async run(ctx) {
         const c = ctx.hw.state().chip;
         if (!c) return { status: 'failed', summary: 'No board identified.' };
+        const esp = ctx.board.toolchain.flasher === 'esptool';
+        const src = `measured: ${c.toolVersion ?? ctx.board.toolchain.flasher}`;
         return {
           status: 'ok',
           summary: 'Identified',
@@ -150,17 +154,27 @@ export const connectIdentify: FlowDef = {
             evidence: [
               {
                 text: c.revision ? t('Chip: {chip}, revision {rev}', { chip: c.chip, rev: c.revision }) : t('Chip: {chip}', { chip: c.chip }),
-                source: 'measured: esptool',
+                source: src,
                 confidence: 'measured',
               },
-              { text: t('Flash size: {flash}', { flash: c.flashSize }), source: 'measured: esptool', confidence: 'measured' },
-              { text: t('MAC address: {mac}', { mac: c.mac }), source: 'measured: esptool', confidence: 'measured' },
+              {
+                text: t('Flash size: {flash}', { flash: c.flashSize }),
+                source: esp ? src : `library: ${ctx.board.id}`,
+                confidence: esp ? 'measured' : 'documented',
+              },
+              { text: esp ? t('MAC address: {mac}', { mac: c.mac }) : t('Board ID: {id}', { id: c.mac }), source: src, confidence: 'measured' },
               { text: t('USB chip: {chip}', { chip: c.bridge }), source: 'measured: USB vendor id', confidence: 'measured' },
               ...(c.features.length
-                ? [{ text: t('Features: {list}', { list: c.features.join(', ') }), source: 'measured: esptool', confidence: 'measured' as const }]
+                ? [
+                    {
+                      text: t('Features: {list}', { list: c.features.join(', ') }),
+                      source: esp ? src : `library: ${ctx.board.id}`,
+                      confidence: esp ? ('measured' as const) : ('documented' as const),
+                    },
+                  ]
                 : []),
             ],
-            sources: ['esptool flash-id'],
+            sources: [c.toolVersion ?? ctx.board.toolchain.flasher, `library: ${ctx.board.id}`],
             nextSteps: ['Test hardware to check your wiring', 'Monitor to see what your program prints', 'Debug a problem if something does not work'],
             highlight: [],
           },

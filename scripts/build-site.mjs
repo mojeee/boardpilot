@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { IT } from './site/i18n-it.mjs';
 import { renderPinout } from './site/pinout.mjs';
 import { buildParts } from './site/parts.mjs';
+import { buildBoards, boardCards } from './site/boards.mjs';
 import { readdirSync } from 'node:fs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -16,6 +17,9 @@ const SITE = 'https://boardpilot.agentflowbind.com';
 const REPO = 'https://github.com/mojeee/boardpilot';
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const board = JSON.parse(readFileSync(join(root, 'boards/esp32-devkitc-30.json'), 'utf8'));
+const boards = readdirSync(join(root, 'boards'))
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => JSON.parse(readFileSync(join(root, 'boards', f), 'utf8')));
 const tpl = readFileSync(join(root, 'scripts/site/index.template.html'), 'utf8');
 const today = new Date().toISOString().slice(0, 10);
 const parts = readdirSync(join(root, 'parts'))
@@ -101,6 +105,9 @@ function landing(lang) {
     .replaceAll('{{PINOUT}}', `${lang === 'it' ? '/it' : ''}/esp32-pinout/`)
     .replaceAll('{{PARTS}}', `${lang === 'it' ? '/it' : ''}/parts/`)
     .replaceAll('{{PARTS_COUNT}}', PARTS_COUNT)
+    .replaceAll('{{BOARDS}}', `${lang === 'it' ? '/it' : ''}/boards/`)
+    .replaceAll('{{BOARDS_COUNT}}', String(boards.length))
+    .replaceAll('{{BOARD_CARDS}}', boardCards(lang, boards, BOARD_IT))
     .replaceAll('{{PARTS_CLOUD}}', partsCloud(lang))
     .replaceAll('{{PATH_EN}}', '/')
     .replaceAll('{{PATH_IT}}', '/it/')
@@ -151,6 +158,8 @@ function landing(lang) {
   return html;
 }
 
+const BOARD_IT = {};
+for (const f of ['boards-data.ts', 'boards-ui.ts']) Object.assign(BOARD_IT, (await import(join(root, 'shared/i18n/it', f))).default);
 const en = landing('en');
 const it = landing('it');
 write('index.html', en);
@@ -166,6 +175,7 @@ function chrome(html, lang, pagePath) {
   return { header, footer };
 }
 const pinPaths = { en: '/esp32-pinout/', it: '/it/esp32-pinout/' };
+// pages that are not the landing page keep the "Boards" link pointing at the boards index
 write('esp32-pinout/index.html', renderPinout({ lang: 'en', board, site: SITE, ...chrome(en, 'en', pinPaths) }));
 write('it/esp32-pinout/index.html', renderPinout({ lang: 'it', board, site: SITE, ...chrome(it, 'it', pinPaths) }));
 
@@ -214,14 +224,23 @@ for (const [lang, html] of [['en', en], ['it', it]]) {
   const pages = buildParts({ parts, lang, site: SITE, IT_MEASURES, head, ...chrome(html, lang, partPaths) });
   for (const [rel, content] of Object.entries(pages)) write(rel, content);
 }
-write('parts.json', JSON.stringify({ name: 'BoardPilot ESP32 parts library', license: 'CC-BY-4.0', attribution: 'BoardPilot (https://boardpilot.agentflowbind.com)', source: `${REPO}/tree/main/parts`, generated: today, count: parts.length, parts }, null, 1));
+write('boards.json', JSON.stringify({ name: 'BoardPilot board library', license: 'CC-BY-4.0', source: `${REPO}/tree/main/boards`, generated: today, count: boards.length, boards }, null, 1));
+write('parts.json', JSON.stringify({ name: 'BoardPilot parts library', license: 'CC-BY-4.0', attribution: 'BoardPilot (https://boardpilot.agentflowbind.com)', source: `${REPO}/tree/main/parts`, generated: today, count: parts.length, parts }, null, 1));
 for (const p of parts) write(`parts/${p.id}.json`, JSON.stringify(p, null, 2));
+
+const boardPaths = { en: '/boards/', it: '/it/boards/' };
+for (const [lang, html] of [['en', en], ['it', it]]) {
+  const pages = buildBoards({ lang, boards, site: SITE, repo: REPO, head, IT: BOARD_IT, ...chrome(html, lang, boardPaths) });
+  for (const [rel, content] of Object.entries(pages)) write(rel, content);
+}
 
 /* sitemap with language alternates */
 const pages = [
   { en: '/', it: '/it/', priority: '1.0' },
   { en: '/parts/', it: '/it/parts/', priority: '0.9' },
   { en: '/esp32-pinout/', it: '/it/esp32-pinout/', priority: '0.8' },
+  { en: '/boards/', it: '/it/boards/', priority: '0.9' },
+  ...boards.filter((b) => b.id !== 'esp32-devkitc-30').map((b) => ({ en: `/boards/${b.id}/`, it: `/it/boards/${b.id}/`, priority: '0.8' })),
   ...parts.map((p) => ({ en: `/parts/${p.id}/`, it: `/it/parts/${p.id}/`, priority: '0.6' })),
 ];
 const urlEntry = (loc, p) => `  <url>
@@ -241,4 +260,4 @@ ${pages.flatMap((p) => [urlEntry(p.en, p), urlEntry(p.it, p)]).join('\n')}
 `,
 );
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`site built: ${4 + 2 + parts.length * 2} pages (${parts.length} parts), sitemap, robots, parts.json (version ${pkg.version})`);
+console.log(`site built: ${4 + 2 + parts.length * 2 + boards.length * 2} pages, ${boards.length} boards (${parts.length} parts), sitemap, robots, parts.json (version ${pkg.version})`);

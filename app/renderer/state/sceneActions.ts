@@ -1,7 +1,7 @@
 // Editing actions on the project scene. All of them are undoable (Cmd+Z).
 
 import type { ScenePart, TargetRef } from '@shared/types';
-import { PARTS } from '@shared/board';
+import { BOARDS, PARTS, canOutput, getBoard, groundPins, pinById, powerPinFor } from '@shared/board';
 import { t } from '@shared/i18n';
 import { log, useScene } from './store';
 
@@ -123,4 +123,84 @@ export function handleSceneKey(e: KeyboardEvent): boolean {
     return true;
   }
   return false;
+}
+
+/**
+ * Move the project to another board. Wires follow their role: power and ground go to the new
+ * board's matching pins, I2C and SPI to its default bus pins, other signals keep a pin with the
+ * same name when it can do the job, or get a free safe pin. Parts move out of the new board's way.
+ */
+export function changeBoard(boardId: string) {
+  const s = useScene.getState().scene;
+  if (s.board === boardId || !BOARDS[boardId]) return;
+  const to = getBoard(boardId);
+  const used = new Set<string>();
+  let moved = 0;
+  let dropped = 0;
+  const roleOf = (part: string, pin: string) => {
+    const inst = s.parts.find((p) => p.id === part);
+    const def = inst ? PARTS[inst.partId] : undefined;
+    return { def, role: def?.pins.find((p) => p.name === pin)?.role };
+  };
+  const pick = (list: string[]) => {
+    const id = list.find((x) => pinById(to, x) && !used.has(x));
+    if (id) used.add(id);
+    return id;
+  };
+  const target = (oldPin: string, part: string, pin: string): string | undefined => {
+    const { def, role } = roleOf(part, pin);
+    const spi = to.rules.spi;
+    switch (role) {
+      case 'power':
+        return powerPinFor(to, def?.voltage ?? String(to.logicVolt))?.id;
+      case 'ground':
+        return groundPins(to)[0]?.id;
+      case 'i2c_sda':
+        return to.rules.i2c.sda;
+      case 'i2c_scl':
+        return to.rules.i2c.scl;
+      case 'spi_mosi':
+        return spi?.mosi;
+      case 'spi_miso':
+        return spi?.miso;
+      case 'spi_sck':
+        return spi?.sck;
+      case 'spi_cs':
+        return spi?.cs ?? pick(to.rules.safeIo);
+      case 'analog_out':
+        return pick(to.rules.adcPins);
+      default: {
+        const same = pinById(to, oldPin);
+        if (same && same.kind === 'gpio' && canOutput(same) && !same.flags.some((f) => f === 'uart0' || f === 'usb' || f === 'swd') && !used.has(oldPin)) {
+          used.add(oldPin);
+          return oldPin;
+        }
+        return pick(to.rules.safeIo);
+      }
+    }
+  };
+  const wires = s.wires.flatMap((w) => {
+    const boardEnd = w.from.part === 'board' ? 'from' : w.to.part === 'board' ? 'to' : null;
+    if (!boardEnd) return [w];
+    const partEnd = boardEnd === 'from' ? w.to : w.from;
+    const next = target(w[boardEnd].pin, partEnd.part, partEnd.pin);
+    if (!next) {
+      dropped++;
+      return [];
+    }
+    if (next !== w[boardEnd].pin) moved++;
+    return [{ ...w, [boardEnd]: { part: 'board', pin: next } }];
+  });
+  const edge = to.pcbMm.width / 2 + 18;
+  const parts = s.parts.map((p) =>
+    Math.abs(p.position[2]) >= edge ? p : { ...p, position: [p.position[0], p.position[1], (p.position[2] < 0 ? -1 : 1) * edge] as [number, number, number] },
+  );
+  useScene.getState().updateScene(() => ({ ...s, board: boardId, parts, wires }));
+  log('action', t('The project now uses the {board}.', { board: to.name }), { source: `library: ${to.id}` });
+  if (moved || dropped) {
+    log(
+      dropped ? 'warning' : 'info',
+      t('{moved} wires moved to matching pins, {dropped} removed. Check them in the 3D view.', { moved: String(moved), dropped: String(dropped) }),
+    );
+  }
 }
