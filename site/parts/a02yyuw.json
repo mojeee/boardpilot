@@ -1,0 +1,58 @@
+{
+  "id": "a02yyuw",
+  "name": "A02YYUW waterproof ultrasonic distance (UART)",
+  "category": "sensor",
+  "measures": [
+    "distance"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Red wire. Use 3V3 so TX stays at 3.3 V"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Black wire"
+    },
+    {
+      "name": "RX",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Yellow wire. Mode select: HIGH or open = processed value, LOW = real-time value"
+    },
+    {
+      "name": "TX",
+      "role": "digital_out",
+      "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud). White wire"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      50,
+      40,
+      30
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "a02yyuw",
+    "dfrobot",
+    "waterproof",
+    "ultrasonic",
+    "tank level",
+    "ultrasuoni",
+    "distanza",
+    "impermeabile"
+  ],
+  "sources": [
+    {
+      "title": "DFRobot SEN0311 A02YYUW wiki",
+      "section": "Supply 3.3 to 5 V; UART 9600 baud; range 3 to 450 cm; wires red VCC, black GND, yellow RX, white TX"
+    }
+  ]
+}

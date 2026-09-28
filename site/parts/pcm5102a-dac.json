@@ -1,0 +1,63 @@
+{
+  "id": "pcm5102a-dac",
+  "name": "PCM5102A I2S stereo DAC",
+  "category": "output",
+  "pins": [
+    {
+      "name": "SCK",
+      "role": "ground",
+      "notes": "System clock: connect to GND so the chip makes it from BCK"
+    },
+    {
+      "name": "BCK",
+      "role": "spi_sck",
+      "notes": "I2S bit clock, not SPI"
+    },
+    {
+      "name": "DIN",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "I2S audio data from the ESP32"
+    },
+    {
+      "name": "LCK",
+      "role": "spi_cs",
+      "notes": "I2S word select (LRCK), not SPI"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VIN",
+      "role": "power",
+      "notes": "3.3 V or 5 V. XSMT (solder jumper on the back) must be HIGH or the output stays muted"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "breakout",
+    "size": [
+      32,
+      23,
+      8
+    ],
+    "color": "#6A3FA0"
+  },
+  "keywords": [
+    "pcm5102a",
+    "pcm5102",
+    "i2s",
+    "dac",
+    "audio",
+    "line out",
+    "convertitore audio"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments PCM5102A datasheet",
+      "section": "Audio interface BCK, LRCK, DIN; SCK can be omitted (PLL from BCK); XSMT soft mute"
+    }
+  ]
+}

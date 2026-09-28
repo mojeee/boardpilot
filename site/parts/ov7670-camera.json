@@ -1,0 +1,129 @@
+{
+  "id": "ov7670-camera",
+  "name": "OV7670 camera module (no FIFO)",
+  "category": "sensor",
+  "measures": [
+    "image"
+  ],
+  "pins": [
+    {
+      "name": "3.3V",
+      "role": "power",
+      "notes": "3.3 V only"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SIOC",
+      "role": "i2c_scl",
+      "notes": "SCCB clock (I2C-like, address 0x21). Add 4.7 kΩ pull-ups"
+    },
+    {
+      "name": "SIOD",
+      "role": "i2c_sda",
+      "notes": "SCCB data. Answers only while XCLK runs"
+    },
+    {
+      "name": "VSYNC",
+      "role": "digital_out",
+      "notes": "Frame sync"
+    },
+    {
+      "name": "HREF",
+      "role": "digital_out",
+      "notes": "Line valid"
+    },
+    {
+      "name": "PCLK",
+      "role": "digital_out",
+      "notes": "Pixel clock"
+    },
+    {
+      "name": "XCLK",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Clock from the ESP32 (10 to 24 MHz). The camera does nothing without it"
+    },
+    {
+      "name": "D7",
+      "role": "digital_out",
+      "notes": "Pixel data bit 7"
+    },
+    {
+      "name": "D6",
+      "role": "digital_out"
+    },
+    {
+      "name": "D5",
+      "role": "digital_out"
+    },
+    {
+      "name": "D4",
+      "role": "digital_out"
+    },
+    {
+      "name": "D3",
+      "role": "digital_out"
+    },
+    {
+      "name": "D2",
+      "role": "digital_out"
+    },
+    {
+      "name": "D1",
+      "role": "digital_out"
+    },
+    {
+      "name": "D0",
+      "role": "digital_out",
+      "notes": "Pixel data bit 0"
+    },
+    {
+      "name": "RESET",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Reset, active LOW. Tie to 3.3 V if unused"
+    },
+    {
+      "name": "PWDN",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "HIGH = power down. Tie to GND if unused"
+    }
+  ],
+  "bus": "gpio",
+  "addresses": [
+    "0x21"
+  ],
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      47,
+      34,
+      25
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ov7670",
+    "camera",
+    "omnivision",
+    "vga",
+    "image sensor",
+    "fotocamera",
+    "telecamera"
+  ],
+  "sources": [
+    {
+      "title": "OmniVision OV7670 datasheet",
+      "section": "Pin description; SCCB write address 0x42 (7-bit 0x21); PID register 0x0A = 0x76"
+    },
+    {
+      "title": "Common OV7670 2x9 header module",
+      "section": "3.3V, GND, SIOC, SIOD, VSYNC, HREF, PCLK, XCLK, D7 to D0, RESET, PWDN"
+    }
+  ]
+}

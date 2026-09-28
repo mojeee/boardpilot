@@ -1,0 +1,24 @@
+name: Bug report
+description: Something does not work as expected
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: BoardPilot version and system
+      placeholder: 0.4.0, macOS 15 / Windows 11
+  - type: input
+    id: board
+    attributes:
+      label: Board and USB chip (or simulator scenario)
+  - type: textarea
+    id: log
+    attributes:
+      label: Session log or report (Report → Export)
+      render: markdown

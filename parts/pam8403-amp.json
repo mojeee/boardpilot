@@ -1,0 +1,22 @@
+{
+  "id": "pam8403-amp",
+  "name": "PAM8403 stereo amplifier 2x3 W",
+  "category": "output",
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Pin order varies between boards: match by the printed label. 2.5 to 5.5 V. Use VIN (5 V) for full volume" },
+    { "name": "GND", "role": "ground", "notes": "Also the audio input ground" },
+    { "name": "L", "role": "digital_in", "needsOutput": true, "notes": "Left audio in. ESP32 DAC GPIO 25 or 26 works; the module has input capacitors" },
+    { "name": "R", "role": "digital_in", "needsOutput": true, "notes": "Right audio in" },
+    { "name": "L+", "role": "passive", "notes": "Left speaker +" },
+    { "name": "L-", "role": "passive", "notes": "Left speaker -. Bridged output: never connect to GND" },
+    { "name": "R+", "role": "passive", "notes": "Right speaker +" },
+    { "name": "R-", "role": "passive", "notes": "Right speaker -. Bridged output: never connect to GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "breakout", "size": [21.3, 18, 3], "color": "#2E8B57" },
+  "keywords": ["pam8403", "amplifier", "class d", "stereo", "speaker", "amplificatore", "altoparlante"],
+  "sources": [
+    { "title": "Diodes Inc. PAM8403 datasheet", "section": "Supply 2.5 to 5.5 V; bridge-tied (BTL) outputs, 3 W into 4 Ω" }
+  ]
+}

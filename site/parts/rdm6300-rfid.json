@@ -1,0 +1,81 @@
+{
+  "id": "rdm6300-rfid",
+  "name": "RDM6300 125 kHz RFID reader",
+  "category": "input",
+  "pins": [
+    {
+      "name": "TX",
+      "role": "digital_out",
+      "notes": "UART 9600 baud at 5 V level: use a voltage divider to an ESP32 RX pin"
+    },
+    {
+      "name": "RX",
+      "role": "passive",
+      "notes": "Not used"
+    },
+    {
+      "name": "NC",
+      "role": "passive",
+      "notes": "Not connected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "5V",
+      "role": "power",
+      "notes": "5 V only"
+    },
+    {
+      "name": "ANT1",
+      "role": "passive",
+      "notes": "Antenna coil"
+    },
+    {
+      "name": "ANT2",
+      "role": "passive",
+      "notes": "Antenna coil"
+    },
+    {
+      "name": "LED",
+      "role": "passive",
+      "notes": "Card indicator output, optional"
+    },
+    {
+      "name": "VCC2",
+      "role": "passive",
+      "notes": "Second 5 V pin (same as 5V)"
+    },
+    {
+      "name": "GND2",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      38.5,
+      19,
+      9
+    ],
+    "color": "#1E7B3A"
+  },
+  "keywords": [
+    "rdm6300",
+    "rfid",
+    "125 khz",
+    "em4100",
+    "tag",
+    "badge",
+    "lettore rfid"
+  ],
+  "sources": [
+    {
+      "title": "Seeed RDM6300 125 kHz card reader module datasheet",
+      "section": "P1: TX, RX, NC, GND, +5V; P2: antenna; P3: LED, +5V, GND; UART 9600 8N1"
+    }
+  ]
+}

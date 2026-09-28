@@ -1,0 +1,72 @@
+{
+  "id": "ds3231-rtc",
+  "name": "DS3231 real-time clock (ZS-042)",
+  "category": "sensor",
+  "measures": [
+    "time",
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "32K",
+      "role": "passive",
+      "notes": "32 kHz output. Leave unconnected"
+    },
+    {
+      "name": "SQW",
+      "role": "int",
+      "notes": "Square wave / alarm output (open drain)"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x68",
+    "0x57"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "module",
+    "size": [
+      38,
+      22,
+      14
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "ds3231",
+    "rtc",
+    "real time clock",
+    "zs-042",
+    "clock",
+    "orologio",
+    "ora"
+  ],
+  "sources": [
+    {
+      "title": "Maxim DS3231 datasheet",
+      "section": "I2C address 0x68 (1101000)"
+    },
+    {
+      "title": "Microchip AT24C32 datasheet",
+      "section": "EEPROM on the ZS-042 board at 0x57 (A0-A2 pulled up)"
+    }
+  ]
+}

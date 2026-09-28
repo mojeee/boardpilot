@@ -1,0 +1,18 @@
+{
+  "id": "sct-013",
+  "name": "SCT-013 split-core AC current clamp",
+  "category": "sensor",
+  "measures": ["current"],
+  "pins": [
+    { "name": "TIP", "role": "passive", "notes": "3.5 mm jack. AC output: needs a bias circuit (2 x 10 kΩ + 10 µF) before an ADC pin. -000 also needs a burden resistor" },
+    { "name": "SLEEVE", "role": "passive", "notes": "3.5 mm jack. Goes to the bias midpoint (about 1.65 V), not straight to GND" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [30,45,16], "color": "#1A1A1A" },
+  "keywords": ["sct-013", "sct013", "current clamp", "current transformer", "ct", "pinza amperometrica", "corrente"],
+  "sources": [
+    { "title": "YHDC SCT-013 datasheet", "section": "SCT-013-000: 100 A : 50 mA current output, no burden; -030: 30 A / 1 V with built-in burden" },
+    { "title": "OpenEnergyMonitor CT sensor guide", "section": "Burden resistor and DC bias for a single-supply ADC" }
+  ]
+}

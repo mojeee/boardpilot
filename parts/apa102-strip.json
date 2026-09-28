@@ -1,0 +1,18 @@
+{
+  "id": "apa102-strip",
+  "name": "APA102 / SK9822 LED strip (clock + data)",
+  "category": "display",
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Pin order varies between boards: match by the printed label. Use VIN for a few LEDs; a separate 5 V supply for more (up to 60 mA per LED)" },
+    { "name": "CI", "role": "spi_sck", "notes": "Clock in. Works with SPI; a 3.3 V to 5 V level shifter makes it reliable" },
+    { "name": "DI", "role": "spi_mosi", "notes": "Data in. Has no chip select: give the strip its own SPI bus" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "spi",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [60, 12, 2], "color": "#EDEDED" },
+  "keywords": ["apa102", "sk9822", "dotstar", "led strip", "addressable", "rgb", "striscia led"],
+  "sources": [
+    { "title": "APA102 (Shiji Lighting) datasheet", "section": "Two-wire clock and data input; supply 5 V" }
+  ]
+}

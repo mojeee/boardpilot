@@ -1,0 +1,50 @@
+{
+  "id": "gp2y0a21",
+  "name": "Sharp GP2Y0A21 IR distance (10-80 cm)",
+  "category": "sensor",
+  "measures": [
+    "distance"
+  ],
+  "pins": [
+    {
+      "name": "VO",
+      "role": "analog_out",
+      "notes": "Output about 0.4 V (80 cm) to 3.1 V (10 cm). To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Needs 5 V: use VIN"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      29.5,
+      13,
+      13.5
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "gp2y0a21",
+    "sharp",
+    "ir distance",
+    "infrared",
+    "distance",
+    "distanza",
+    "infrarossi"
+  ],
+  "sources": [
+    {
+      "title": "Sharp GP2Y0A21YK0F datasheet",
+      "section": "Terminal 1 Vo, 2 GND, 3 Vcc; supply 4.5 to 5.5 V"
+    }
+  ]
+}

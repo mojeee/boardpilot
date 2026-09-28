@@ -1,0 +1,25 @@
+{
+  "id": "relay-8ch",
+  "name": "Relay module 8 channels (5 V, optocoupler)",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "IN1", "role": "digital_in", "needsOutput": true, "notes": "LOW = relay on (typical). Each relay has COM/NO/NC screw terminals" },
+    { "name": "IN2", "role": "digital_in", "needsOutput": true },
+    { "name": "IN3", "role": "digital_in", "needsOutput": true },
+    { "name": "IN4", "role": "digital_in", "needsOutput": true },
+    { "name": "IN5", "role": "digital_in", "needsOutput": true },
+    { "name": "IN6", "role": "digital_in", "needsOutput": true },
+    { "name": "IN7", "role": "digital_in", "needsOutput": true },
+    { "name": "IN8", "role": "digital_in", "needsOutput": true },
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V: use VIN. All 8 coils on: about 0.6 A, more than USB likes" },
+    { "name": "JD-VCC", "role": "passive", "notes": "Separate coil supply. Keep the jumper to VCC unless you use an isolated supply" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "relay", "size": [80, 56, 19], "color": "#1F4FA8" },
+  "keywords": ["relay", "8 channel", "relay board", "optocoupler", "relè", "scheda relè"],
+  "sources": [
+    { "title": "Songle SRD-05VDC-SL-C datasheet", "section": "Coil 5 V, about 70 mA per channel" }
+  ]
+}

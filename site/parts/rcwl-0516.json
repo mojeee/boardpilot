@@ -1,0 +1,60 @@
+{
+  "id": "rcwl-0516",
+  "name": "RCWL-0516 microwave motion radar",
+  "category": "sensor",
+  "measures": [
+    "motion"
+  ],
+  "pins": [
+    {
+      "name": "3V3",
+      "role": "passive",
+      "notes": "Output of the on-board regulator (100 mA max). Do not feed power here"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "3.3 V HIGH for about 2 s after motion"
+    },
+    {
+      "name": "VIN",
+      "role": "power",
+      "notes": "4 to 28 V: use VIN (5 V)"
+    },
+    {
+      "name": "CDS",
+      "role": "passive",
+      "notes": "Optional light sensor input. Leave unconnected"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      36,
+      17,
+      3
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "rcwl-0516",
+    "radar",
+    "microwave",
+    "doppler",
+    "motion",
+    "movimento",
+    "presenza"
+  ],
+  "sources": [
+    {
+      "title": "RCWL-0516 module description (RCWL / jdesbonnet GitHub notes)",
+      "section": "Pins 3V3, GND, OUT, VIN, CDS; VIN 4 to 28 V; OUT 3.3 V"
+    }
+  ]
+}

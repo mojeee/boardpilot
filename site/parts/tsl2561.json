@@ -1,0 +1,71 @@
+{
+  "id": "tsl2561",
+  "name": "TSL2561 light sensor",
+  "category": "sensor",
+  "measures": [
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Interrupt output, optional"
+    },
+    {
+      "name": "ADDR",
+      "role": "passive",
+      "notes": "Address select: GND = 0x29, open = 0x39, VCC = 0x49"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x29",
+    "0x39",
+    "0x49"
+  ],
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      16.2,
+      13,
+      1.6
+    ],
+    "color": "#5B2A86"
+  },
+  "keywords": [
+    "tsl2561",
+    "lux",
+    "light",
+    "luminosity",
+    "luce",
+    "luminosità"
+  ],
+  "sources": [
+    {
+      "title": "TAOS/ams TSL2560/TSL2561 datasheet",
+      "section": "Slave address select: ADDR SEL at GND 0x29, float 0x39, VDD 0x49"
+    },
+    {
+      "title": "TAOS/ams TSL2561 datasheet",
+      "section": "Supply 2.7 to 3.6 V"
+    }
+  ]
+}

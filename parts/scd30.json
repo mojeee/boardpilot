@@ -1,0 +1,24 @@
+{
+  "id": "scd30",
+  "name": "Sensirion SCD30 CO2 sensor",
+  "category": "sensor",
+  "measures": ["co2", "temperature", "humidity"],
+  "pins": [
+    { "name": "VDD", "role": "power", "notes": "Pin 1" },
+    { "name": "GND", "role": "ground", "notes": "Pin 2" },
+    { "name": "SCL", "role": "i2c_scl", "notes": "Pin 3 (TX/SCL). The sensor stretches the clock: use 50 kHz or less" },
+    { "name": "SDA", "role": "i2c_sda", "notes": "Pin 4 (RX/SDA)" },
+    { "name": "RDY", "role": "int", "notes": "Pin 5. HIGH when a new reading is ready, optional" },
+    { "name": "PWM", "role": "digital_out", "notes": "Pin 6. PWM CO2 output, optional" },
+    { "name": "SEL", "role": "passive", "notes": "Pin 7. Leave open or LOW for I2C; HIGH selects Modbus" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x61"],
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [35, 23, 7], "color": "#1E7A3C" },
+  "keywords": ["scd30", "sensirion", "co2", "ndir", "carbon dioxide", "anidride carbonica", "qualità aria"],
+  "sources": [
+    { "title": "Sensirion SCD30 datasheet", "section": "Pin 1 VDD, 2 GND, 3 TX/SCL, 4 RX/SDA, 5 RDY, 6 PWM, 7 SEL; supply 3.3 to 5.5 V" },
+    { "title": "Sensirion SCD30 interface description", "section": "I2C address 0x61, max 100 kHz, clock stretching up to 150 ms" }
+  ]
+}

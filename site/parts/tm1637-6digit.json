@@ -1,0 +1,53 @@
+{
+  "id": "tm1637-6digit",
+  "name": "TM1637 6-digit 7-segment display",
+  "category": "display",
+  "pins": [
+    {
+      "name": "CLK",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Pin order varies between boards: match by the printed label. Clock (not I2C, not SPI)"
+    },
+    {
+      "name": "DIO",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data (not I2C). Digits may be wired out of order: libraries have a setting for it"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Works at 3.3 V or 5 V"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      80,
+      20,
+      12
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "tm1637",
+    "7 segment",
+    "6 digit",
+    "display",
+    "display 7 segmenti",
+    "contatore"
+  ],
+  "sources": [
+    {
+      "title": "Titan Micro TM1637 datasheet",
+      "section": "Two-wire interface CLK / DIO (not I2C compatible); up to 6 digits"
+    }
+  ]
+}

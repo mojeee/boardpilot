@@ -1,0 +1,55 @@
+{
+  "id": "tds-meter",
+  "name": "TDS water quality sensor",
+  "category": "sensor",
+  "measures": [
+    "tds"
+  ],
+  "pins": [
+    {
+      "name": "A",
+      "role": "analog_out",
+      "notes": "0 to 2.3 V, safe for the ESP32. To an ADC1 pin (GPIO 32 to 39)"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Marked + on the board"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Marked - on the board"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      42,
+      32,
+      8
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "tds",
+    "ppm",
+    "water quality",
+    "conductivity",
+    "sen0244",
+    "qualità acqua",
+    "conducibilità"
+  ],
+  "sources": [
+    {
+      "title": "DFRobot SEN0244 Gravity TDS meter wiki",
+      "section": "Supply 3.3 to 5.5 V, output 0 to 2.3 V; needs water temperature for compensation"
+    },
+    {
+      "title": "DFRobot SEN0244 Gravity TDS meter wiki",
+      "section": "Do not use it in the same container as a pH probe: they interfere"
+    }
+  ]
+}

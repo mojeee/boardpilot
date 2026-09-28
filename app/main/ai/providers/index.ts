@@ -4,13 +4,21 @@ import type { AppError } from '@shared/types';
 import { PROVIDER_INFO, type AiProviderId } from '@shared/ai';
 import { t } from '@shared/i18n';
 import { AnthropicProvider } from './anthropic';
+import { DemoProvider, demoOptions } from './demo';
 import { GeminiProvider } from './gemini';
 import { OpenAiProvider } from './openai';
 import { ProviderError, type AiProvider } from './types';
 
 export * from './types';
+export { demoOptions } from './demo';
 
-export function createProvider(id: AiProviderId, apiKey: string): AiProvider {
+/** A provider client. The free demo needs no key; `env` supplies its relay URL and app version. */
+export function createProvider(id: AiProviderId, apiKey: string, env: Record<string, string | undefined> = process.env): AiProvider {
+  if (id === 'demo') {
+    const opts = demoOptions(env);
+    if (!opts) throw new ProviderError('not_configured', 'demo', 'The free demo is switched off (BOARDPILOT_DEMO_AI_URL=off).');
+    return new DemoProvider(opts);
+  }
   if (id === 'openai') return new OpenAiProvider(apiKey);
   if (id === 'gemini') return new GeminiProvider(apiKey);
   return new AnthropicProvider(apiKey);
@@ -22,7 +30,30 @@ export function toAiError(e: unknown, provider: AiProviderId, model: string): Ap
   if (!(e instanceof ProviderError)) {
     return { code: 'ai_error', humanMessage: t('The assistant failed: {msg}', { msg: e instanceof Error ? e.message : String(e) }), hint: t('Try again.') };
   }
+  if (provider === 'demo') {
+    const ownKey = t('Open AI settings (the AI chip at the top) to add your own Claude, GPT or Gemini key.');
+    switch (e.kind) {
+      case 'rate':
+      case 'quota':
+        return { code: 'ai_demo_busy', humanMessage: t('The free demo is busy or you reached its limit. Try again in a minute, or add your own key.'), hint: ownKey };
+      case 'not_configured':
+      case 'model':
+        return { code: 'ai_demo_off', humanMessage: t('The free demo is not set up yet.'), hint: ownKey };
+      case 'auth':
+        return { code: 'ai_demo_refused', humanMessage: t('The free demo refused the request.'), hint: t('Try again later, or add your own key in AI settings.') };
+      default:
+        break;
+    }
+  }
   switch (e.kind) {
+    case 'too_large':
+      return {
+        code: 'ai_too_large',
+        humanMessage: t('This request is too large for the free demo.'),
+        hint: t('Photos and very long chats need your own key. Add one in AI settings, or ask a shorter question.'),
+      };
+    case 'not_configured':
+      return { code: 'ai_demo_off', humanMessage: t('The free demo is not set up yet.'), hint: t('Open AI settings (the AI chip at the top) to add your own Claude, GPT or Gemini key.') };
     case 'auth':
       return {
         code: 'ai_auth',

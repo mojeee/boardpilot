@@ -1,0 +1,58 @@
+{
+  "id": "dht11",
+  "name": "DHT11 temperature + humidity",
+  "category": "sensor",
+  "measures": [
+    "temperature",
+    "humidity"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "DATA",
+      "role": "onewire",
+      "notes": "Needs a 10 kΩ pull-up (already on 3-pin modules; 3-pin module order varies, read the labels)"
+    },
+    {
+      "name": "NC",
+      "role": "passive",
+      "notes": "Not connected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "onewire",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "dht",
+    "size": [
+      12,
+      16,
+      5.5
+    ],
+    "color": "#2E7FD8"
+  },
+  "keywords": [
+    "dht11",
+    "dht",
+    "humidity",
+    "temperature",
+    "umidità",
+    "temperatura"
+  ],
+  "sources": [
+    {
+      "title": "Aosong DHT11 datasheet",
+      "section": "Pin 1 VDD, 2 DATA, 3 NC, 4 GND; 5 kΩ to 10 kΩ pull-up on DATA"
+    },
+    {
+      "title": "Aosong DHT11 datasheet",
+      "section": "Supply 3 to 5.5 V"
+    }
+  ]
+}

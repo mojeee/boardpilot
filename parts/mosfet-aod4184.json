@@ -1,0 +1,20 @@
+{
+  "id": "mosfet-aod4184",
+  "name": "MOSFET switch module (dual AOD4184)",
+  "category": "output",
+  "pins": [
+    { "name": "PWM", "role": "digital_in", "needsOutput": true, "notes": "Pin order varies between boards: match by the printed label. Trigger / PWM. HIGH = load on" },
+    { "name": "GND", "role": "ground" },
+    { "name": "VIN+", "role": "passive", "notes": "Load supply + 5 to 36 V" },
+    { "name": "VIN-", "role": "passive", "notes": "Load supply -" },
+    { "name": "OUT+", "role": "passive", "notes": "To the load +" },
+    { "name": "OUT-", "role": "passive", "notes": "To the load -. Add a flyback diode for motors and coils" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [34, 17, 12], "color": "#1F4FA8" },
+  "keywords": ["mosfet", "aod4184", "d4184", "switch", "pwm", "logic level", "interruttore"],
+  "sources": [
+    { "title": "Alpha & Omega AOD4184A datasheet", "section": "VGS(th) 1.5 to 2.5 V; RDS(on) specified at VGS 4.5 V and 10 V" }
+  ]
+}

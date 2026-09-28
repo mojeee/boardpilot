@@ -1,0 +1,24 @@
+{
+  "id": "tmp102",
+  "name": "TMP102 temperature",
+  "category": "sensor",
+  "measures": ["temperature"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Chip maximum is 3.6 V: use 3V3 only" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "ALT", "role": "int", "notes": "Alert output, optional" },
+    { "name": "ADD0", "role": "passive", "notes": "Address: GND = 0x48, VCC = 0x49, SDA = 0x4A, SCL = 0x4B. Pin order differs between boards" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x48", "0x49", "0x4A", "0x4B"],
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [16.3, 13, 1.6], "color": "#B22222" },
+  "keywords": ["tmp102", "texas instruments", "temperature", "temperatura", "sparkfun"],
+  "sources": [
+    { "title": "TI TMP102 datasheet", "section": "Address pin table: ADD0 to GND, V+, SDA or SCL gives 0x48 to 0x4B" },
+    { "title": "TI TMP102 datasheet", "section": "Supply 1.4 to 3.6 V; no ID register" }
+  ]
+}

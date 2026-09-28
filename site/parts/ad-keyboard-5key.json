@@ -1,0 +1,51 @@
+{
+  "id": "ad-keyboard-5key",
+  "name": "AD keyboard (5 keys on one analog pin)",
+  "category": "input",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Use 3V3 so OUT never goes above 3.3 V"
+    },
+    {
+      "name": "OUT",
+      "role": "analog_out",
+      "notes": "A different voltage for each key: read it on an ADC1 pin (GPIO 32 to 39)"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      48,
+      24,
+      10
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "ad keyboard",
+    "analog keypad",
+    "resistor ladder",
+    "5 keys",
+    "buttons",
+    "tastiera analogica",
+    "pulsanti"
+  ],
+  "sources": [
+    {
+      "title": "DFRobot ADKeyboard module (DFR0075) wiki",
+      "section": "Resistor ladder: each key gives a different analog value"
+    },
+    {
+      "title": "Espressif ESP-IDF Programming Guide",
+      "section": "ADC: input range and attenuation"
+    }
+  ]
+}

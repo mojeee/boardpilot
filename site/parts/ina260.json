@@ -1,0 +1,86 @@
+{
+  "id": "ina260",
+  "name": "INA260 current + voltage monitor (built-in shunt)",
+  "category": "sensor",
+  "measures": [
+    "current",
+    "voltage",
+    "power"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "ALERT",
+      "role": "int",
+      "notes": "Alert output, optional"
+    },
+    {
+      "name": "VBUS",
+      "role": "passive",
+      "notes": "Bus voltage sense. Measured circuit only, up to 36 V"
+    },
+    {
+      "name": "VIN+",
+      "role": "passive",
+      "notes": "From the supply. Measured circuit only, up to 36 V and 15 A"
+    },
+    {
+      "name": "VIN-",
+      "role": "passive",
+      "notes": "To the load"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x40",
+    "0x41",
+    "0x44",
+    "0x45"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      23,
+      23,
+      1.6
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ina260",
+    "current",
+    "voltage",
+    "power",
+    "power monitor",
+    "corrente",
+    "tensione",
+    "consumo"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments INA260 datasheet",
+      "section": "Integrated 2 mΩ shunt, up to 15 A continuous; bus 0 to 36 V"
+    },
+    {
+      "title": "Texas Instruments INA260 datasheet",
+      "section": "A0/A1 select 0x40 to 0x4F (boards expose 0x40, 0x41, 0x44, 0x45)"
+    }
+  ]
+}

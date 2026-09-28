@@ -1,0 +1,58 @@
+{
+  "id": "microsd-module",
+  "name": "Micro SD card module (SPI)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "This version has a 3.3 V regulator and needs 5 V: use VIN"
+    },
+    {
+      "name": "MISO",
+      "role": "spi_miso"
+    },
+    {
+      "name": "MOSI",
+      "role": "spi_mosi"
+    },
+    {
+      "name": "SCK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      42,
+      24,
+      4
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "micro sd",
+    "sd card",
+    "tf card",
+    "storage",
+    "data logger",
+    "scheda sd",
+    "memoria"
+  ],
+  "sources": [
+    {
+      "title": "SD Association Physical Layer Simplified Specification",
+      "section": "SPI mode"
+    }
+  ]
+}

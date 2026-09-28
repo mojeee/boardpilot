@@ -1,0 +1,17 @@
+{
+  "id": "piezo-disc",
+  "name": "Piezo disc 27 mm",
+  "category": "output",
+  "pins": [
+    { "name": "+", "role": "digital_in", "needsOutput": true, "notes": "Red wire. To a PWM-capable GPIO (ledc / tone). Quiet: a piezo needs a high voltage to be loud" },
+    { "name": "-", "role": "ground", "notes": "Black wire" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "led", "size": [27, 27, 0.5], "color": "#D9B45A" },
+  "keywords": ["piezo", "piezo disc", "buzzer", "knock", "tone", "disco piezoelettrico", "cicalino"],
+  "sources": [
+    { "title": "Murata piezoelectric sounder (7BB-27-4) datasheet", "section": "Resonant frequency about 4.6 kHz" },
+    { "title": "Espressif ESP-IDF Programming Guide", "section": "LEDC (LED PWM controller)" }
+  ]
+}

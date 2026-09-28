@@ -1,0 +1,116 @@
+{
+  "id": "uln2803-chip",
+  "name": "ULN2803A 8-channel Darlington array (DIP-18)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "1B",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Pins 1 to 8: inputs, 3.3 V logic works"
+    },
+    {
+      "name": "2B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "3B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "4B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "5B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "6B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "7B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "8B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Pin 9"
+    },
+    {
+      "name": "COM",
+      "role": "passive",
+      "notes": "Pin 10: to the load supply + (flyback diodes inside)"
+    },
+    {
+      "name": "8C",
+      "role": "passive",
+      "notes": "Pins 11 to 18: outputs, pull the load to GND (500 mA max each)"
+    },
+    {
+      "name": "7C",
+      "role": "passive"
+    },
+    {
+      "name": "6C",
+      "role": "passive"
+    },
+    {
+      "name": "5C",
+      "role": "passive"
+    },
+    {
+      "name": "4C",
+      "role": "passive"
+    },
+    {
+      "name": "3C",
+      "role": "passive"
+    },
+    {
+      "name": "2C",
+      "role": "passive"
+    },
+    {
+      "name": "1C",
+      "role": "passive"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      46.7,
+      6.4,
+      4
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "uln2803",
+    "darlington",
+    "transistor array",
+    "low side",
+    "dip-18",
+    "driver"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments ULN2803A datasheet",
+      "section": "Pin functions; 500 mA per channel; 50 V outputs with clamp diodes"
+    }
+  ]
+}

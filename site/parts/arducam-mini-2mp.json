@@ -1,0 +1,78 @@
+{
+  "id": "arducam-mini-2mp",
+  "name": "ArduCAM Mini 2MP camera (OV2640, SPI)",
+  "category": "sensor",
+  "measures": [
+    "image"
+  ],
+  "pins": [
+    {
+      "name": "CS",
+      "role": "spi_cs",
+      "notes": "SPI chip select"
+    },
+    {
+      "name": "MOSI",
+      "role": "spi_mosi"
+    },
+    {
+      "name": "MISO",
+      "role": "spi_miso"
+    },
+    {
+      "name": "SCK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3.3 or 5 V"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda",
+      "notes": "Camera settings (SCCB, address 0x30)"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    }
+  ],
+  "bus": "spi",
+  "addresses": [
+    "0x30"
+  ],
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      34,
+      24,
+      25
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "arducam",
+    "ov2640",
+    "camera",
+    "2mp",
+    "jpeg",
+    "fotocamera",
+    "telecamera"
+  ],
+  "sources": [
+    {
+      "title": "ArduCAM Mini 2MP (OV2640) camera module datasheet",
+      "section": "8-pin header CS, MOSI, MISO, SCK, GND, VCC, SDA, SCL; SPI up to 8 MHz"
+    },
+    {
+      "title": "OmniVision OV2640 datasheet",
+      "section": "SCCB address 0x60/0x61 (7-bit 0x30)"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "hc-06-bluetooth",
+  "name": "HC-06 Bluetooth serial module (4 pins)",
+  "category": "output",
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Breakout with regulator: 3.6 to 6 V, use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "TXD", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud by default)" },
+    { "name": "RXD", "role": "digital_in", "needsOutput": true, "notes": "UART: the part receives data here. Connect to an ESP32 TX pin" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [37, 16, 5], "color": "#1F4FA8" },
+  "keywords": ["hc-06", "hc06", "bluetooth", "spp", "slave", "wireless", "seriale"],
+  "sources": [
+    { "title": "HC-06 Bluetooth module datasheet (Guangzhou HC)", "section": "UART 9600 baud default; slave only; 3.3 V logic levels" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "uda1334a-dac",
+  "name": "UDA1334A I2S stereo DAC",
+  "category": "output",
+  "pins": [
+    { "name": "VIN", "role": "power", "notes": "Pin order varies between boards: match by the printed label. 3.3 V or 5 V" },
+    { "name": "3VO", "role": "passive", "notes": "3.3 V output of the regulator. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "WSEL", "role": "spi_cs", "notes": "I2S word select (LRC), not SPI" },
+    { "name": "DIN", "role": "digital_in", "needsOutput": true, "notes": "I2S audio data from the ESP32" },
+    { "name": "BCLK", "role": "spi_sck", "notes": "I2S bit clock, not SPI" },
+    { "name": "LOUT", "role": "passive", "notes": "Line out left (or use the headphone jack)" },
+    { "name": "AGND", "role": "passive", "notes": "Audio ground for the line outputs" },
+    { "name": "ROUT", "role": "passive", "notes": "Line out right" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "breakout", "size": [28, 22, 8], "color": "#1A1A1A" },
+  "keywords": ["uda1334a", "i2s", "dac", "audio", "adafruit", "headphone", "convertitore audio"],
+  "sources": [
+    { "title": "NXP UDA1334ATS datasheet", "section": "I2S-bus input BCK, WS, DATAI" },
+    { "title": "Adafruit I2S Stereo Decoder UDA1334A guide", "section": "Pinouts" }
+  ]
+}

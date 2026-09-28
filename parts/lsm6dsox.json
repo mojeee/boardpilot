@@ -1,0 +1,28 @@
+{
+  "id": "lsm6dsox",
+  "name": "LSM6DSOX accelerometer + gyro",
+  "category": "sensor",
+  "measures": ["acceleration", "rotation", "temperature"],
+  "pins": [
+    { "name": "VIN", "role": "power" },
+    { "name": "3VO", "role": "passive", "notes": "Output of the on-board 3.3 V regulator. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "DO", "role": "passive", "notes": "Address select (SDO): LOW = 0x6A, HIGH = 0x6B" },
+    { "name": "CS", "role": "passive", "notes": "SPI chip select. Leave unconnected or HIGH for I2C" },
+    { "name": "I1", "role": "int", "notes": "Interrupt 1, optional" },
+    { "name": "I2", "role": "int", "notes": "Interrupt 2, optional" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x6A", "0x6B"],
+  "idCheck": { "register": "0x0F", "expect": "0x6c" },
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [25.4,17.8,1.6], "color": "#1A1A1A" },
+  "keywords": ["lsm6dsox", "st", "imu", "accelerometer", "gyro", "giroscopio"],
+  "sources": [
+    { "title": "ST LSM6DSOX datasheet", "section": "Register 0x0F WHO_AM_I (reads 0x6C)" },
+    { "title": "ST LSM6DSOX datasheet", "section": "I2C address 0x6A (SDO LOW) / 0x6B (SDO HIGH)" }
+  ]
+}

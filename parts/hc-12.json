@@ -1,0 +1,20 @@
+{
+  "id": "hc-12",
+  "name": "HC-12 433 MHz serial radio",
+  "category": "output",
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "3.2 to 5.5 V. Draws about 100 mA when sending at full power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "RXD", "role": "digital_in", "needsOutput": true, "notes": "UART: the part receives data here. Connect to an ESP32 TX pin (9600 baud by default)" },
+    { "name": "TXD", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin" },
+    { "name": "SET", "role": "digital_in", "needsOutput": true, "notes": "LOW = AT command mode. Leave HIGH (internal pull-up) for normal use" },
+    { "name": "ANT", "role": "passive", "notes": "Antenna: spring antenna or u.FL connector" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [27.8, 14.4, 4], "color": "#1F4FA8" },
+  "keywords": ["hc-12", "hc12", "433 mhz", "si4463", "wireless serial", "radio", "seriale senza fili"],
+  "sources": [
+    { "title": "HC-12 wireless serial port communication module user manual", "section": "Pins VCC, GND, RXD, TXD, SET; 433.4 to 473.0 MHz; 9600 baud default; supply 3.2 to 5.5 V" }
+  ]
+}

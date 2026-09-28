@@ -79,6 +79,44 @@ const it: Record<string, string> = {
     'Metti invece la chiave in .env.local nella cartella del progetto (per esempio OPENAI_API_KEY=...), poi riavvia l’app.',
   'The settings could not be saved: {msg}': 'Non è stato possibile salvare le impostazioni: {msg}',
   'Check that the disk is not full, then try again.': 'Controlla che il disco non sia pieno, poi riprova.',
+
+  /* ---------- free demo AI (relay, no key) ---------- */
+  'No key needed. A free, older Gemini model for trying BoardPilot.':
+    'Nessuna chiave richiesta. Un modello Gemini gratuito e meno recente per provare BoardPilot.',
+  'No key needed': 'Nessuna chiave richiesta',
+  'Switched off on this computer': 'Disattivata su questo computer',
+  "Uses a free, older Gemini model through BoardPilot's test relay. Limited to a few requests per minute. For testing only: don't send private data. Add your own Claude, GPT or Gemini key for full use.":
+    'Usa un modello Gemini gratuito e meno recente tramite il relay di prova di BoardPilot. Limitata a poche richieste al minuto. Solo per prove: non inviare dati privati. Aggiungi la tua chiave Claude, GPT o Gemini per l’uso completo.',
+  'Photos are too large for the demo, and PDF datasheets are looked up on the web instead of read. When you add a key for Claude, GPT or Gemini, BoardPilot uses it instead.':
+    'Le foto sono troppo grandi per la demo, e i datasheet PDF vengono cercati sul web invece di essere letti. Quando aggiungi una chiave per Claude, GPT o Gemini, BoardPilot usa quella.',
+  'The free demo is switched off on this computer (BOARDPILOT_DEMO_AI_URL=off in .env.local).':
+    'La demo gratuita è disattivata su questo computer (BOARDPILOT_DEMO_AI_URL=off in .env.local).',
+  'Demo requests go through BoardPilot’s relay to Google. On the free tier Google may use them to improve its products.':
+    'Le richieste della demo passano dal relay di BoardPilot a Google. Nel piano gratuito Google può usarle per migliorare i suoi prodotti.',
+  'Free demo AI': 'AI demo gratuita',
+  'Older model, a few requests per minute, for testing only: don’t send private data.':
+    'Modello meno recente, poche richieste al minuto, solo per prove: non inviare dati privati.',
+  'Use my own key': 'Usa la mia chiave',
+  'demo': 'demo',
+  'AI demo': 'AI demo',
+  'Free demo AI through BoardPilot’s test relay, for testing only. Click to add your own key.':
+    'AI demo gratuita tramite il relay di prova di BoardPilot, solo per prove. Clicca per aggiungere la tua chiave.',
+  'Open AI settings (the AI chip at the top) to add your own Claude, GPT or Gemini key.':
+    'Apri le impostazioni AI (il chip AI in alto) per aggiungere la tua chiave Claude, GPT o Gemini.',
+  'The free demo is busy or you reached its limit. Try again in a minute, or add your own key.':
+    'La demo gratuita è occupata o hai raggiunto il limite. Riprova tra un minuto, oppure aggiungi la tua chiave.',
+  'The free demo is not set up yet.': 'La demo gratuita non è ancora configurata.',
+  'The free demo refused the request.': 'La demo gratuita ha rifiutato la richiesta.',
+  'Try again later, or add your own key in AI settings.': 'Riprova più tardi, oppure aggiungi la tua chiave nelle impostazioni AI.',
+  'This request is too large for the free demo.': 'Questa richiesta è troppo grande per la demo gratuita.',
+  'Photos and very long chats need your own key. Add one in AI settings, or ask a shorter question.':
+    'Foto e chat molto lunghe richiedono la tua chiave. Aggiungine una nelle impostazioni AI, oppure fai una domanda più breve.',
+  '{n} source(s) named a web page that the search did not return; they were removed. Check pins and addresses against your board.':
+    '{n} fonte/i indicavano una pagina web che la ricerca non ha restituito; sono state rimosse. Controlla pin e indirizzi sulla tua scheda.',
+  'Some facts were looked up on the web. Treat them as a suggestion until you check them:':
+    'Alcuni dati sono stati cercati sul web. Considerali un suggerimento finché non li controlli:',
+  'The free demo cannot read PDF files, so this draft comes from a web search for the datasheet. Check every pin.':
+    'La demo gratuita non può leggere file PDF, quindi questa bozza viene da una ricerca web del datasheet. Controlla ogni pin.',
 };
 
 export default it;

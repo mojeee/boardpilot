@@ -1,0 +1,56 @@
+{
+  "id": "neo-6m-gps",
+  "name": "NEO-6M GPS module (GY-NEO6MV2)",
+  "category": "sensor",
+  "measures": [
+    "position",
+    "time"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "RX",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "UART: the part receives data here. Connect to an ESP32 TX pin"
+    },
+    {
+      "name": "TX",
+      "role": "digital_out",
+      "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud)"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      36,
+      24,
+      8
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "neo-6m",
+    "gps",
+    "gnss",
+    "u-blox",
+    "location",
+    "posizione",
+    "navigatore"
+  ],
+  "sources": [
+    {
+      "title": "u-blox NEO-6 datasheet",
+      "section": "UART default 9600 baud, NMEA output"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "mcp9808",
+  "name": "MCP9808 precision temperature",
+  "category": "sensor",
+  "measures": ["temperature"],
+  "pins": [
+    { "name": "VDD", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "ALERT", "role": "int", "notes": "Alert output (open drain), optional" },
+    { "name": "A2", "role": "passive", "notes": "Address bit 2. Pulled LOW on the board" },
+    { "name": "A1", "role": "passive", "notes": "Address bit 1. Pulled LOW on the board" },
+    { "name": "A0", "role": "passive", "notes": "Address bit 0. Pulled LOW on the board (0x18)" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x18", "0x19", "0x1A", "0x1B", "0x1C", "0x1D", "0x1E", "0x1F"],
+  "idCheck": { "register": "0x07", "expect": "0x04" },
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [21.4, 12.7, 1.6], "color": "#1F4FA8" },
+  "keywords": ["mcp9808", "microchip", "precision", "temperature", "temperatura", "termometro"],
+  "sources": [
+    { "title": "Microchip MCP9808 datasheet", "section": "Device ID register 0x07 = 0x0400 (first byte read is 0x04)" },
+    { "title": "Microchip MCP9808 datasheet", "section": "Address 0011 A2 A1 A0 = 0x18 to 0x1F; supply 2.7 to 5.5 V" },
+    { "title": "Adafruit MCP9808 guide", "section": "Pinout Vdd, GND, SCL, SDA, Alert, A2, A1, A0" }
+  ]
+}

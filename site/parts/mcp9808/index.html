@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MCP9808 precision temperature + ESP32: pinout and wiring</title>
+    <meta name="description" content="How to wire the MCP9808 precision temperature to an ESP32: pins, suggested GPIO, 3.3-5 V supply, I2C address 0x18. Free part data from BoardPilot." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/parts/mcp9808/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/parts/mcp9808/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/parts/mcp9808/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/parts/mcp9808/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/parts/mcp9808/" />
+    <meta property="og:title" content="MCP9808 precision temperature + ESP32: pinout and wiring" />
+    <meta property="og:description" content="How to wire the MCP9808 precision temperature to an ESP32: pins, suggested GPIO, 3.3-5 V supply, I2C address 0x18. Free part data from BoardPilot." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"MCP9808 precision temperature with ESP32","description":"How to wire the MCP9808 precision temperature to an ESP32: pins, suggested GPIO, 3.3-5 V supply, I2C address 0x18. Free part data from BoardPilot.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/parts/mcp9808/","about":"MCP9808 precision temperature","keywords":"mcp9808, microchip, precision, temperature, temperatura, termometro","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Parts library","item":"https://boardpilot.agentflowbind.com/parts/"},{"@type":"ListItem","position":3,"name":"MCP9808 precision temperature","item":"https://boardpilot.agentflowbind.com/parts/mcp9808/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/#how" data-i18n="nav.how">How it works</a>
+          <a href="/#safety" data-i18n="nav.safety">Safety</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/esp32-pinout/" data-i18n="nav.pinout">ESP32 pinout</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/parts/mcp9808/" hreflang="en" class="on">EN</a><a href="/it/parts/mcp9808/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs"><a href="/">BoardPilot</a> / <a href="/parts/">Parts library</a> / <span>MCP9808 precision temperature</span></nav>
+        <h1>MCP9808 precision temperature with ESP32</h1>
+        <div class="facts-row">
+          <span><b>Supply</b> 3.3-5 V</span>
+          <span><b>Bus</b> I2C</span>
+          <span><b>I2C address</b> <code>0x18 / 0x19 / 0x1A / 0x1B / 0x1C / 0x1D / 0x1E / 0x1F</code></span>
+          <span><b>Measures</b> temperature</span>
+        </div>
+        <svg viewBox="0 0 268 170" class="part-svg" style="max-width:335px" role="img" aria-label="MCP9808 precision temperature pins"><rect x="20" y="16" width="228" height="112" rx="10" fill="#1F4FA8" stroke="rgba(255,255,255,.18)"/><rect x="114" y="36" width="40" height="30" rx="4" fill="#15181c" opacity=".85"/><g><rect x="39" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="43" cy="118" r="7" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><text x="43" y="100" transform="rotate(-60 43 100)" class="pp">VDD</text></g><g><rect x="65" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="69" cy="118" r="7" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><text x="69" y="100" transform="rotate(-60 69 100)" class="pp">GND</text></g><g><rect x="91" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="95" cy="118" r="7" fill="#12171C" stroke="#9ADCF7" stroke-width="3"/><text x="95" y="100" transform="rotate(-60 95 100)" class="pp">SCL</text></g><g><rect x="117" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="121" cy="118" r="7" fill="#12171C" stroke="#3FB6E8" stroke-width="3"/><text x="121" y="100" transform="rotate(-60 121 100)" class="pp">SDA</text></g><g><rect x="143" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="147" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="147" y="100" transform="rotate(-60 147 100)" class="pp">ALERT</text></g><g><rect x="169" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="173" cy="118" r="7" fill="#12171C" stroke="#7D8997" stroke-width="3"/><text x="173" y="100" transform="rotate(-60 173 100)" class="pp">A2</text></g><g><rect x="195" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="199" cy="118" r="7" fill="#12171C" stroke="#7D8997" stroke-width="3"/><text x="199" y="100" transform="rotate(-60 199 100)" class="pp">A1</text></g><g><rect x="221" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="225" cy="118" r="7" fill="#12171C" stroke="#7D8997" stroke-width="3"/><text x="225" y="100" transform="rotate(-60 225 100)" class="pp">A0</text></g></svg>
+        <h2>Pins and ESP32 wiring</h2>
+        <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Role</th><th>ESP32 pin</th><th>Notes</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>VDD</td><td>Power</td><td class="mono">3V3</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td>Ground</td><td class="mono">GND</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#9ADCF7"></span>SCL</td><td>I2C clock (SCL)</td><td class="mono">D22</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#3FB6E8"></span>SDA</td><td>I2C data (SDA)</td><td class="mono">D21</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>ALERT</td><td>Interrupt</td><td class="mono">D35</td><td>Alert output (open drain), optional</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>A2</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Address bit 2. Pulled LOW on the board</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>A1</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Address bit 1. Pulled LOW on the board</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>A0</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Address bit 0. Pulled LOW on the board (0x18)</td></tr></tbody></table></div>
+        <p class="fine">Suggested wiring for the 30-pin ESP32 DevKit, avoiding flash, input-only and strapping pins. BoardPilot checks it for you as you wire.</p>
+        
+        <h2>Check it is the real chip</h2><p>Read register 0x07: a genuine part answers 0x04. BoardPilot does this automatically in “Debug a problem”.</p>
+        <h2>Starter code (Arduino)</h2><pre class="code"><code>#include &lt;Wire.h&gt;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22);  // SDA = GPIO 21, SCL = GPIO 22
+  Wire.beginTransmission(0x18);
+  bool found = Wire.endTransmission() == 0;
+  Serial.println(found ? &quot;MCP9808 precision temperature found at 0x18&quot; : &quot;Not found: check power, GND and SDA/SCL&quot;);
+}
+
+void loop() {}</code></pre>
+        <h2>Sources</h2><ul class="sources"><li>Microchip MCP9808 datasheet, Device ID register 0x07 = 0x0400 (first byte read is 0x04)</li><li>Microchip MCP9808 datasheet, Address 0011 A2 A1 A0 = 0x18 to 0x1F; supply 2.7 to 5.5 V</li><li>Adafruit MCP9808 guide, Pinout Vdd, GND, SCL, SDA, Alert, A2, A1, A0</li></ul>
+        <div class="cta-box"><h2>Try it in 3D in BoardPilot</h2><p><a class="btn primary" href="/#download">BoardPilot</a> <a class="btn" href="/parts/mcp9808.json">Part data (JSON)</a></p></div>
+        <h2>Related parts</h2><div class="part-grid"><a class="part-card" href="/parts/ads1015/"><span class="sw" style="background:#1A1A1A"></span><b>ADS1015 12-bit ADC</b></a><a class="part-card" href="/parts/ads1115/"><span class="sw" style="background:#1F4FA8"></span><b>ADS1115 16-bit ADC</b></a><a class="part-card" href="/parts/adxl375/"><span class="sw" style="background:#1A1A1A"></span><b>ADXL375 high-g accelerometer (±200 g)</b></a><a class="part-card" href="/parts/aht10/"><span class="sw" style="background:#5B2A86"></span><b>AHT10 temperature + humidity</b></a><a class="part-card" href="/parts/aht20-bmp280/"><span class="sw" style="background:#1F4FA8"></span><b>AHT20 + BMP280 combo module</b></a><a class="part-card" href="/parts/aht20/"><span class="sw" style="background:#1A1A1A"></span><b>AHT20 temperature + humidity</b></a></div>
+        <p class="fine">Part data: CC BY 4.0, free to reuse with credit to BoardPilot.</p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/esp32-pinout/" data-i18n="nav.pinout">ESP32 pinout</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

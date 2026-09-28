@@ -1,0 +1,73 @@
+{
+  "id": "sds011",
+  "name": "Nova SDS011 particulate matter sensor",
+  "category": "sensor",
+  "measures": [
+    "particulates"
+  ],
+  "pins": [
+    {
+      "name": "CTL",
+      "role": "passive",
+      "notes": "Pin 1. Reserved. Leave unconnected"
+    },
+    {
+      "name": "PWM25",
+      "role": "digital_out",
+      "notes": "Pin 2 (marked 1um): PM2.5 PWM output. Optional"
+    },
+    {
+      "name": "5V",
+      "role": "power",
+      "notes": "Pin 3. Needs 5 V for the fan: use VIN"
+    },
+    {
+      "name": "PWM10",
+      "role": "digital_out",
+      "notes": "Pin 4 (marked 25um): PM10 PWM output. Optional"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Pin 5"
+    },
+    {
+      "name": "RX",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Pin 6. UART: the part receives data here. Connect to an ESP32 TX pin"
+    },
+    {
+      "name": "TX",
+      "role": "digital_out",
+      "notes": "Pin 7. UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud, 3.3 V level)"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      71,
+      70,
+      23
+    ],
+    "color": "#C9CED4"
+  },
+  "keywords": [
+    "sds011",
+    "nova fitness",
+    "pm2.5",
+    "pm10",
+    "dust",
+    "particulate",
+    "polveri sottili",
+    "qualità aria"
+  ],
+  "sources": [
+    {
+      "title": "Nova Fitness SDS011 datasheet",
+      "section": "Pin 1 CTL, 2 PM2.5 PWM, 3 5V, 4 PM10 PWM, 5 GND, 6 RX, 7 TX; UART 9600 baud, 3.3 V TTL"
+    }
+  ]
+}

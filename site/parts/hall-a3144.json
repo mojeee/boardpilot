@@ -1,0 +1,50 @@
+{
+  "id": "hall-a3144",
+  "name": "A3144 hall effect switch",
+  "category": "sensor",
+  "measures": [
+    "magnetic field"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Left leg, printed face towards you. Needs at least 4.5 V: use VIN"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Middle leg"
+    },
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "Right leg. Open collector: use INPUT_PULLUP (to 3.3 V), never a pull-up to 5 V"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      8.6,
+      3,
+      3
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "a3144",
+    "hall",
+    "magnet",
+    "magnetic switch",
+    "sensore hall",
+    "magnete"
+  ],
+  "sources": [
+    {
+      "title": "Allegro A3141/2/3/4 datasheet",
+      "section": "Pin 1 supply, 2 ground, 3 output (open collector); supply 4.5 to 24 V"
+    }
+  ]
+}

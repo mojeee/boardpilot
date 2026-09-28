@@ -1,0 +1,104 @@
+{
+  "id": "pcf8574-expander",
+  "name": "PCF8574 I/O expander module",
+  "category": "output",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Interrupt output, optional"
+    },
+    {
+      "name": "P0",
+      "role": "passive",
+      "notes": "Expander I/O pins go to your LEDs or buttons, not to the ESP32"
+    },
+    {
+      "name": "P1",
+      "role": "passive"
+    },
+    {
+      "name": "P2",
+      "role": "passive"
+    },
+    {
+      "name": "P3",
+      "role": "passive"
+    },
+    {
+      "name": "P4",
+      "role": "passive"
+    },
+    {
+      "name": "P5",
+      "role": "passive"
+    },
+    {
+      "name": "P6",
+      "role": "passive"
+    },
+    {
+      "name": "P7",
+      "role": "passive"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x20",
+    "0x21",
+    "0x22",
+    "0x23",
+    "0x24",
+    "0x25",
+    "0x26",
+    "0x27",
+    "0x38",
+    "0x39",
+    "0x3A",
+    "0x3B",
+    "0x3C",
+    "0x3D",
+    "0x3E",
+    "0x3F"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "module",
+    "size": [
+      40,
+      20,
+      5
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "pcf8574",
+    "io expander",
+    "i2c expander",
+    "gpio",
+    "espansore"
+  ],
+  "sources": [
+    {
+      "title": "NXP PCF8574 / PCF8574A datasheet",
+      "section": "Address 0x20 to 0x27 (PCF8574) or 0x38 to 0x3F (PCF8574A) via A0-A2"
+    }
+  ]
+}

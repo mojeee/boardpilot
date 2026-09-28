@@ -1,0 +1,57 @@
+{
+  "id": "max3232-rs232",
+  "name": "MAX3232 RS232 to TTL module (DB9)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3.0 to 5.5 V"
+    },
+    {
+      "name": "TXD",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "TTL input: connect to an ESP32 TX pin. Labels differ between sellers: if no data, swap TXD and RXD"
+    },
+    {
+      "name": "RXD",
+      "role": "digital_out",
+      "notes": "TTL output: connect to an ESP32 RX pin"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      42,
+      33,
+      13
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "max3232",
+    "rs232",
+    "db9",
+    "serial port",
+    "com port",
+    "seriale",
+    "porta seriale"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments MAX3232 datasheet",
+      "section": "Supply 3 to 5.5 V; DIN/ROUT are the TTL side"
+    },
+    {
+      "title": "Common MAX3232 DB9 modules",
+      "section": "Header order and TX/RX labels vary: check the silkscreen"
+    }
+  ]
+}

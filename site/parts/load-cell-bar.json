@@ -1,0 +1,60 @@
+{
+  "id": "load-cell-bar",
+  "name": "Bar load cell 1-20 kg (4 wires)",
+  "category": "sensor",
+  "measures": [
+    "weight",
+    "force"
+  ],
+  "pins": [
+    {
+      "name": "RED",
+      "role": "passive",
+      "notes": "Excitation + (E+ on the HX711). Never to the ESP32"
+    },
+    {
+      "name": "BLACK",
+      "role": "passive",
+      "notes": "Excitation - (E- on the HX711)"
+    },
+    {
+      "name": "WHITE",
+      "role": "passive",
+      "notes": "Signal - (A- on the HX711)"
+    },
+    {
+      "name": "GREEN",
+      "role": "passive",
+      "notes": "Signal + (A+ on the HX711). Colours vary: if readings fall under load, swap A+ and A-"
+    }
+  ],
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      80,
+      12.7,
+      12.7
+    ],
+    "color": "#C9CED4"
+  },
+  "keywords": [
+    "load cell",
+    "bar load cell",
+    "strain gauge",
+    "scale",
+    "cella di carico",
+    "bilancia",
+    "peso"
+  ],
+  "sources": [
+    {
+      "title": "Avia Semiconductor HX711 datasheet",
+      "section": "Bridge input A+/A-, excitation E+/E-"
+    },
+    {
+      "title": "Typical bar load cell seller datasheet",
+      "section": "Full bridge, rated output about 1 mV/V"
+    }
+  ]
+}

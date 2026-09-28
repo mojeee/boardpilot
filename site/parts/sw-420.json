@@ -1,0 +1,47 @@
+{
+  "id": "sw-420",
+  "name": "SW-420 vibration sensor module",
+  "category": "sensor",
+  "measures": [
+    "vibration"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "Changes level when the module shakes. Sensitivity set with the trimmer"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      32,
+      14,
+      8
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "sw-420",
+    "vibration",
+    "shock",
+    "vibrazione",
+    "urto"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments LM393 datasheet",
+      "section": "Comparator output driven by the vibration switch"
+    }
+  ]
+}

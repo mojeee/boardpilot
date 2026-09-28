@@ -1,0 +1,56 @@
+{
+  "id": "jsn-sr04t",
+  "name": "JSN-SR04T waterproof ultrasonic distance",
+  "category": "sensor",
+  "measures": [
+    "distance"
+  ],
+  "pins": [
+    {
+      "name": "5V",
+      "role": "power",
+      "notes": "Use VIN"
+    },
+    {
+      "name": "TRIG",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "ECHO",
+      "role": "digital_out",
+      "notes": "May output 5 V: use a voltage divider"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      41,
+      28,
+      10
+    ],
+    "color": "#1E7A3C"
+  },
+  "keywords": [
+    "jsn-sr04t",
+    "aj-sr04m",
+    "waterproof",
+    "ultrasonic",
+    "distance",
+    "impermeabile",
+    "distanza",
+    "ultrasuoni"
+  ],
+  "sources": [
+    {
+      "title": "JSN-SR04T module manual",
+      "section": "Mode 1 (default): trigger/echo like HC-SR04, minimum distance about 20 cm"
+    }
+  ]
+}

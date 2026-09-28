@@ -1,0 +1,49 @@
+{
+  "id": "water-level-sensor",
+  "name": "Water level sensor strip",
+  "category": "sensor",
+  "measures": [
+    "water level"
+  ],
+  "pins": [
+    {
+      "name": "S",
+      "role": "analog_out",
+      "notes": "Higher voltage means more of the strip is under water. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Marked + on the board. Use 3V3"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Marked - on the board"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      20,
+      62,
+      3
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "water level",
+    "water sensor",
+    "liquid",
+    "livello acqua",
+    "acqua"
+  ],
+  "sources": [
+    {
+      "title": "Generic water level sensor module",
+      "section": "Exposed traces with an NPN transistor, analog output"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "mq8",
+  "name": "MQ-8 hydrogen sensor",
+  "category": "sensor",
+  "measures": ["hydrogen"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V for the heater (about 150 mA): use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DO", "role": "digital_out", "notes": "Threshold output. Its HIGH level is 5 V: use a voltage divider" },
+    { "name": "AO", "role": "analog_out", "notes": "Can reach 5 V: use a voltage divider before the ADC" }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "keywords": ["mq-8", "mq8", "hydrogen", "h2", "idrogeno", "gas"],
+  "sources": [
+    { "title": "Hanwei MQ-8 datasheet", "section": "Most sensitive to hydrogen (H2)" },
+    { "title": "Hanwei MQ-8 datasheet", "section": "Heater 5 V; needs a burn-in / warm-up time before readings are stable" }
+  ]
+}

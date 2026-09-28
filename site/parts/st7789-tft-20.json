@@ -1,0 +1,74 @@
+{
+  "id": "st7789-tft-20",
+  "name": "ST7789 2.0\" IPS TFT 240x320 (SPI)",
+  "category": "display",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3.3 V (some boards have a regulator and accept 5 V)"
+    },
+    {
+      "name": "SCL",
+      "role": "spi_sck",
+      "notes": "SPI clock, not I2C"
+    },
+    {
+      "name": "SDA",
+      "role": "spi_mosi",
+      "notes": "SPI data (MOSI), not I2C"
+    },
+    {
+      "name": "RES",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Reset"
+    },
+    {
+      "name": "DC",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data / command select"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs"
+    },
+    {
+      "name": "BL",
+      "role": "passive",
+      "notes": "Backlight. To 3V3, or to a PWM pin through a transistor for dimming"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": {
+    "shape": "oled",
+    "size": [
+      36,
+      53,
+      4
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "st7789",
+    "ips",
+    "tft",
+    "2.0",
+    "240x320",
+    "color display",
+    "display",
+    "schermo"
+  ],
+  "sources": [
+    {
+      "title": "Sitronix ST7789V datasheet",
+      "section": "4-line serial interface"
+    }
+  ]
+}

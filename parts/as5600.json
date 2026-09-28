@@ -1,0 +1,24 @@
+{
+  "id": "as5600",
+  "name": "AS5600 magnetic angle encoder",
+  "category": "sensor",
+  "measures": ["angle", "rotation"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Use 3V3 so OUT stays under 3.3 V" },
+    { "name": "OUT", "role": "analog_out", "notes": "Angle as analog voltage (or PWM, if configured). Optional. To an ADC pin (prefer ADC1: GPIO 32 to 39)" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DIR", "role": "passive", "notes": "Direction: GND = angle grows clockwise, VCC = counter-clockwise. Never leave floating" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "GPO", "role": "passive", "notes": "Programming pin. Leave unconnected" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x36"],
+  "voltage": "3.3-5",
+  "model": { "shape": "breakout", "size": [23,23,1.6], "color": "#5B2A86" },
+  "keywords": ["as5600", "ams", "magnetic encoder", "angle", "encoder magnetico", "angolo"],
+  "sources": [
+    { "title": "ams AS5600 datasheet", "section": "Fixed I2C address 0x36; RAW ANGLE registers 0x0C/0x0D, 12 bit" },
+    { "title": "ams AS5600 datasheet", "section": "DIR pin sets the rotation direction and must not float; 3.3 V or 5 V operation" }
+  ]
+}

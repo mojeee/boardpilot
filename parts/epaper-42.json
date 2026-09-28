@@ -1,0 +1,22 @@
+{
+  "id": "epaper-42",
+  "name": "E-paper 4.2\" 400x300 (SPI)",
+  "category": "display",
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "3.3 V. Newer boards add a 9th pin PWR: tie it to 3V3 or drive it HIGH" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DIN", "role": "spi_mosi", "notes": "SPI data (MOSI)" },
+    { "name": "CLK", "role": "spi_sck", "notes": "SPI clock" },
+    { "name": "CS", "role": "spi_cs" },
+    { "name": "DC", "role": "digital_in", "needsOutput": true, "notes": "Data / command select" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true, "notes": "Reset" },
+    { "name": "BUSY", "role": "digital_out", "notes": "Tells when the screen is refreshing. Wait for it before sending more" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": { "shape": "oled", "size": [80, 80, 4], "color": "#EDEDED" },
+  "keywords": ["e-paper", "e-ink", "epaper", "4.2", "400x300", "waveshare", "carta elettronica"],
+  "sources": [
+    { "title": "Waveshare 4.2inch e-Paper Module user manual", "section": "Pins VCC, GND, DIN, CLK, CS, DC, RST, BUSY" }
+  ]
+}

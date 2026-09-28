@@ -1,0 +1,117 @@
+{
+  "id": "txs0108e-level-shifter",
+  "name": "TXS0108E 8-channel level shifter",
+  "category": "output",
+  "pins": [
+    {
+      "name": "VA",
+      "role": "power",
+      "notes": "Low side supply: 3.3 V from the ESP32 (1.2 to 3.6 V)"
+    },
+    {
+      "name": "A1",
+      "role": "passive",
+      "notes": "Low side: to ESP32 GPIOs"
+    },
+    {
+      "name": "A2",
+      "role": "passive"
+    },
+    {
+      "name": "A3",
+      "role": "passive"
+    },
+    {
+      "name": "A4",
+      "role": "passive"
+    },
+    {
+      "name": "A5",
+      "role": "passive"
+    },
+    {
+      "name": "A6",
+      "role": "passive"
+    },
+    {
+      "name": "A7",
+      "role": "passive"
+    },
+    {
+      "name": "A8",
+      "role": "passive"
+    },
+    {
+      "name": "OE",
+      "role": "passive",
+      "notes": "Output enable: HIGH enables. Tie to VA"
+    },
+    {
+      "name": "VB",
+      "role": "passive",
+      "notes": "High side supply, for example 5 V (1.65 to 5.5 V, at least VA)"
+    },
+    {
+      "name": "B1",
+      "role": "passive",
+      "notes": "High side: to the 5 V device"
+    },
+    {
+      "name": "B2",
+      "role": "passive"
+    },
+    {
+      "name": "B3",
+      "role": "passive"
+    },
+    {
+      "name": "B4",
+      "role": "passive"
+    },
+    {
+      "name": "B5",
+      "role": "passive"
+    },
+    {
+      "name": "B6",
+      "role": "passive"
+    },
+    {
+      "name": "B7",
+      "role": "passive"
+    },
+    {
+      "name": "B8",
+      "role": "passive"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      51.8,
+      16,
+      3
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "txs0108e",
+    "level shifter",
+    "logic level converter",
+    "5v to 3.3v",
+    "traslatore di livello",
+    "bidirectional"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments TXS0108E datasheet",
+      "section": "VCCA 1.2 to 3.6 V, VCCB 1.65 to 5.5 V; OE; weak drive, not for strong pull-ups or heavy loads"
+    }
+  ]
+}

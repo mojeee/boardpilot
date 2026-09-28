@@ -1,0 +1,58 @@
+{
+  "id": "soil-moisture-resistive",
+  "name": "Resistive soil moisture sensor (YL-69 / FC-28)",
+  "category": "sensor",
+  "measures": [
+    "soil moisture"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Use 3V3 so AO stays within the ADC range"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "Changes level at the threshold set with the trimmer"
+    },
+    {
+      "name": "AO",
+      "role": "analog_out",
+      "notes": "To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      30,
+      16,
+      8
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "yl-69",
+    "fc-28",
+    "soil moisture",
+    "resistive",
+    "umidità terreno",
+    "terreno"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments LM393 datasheet",
+      "section": "Comparator output (DO)"
+    },
+    {
+      "title": "Espressif ESP32 Technical Reference Manual",
+      "section": "ADC: input range"
+    }
+  ]
+}

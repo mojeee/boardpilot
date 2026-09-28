@@ -1,0 +1,19 @@
+{
+  "id": "turbidity-sensor",
+  "name": "Turbidity sensor (TS-300B / SEN0189)",
+  "category": "sensor",
+  "measures": ["turbidity"],
+  "pins": [
+    { "name": "OUT", "role": "analog_out", "notes": "Signal. Up to about 4.5 V in clear water: use a voltage divider before the ADC" },
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [30, 20, 10], "color": "#1A1A1A" },
+  "keywords": ["turbidity", "ntu", "water quality", "sen0189", "torbidità", "qualità acqua"],
+  "sources": [
+    { "title": "DFRobot SEN0189 turbidity sensor wiki", "section": "Supply 5 V; analog output 0 to 4.5 V, lower voltage means murkier water" },
+    { "title": "DFRobot SEN0189 turbidity sensor wiki", "section": "Adapter board has an analog / digital switch; pin order varies between boards" }
+  ]
+}

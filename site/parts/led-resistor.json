@@ -1,0 +1,43 @@
+{
+  "id": "led-resistor",
+  "name": "LED with 220 Ω resistor",
+  "category": "output",
+  "pins": [
+    {
+      "name": "A",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Anode (long leg), through the resistor to a GPIO"
+    },
+    {
+      "name": "K",
+      "role": "ground",
+      "notes": "Cathode (short leg, flat side)"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "led",
+    "size": [
+      5,
+      5,
+      8.6
+    ],
+    "color": "#FF4D4D"
+  },
+  "keywords": [
+    "led",
+    "light",
+    "diode",
+    "resistor",
+    "blink"
+  ],
+  "sources": [
+    {
+      "title": "Generic 5 mm LED",
+      "section": "Forward voltage about 2 V (red); 220 Ω at 3.3 V gives about 6 mA"
+    }
+  ],
+  "starterSketch": "led"
+}

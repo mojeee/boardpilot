@@ -1,0 +1,46 @@
+{
+  "id": "potentiometer",
+  "name": "10 kΩ potentiometer",
+  "category": "input",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Use 3V3, never VIN: the ESP32 ADC must not see more than 3.3 V"
+    },
+    {
+      "name": "OUT",
+      "role": "analog_out",
+      "notes": "Wiper, to an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": {
+    "shape": "pot",
+    "size": [
+      10,
+      12,
+      7
+    ],
+    "color": "#2E6FD8"
+  },
+  "keywords": [
+    "potentiometer",
+    "pot",
+    "knob",
+    "trimmer",
+    "variable resistor"
+  ],
+  "sources": [
+    {
+      "title": "Espressif ESP-IDF Programming Guide",
+      "section": "ADC: input range and attenuation"
+    }
+  ],
+  "starterSketch": "pot"
+}

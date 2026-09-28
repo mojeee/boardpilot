@@ -1,0 +1,23 @@
+{
+  "id": "tf-luna-i2c",
+  "name": "Benewake TF-Luna LiDAR (I2C mode)",
+  "category": "sensor",
+  "measures": ["distance"],
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Pin 1. Needs 5 V: use VIN" },
+    { "name": "SDA", "role": "i2c_sda", "notes": "Pin 2" },
+    { "name": "SCL", "role": "i2c_scl", "notes": "Pin 3" },
+    { "name": "GND", "role": "ground", "notes": "Pin 4" },
+    { "name": "CFG", "role": "passive", "notes": "Pin 5. Tie to GND before power-up to select I2C" },
+    { "name": "MUX", "role": "digital_out", "notes": "Pin 6, on/off output. Optional" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x10"],
+  "voltage": "5",
+  "model": { "shape": "module", "size": [35,21,13], "color": "#1A1A1A" },
+  "keywords": ["tf-luna", "benewake", "lidar", "i2c", "laser distance", "distance", "distanza"],
+  "sources": [
+    { "title": "Benewake TF-Luna product manual", "section": "Pin 5 to GND selects I2C; default I2C address 0x10" },
+    { "title": "Benewake TF-Luna product manual", "section": "Supply 3.7 to 5.2 V; I/O level LVTTL 3.3 V" }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "am2320",
+  "name": "AM2320 temperature + humidity",
+  "category": "sensor",
+  "measures": ["temperature", "humidity"],
+  "pins": [
+    { "name": "VDD", "role": "power", "notes": "Pin 1 (left, grille facing you)" },
+    { "name": "SDA", "role": "i2c_sda", "notes": "Needs a pull-up to 3.3 V (about 4.7 kΩ)" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl", "notes": "Needs a pull-up to 3.3 V (about 4.7 kΩ). Tie SCL to GND at power-up to use the one-wire mode instead" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x5C"],
+  "voltage": "3.3-5",
+  "model": { "shape": "dht", "size": [12.5, 22, 7], "color": "#F2F2F2" },
+  "keywords": ["am2320", "aosong", "humidity", "temperature", "umidità", "temperatura"],
+  "sources": [
+    { "title": "Aosong AM2320 datasheet", "section": "Pin 1 VDD, 2 SDA, 3 GND, 4 SCL; supply 3.1 to 5.5 V" },
+    { "title": "Aosong AM2320 datasheet", "section": "I2C address 0xB8 (8-bit) = 0x5C; sleeps between reads and must be woken first, so a plain scan can miss it" }
+  ]
+}

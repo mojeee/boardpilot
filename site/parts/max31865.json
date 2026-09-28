@@ -1,0 +1,96 @@
+{
+  "id": "max31865",
+  "name": "MAX31865 PT100/PT1000 RTD amplifier",
+  "category": "sensor",
+  "measures": [
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "3VO",
+      "role": "passive",
+      "notes": "3.3 V output of the on-board regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "CLK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "SDO",
+      "role": "spi_miso",
+      "notes": "Data out of the module (SPI MISO)"
+    },
+    {
+      "name": "SDI",
+      "role": "spi_mosi",
+      "notes": "Data into the module (SPI MOSI)"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs"
+    },
+    {
+      "name": "RDY",
+      "role": "int",
+      "notes": "Data ready (active LOW), optional"
+    },
+    {
+      "name": "F+",
+      "role": "passive",
+      "notes": "Force + screw terminal (4-wire RTD)"
+    },
+    {
+      "name": "RTD+",
+      "role": "passive",
+      "notes": "RTD + screw terminal"
+    },
+    {
+      "name": "RTD-",
+      "role": "passive",
+      "notes": "RTD - screw terminal"
+    },
+    {
+      "name": "F-",
+      "role": "passive",
+      "notes": "Force - screw terminal. Set the 2/3/4-wire jumpers to match your probe"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      31.5,
+      28,
+      8
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "max31865",
+    "pt100",
+    "pt1000",
+    "rtd",
+    "platinum",
+    "termoresistenza",
+    "temperatura"
+  ],
+  "sources": [
+    {
+      "title": "Maxim MAX31865 datasheet",
+      "section": "SPI modes 1 and 3; reference resistor 430 Ω for PT100, 4.3 kΩ for PT1000"
+    },
+    {
+      "title": "Adafruit MAX31865 guide",
+      "section": "Pinout VIN, 3Vo, GND, CLK, SDO, SDI, CS, RDY; 2/3/4-wire jumpers"
+    }
+  ]
+}

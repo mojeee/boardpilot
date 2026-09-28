@@ -1,0 +1,13 @@
+The BoardPilot parts library (all *.json files in this folder, and the generated
+https://boardpilot.agentflowbind.com/parts.json) is licensed under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0).
+
+You are free to share and adapt the data for any purpose, including commercially,
+as long as you give appropriate credit, for example:
+
+  "Part data from the BoardPilot parts library (https://boardpilot.agentflowbind.com/parts/), CC BY 4.0"
+
+Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+The part data is provided as is, without warranty. Pin orders and addresses can differ between
+boards from different makers: always check the labels on your board and the chip datasheet.

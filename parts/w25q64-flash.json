@@ -1,0 +1,22 @@
+{
+  "id": "w25q64-flash",
+  "name": "W25Q64 SPI flash memory (8 MB)",
+  "category": "output",
+  "pins": [
+    { "name": "CS", "role": "spi_cs", "notes": "Chip select, active LOW. Never use ESP32 GPIO 6 to 11" },
+    { "name": "DO", "role": "spi_miso", "notes": "Data out (IO1)" },
+    { "name": "WP", "role": "passive", "notes": "Write protect, active LOW. Tie to VCC" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DI", "role": "spi_mosi", "notes": "Data in (IO0)" },
+    { "name": "CLK", "role": "spi_sck" },
+    { "name": "HOLD", "role": "passive", "notes": "Hold, active LOW. Tie to VCC" },
+    { "name": "VCC", "role": "power", "notes": "2.7 to 3.6 V. Never 5 V" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": { "shape": "chip", "size": [21.4, 5.3, 1.8], "color": "#1A1A1A" },
+  "keywords": ["w25q64", "winbond", "spi flash", "nor flash", "memory", "storage", "memoria flash"],
+  "sources": [
+    { "title": "Winbond W25Q64FV datasheet", "section": "Pin configuration SOIC 208-mil; JEDEC ID EF 40 17 (instruction 9Fh); supply 2.7 to 3.6 V" }
+  ]
+}

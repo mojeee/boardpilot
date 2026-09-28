@@ -1,0 +1,68 @@
+{
+  "id": "tp4056-charger",
+  "name": "TP4056 Li-ion charger with protection",
+  "category": "output",
+  "pins": [
+    {
+      "name": "IN+",
+      "role": "passive",
+      "notes": "5 V input (or the USB connector)"
+    },
+    {
+      "name": "IN-",
+      "role": "ground",
+      "notes": "Input ground"
+    },
+    {
+      "name": "B+",
+      "role": "passive",
+      "notes": "To the cell +. One 3.7 V Li-ion / LiPo cell only"
+    },
+    {
+      "name": "B-",
+      "role": "passive",
+      "notes": "To the cell -. Not the same as GND: protection sits in between"
+    },
+    {
+      "name": "OUT+",
+      "role": "passive",
+      "notes": "3.0 to 4.2 V to the load. Too low for VIN: use an LDO or a boost to 5 V"
+    },
+    {
+      "name": "OUT-",
+      "role": "ground",
+      "notes": "Load ground: to the ESP32 GND"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      26,
+      17,
+      5
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "tp4056",
+    "charger",
+    "lipo",
+    "li-ion",
+    "18650",
+    "battery",
+    "caricabatteria",
+    "batteria"
+  ],
+  "sources": [
+    {
+      "title": "NanJing Top Power TP4056 datasheet",
+      "section": "Charge to 4.2 V; current set by RPROG (1.2 kΩ = 1 A)"
+    },
+    {
+      "title": "Fortune DW01A datasheet",
+      "section": "Over-discharge, over-charge and over-current protection"
+    }
+  ]
+}

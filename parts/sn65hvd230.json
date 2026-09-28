@@ -1,0 +1,21 @@
+{
+  "id": "sn65hvd230",
+  "name": "SN65HVD230 CAN transceiver (3.3 V)",
+  "category": "sensor",
+  "pins": [
+    { "name": "3V3", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "CTX", "role": "digital_in", "needsOutput": true, "notes": "Transmit data in. Connect to the ESP32 TWAI TX pin" },
+    { "name": "CRX", "role": "digital_out", "notes": "Receive data out. Connect to the ESP32 TWAI RX pin" },
+    { "name": "CANH", "role": "passive", "notes": "CAN high. To the bus, never to the ESP32" },
+    { "name": "CANL", "role": "passive", "notes": "CAN low. To the bus, never to the ESP32" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [24,17,8], "color": "#1F4FA8" },
+  "keywords": ["sn65hvd230", "vp230", "can bus", "can", "twai", "transceiver", "automotive"],
+  "sources": [
+    { "title": "Texas Instruments SN65HVD230 datasheet", "section": "Supply 3 to 3.6 V; D (TX in), R (RX out), CANH, CANL" },
+    { "title": "Espressif ESP32 Technical Reference Manual", "section": "TWAI controller needs an external transceiver" }
+  ]
+}

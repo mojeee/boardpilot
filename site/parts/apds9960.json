@@ -1,0 +1,78 @@
+{
+  "id": "apds9960",
+  "name": "APDS-9960 gesture, proximity + colour",
+  "category": "sensor",
+  "measures": [
+    "gesture",
+    "proximity",
+    "color",
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "VL",
+      "role": "passive",
+      "notes": "IR LED supply. Most boards link it to VCC with a solder jumper"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Interrupt output (active LOW)"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x39"
+  ],
+  "idCheck": {
+    "register": "0x92",
+    "expect": "0xAB"
+  },
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      20,
+      15,
+      1.6
+    ],
+    "color": "#5B2A86"
+  },
+  "keywords": [
+    "apds9960",
+    "apds-9960",
+    "gesture",
+    "proximity",
+    "color",
+    "gesti",
+    "prossimità",
+    "colore"
+  ],
+  "sources": [
+    {
+      "title": "Broadcom APDS-9960 datasheet",
+      "section": "Register 0x92 ID (reads 0xAB)"
+    },
+    {
+      "title": "Broadcom APDS-9960 datasheet",
+      "section": "I2C address 0x39; supply 2.4 to 3.6 V"
+    }
+  ]
+}

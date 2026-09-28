@@ -1,0 +1,40 @@
+{
+  "id": "push-button",
+  "name": "Push button",
+  "category": "input",
+  "pins": [
+    {
+      "name": "1",
+      "role": "digital_out",
+      "notes": "To a GPIO; use INPUT_PULLUP in code"
+    },
+    {
+      "name": "2",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "button",
+    "size": [
+      6,
+      6,
+      5
+    ],
+    "color": "#2B2B2B"
+  },
+  "keywords": [
+    "button",
+    "switch",
+    "push",
+    "tactile"
+  ],
+  "sources": [
+    {
+      "title": "Arduino reference",
+      "section": "pinMode INPUT_PULLUP"
+    }
+  ],
+  "starterSketch": "button"
+}

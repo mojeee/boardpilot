@@ -1,0 +1,17 @@
+{
+  "id": "load-cell-50kg-half",
+  "name": "Half-bridge load cell 50 kg (3 wires)",
+  "category": "sensor",
+  "measures": ["weight"],
+  "pins": [
+    { "name": "RED", "role": "passive", "notes": "Centre tap: signal. Colours vary: the two outer wires show the highest resistance between them" },
+    { "name": "BLACK", "role": "passive", "notes": "Outer end: excitation" },
+    { "name": "WHITE", "role": "passive", "notes": "Outer end: excitation" }
+  ],
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [34,34,8], "color": "#C9CED4" },
+  "keywords": ["load cell", "50kg", "half bridge", "body scale", "cella di carico", "bilancia pesapersone", "peso"],
+  "sources": [
+    { "title": "Avia Semiconductor HX711 datasheet", "section": "Needs a full bridge: use 2 or 4 half-bridge cells, or add 2 matching resistors" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "uln2003-board",
+  "name": "ULN2003 driver board (4 channels)",
+  "category": "output",
+  "pins": [
+    { "name": "IN1", "role": "digital_in", "needsOutput": true },
+    { "name": "IN2", "role": "digital_in", "needsOutput": true },
+    { "name": "IN3", "role": "digital_in", "needsOutput": true },
+    { "name": "IN4", "role": "digital_in", "needsOutput": true },
+    { "name": "-", "role": "ground", "notes": "Share it with the ESP32 GND" },
+    { "name": "+", "role": "passive", "notes": "Load supply 5 to 12 V. For a 28BYJ-48 5 V: VIN is fine" },
+    { "name": "OUT1", "role": "passive", "notes": "Low-side switch to the load. White motor connector" },
+    { "name": "OUT2", "role": "passive" },
+    { "name": "OUT3", "role": "passive" },
+    { "name": "OUT4", "role": "passive" }
+  ],
+  "bus": "gpio",
+  "voltage": "5-12",
+  "model": { "shape": "module", "size": [35, 32, 15], "color": "#2E8B57" },
+  "keywords": ["uln2003", "darlington", "driver board", "stepper", "low side", "transistor"],
+  "sources": [
+    { "title": "Texas Instruments ULN2003A datasheet", "section": "Darlington array, 500 mA per channel, inputs compatible with 3.3 V logic" }
+  ]
+}

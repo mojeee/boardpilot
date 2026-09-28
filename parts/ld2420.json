@@ -1,0 +1,20 @@
+{
+  "id": "ld2420",
+  "name": "HLK-LD2420 mmWave presence radar",
+  "category": "sensor",
+  "measures": ["presence", "distance"],
+  "pins": [
+    { "name": "3V3", "role": "power", "notes": "Needs 3.3 V. Pin order may differ by board revision: check the silkscreen" },
+    { "name": "GND", "role": "ground" },
+    { "name": "OT1", "role": "digital_out", "notes": "UART TX of the radar. Connect to an ESP32 RX pin (115200 or 256000 baud, depends on firmware)" },
+    { "name": "RX", "role": "digital_in", "needsOutput": true, "notes": "UART: the part receives data here. Connect to an ESP32 TX pin" },
+    { "name": "OT2", "role": "digital_out", "notes": "HIGH when a person is present (3.3 V)" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [20,20,3], "color": "#1A1A1A" },
+  "keywords": ["ld2420", "hlk-ld2420", "hi-link", "mmwave", "radar", "presence", "presenza"],
+  "sources": [
+    { "title": "Hi-Link HLK-LD2420 user manual", "section": "Supply 3.3 V; pins 3V3, GND, OT1 (UART TX), RX, OT2 (presence output)" }
+  ]
+}

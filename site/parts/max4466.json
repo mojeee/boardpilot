@@ -1,0 +1,49 @@
+{
+  "id": "max4466",
+  "name": "MAX4466 microphone amplifier",
+  "category": "sensor",
+  "measures": [
+    "sound"
+  ],
+  "pins": [
+    {
+      "name": "OUT",
+      "role": "analog_out",
+      "notes": "Audio centred at half the supply. Power from 3V3. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "breakout",
+    "size": [
+      19,
+      13,
+      6
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "max4466",
+    "microphone",
+    "electret",
+    "sound",
+    "audio",
+    "microfono",
+    "suono"
+  ],
+  "sources": [
+    {
+      "title": "Maxim MAX4466 datasheet",
+      "section": "Supply 2.4 to 5.5 V; rail-to-rail output"
+    }
+  ]
+}

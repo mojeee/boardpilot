@@ -1,0 +1,61 @@
+{
+  "id": "neo-m8n-gps",
+  "name": "NEO-M8N GPS module (GY-GPSV3-M8N)",
+  "category": "sensor",
+  "measures": [
+    "position",
+    "time"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "RX",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "UART: the part receives data here. Connect to an ESP32 TX pin"
+    },
+    {
+      "name": "TX",
+      "role": "digital_out",
+      "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud)"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      36,
+      25,
+      8
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "neo-m8n",
+    "gps",
+    "gnss",
+    "u-blox",
+    "glonass",
+    "galileo",
+    "posizione",
+    "navigatore"
+  ],
+  "sources": [
+    {
+      "title": "u-blox NEO-M8 data sheet",
+      "section": "UART default 9600 baud, NMEA output; concurrent GNSS"
+    },
+    {
+      "title": "GY-GPSV3-M8N board",
+      "section": "Header VCC, RX, TX, GND. Some boards print the order reversed or add PPS: check the silkscreen"
+    }
+  ]
+}

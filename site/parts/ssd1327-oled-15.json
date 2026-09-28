@@ -1,0 +1,73 @@
+{
+  "id": "ssd1327-oled-15",
+  "name": "SSD1327 1.5\" grayscale OLED 128x128 (SPI)",
+  "category": "display",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Pin order varies between boards: match by the printed label. 3.3 V or 5 V"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DIN",
+      "role": "spi_mosi",
+      "notes": "SPI data (MOSI). In I2C mode (resistors moved on the back) this is SDA"
+    },
+    {
+      "name": "CLK",
+      "role": "spi_sck",
+      "notes": "SPI clock. In I2C mode this is SCL"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs"
+    },
+    {
+      "name": "DC",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data / command select"
+    },
+    {
+      "name": "RST",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Reset"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "oled",
+    "size": [
+      44.5,
+      37,
+      5
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ssd1327",
+    "oled",
+    "grayscale",
+    "16 gray",
+    "1.5",
+    "128x128",
+    "display",
+    "scala di grigi"
+  ],
+  "sources": [
+    {
+      "title": "Solomon Systech SSD1327 datasheet",
+      "section": "4-wire SPI and I2C interfaces; 16 gray levels"
+    },
+    {
+      "title": "Waveshare 1.5inch OLED Module wiki",
+      "section": "Pins VCC, GND, DIN, CLK, CS, DC, RST; SPI by default"
+    }
+  ]
+}

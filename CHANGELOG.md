@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 (2026-09-28)
+
+- New logo (a chip with a navigation arrow) in the app, app icon, website, favicon and social previews.
+- Parts library grows from 155 to 383 parts: environment, air quality, light, biometrics, motion, distance, electrical measurement, industrial interfaces, displays, LEDs, audio, motor drivers, power modules, radios, GPS, storage, clocks, expanders and inputs.
+- The parts data is now open under CC BY 4.0: one web page per part (English and Italian) with ESP32 wiring, chip-ID check and starter code, a searchable index at /parts/, and the full dataset at /parts.json.
+- Free demo AI: works out of the box through a rate-limited relay (Cloudflare Pages Function) to an older free-tier Gemini model with Google Search grounding for part lookups; a banner explains it is for testing only. Your own Claude, GPT or Gemini key still takes over.
+- Part sizes up to 150 × 150 × 120 mm for long modules.
+- Documentation: new README, docs/ (getting started, hardware setup, parts library, AI), CONTRIBUTING, issue templates (request a part, bug report).
+
 ## 0.3.0 (2026-09-28)
 
 - Windows version: NSIS installer (`BoardPilot-win-x64.exe`), esptool discovery for Windows Python installs, Windows driver hints, native window frame. Releases build macOS and Windows together.

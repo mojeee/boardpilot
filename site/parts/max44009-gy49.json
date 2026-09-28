@@ -1,0 +1,71 @@
+{
+  "id": "max44009-gy49",
+  "name": "GY-49 MAX44009 ambient light",
+  "category": "sensor",
+  "measures": [
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "A0",
+      "role": "passive",
+      "notes": "Address: LOW = 0x4A, HIGH = 0x4B"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Interrupt output, optional"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x4A",
+    "0x4B"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      16.3,
+      15,
+      1.6
+    ],
+    "color": "#5B2A86"
+  },
+  "keywords": [
+    "max44009",
+    "gy-49",
+    "maxim",
+    "lux",
+    "ambient light",
+    "luce",
+    "luminosità"
+  ],
+  "sources": [
+    {
+      "title": "Maxim MAX44009 datasheet",
+      "section": "I2C address 0x4A (A0 LOW) or 0x4B (A0 HIGH); range 0.045 to 188 000 lux"
+    },
+    {
+      "title": "Maxim MAX44009 datasheet",
+      "section": "No ID register"
+    }
+  ]
+}

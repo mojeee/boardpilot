@@ -1,0 +1,17 @@
+{
+  "id": "key-switch-ky004",
+  "name": "Button module (KY-004)",
+  "category": "input",
+  "pins": [
+    { "name": "S", "role": "digital_out", "notes": "Signal: to a GPIO. Use INPUT_PULLUP too" },
+    { "name": "VCC", "role": "power", "notes": "Middle pin" },
+    { "name": "GND", "role": "ground", "notes": "Marked - on the board" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [18.5, 15, 8], "color": "#1A1A1A" },
+  "keywords": ["ky-004", "button module", "key switch", "push button", "pulsante", "sensor kit"],
+  "sources": [
+    { "title": "Joy-IT SensorKit X40 KY-004 key switch module", "section": "Pins signal, +V, GND; 10 kΩ resistor on the board" }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "fingerprint-as608",
+  "name": "AS608 optical fingerprint sensor",
+  "category": "input",
+  "pins": [
+    {
+      "name": "V+",
+      "role": "power",
+      "notes": "3.3 V"
+    },
+    {
+      "name": "TX",
+      "role": "digital_out",
+      "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (57600 baud by default)"
+    },
+    {
+      "name": "RX",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "UART: the part receives data here. Connect to an ESP32 TX pin"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "WAK",
+      "role": "digital_out",
+      "notes": "Touch output: HIGH when a finger is on the glass, optional"
+    },
+    {
+      "name": "VT",
+      "role": "passive",
+      "notes": "Touch sensor supply: 3.3 V, optional"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      21,
+      40,
+      20
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "as608",
+    "fingerprint",
+    "r307",
+    "r503",
+    "biometric",
+    "impronta digitale",
+    "lettore impronte"
+  ],
+  "sources": [
+    {
+      "title": "Synochip AS608 fingerprint module user manual",
+      "section": "UART 57600 baud default; supply 3.3 V; pins V+, TX, RX, GND, WAK, Vt. Wire colours vary"
+    },
+    {
+      "title": "Adafruit Fingerprint Sensor Library",
+      "section": "Default password 0x00000000"
+    }
+  ]
+}

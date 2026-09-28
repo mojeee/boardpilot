@@ -1,0 +1,30 @@
+{
+  "id": "rfm95w-lora",
+  "name": "RFM95W LoRa breakout (SX1276, 868/915 MHz)",
+  "category": "output",
+  "pins": [
+    { "name": "VIN", "role": "power", "notes": "On-board regulator: 3.3 to 6 V" },
+    { "name": "GND", "role": "ground" },
+    { "name": "EN", "role": "passive", "notes": "Regulator enable, pulled up. Leave unconnected" },
+    { "name": "G0", "role": "int", "notes": "DIO0: TX done / RX done interrupt" },
+    { "name": "SCK", "role": "spi_sck" },
+    { "name": "MISO", "role": "spi_miso" },
+    { "name": "MOSI", "role": "spi_mosi" },
+    { "name": "CS", "role": "spi_cs", "notes": "SPI chip select (NSS)" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true, "notes": "Reset, active LOW" },
+    { "name": "G1", "role": "int", "notes": "DIO1, optional" },
+    { "name": "G2", "role": "passive", "notes": "DIO2, usually unused" },
+    { "name": "G3", "role": "passive" },
+    { "name": "G4", "role": "passive" },
+    { "name": "G5", "role": "passive" },
+    { "name": "ANT", "role": "passive", "notes": "Antenna pad. Always connect an antenna before transmitting" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [39.1, 25, 4], "color": "#1A1A1A" },
+  "keywords": ["rfm95w", "rfm95", "sx1276", "lora", "868 mhz", "915 mhz", "lorawan", "long range", "radio"],
+  "sources": [
+    { "title": "Semtech SX1276/77/78/79 datasheet", "section": "SPI interface; DIO0 to DIO5 mapping; supply 1.8 to 3.7 V" },
+    { "title": "Adafruit RFM69HCW and RFM9X LoRa Packet Radio Breakouts guide", "section": "Pinouts (VIN, GND, EN, G0 to G5, SCK, MISO, MOSI, CS, RST)" }
+  ]
+}

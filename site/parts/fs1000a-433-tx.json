@@ -1,0 +1,54 @@
+{
+  "id": "fs1000a-433-tx",
+  "name": "433 MHz transmitter (FS1000A)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "DATA",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data from an ESP32 GPIO (RadioHead RH_ASK or rc-switch)"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3 to 12 V. Higher voltage gives more range"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "ANT",
+      "role": "passive",
+      "notes": "Antenna pad: solder a 17.3 cm wire for 433 MHz"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3-12",
+  "model": {
+    "shape": "module",
+    "size": [
+      19,
+      19,
+      7
+    ],
+    "color": "#1E7B3A"
+  },
+  "keywords": [
+    "fs1000a",
+    "433 mhz",
+    "rf transmitter",
+    "ask",
+    "ook",
+    "trasmettitore",
+    "radio",
+    "rc-switch"
+  ],
+  "sources": [
+    {
+      "title": "FS1000A 433 MHz transmitter module datasheet",
+      "section": "Pins DATA, VCC, GND; supply 3 to 12 V; ASK/OOK modulation"
+    }
+  ]
+}

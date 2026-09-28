@@ -1,0 +1,24 @@
+{
+  "id": "drv2605l-haptic",
+  "name": "DRV2605L haptic motor driver (I2C)",
+  "category": "output",
+  "pins": [
+    { "name": "VIN", "role": "power", "notes": "3.3 V or 5 V" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "IN", "role": "digital_in", "needsOutput": true, "notes": "Optional trigger or PWM / analog input" },
+    { "name": "MOTOR+", "role": "passive", "notes": "Vibration motor (ERM) or LRA +" },
+    { "name": "MOTOR-", "role": "passive", "notes": "Vibration motor (ERM) or LRA -" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x5A"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [20, 18, 3], "color": "#1A1A1A" },
+  "keywords": ["drv2605l", "drv2605", "haptic", "vibration", "erm", "lra", "vibrazione"],
+  "sources": [
+    { "title": "Texas Instruments DRV2605L datasheet", "section": "I2C address 0x5A; supply 2 to 5.2 V; built-in effect library" },
+    { "title": "Adafruit DRV2605L Haptic Controller guide", "section": "Pinouts" }
+  ]
+}

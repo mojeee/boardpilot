@@ -1,0 +1,20 @@
+{
+  "id": "ir-break-beam",
+  "name": "IR break-beam sensor pair (emitter + receiver)",
+  "category": "sensor",
+  "measures": ["presence"],
+  "pins": [
+    { "name": "TX-VCC", "role": "power", "notes": "Emitter red wire" },
+    { "name": "TX-GND", "role": "ground", "notes": "Emitter black wire" },
+    { "name": "RX-VCC", "role": "power", "notes": "Receiver red wire" },
+    { "name": "RX-GND", "role": "ground", "notes": "Receiver black wire" },
+    { "name": "OUT", "role": "digital_out", "notes": "Receiver white wire. Open collector: use INPUT_PULLUP. LOW when the beam is unbroken" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [20,10,10], "color": "#1A1A1A" },
+  "keywords": ["break beam", "ir beam", "barrier", "light barrier", "barriera", "fotocellula", "infrarossi"],
+  "sources": [
+    { "title": "Adafruit IR Break Beam Sensors guide", "section": "Receiver output is open collector and needs a pull-up; 3.3 to 5 V supply" }
+  ]
+}

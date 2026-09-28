@@ -7,6 +7,7 @@ import type { LicenseStatus } from '@shared/types';
 import { t } from '@shared/i18n';
 import { REPO_URL } from '@shared/brand';
 import { Icon } from './Icon';
+import { LogoMark } from './Logo';
 
 interface LicenseStore {
   status: LicenseStatus | null;
@@ -107,9 +108,7 @@ export function LockScreen() {
   return (
     <div className="lock-screen">
       <div className="lock-card">
-        <div className="logo big-logo">
-          <span />
-        </div>
+        <LogoMark size={48} />
         <h1>{t('Your free trial has ended')}</h1>
         <p>
           {t('Thank you for trying BoardPilot for {total} days. To keep using it, enter a license key. Your projects, backups and parts library are safe on this Mac.', {

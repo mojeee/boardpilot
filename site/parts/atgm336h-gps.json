@@ -1,0 +1,61 @@
+{
+  "id": "atgm336h-gps",
+  "name": "ATGM336H GPS/BeiDou module",
+  "category": "sensor",
+  "measures": [
+    "position",
+    "time"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "TXD",
+      "role": "digital_out",
+      "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud)"
+    },
+    {
+      "name": "RXD",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "UART: the part receives data here. Connect to an ESP32 TX pin"
+    },
+    {
+      "name": "PPS",
+      "role": "passive",
+      "notes": "One pulse per second after a fix, optional"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      26,
+      20,
+      7
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "atgm336h",
+    "gps",
+    "beidou",
+    "bds",
+    "gnss",
+    "posizione",
+    "navigatore"
+  ],
+  "sources": [
+    {
+      "title": "Zhongke Microelectronics ATGM336H-5N datasheet",
+      "section": "UART default 9600 baud, NMEA; GPS + BDS. Breakout pin order varies: check the silkscreen"
+    }
+  ]
+}

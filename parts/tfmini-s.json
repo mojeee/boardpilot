@@ -1,0 +1,19 @@
+{
+  "id": "tfmini-s",
+  "name": "Benewake TFmini-S LiDAR (UART)",
+  "category": "sensor",
+  "measures": ["distance"],
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Red wire. Needs 5 V: use VIN. Check the wire colours on your cable" },
+    { "name": "GND", "role": "ground", "notes": "Black wire" },
+    { "name": "TX", "role": "digital_out", "notes": "Green wire. UART: the part sends data here. Connect to an ESP32 RX pin (115200 baud, 3.3 V level)" },
+    { "name": "RX", "role": "digital_in", "needsOutput": true, "notes": "White wire. UART: the part receives data here. Connect to an ESP32 TX pin" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [42,15,16], "color": "#1A1A1A" },
+  "keywords": ["tfmini-s", "tfmini", "benewake", "lidar", "laser distance", "distance", "distanza"],
+  "sources": [
+    { "title": "Benewake TFmini-S product manual", "section": "Supply 5 V; UART 115200 baud, LVTTL 3.3 V; range 0.1 to 12 m" }
+  ]
+}

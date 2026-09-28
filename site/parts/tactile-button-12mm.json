@@ -1,0 +1,52 @@
+{
+  "id": "tactile-button-12mm",
+  "name": "Tactile button 12 mm with cap",
+  "category": "input",
+  "pins": [
+    {
+      "name": "1A",
+      "role": "digital_out",
+      "notes": "Legs 1A and 1B are always joined. To a GPIO with INPUT_PULLUP"
+    },
+    {
+      "name": "1B",
+      "role": "passive",
+      "notes": "Joined to 1A"
+    },
+    {
+      "name": "2A",
+      "role": "ground",
+      "notes": "Legs 2A and 2B are always joined"
+    },
+    {
+      "name": "2B",
+      "role": "passive",
+      "notes": "Joined to 2A"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "button",
+    "size": [
+      12,
+      12,
+      11
+    ],
+    "color": "#2B2B2B"
+  },
+  "keywords": [
+    "tactile switch",
+    "12mm",
+    "push button",
+    "button cap",
+    "tact switch",
+    "pulsante"
+  ],
+  "sources": [
+    {
+      "title": "Omron B3F tactile switch datasheet",
+      "section": "B3F-4000 (12 x 12 mm): terminals 1-2 and 3-4 joined inside"
+    }
+  ]
+}

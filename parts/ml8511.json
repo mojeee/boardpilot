@@ -1,0 +1,20 @@
+{
+  "id": "ml8511",
+  "name": "ML8511 analog UV sensor",
+  "category": "sensor",
+  "measures": ["uv"],
+  "pins": [
+    { "name": "3V3", "role": "power", "notes": "Chip supply 2.7 to 3.6 V: use 3V3" },
+    { "name": "GND", "role": "ground" },
+    { "name": "OUT", "role": "analog_out", "notes": "About 1.0 V at no UV, rising with UV. To an ADC1 pin (GPIO 32 to 39)" },
+    { "name": "EN", "role": "digital_in", "needsOutput": true, "notes": "Enable, active HIGH. Can be tied to 3V3" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [18, 13, 3], "color": "#B22222" },
+  "keywords": ["ml8511", "gy-8511", "lapis", "uv", "ultraviolet", "ultravioletti", "raggi uv"],
+  "sources": [
+    { "title": "LAPIS ML8511 datasheet", "section": "Analog voltage output linear with UV intensity (280 to 390 nm); supply 2.7 to 3.6 V" },
+    { "title": "SparkFun ML8511 hookup guide", "section": "Pins 3.3V, GND, OUT, EN; order differs on GY-8511 boards" }
+  ]
+}

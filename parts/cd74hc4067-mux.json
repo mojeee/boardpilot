@@ -1,0 +1,39 @@
+{
+  "id": "cd74hc4067-mux",
+  "name": "CD74HC4067 16-channel analog multiplexer",
+  "category": "output",
+  "pins": [
+    { "name": "SIG", "role": "analog_out", "notes": "Common signal: to an ADC1 pin (GPIO 32 to 39)" },
+    { "name": "S3", "role": "digital_in", "needsOutput": true, "notes": "Channel select bit 3" },
+    { "name": "S2", "role": "digital_in", "needsOutput": true, "notes": "Channel select bit 2" },
+    { "name": "S1", "role": "digital_in", "needsOutput": true, "notes": "Channel select bit 1" },
+    { "name": "S0", "role": "digital_in", "needsOutput": true, "notes": "Channel select bit 0" },
+    { "name": "EN", "role": "passive", "notes": "Enable, active LOW. Tie to GND" },
+    { "name": "VCC", "role": "power", "notes": "Use 3.3 V so no channel goes above 3.3 V" },
+    { "name": "GND", "role": "ground" },
+    { "name": "C0", "role": "passive", "notes": "Channel 0: to a sensor or button, not to the ESP32" },
+    { "name": "C1", "role": "passive" },
+    { "name": "C2", "role": "passive" },
+    { "name": "C3", "role": "passive" },
+    { "name": "C4", "role": "passive" },
+    { "name": "C5", "role": "passive" },
+    { "name": "C6", "role": "passive" },
+    { "name": "C7", "role": "passive" },
+    { "name": "C8", "role": "passive" },
+    { "name": "C9", "role": "passive" },
+    { "name": "C10", "role": "passive" },
+    { "name": "C11", "role": "passive" },
+    { "name": "C12", "role": "passive" },
+    { "name": "C13", "role": "passive" },
+    { "name": "C14", "role": "passive" },
+    { "name": "C15", "role": "passive" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "breakout", "size": [62, 18, 1.6], "color": "#B22222" },
+  "keywords": ["cd74hc4067", "74hc4067", "multiplexer", "analog mux", "16 channel", "more adc", "multiplexer analogico"],
+  "sources": [
+    { "title": "Texas Instruments CD74HC4067 datasheet", "section": "Truth table S0 to S3 and E; supply 2 to 6 V" },
+    { "title": "SparkFun Analog/Digital MUX breakout (BOB-09056)", "section": "Header SIG, S3, S2, S1, S0, EN, VCC, GND and C0 to C15" }
+  ]
+}

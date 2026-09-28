@@ -1,0 +1,65 @@
+{
+  "id": "mlx90640",
+  "name": "MLX90640 32×24 thermal camera",
+  "category": "sensor",
+  "measures": [
+    "thermal image",
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "3VO",
+      "role": "passive",
+      "notes": "3.3 V output of the on-board regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x33"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      25.4,
+      17.8,
+      8
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "mlx90640",
+    "melexis",
+    "thermal camera",
+    "infrared",
+    "termocamera",
+    "infrarossi"
+  ],
+  "sources": [
+    {
+      "title": "Melexis MLX90640 datasheet",
+      "section": "I2C address 0x33 (default), up to 1 MHz; 16-bit register addresses"
+    },
+    {
+      "title": "Melexis MLX90640 datasheet",
+      "section": "55° or 110° field of view versions; the ESP32 must read and apply the calibration data from the sensor EEPROM"
+    }
+  ]
+}

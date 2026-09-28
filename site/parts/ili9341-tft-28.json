@@ -1,0 +1,104 @@
+{
+  "id": "ili9341-tft-28",
+  "name": "ILI9341 2.8\" TFT 240x320 with touch (SPI)",
+  "category": "display",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs"
+    },
+    {
+      "name": "RESET",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "DC",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data / command select"
+    },
+    {
+      "name": "SDI(MOSI)",
+      "role": "spi_mosi"
+    },
+    {
+      "name": "SCK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "LED",
+      "role": "passive",
+      "notes": "Backlight: to 3V3"
+    },
+    {
+      "name": "SDO(MISO)",
+      "role": "spi_miso",
+      "notes": "Optional: only needed to read from the display"
+    },
+    {
+      "name": "T_CLK",
+      "role": "spi_sck",
+      "notes": "Touch controller clock (XPT2046), shares the SPI bus"
+    },
+    {
+      "name": "T_CS",
+      "role": "spi_cs",
+      "notes": "Touch controller chip select"
+    },
+    {
+      "name": "T_DIN",
+      "role": "spi_mosi",
+      "notes": "Touch controller data in"
+    },
+    {
+      "name": "T_DO",
+      "role": "spi_miso",
+      "notes": "Touch controller data out"
+    },
+    {
+      "name": "T_IRQ",
+      "role": "int",
+      "notes": "LOW while the screen is touched"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "oled",
+    "size": [
+      50,
+      80,
+      5
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "ili9341",
+    "tft",
+    "2.8",
+    "240x320",
+    "touch",
+    "xpt2046",
+    "display",
+    "touchscreen"
+  ],
+  "sources": [
+    {
+      "title": "ILITEK ILI9341 datasheet",
+      "section": "4-line serial interface"
+    },
+    {
+      "title": "XPT2046 touch controller datasheet",
+      "section": "SPI interface and PENIRQ"
+    }
+  ]
+}

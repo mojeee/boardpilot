@@ -1,0 +1,75 @@
+{
+  "id": "rv3028-rtc",
+  "name": "RV-3028 real-time clock breakout",
+  "category": "sensor",
+  "measures": [
+    "time"
+  ],
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "3V3",
+      "role": "power"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Alarm / timer interrupt, optional"
+    },
+    {
+      "name": "CLK",
+      "role": "passive",
+      "notes": "Clock output, not needed"
+    },
+    {
+      "name": "EVI",
+      "role": "passive",
+      "notes": "Event input (timestamp), optional"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x52"
+  ],
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      25.4,
+      25.4,
+      3
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "rv-3028",
+    "rv3028",
+    "micro crystal",
+    "rtc",
+    "real time clock",
+    "low power",
+    "orologio"
+  ],
+  "sources": [
+    {
+      "title": "Micro Crystal RV-3028-C7 application manual",
+      "section": "I2C address 1010010 (0x52); supply 1.1 to 5.5 V; 45 nA timekeeping"
+    },
+    {
+      "title": "SparkFun Real Time Clock Module RV-3028 (Qwiic) hookup guide",
+      "section": "Pins GND, 3.3V, SDA, SCL, INT, CLK, EVI. Check the silkscreen"
+    }
+  ]
+}

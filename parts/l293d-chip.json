@@ -1,0 +1,30 @@
+{
+  "id": "l293d-chip",
+  "name": "L293D motor driver chip (DIP-16)",
+  "category": "output",
+  "pins": [
+    { "name": "EN12", "role": "digital_in", "needsOutput": true, "notes": "Pin 1: enables channels 1 and 2 (PWM for speed)" },
+    { "name": "1A", "role": "digital_in", "needsOutput": true, "notes": "Pin 2: input 1" },
+    { "name": "1Y", "role": "passive", "notes": "Pin 3: output 1, to the motor" },
+    { "name": "GND1", "role": "ground", "notes": "Pins 4, 5, 12, 13 are ground and heat sink" },
+    { "name": "GND2", "role": "ground" },
+    { "name": "2Y", "role": "passive", "notes": "Pin 6: output 2, to the motor" },
+    { "name": "2A", "role": "digital_in", "needsOutput": true, "notes": "Pin 7: input 2" },
+    { "name": "VCC2", "role": "passive", "notes": "Pin 8: motor supply 4.5 to 36 V" },
+    { "name": "EN34", "role": "digital_in", "needsOutput": true, "notes": "Pin 9: enables channels 3 and 4" },
+    { "name": "3A", "role": "digital_in", "needsOutput": true, "notes": "Pin 10: input 3" },
+    { "name": "3Y", "role": "passive", "notes": "Pin 11: output 3" },
+    { "name": "GND3", "role": "ground" },
+    { "name": "GND4", "role": "ground" },
+    { "name": "4Y", "role": "passive", "notes": "Pin 14: output 4" },
+    { "name": "4A", "role": "digital_in", "needsOutput": true, "notes": "Pin 15: input 4" },
+    { "name": "VCC1", "role": "power", "notes": "Pin 16: logic supply 4.5 to 7 V: use VIN. Inputs accept 3.3 V" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "chip", "size": [41.6, 6.4, 4], "color": "#1A1A1A" },
+  "keywords": ["l293d", "motor driver", "h-bridge", "dip-16", "dc motor", "ponte h"],
+  "sources": [
+    { "title": "Texas Instruments L293D datasheet", "section": "Pin functions; VCC1 4.5 to 7 V, input HIGH from 2.3 V; 600 mA per channel" }
+  ]
+}

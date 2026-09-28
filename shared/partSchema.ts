@@ -66,9 +66,9 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
   const shape = SHAPES.includes(m.shape as PartShape) ? (m.shape as PartShape) : 'breakout';
   const sizeRaw = Array.isArray(m.size) ? m.size.map(Number) : [];
   const size: [number, number, number] = [
-    clamp(sizeRaw[0], 3, 80, 15),
-    clamp(sizeRaw[1], 3, 80, 15),
-    clamp(sizeRaw[2], 0.5, 40, 1.6),
+    clamp(sizeRaw[0], 3, 150, 15),
+    clamp(sizeRaw[1], 3, 150, 15),
+    clamp(sizeRaw[2], 0.5, 120, 1.6),
   ];
   // the pin row must fit on the part
   size[0] = Math.max(size[0], pins.length * 2.54 + 1);

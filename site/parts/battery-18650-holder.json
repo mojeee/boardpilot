@@ -1,0 +1,42 @@
+{
+  "id": "battery-18650-holder",
+  "name": "18650 Li-ion cell in holder",
+  "category": "output",
+  "pins": [
+    {
+      "name": "+",
+      "role": "passive",
+      "notes": "3.0 to 4.2 V. Too low for VIN and too high for 3V3: use a regulator"
+    },
+    {
+      "name": "-",
+      "role": "passive",
+      "notes": "Cell -. Use a protected cell or a protection board"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3-4.2",
+  "model": {
+    "shape": "module",
+    "size": [
+      77,
+      21,
+      20
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "18650",
+    "battery",
+    "li-ion",
+    "cell holder",
+    "batteria",
+    "portabatteria"
+  ],
+  "sources": [
+    {
+      "title": "Samsung INR18650-25R datasheet",
+      "section": "Nominal 3.6 V; charge 4.2 V; discharge cut-off 2.5 V"
+    }
+  ]
+}

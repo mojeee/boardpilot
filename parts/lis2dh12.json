@@ -1,0 +1,26 @@
+{
+  "id": "lis2dh12",
+  "name": "LIS2DH12 low-power accelerometer",
+  "category": "sensor",
+  "measures": ["acceleration", "motion"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Use 3V3. Pin order differs between sellers: check the silkscreen" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SDO", "role": "passive", "notes": "Address select: LOW = 0x18, HIGH = 0x19" },
+    { "name": "CS", "role": "passive", "notes": "Must be HIGH for I2C. Most boards pull it up already" },
+    { "name": "INT1", "role": "int", "notes": "Interrupt output, optional" },
+    { "name": "INT2", "role": "int", "notes": "Interrupt output, optional" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x18", "0x19"],
+  "idCheck": { "register": "0x0F", "expect": "0x33" },
+  "voltage": "3.3",
+  "model": { "shape": "breakout", "size": [21.3,15,1.6], "color": "#1F4FA8" },
+  "keywords": ["lis2dh12", "st", "accelerometer", "low power", "motion", "accelerometro"],
+  "sources": [
+    { "title": "ST LIS2DH12 datasheet", "section": "Register 0x0F WHO_AM_I (reads 0x33)" },
+    { "title": "ST LIS2DH12 datasheet", "section": "I2C address 0x18 / 0x19 with SDO/SA0; supply 1.71 to 3.6 V" }
+  ]
+}

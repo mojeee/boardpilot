@@ -1,0 +1,71 @@
+{
+  "id": "ltr390",
+  "name": "LTR-390 UV + ambient light",
+  "category": "sensor",
+  "measures": [
+    "uv",
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "3VO",
+      "role": "passive",
+      "notes": "3.3 V output of the on-board regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Interrupt output, optional"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x53"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      25.4,
+      17.8,
+      1.6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "ltr390",
+    "ltr-390uv",
+    "liteon",
+    "uv",
+    "uv index",
+    "ultravioletti",
+    "luce"
+  ],
+  "sources": [
+    {
+      "title": "Lite-On LTR-390UV-01 datasheet",
+      "section": "I2C address 0x53; UVS and ALS modes"
+    },
+    {
+      "title": "Adafruit LTR390 guide",
+      "section": "Pinout VIN, 3Vo, GND, SCL, SDA, INT"
+    }
+  ]
+}

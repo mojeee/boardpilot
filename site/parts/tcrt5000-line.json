@@ -1,0 +1,54 @@
+{
+  "id": "tcrt5000-line",
+  "name": "TCRT5000 line tracker module",
+  "category": "input",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "Changes level over a black line (threshold set with the trimmer)"
+    },
+    {
+      "name": "AO",
+      "role": "analog_out",
+      "notes": "Reflection strength. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      32,
+      14,
+      7
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "tcrt5000",
+    "line tracker",
+    "line follower",
+    "reflective",
+    "segui linea",
+    "infrarossi"
+  ],
+  "sources": [
+    {
+      "title": "Vishay TCRT5000 datasheet",
+      "section": "Reflective optical sensor"
+    },
+    {
+      "title": "Texas Instruments LM393 datasheet",
+      "section": "Comparator output"
+    }
+  ]
+}

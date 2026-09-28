@@ -1,0 +1,65 @@
+{
+  "id": "veml6070",
+  "name": "VEML6070 UV sensor",
+  "category": "sensor",
+  "measures": [
+    "uv"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "ACK",
+      "role": "int",
+      "notes": "Threshold alert output, optional"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x38",
+    "0x39"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      18,
+      13,
+      1.6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "veml6070",
+    "vishay",
+    "uv",
+    "uva",
+    "ultravioletti",
+    "raggi uv"
+  ],
+  "sources": [
+    {
+      "title": "Vishay VEML6070 datasheet",
+      "section": "Uses I2C addresses 0x38 and 0x39 (plus 0x0C for alert). 0x38 clashes with AHT sensors"
+    },
+    {
+      "title": "Vishay VEML6070 datasheet",
+      "section": "Command-based, no ID register"
+    }
+  ]
+}

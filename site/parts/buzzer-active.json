@@ -1,0 +1,42 @@
+{
+  "id": "buzzer-active",
+  "name": "Active buzzer",
+  "category": "output",
+  "pins": [
+    {
+      "name": "+",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Longer leg. To a GPIO: HIGH beeps. Loud buzzers need a transistor"
+    },
+    {
+      "name": "-",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "led",
+    "size": [
+      12,
+      12,
+      9.5
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "active buzzer",
+    "buzzer",
+    "beeper",
+    "alarm",
+    "cicalino",
+    "allarme"
+  ],
+  "sources": [
+    {
+      "title": "Generic 12 mm active buzzer datasheet",
+      "section": "Built-in oscillator: sounds with DC applied"
+    }
+  ]
+}

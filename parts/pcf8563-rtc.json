@@ -1,0 +1,23 @@
+{
+  "id": "pcf8563-rtc",
+  "name": "PCF8563 real-time clock module",
+  "category": "sensor",
+  "measures": ["time"],
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "INT", "role": "int", "notes": "Alarm / timer output, open drain, optional" },
+    { "name": "CLKOUT", "role": "passive", "notes": "Clock output (32.768 kHz), not needed" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x51"],
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [25, 20, 10], "color": "#1F4FA8" },
+  "keywords": ["pcf8563", "rtc", "real time clock", "clock", "orologio", "ora"],
+  "sources": [
+    { "title": "NXP PCF8563 datasheet", "section": "Slave address A2h/A3h (7-bit 0x51); INT open drain; supply 1.0 to 5.5 V" },
+    { "title": "Common PCF8563 modules", "section": "Header order varies between boards: check the silkscreen" }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "bmm150",
+  "name": "BMM150 (GY-BMM150) 3-axis magnetometer",
+  "category": "sensor",
+  "measures": ["magnetic field", "heading"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Use 3V3. Pin order differs between sellers: check the silkscreen" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "CSB", "role": "passive", "notes": "Address bit / SPI select. Sets the address with SDO (0x10 to 0x13)" },
+    { "name": "SDO", "role": "passive", "notes": "Address bit. Sets the address with CSB (0x10 to 0x13)" },
+    { "name": "INT", "role": "int", "notes": "Interrupt output, optional" },
+    { "name": "DRDY", "role": "int", "notes": "Data ready, optional" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x10", "0x11", "0x12", "0x13"],
+  "voltage": "3.3",
+  "model": { "shape": "breakout", "size": [21.3,15,1.6], "color": "#5B2A86" },
+  "keywords": ["bmm150", "bosch", "magnetometer", "compass", "bussola", "magnetometro"],
+  "sources": [
+    { "title": "Bosch BMM150 datasheet", "section": "Register 0x40 chip ID reads 0x32 only after the power control bit (0x4B bit 0) is set" },
+    { "title": "Bosch BMM150 datasheet", "section": "I2C address 0x10 to 0x13 selected by CSB and SDO" }
+  ]
+}

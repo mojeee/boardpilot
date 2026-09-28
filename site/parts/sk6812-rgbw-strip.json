@@ -1,0 +1,48 @@
+{
+  "id": "sk6812-rgbw-strip",
+  "name": "SK6812 RGBW addressable LED strip",
+  "category": "display",
+  "pins": [
+    {
+      "name": "5V",
+      "role": "power",
+      "notes": "Use VIN for a few LEDs; a separate 5 V supply for more (up to about 80 mA per LED)"
+    },
+    {
+      "name": "DIN",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data in. Add a 330 Ω resistor; a 3.3 V to 5 V level shifter makes it reliable"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      60,
+      12,
+      2
+    ],
+    "color": "#EDEDED"
+  },
+  "keywords": [
+    "sk6812",
+    "rgbw",
+    "neopixel",
+    "led strip",
+    "addressable",
+    "white",
+    "striscia led"
+  ],
+  "sources": [
+    {
+      "title": "Opsco SK6812RGBW datasheet",
+      "section": "Single-wire data, 32 bits per LED (G R B W); supply 5 V"
+    }
+  ]
+}

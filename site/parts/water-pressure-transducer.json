@@ -1,0 +1,51 @@
+{
+  "id": "water-pressure-transducer",
+  "name": "Pressure transducer 0.5-4.5 V (water / air)",
+  "category": "sensor",
+  "measures": [
+    "pressure"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Red wire. Needs 5 V: use VIN"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Black wire"
+    },
+    {
+      "name": "OUT",
+      "role": "analog_out",
+      "notes": "Yellow, blue or green wire. 0.5 V (0 pressure) to 4.5 V (full scale): use a voltage divider before the ADC"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      22,
+      22,
+      40
+    ],
+    "color": "#C9CED4"
+  },
+  "keywords": [
+    "pressure transducer",
+    "water pressure",
+    "g1/4",
+    "mpa",
+    "psi",
+    "trasduttore",
+    "pressione acqua"
+  ],
+  "sources": [
+    {
+      "title": "Generic G1/4 pressure transducer seller sheet",
+      "section": "Supply 5 V, output 0.5 to 4.5 V, linear over the rated range (for example 0 to 1.2 MPa)"
+    }
+  ]
+}

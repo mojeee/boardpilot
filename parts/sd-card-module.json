@@ -1,0 +1,23 @@
+{
+  "id": "sd-card-module",
+  "name": "SD card module (full size, SPI)",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "3V3", "role": "power", "notes": "Use 3V3 or 5V, not both" },
+    { "name": "5V", "role": "passive", "notes": "Alternative 5 V input through the on-board regulator" },
+    { "name": "CS", "role": "spi_cs" },
+    { "name": "MOSI", "role": "spi_mosi" },
+    { "name": "SCK", "role": "spi_sck" },
+    { "name": "MISO", "role": "spi_miso" },
+    { "name": "GND2", "role": "ground" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [52, 30, 5], "color": "#1F4FA8" },
+  "keywords": ["sd card", "sd card module", "lc studio", "storage", "data logger", "scheda sd", "memoria"],
+  "sources": [
+    { "title": "SD Association Physical Layer Simplified Specification", "section": "SPI mode; card supply 2.7 to 3.6 V" },
+    { "title": "LC Studio SD card module", "section": "Header GND, 3.3V, 5V, CS, MOSI, SCK, MISO, GND" }
+  ]
+}

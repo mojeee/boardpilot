@@ -1,0 +1,30 @@
+{
+  "id": "shift-register-74hc165",
+  "name": "74HC165 input shift register",
+  "category": "input",
+  "pins": [
+    { "name": "PL", "role": "digital_in", "needsOutput": true, "notes": "Parallel load, active LOW: pulse LOW to capture the inputs" },
+    { "name": "CP", "role": "digital_in", "needsOutput": true, "notes": "Clock" },
+    { "name": "D4", "role": "passive", "notes": "Parallel input 4" },
+    { "name": "D5", "role": "passive" },
+    { "name": "D6", "role": "passive" },
+    { "name": "D7", "role": "passive" },
+    { "name": "Q7N", "role": "passive", "notes": "Inverted serial output, not needed" },
+    { "name": "GND", "role": "ground" },
+    { "name": "Q7", "role": "digital_out", "notes": "Serial data out: to an ESP32 input" },
+    { "name": "DS", "role": "passive", "notes": "Serial in from the next 74HC165. Tie to GND on the last one" },
+    { "name": "D0", "role": "passive", "notes": "Parallel input 0: to a button with a pull-up or pull-down" },
+    { "name": "D1", "role": "passive" },
+    { "name": "D2", "role": "passive" },
+    { "name": "D3", "role": "passive" },
+    { "name": "CE", "role": "passive", "notes": "Clock enable, active LOW. Tie to GND" },
+    { "name": "VCC", "role": "power" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "chip", "size": [41.6, 6.4, 3.3], "color": "#1A1A1A" },
+  "keywords": ["74hc165", "shift register", "parallel in", "more inputs", "sn74hc165", "registro a scorrimento"],
+  "sources": [
+    { "title": "Nexperia 74HC165 datasheet", "section": "Pinning: pin 1 PL to pin 16 VCC; function table; supply 2 to 6 V" }
+  ]
+}

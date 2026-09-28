@@ -1,0 +1,98 @@
+{
+  "id": "seg7-4digit-cc",
+  "name": "7-segment 4 digits 0.56\" common cathode (12 pins)",
+  "category": "display",
+  "pins": [
+    {
+      "name": "E",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Segment. Each segment through a 220 Ω resistor"
+    },
+    {
+      "name": "D",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "DP",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Decimal point"
+    },
+    {
+      "name": "C",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "G",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "DIG4",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Digit 4 cathode: LOW = digit on. A transistor per digit is safer (up to 8 segments)"
+    },
+    {
+      "name": "B",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "DIG3",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Digit 3 cathode"
+    },
+    {
+      "name": "DIG2",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Digit 2 cathode"
+    },
+    {
+      "name": "F",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "DIG1",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Digit 1 cathode"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      50,
+      19,
+      8
+    ],
+    "color": "#EDEDED"
+  },
+  "keywords": [
+    "7 segment",
+    "4 digit",
+    "5641as",
+    "multiplexed",
+    "common cathode",
+    "display 7 segmenti"
+  ],
+  "sources": [
+    {
+      "title": "5641AS 0.56\" 4-digit 7-segment datasheet",
+      "section": "Pins 1 to 12: E D DP C G D4 B D3 D2 F A D1"
+    }
+  ]
+}

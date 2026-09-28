@@ -1,0 +1,69 @@
+{
+  "id": "ssd1309-oled-242",
+  "name": "SSD1309 2.42\" OLED 128x64 (SPI)",
+  "category": "display",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Pin order varies between boards: match by the printed label."
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3.3 V or 5 V (on-board regulator on most boards)"
+    },
+    {
+      "name": "SCK",
+      "role": "spi_sck",
+      "notes": "SPI clock. Some boards print SCL: still SPI, not I2C"
+    },
+    {
+      "name": "SDA",
+      "role": "spi_mosi",
+      "notes": "SPI data (MOSI), not I2C"
+    },
+    {
+      "name": "RES",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Reset. Needed: the SSD1309 will not start without a reset pulse"
+    },
+    {
+      "name": "DC",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data / command select"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "oled",
+    "size": [
+      70,
+      41,
+      5
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ssd1309",
+    "oled",
+    "2.42",
+    "128x64",
+    "display",
+    "schermo",
+    "big oled"
+  ],
+  "sources": [
+    {
+      "title": "Solomon Systech SSD1309 datasheet",
+      "section": "4-wire serial interface: CS#, D/C#, SCLK (D0), SDIN (D1); RES# low pulse at power-up"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ky-039",
+  "name": "KY-039 finger heartbeat sensor",
+  "category": "sensor",
+  "measures": ["heart rate"],
+  "pins": [
+    { "name": "S", "role": "analog_out", "notes": "Very small signal that changes with each heartbeat. To an ADC1 pin (GPIO 32 to 39)" },
+    { "name": "VCC", "role": "power", "notes": "Middle pin. Use 3V3" },
+    { "name": "GND", "role": "ground", "notes": "Marked - on the board" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [18.5, 15, 8], "color": "#1A1A1A" },
+  "keywords": ["ky-039", "heartbeat", "finger", "heart rate", "battito", "cardiaco"],
+  "sources": [
+    { "title": "Joy-IT KY-039 datasheet", "section": "IR LED and phototransistor through the finger; pins S, +, -. Signal is weak and noisy" }
+  ]
+}

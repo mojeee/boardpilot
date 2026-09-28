@@ -1,0 +1,44 @@
+{
+  "id": "float-switch",
+  "name": "Float switch (water level)",
+  "category": "sensor",
+  "measures": [
+    "water level"
+  ],
+  "pins": [
+    {
+      "name": "1",
+      "role": "digital_out",
+      "notes": "To a GPIO with INPUT_PULLUP. Flip the float on its stem to swap open and closed"
+    },
+    {
+      "name": "2",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      24,
+      24,
+      40
+    ],
+    "color": "#F2F2F2"
+  },
+  "keywords": [
+    "float switch",
+    "water level",
+    "tank",
+    "galleggiante",
+    "livello acqua",
+    "serbatoio"
+  ],
+  "sources": [
+    {
+      "title": "Generic vertical float switch seller sheet",
+      "section": "Reed switch inside the stem, operated by a magnet in the float"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "acs712",
+  "name": "ACS712 current sensor module",
+  "category": "sensor",
+  "measures": [
+    "current"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Needs 5 V: use VIN"
+    },
+    {
+      "name": "OUT",
+      "role": "analog_out",
+      "notes": "Sits at 2.5 V with no current and can reach 5 V: use a voltage divider before the ADC"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "IP+",
+      "role": "passive",
+      "notes": "Screw terminal: current path in. Never wire to the ESP32"
+    },
+    {
+      "name": "IP-",
+      "role": "passive",
+      "notes": "Screw terminal: current path out"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      31,
+      13,
+      10
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "acs712",
+    "current",
+    "hall",
+    "ammeter",
+    "corrente",
+    "sensore corrente"
+  ],
+  "sources": [
+    {
+      "title": "Allegro ACS712 datasheet",
+      "section": "Output VCC/2 at zero current; sensitivity 185/100/66 mV per A (5/20/30 A versions)"
+    },
+    {
+      "title": "Allegro ACS712 datasheet",
+      "section": "Supply 4.5 to 5.5 V"
+    }
+  ]
+}

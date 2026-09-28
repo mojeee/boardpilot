@@ -1,0 +1,63 @@
+{
+  "id": "n20-motor-encoder",
+  "name": "N20 gear motor with hall encoder",
+  "category": "output",
+  "pins": [
+    {
+      "name": "M1",
+      "role": "passive",
+      "notes": "Pin order varies between boards: match by the printed label. Motor. Never to an ESP32 pin: use a motor driver"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Encoder ground"
+    },
+    {
+      "name": "C1",
+      "role": "digital_out",
+      "notes": "Encoder channel A"
+    },
+    {
+      "name": "C2",
+      "role": "digital_out",
+      "notes": "Encoder channel B"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Encoder supply 3.3 to 5 V: use 3V3 so the outputs stay at 3.3 V"
+    },
+    {
+      "name": "M2",
+      "role": "passive",
+      "notes": "Motor"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "motor",
+    "size": [
+      16.2,
+      10,
+      34
+    ],
+    "color": "#C9CED4"
+  },
+  "keywords": [
+    "n20",
+    "gear motor",
+    "encoder",
+    "hall",
+    "micro motor",
+    "motoriduttore",
+    "encoder"
+  ],
+  "sources": [
+    {
+      "title": "N20 micro gear motor with magnetic encoder (vendor datasheet)",
+      "section": "6-pin connector M1 GND C1 C2 VCC M2"
+    }
+  ]
+}

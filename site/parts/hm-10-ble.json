@@ -1,0 +1,63 @@
+{
+  "id": "hm-10-ble",
+  "name": "HM-10 Bluetooth Low Energy module",
+  "category": "output",
+  "pins": [
+    {
+      "name": "STATE",
+      "role": "digital_out",
+      "notes": "HIGH when connected, optional"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Breakout with regulator: 3.3 to 6 V"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "TXD",
+      "role": "digital_out",
+      "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud by default)"
+    },
+    {
+      "name": "RXD",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "UART: the part receives data here. Connect to an ESP32 TX pin"
+    },
+    {
+      "name": "BRK",
+      "role": "passive",
+      "notes": "Pull LOW to drop the connection, optional"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      37,
+      16,
+      5
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "hm-10",
+    "hm10",
+    "ble",
+    "bluetooth 4.0",
+    "cc2541",
+    "bluetooth",
+    "seriale"
+  ],
+  "sources": [
+    {
+      "title": "JNHuaMao HM-10 Bluetooth 4.0 BLE module datasheet",
+      "section": "UART 9600 baud default; AT commands; CC2541. Many clones exist (CC41-A, MLT-BT05)"
+    }
+  ]
+}

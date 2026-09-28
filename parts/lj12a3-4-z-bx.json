@@ -1,0 +1,18 @@
+{
+  "id": "lj12a3-4-z-bx",
+  "name": "LJ12A3-4-Z/BX inductive proximity switch (NPN)",
+  "category": "sensor",
+  "measures": ["proximity", "presence"],
+  "pins": [
+    { "name": "BROWN", "role": "passive", "notes": "Supply + from an external 6 to 36 V supply (e.g. 12 V). Never to the ESP32" },
+    { "name": "BLUE", "role": "ground", "notes": "Supply 0 V. Connect to ESP32 GND too (common ground)" },
+    { "name": "BLACK", "role": "digital_out", "notes": "NPN output, LOW near metal. Some units pull it up to the supply: measure first, use an optocoupler or divider" }
+  ],
+  "bus": "gpio",
+  "voltage": "6-36",
+  "model": { "shape": "module", "size": [12,12,60], "color": "#C9CED4" },
+  "keywords": ["lj12a3", "inductive", "proximity switch", "metal", "npn", "induttivo", "finecorsa", "metallo"],
+  "sources": [
+    { "title": "LJ12A3-4-Z/BX seller datasheet", "section": "Supply 6 to 36 V DC; NPN NO output; detects metal at 4 mm; brown +, blue 0 V, black signal" }
+  ]
+}

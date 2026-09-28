@@ -1,0 +1,54 @@
+{
+  "id": "tmp36",
+  "name": "TMP36 analog temperature sensor",
+  "category": "sensor",
+  "measures": [
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "+VS",
+      "role": "power",
+      "notes": "Left leg, flat side facing you"
+    },
+    {
+      "name": "VOUT",
+      "role": "analog_out",
+      "notes": "Middle leg. 750 mV at 25 °C, 10 mV per °C. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Right leg"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      8.6,
+      4,
+      5
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "tmp36",
+    "analog",
+    "temperature",
+    "to-92",
+    "temperatura",
+    "sensore temperatura"
+  ],
+  "sources": [
+    {
+      "title": "Analog Devices TMP35/TMP36/TMP37 datasheet",
+      "section": "Pin configuration and output scale (10 mV/°C, 750 mV at 25 °C)"
+    },
+    {
+      "title": "Analog Devices TMP36 datasheet",
+      "section": "Supply 2.7 to 5.5 V"
+    }
+  ]
+}

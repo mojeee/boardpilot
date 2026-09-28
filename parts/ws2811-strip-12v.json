@@ -1,0 +1,17 @@
+{
+  "id": "ws2811-strip-12v",
+  "name": "WS2811 12 V addressable LED strip",
+  "category": "display",
+  "pins": [
+    { "name": "12V", "role": "passive", "notes": "12 V from a separate supply. Never to the ESP32" },
+    { "name": "DIN", "role": "digital_in", "needsOutput": true, "notes": "Data in. A 3.3 V to 5 V level shifter makes it reliable" },
+    { "name": "GND", "role": "ground", "notes": "Share it with the 12 V supply and the ESP32 GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "12",
+  "model": { "shape": "module", "size": [60, 12, 2], "color": "#EDEDED" },
+  "keywords": ["ws2811", "12v", "led strip", "addressable", "rgb", "striscia led 12v"],
+  "sources": [
+    { "title": "Worldsemi WS2811 datasheet", "section": "One IC drives 3 LEDs (one pixel); data input high level 0.7 × VDD" }
+  ]
+}

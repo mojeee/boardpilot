@@ -1,0 +1,22 @@
+{
+  "id": "tf-luna",
+  "name": "Benewake TF-Luna LiDAR (UART mode)",
+  "category": "sensor",
+  "measures": ["distance"],
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Pin 1. Needs 5 V: use VIN" },
+    { "name": "RX", "role": "digital_in", "needsOutput": true, "notes": "Pin 2. UART: the part receives data here. Connect to an ESP32 TX pin" },
+    { "name": "TX", "role": "digital_out", "notes": "Pin 3. UART: the part sends data here. Connect to an ESP32 RX pin (115200 baud, 3.3 V level)" },
+    { "name": "GND", "role": "ground", "notes": "Pin 4" },
+    { "name": "CFG", "role": "passive", "notes": "Pin 5, mode select. Leave unconnected for UART (GND at power-up = I2C)" },
+    { "name": "MUX", "role": "digital_out", "notes": "Pin 6, on/off output. Optional" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [35,21,13], "color": "#1A1A1A" },
+  "keywords": ["tf-luna", "benewake", "lidar", "laser distance", "distance", "distanza"],
+  "sources": [
+    { "title": "Benewake TF-Luna product manual", "section": "Pins 1 +5V, 2 RXD/SDA, 3 TXD/SCL, 4 GND, 5 configuration, 6 multiplexing output" },
+    { "title": "Benewake TF-Luna product manual", "section": "Supply 3.7 to 5.2 V; UART 115200 baud, LVTTL 3.3 V; range 0.2 to 8 m" }
+  ]
+}

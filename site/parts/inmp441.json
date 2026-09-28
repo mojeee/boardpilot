@@ -1,0 +1,64 @@
+{
+  "id": "inmp441",
+  "name": "INMP441 I2S digital microphone",
+  "category": "sensor",
+  "measures": [
+    "sound"
+  ],
+  "pins": [
+    {
+      "name": "L/R",
+      "role": "passive",
+      "notes": "Channel select: GND = left, 3V3 = right"
+    },
+    {
+      "name": "WS",
+      "role": "spi_cs",
+      "notes": "I2S word select (LRCLK), not SPI"
+    },
+    {
+      "name": "SCK",
+      "role": "spi_sck",
+      "notes": "I2S bit clock (BCLK), not SPI"
+    },
+    {
+      "name": "SD",
+      "role": "digital_out",
+      "notes": "I2S data out of the microphone"
+    },
+    {
+      "name": "VDD",
+      "role": "power",
+      "notes": "3.3 V only"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "breakout",
+    "size": [
+      16.2,
+      16,
+      1.6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "inmp441",
+    "i2s",
+    "mems microphone",
+    "microphone",
+    "audio",
+    "microfono"
+  ],
+  "sources": [
+    {
+      "title": "InvenSense INMP441 datasheet",
+      "section": "I2S interface: SCK, WS, SD, L/R; supply 1.8 to 3.3 V"
+    }
+  ]
+}

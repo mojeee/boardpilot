@@ -1,0 +1,23 @@
+{
+  "id": "pmsa003i",
+  "name": "PMSA003I particulate matter sensor (I2C)",
+  "category": "sensor",
+  "measures": ["particulates"],
+  "pins": [
+    { "name": "VIN", "role": "power", "notes": "Needs 5 V for the fan: use VIN" },
+    { "name": "3VO", "role": "passive", "notes": "3.3 V output of the on-board regulator. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x12"],
+  "voltage": "5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "module", "size": [38, 38, 21], "color": "#C9CED4" },
+  "keywords": ["pmsa003i", "plantower", "pm2.5", "pm10", "dust", "particulate", "polveri sottili", "qualità aria"],
+  "sources": [
+    { "title": "Plantower PMSA003I datasheet", "section": "I2C address 0x12; supply 5 V for the fan, 3.3 V logic" },
+    { "title": "Adafruit PMSA003I guide", "section": "Pinout VIN, 3Vo, GND, SCL, SDA" }
+  ]
+}

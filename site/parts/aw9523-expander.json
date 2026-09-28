@@ -1,0 +1,149 @@
+{
+  "id": "aw9523-expander",
+  "name": "AW9523 16-bit I/O expander and LED driver",
+  "category": "output",
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power",
+      "notes": "2.5 to 5.5 V"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Interrupt output, optional"
+    },
+    {
+      "name": "RST",
+      "role": "passive",
+      "notes": "Reset, active LOW, pulled up. Leave unconnected"
+    },
+    {
+      "name": "AD0",
+      "role": "passive",
+      "notes": "Address bit, default LOW"
+    },
+    {
+      "name": "AD1",
+      "role": "passive",
+      "notes": "Address bit, default LOW"
+    },
+    {
+      "name": "P0_0",
+      "role": "passive",
+      "notes": "Expander I/O: to your LEDs or buttons, not to the ESP32"
+    },
+    {
+      "name": "P0_1",
+      "role": "passive"
+    },
+    {
+      "name": "P0_2",
+      "role": "passive"
+    },
+    {
+      "name": "P0_3",
+      "role": "passive"
+    },
+    {
+      "name": "P0_4",
+      "role": "passive"
+    },
+    {
+      "name": "P0_5",
+      "role": "passive"
+    },
+    {
+      "name": "P0_6",
+      "role": "passive"
+    },
+    {
+      "name": "P0_7",
+      "role": "passive"
+    },
+    {
+      "name": "P1_0",
+      "role": "passive"
+    },
+    {
+      "name": "P1_1",
+      "role": "passive"
+    },
+    {
+      "name": "P1_2",
+      "role": "passive"
+    },
+    {
+      "name": "P1_3",
+      "role": "passive"
+    },
+    {
+      "name": "P1_4",
+      "role": "passive"
+    },
+    {
+      "name": "P1_5",
+      "role": "passive"
+    },
+    {
+      "name": "P1_6",
+      "role": "passive"
+    },
+    {
+      "name": "P1_7",
+      "role": "passive"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x58",
+    "0x59",
+    "0x5A",
+    "0x5B"
+  ],
+  "idCheck": {
+    "register": "0x10",
+    "expect": "0x23"
+  },
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      62,
+      25.4,
+      1.6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "aw9523",
+    "io expander",
+    "led driver",
+    "i2c expander",
+    "gpio",
+    "espansore"
+  ],
+  "sources": [
+    {
+      "title": "Awinic AW9523B datasheet",
+      "section": "Address 10110 AD1 AD0 (0x58 to 0x5B); ID register 0x10 reads 0x23; constant-current LED mode"
+    },
+    {
+      "title": "Adafruit AW9523 GPIO expander and LED driver guide",
+      "section": "Pinouts. Check the silkscreen for the header order"
+    }
+  ]
+}

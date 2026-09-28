@@ -1,0 +1,72 @@
+{
+  "id": "keypad-4x3",
+  "name": "4x3 membrane keypad (12 keys)",
+  "category": "input",
+  "pins": [
+    {
+      "name": "R1",
+      "role": "digital_out",
+      "notes": "Row 1. Rows are read with INPUT_PULLUP. Adafruit 3x4 keypads use another pin order"
+    },
+    {
+      "name": "R2",
+      "role": "digital_out",
+      "notes": "Row 2"
+    },
+    {
+      "name": "R3",
+      "role": "digital_out",
+      "notes": "Row 3"
+    },
+    {
+      "name": "R4",
+      "role": "digital_out",
+      "notes": "Row 4"
+    },
+    {
+      "name": "C1",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Column 1. Columns are driven LOW one at a time"
+    },
+    {
+      "name": "C2",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Column 2"
+    },
+    {
+      "name": "C3",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Column 3"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      52,
+      64,
+      1
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "keypad",
+    "4x3",
+    "3x4",
+    "membrane",
+    "matrix keypad",
+    "phone keypad",
+    "tastierino",
+    "tastiera"
+  ],
+  "sources": [
+    {
+      "title": "Arduino Keypad library (Mark Stanley, Alexander Brevig)",
+      "section": "Row/column scanning; pins 1 to 7 = R1-R4, C1-C3 on common membrane keypads"
+    }
+  ]
+}

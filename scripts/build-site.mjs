@@ -8,6 +8,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { IT } from './site/i18n-it.mjs';
 import { renderPinout } from './site/pinout.mjs';
+import { buildParts } from './site/parts.mjs';
+import { readdirSync } from 'node:fs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://boardpilot.agentflowbind.com';
@@ -16,6 +18,18 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const board = JSON.parse(readFileSync(join(root, 'boards/esp32-devkitc-30.json'), 'utf8'));
 const tpl = readFileSync(join(root, 'scripts/site/index.template.html'), 'utf8');
 const today = new Date().toISOString().slice(0, 10);
+const parts = readdirSync(join(root, 'parts'))
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => JSON.parse(readFileSync(join(root, 'parts', f), 'utf8')))
+  .sort((a, b) => a.name.localeCompare(b.name));
+const PARTS_COUNT = String(parts.length);
+const featured = ['bme280-gy', 'hc-sr04', 'ssd1306-i2c', 'mpu6050', 'ws2812b-strip', 'vl53l0x', 'ds18b20-probe', 'rc522-rfid', 'relay-1ch', 'servo-sg90', 'ina219', 'neo-6m-gps', 'bh1750-gy302', 'max30102', 'l298n-driver', 'tm1637-4digit'];
+const partsCloud = (lang) =>
+  featured
+    .map((id) => parts.find((p) => p.id === id))
+    .filter(Boolean)
+    .map((p) => `<a href="${lang === 'it' ? '/it' : ''}/parts/${p.id}/"><span style="background:${p.model.color}"></span>${esc(p.name.split(/[ (]/)[0])}</a>`)
+    .join('');
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const unesc = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/<[^>]+>/g, '');
@@ -64,6 +78,9 @@ function landing(lang) {
     .replaceAll('{{LANG}}', lang)
     .replaceAll('{{HOME}}', home)
     .replaceAll('{{PINOUT}}', `${lang === 'it' ? '/it' : ''}/esp32-pinout/`)
+    .replaceAll('{{PARTS}}', `${lang === 'it' ? '/it' : ''}/parts/`)
+    .replaceAll('{{PARTS_COUNT}}', PARTS_COUNT)
+    .replaceAll('{{PARTS_CLOUD}}', partsCloud(lang))
     .replaceAll('{{PATH_EN}}', '/')
     .replaceAll('{{PATH_IT}}', '/it/')
     .replaceAll('{{ON_EN}}', lang === 'en' ? 'on' : '')
@@ -131,10 +148,60 @@ const pinPaths = { en: '/esp32-pinout/', it: '/it/esp32-pinout/' };
 write('esp32-pinout/index.html', renderPinout({ lang: 'en', board, site: SITE, ...chrome(en, 'en', pinPaths) }));
 write('it/esp32-pinout/index.html', renderPinout({ lang: 'it', board, site: SITE, ...chrome(it, 'it', pinPaths) }));
 
+/* parts library pages and open dataset */
+const IT_MEASURES = {};
+for (const f of readdirSync(join(root, 'shared/i18n/it'))) {
+  if (/^(partsdata\d*|three)\.ts$/.test(f)) Object.assign(IT_MEASURES, (await import(join(root, 'shared/i18n/it', f))).default);
+}
+function head({ lang, title, description, url, alt, ld, body }) {
+  return `<!doctype html>
+<html lang="${lang}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${esc(title)}</title>
+    <meta name="description" content="${esc(description)}" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="${url}" />
+    <link rel="alternate" hreflang="en" href="${SITE}${alt.en}" />
+    <link rel="alternate" hreflang="it" href="${SITE}${alt.it}" />
+    <link rel="alternate" hreflang="x-default" href="${SITE}${alt.en}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:title" content="${esc(title)}" />
+    <meta property="og:description" content="${esc(description)}" />
+    <meta property="og:image" content="${SITE}/img/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
+  </head>
+  <body>
+${body}
+  </body>
+</html>
+`;
+}
+const partPaths = { en: '/parts/', it: '/it/parts/' };
+for (const [lang, html] of [['en', en], ['it', it]]) {
+  const pages = buildParts({ parts, lang, site: SITE, IT_MEASURES, head, ...chrome(html, lang, partPaths) });
+  for (const [rel, content] of Object.entries(pages)) write(rel, content);
+}
+write('parts.json', JSON.stringify({ name: 'BoardPilot ESP32 parts library', license: 'CC-BY-4.0', attribution: 'BoardPilot (https://boardpilot.agentflowbind.com)', source: `${REPO}/tree/main/parts`, generated: today, count: parts.length, parts }, null, 1));
+for (const p of parts) write(`parts/${p.id}.json`, JSON.stringify(p, null, 2));
+
 /* sitemap with language alternates */
 const pages = [
   { en: '/', it: '/it/', priority: '1.0' },
+  { en: '/parts/', it: '/it/parts/', priority: '0.9' },
   { en: '/esp32-pinout/', it: '/it/esp32-pinout/', priority: '0.8' },
+  ...parts.map((p) => ({ en: `/parts/${p.id}/`, it: `/it/parts/${p.id}/`, priority: '0.6' })),
 ];
 const urlEntry = (loc, p) => `  <url>
     <loc>${SITE}${loc}</loc>
@@ -153,4 +220,4 @@ ${pages.flatMap((p) => [urlEntry(p.en, p), urlEntry(p.it, p)]).join('\n')}
 `,
 );
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`site built: 4 pages, sitemap, robots (version ${pkg.version})`);
+console.log(`site built: ${4 + 2 + parts.length * 2} pages (${parts.length} parts), sitemap, robots, parts.json (version ${pkg.version})`);

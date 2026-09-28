@@ -1,0 +1,88 @@
+{
+  "id": "ina228",
+  "name": "INA228 20-bit power + energy monitor (85 V)",
+  "category": "sensor",
+  "measures": [
+    "current",
+    "voltage",
+    "power",
+    "energy",
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "ALERT",
+      "role": "int",
+      "notes": "Alert output, optional"
+    },
+    {
+      "name": "VBUS",
+      "role": "passive",
+      "notes": "Bus voltage sense. Measured circuit only, up to 85 V"
+    },
+    {
+      "name": "VIN+",
+      "role": "passive",
+      "notes": "From the supply. Measured circuit only, up to 85 V"
+    },
+    {
+      "name": "VIN-",
+      "role": "passive",
+      "notes": "To the load"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x40",
+    "0x41",
+    "0x44",
+    "0x45"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      25.4,
+      22.9,
+      1.6
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ina228",
+    "current",
+    "voltage",
+    "energy",
+    "power monitor",
+    "corrente",
+    "tensione",
+    "energia"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments INA228 datasheet",
+      "section": "Bus voltage 0 to 85 V; 20-bit ADC; energy and charge accumulators"
+    },
+    {
+      "title": "Texas Instruments INA228 datasheet",
+      "section": "A0/A1 select 0x40 to 0x4F (boards expose 0x40, 0x41, 0x44, 0x45)"
+    }
+  ]
+}

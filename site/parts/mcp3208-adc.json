@@ -1,0 +1,104 @@
+{
+  "id": "mcp3208-adc",
+  "name": "MCP3208 8-channel 12-bit ADC (SPI)",
+  "category": "sensor",
+  "measures": [
+    "voltage"
+  ],
+  "pins": [
+    {
+      "name": "CH0",
+      "role": "passive",
+      "notes": "Analog input 0. Never above VREF"
+    },
+    {
+      "name": "CH1",
+      "role": "passive"
+    },
+    {
+      "name": "CH2",
+      "role": "passive"
+    },
+    {
+      "name": "CH3",
+      "role": "passive"
+    },
+    {
+      "name": "CH4",
+      "role": "passive"
+    },
+    {
+      "name": "CH5",
+      "role": "passive"
+    },
+    {
+      "name": "CH6",
+      "role": "passive"
+    },
+    {
+      "name": "CH7",
+      "role": "passive"
+    },
+    {
+      "name": "DGND",
+      "role": "ground"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs",
+      "notes": "CS/SHDN"
+    },
+    {
+      "name": "DIN",
+      "role": "spi_mosi"
+    },
+    {
+      "name": "DOUT",
+      "role": "spi_miso"
+    },
+    {
+      "name": "CLK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "AGND",
+      "role": "ground"
+    },
+    {
+      "name": "VREF",
+      "role": "passive",
+      "notes": "Reference: tie to VDD for a 0 to 3.3 V range"
+    },
+    {
+      "name": "VDD",
+      "role": "power",
+      "notes": "Use 3.3 V so DOUT is safe for the ESP32"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      41.6,
+      6.4,
+      3.3
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "mcp3208",
+    "adc",
+    "analog to digital",
+    "12 bit",
+    "spi adc",
+    "convertitore",
+    "analogico"
+  ],
+  "sources": [
+    {
+      "title": "Microchip MCP3204/3208 datasheet",
+      "section": "Pin function table (PDIP); supply 2.7 to 5.5 V; SPI modes 0,0 and 1,1"
+    }
+  ]
+}

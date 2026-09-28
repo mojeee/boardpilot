@@ -1,0 +1,27 @@
+{
+  "id": "vl53l5cx",
+  "name": "VL53L5CX 8x8 multizone time-of-flight",
+  "category": "sensor",
+  "measures": ["distance"],
+  "pins": [
+    { "name": "INT", "role": "int", "notes": "Data ready, optional. SATEL-style order; other boards differ" },
+    { "name": "I2C_RST", "role": "passive", "notes": "I2C reset, active HIGH. Tie to GND" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "LPN", "role": "digital_in", "needsOutput": true, "notes": "Low-power enable: HIGH to talk over I2C. Can be tied to IOVDD" },
+    { "name": "PWREN", "role": "passive", "notes": "Enables the on-board regulator. Tie to IOVDD" },
+    { "name": "AVDD", "role": "power", "notes": "Use 3V3" },
+    { "name": "IOVDD", "role": "power", "notes": "Use 3V3" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x29"],
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [25,16,1.6], "color": "#1F4FA8" },
+  "keywords": ["vl53l5cx", "tof", "multizone", "8x8", "depth", "distance", "distanza"],
+  "sources": [
+    { "title": "ST VL53L5CX datasheet", "section": "Default I2C address 0x29 (0x52 8-bit); firmware is uploaded by the host at every start (about 86 kB)" },
+    { "title": "ST UM2884 VL53L5CX ULD guide", "section": "LPn must be HIGH to enable I2C communication" }
+  ]
+}

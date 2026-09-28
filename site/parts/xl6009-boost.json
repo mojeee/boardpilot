@@ -1,0 +1,52 @@
+{
+  "id": "xl6009-boost",
+  "name": "XL6009 boost converter",
+  "category": "output",
+  "pins": [
+    {
+      "name": "IN+",
+      "role": "passive",
+      "notes": "Input 5 to 32 V"
+    },
+    {
+      "name": "IN-",
+      "role": "ground",
+      "notes": "Input ground, same as OUT-"
+    },
+    {
+      "name": "OUT+",
+      "role": "passive",
+      "notes": "Adjustable 5 to 35 V, above the input. Set it with the trimmer BEFORE wiring"
+    },
+    {
+      "name": "OUT-",
+      "role": "ground",
+      "notes": "To the ESP32 GND"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5-32",
+  "model": {
+    "shape": "module",
+    "size": [
+      48,
+      23,
+      14
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "xl6009",
+    "boost",
+    "step up",
+    "dc-dc",
+    "regulator",
+    "elevatore di tensione"
+  ],
+  "sources": [
+    {
+      "title": "XLSEMI XL6009 datasheet",
+      "section": "Input 5 to 32 V; 4 A switch current; 1.25 V feedback reference"
+    }
+  ]
+}

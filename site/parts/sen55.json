@@ -1,0 +1,78 @@
+{
+  "id": "sen55",
+  "name": "Sensirion SEN55 environmental node",
+  "category": "sensor",
+  "measures": [
+    "particulates",
+    "voc",
+    "nox",
+    "temperature",
+    "humidity"
+  ],
+  "pins": [
+    {
+      "name": "VDD",
+      "role": "power",
+      "notes": "Pin 1. Needs 5 V for the fan: use VIN"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Pin 2"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda",
+      "notes": "Pin 3. Add a pull-up to 3.3 V"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl",
+      "notes": "Pin 4. Add a pull-up to 3.3 V"
+    },
+    {
+      "name": "SEL",
+      "role": "passive",
+      "notes": "Pin 5. Connect to GND for I2C"
+    },
+    {
+      "name": "NC",
+      "role": "passive",
+      "notes": "Pin 6. Not connected"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x69"
+  ],
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      40.6,
+      40.6,
+      12
+    ],
+    "color": "#C9CED4"
+  },
+  "keywords": [
+    "sen55",
+    "sen54",
+    "sensirion",
+    "pm2.5",
+    "voc",
+    "nox",
+    "polveri sottili",
+    "qualità aria"
+  ],
+  "sources": [
+    {
+      "title": "Sensirion SEN5x datasheet",
+      "section": "Pin 1 VDD 5 V, 2 GND, 3 SDA, 4 SCL, 5 SEL, 6 NC; I2C address 0x69, 100 kHz"
+    },
+    {
+      "title": "Sensirion SEN5x datasheet",
+      "section": "I2C lines are 3.3 V level; VOC and NOx are index values, not ppm"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "id": "mcp23017-expander",
+  "name": "MCP23017 16-bit I/O expander",
+  "category": "output",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "RESET",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Must be HIGH to run: tie to VCC"
+    },
+    {
+      "name": "INTA",
+      "role": "int"
+    },
+    {
+      "name": "INTB",
+      "role": "int"
+    },
+    {
+      "name": "A0",
+      "role": "passive",
+      "notes": "Address bit 0"
+    },
+    {
+      "name": "A1",
+      "role": "passive",
+      "notes": "Address bit 1"
+    },
+    {
+      "name": "A2",
+      "role": "passive",
+      "notes": "Address bit 2. Expander I/O pins GPA0-7 and GPB0-7 go to your LEDs or buttons"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x20",
+    "0x21",
+    "0x22",
+    "0x23",
+    "0x24",
+    "0x25",
+    "0x26",
+    "0x27"
+  ],
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      40,
+      20,
+      5
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "mcp23017",
+    "io expander",
+    "i2c expander",
+    "gpio",
+    "espansore"
+  ],
+  "sources": [
+    {
+      "title": "Microchip MCP23017 datasheet",
+      "section": "Hardware address pins A0-A2: 0x20 to 0x27"
+    },
+    {
+      "title": "Microchip MCP23017 datasheet",
+      "section": "RESET is active LOW"
+    }
+  ]
+}

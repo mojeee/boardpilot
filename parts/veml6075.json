@@ -1,0 +1,24 @@
+{
+  "id": "veml6075",
+  "name": "VEML6075 UVA + UVB sensor",
+  "category": "sensor",
+  "measures": ["uv"],
+  "pins": [
+    { "name": "VIN", "role": "power" },
+    { "name": "3VO", "role": "passive", "notes": "3.3 V output of the on-board regulator. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x10"],
+  "idCheck": { "register": "0x0C", "expect": "0x26" },
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [18, 13, 1.6], "color": "#1F4FA8" },
+  "keywords": ["veml6075", "vishay", "uva", "uvb", "uv index", "ultravioletti", "raggi uv"],
+  "sources": [
+    { "title": "Vishay VEML6075 datasheet", "section": "I2C address 0x10; command code 0x0C device ID = 0x0026 (low byte 0x26 comes first)" },
+    { "title": "Vishay VEML6075 datasheet", "section": "Part is discontinued; modules are still sold" }
+  ]
+}

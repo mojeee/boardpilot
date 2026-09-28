@@ -1,0 +1,18 @@
+{
+  "id": "neopixel-stick-8",
+  "name": "NeoPixel Stick 8 LEDs",
+  "category": "display",
+  "pins": [
+    { "name": "GND", "role": "ground", "notes": "Pin order varies between boards: match by the printed label." },
+    { "name": "DIN", "role": "digital_in", "needsOutput": true, "notes": "Data in. Add a 330 Ω resistor" },
+    { "name": "5VDC", "role": "power", "notes": "4 to 7 V per the maker. At 3V3 it often works dimmer" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [51, 10, 3], "color": "#1A1A1A" },
+  "keywords": ["neopixel", "stick", "ws2812b", "8 led", "adafruit", "barra led"],
+  "sources": [
+    { "title": "Adafruit NeoPixel Stick 8 product page", "section": "Pads GND, DIN, 5VDC on each end" },
+    { "title": "Worldsemi WS2812B datasheet", "section": "Data input high level 0.7 × VDD" }
+  ]
+}

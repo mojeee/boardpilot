@@ -1,0 +1,25 @@
+{
+  "id": "fram-mb85rc256v",
+  "name": "MB85RC256V I2C FRAM breakout (32 KB)",
+  "category": "output",
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "WP", "role": "passive", "notes": "Write protect: LOW (default) allows writing" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "A2", "role": "passive", "notes": "Address bit, pulled LOW" },
+    { "name": "A1", "role": "passive" },
+    { "name": "A0", "role": "passive" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x50", "0x51", "0x52", "0x53", "0x54", "0x55", "0x56", "0x57"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [21.3, 18, 1.6], "color": "#1F4FA8" },
+  "keywords": ["mb85rc256v", "fram", "fujitsu", "non-volatile", "memory", "storage", "memoria"],
+  "sources": [
+    { "title": "Fujitsu MB85RC256V datasheet", "section": "Device address 1010 A2 A1 A0 (0x50 to 0x57); supply 2.7 to 5.5 V; 10^12 write cycles" },
+    { "title": "Adafruit I2C FRAM breakout guide", "section": "Pinouts. Order differs between boards: check the silkscreen" }
+  ]
+}

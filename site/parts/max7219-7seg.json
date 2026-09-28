@@ -1,0 +1,56 @@
+{
+  "id": "max7219-7seg",
+  "name": "MAX7219 8-digit 7-segment display",
+  "category": "display",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Needs 5 V: use VIN"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DIN",
+      "role": "spi_mosi",
+      "notes": "Data in"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs",
+      "notes": "Load (CS)"
+    },
+    {
+      "name": "CLK",
+      "role": "spi_sck",
+      "notes": "Clock"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      80,
+      15,
+      12
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "max7219",
+    "7 segment",
+    "8 digit",
+    "seven segment",
+    "display 7 segmenti",
+    "cifre"
+  ],
+  "sources": [
+    {
+      "title": "Maxim MAX7219 datasheet",
+      "section": "Serial interface DIN, CLK, LOAD (CS)"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "id": "ir-obstacle-fc51",
+  "name": "IR obstacle sensor (FC-51)",
+  "category": "input",
+  "pins": [
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "LOW when an obstacle is in front"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      31,
+      14,
+      7
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "fc-51",
+    "ir obstacle",
+    "infrared",
+    "avoidance",
+    "ostacolo",
+    "infrarossi"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments LM393 datasheet",
+      "section": "Comparator output"
+    }
+  ]
+}

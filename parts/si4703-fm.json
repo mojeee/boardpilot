@@ -1,0 +1,25 @@
+{
+  "id": "si4703-fm",
+  "name": "Si4703 FM radio receiver breakout",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "3.3V", "role": "power", "notes": "3.3 V only" },
+    { "name": "SDIO", "role": "i2c_sda", "notes": "I2C data. Must be LOW when RST goes HIGH to choose I2C mode" },
+    { "name": "SCLK", "role": "i2c_scl" },
+    { "name": "SEN", "role": "passive", "notes": "Tie HIGH for I2C mode" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true, "notes": "Reset, active LOW. Needed to start I2C mode" },
+    { "name": "GPIO1", "role": "passive", "notes": "Optional" },
+    { "name": "GPIO2", "role": "int", "notes": "Seek/tune complete interrupt, optional" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x10"],
+  "voltage": "3.3",
+  "model": { "shape": "breakout", "size": [25, 20, 6], "color": "#B22222" },
+  "keywords": ["si4703", "fm radio", "fm", "rds", "radio fm", "ricevitore"],
+  "sources": [
+    { "title": "Silicon Labs Si4702/03-C19 datasheet", "section": "Bus mode selection with RST, SEN and SDIO; 2-wire address 0010000 (0x10)" },
+    { "title": "Silicon Labs AN230 Si4700/01/02/03 programming guide", "section": "2-wire reads start at register 0x0A" },
+    { "title": "SparkFun Si4703 FM tuner breakout", "section": "Header order differs between boards: check the silkscreen" }
+  ]
+}

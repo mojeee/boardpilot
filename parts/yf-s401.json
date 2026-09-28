@@ -1,0 +1,18 @@
+{
+  "id": "yf-s401",
+  "name": "YF-S401 small water flow sensor",
+  "category": "sensor",
+  "measures": ["flow"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Red wire. Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground", "notes": "Black wire" },
+    { "name": "SIG", "role": "digital_out", "notes": "Yellow wire. Pulses at the supply level: use a voltage divider. About 98 pulses per second per L/min" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [40, 20, 20], "color": "#1A1A1A" },
+  "keywords": ["yf-s401", "water flow", "flow meter", "hall", "flussometro", "portata", "acqua"],
+  "sources": [
+    { "title": "YF-S401 seller datasheet", "section": "Supply 5 to 24 V; range 0.3 to 6 L/min; about 5880 pulses per litre. Calibrate with a known volume" }
+  ]
+}

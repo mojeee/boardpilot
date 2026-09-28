@@ -1,0 +1,51 @@
+{
+  "id": "hall-49e",
+  "name": "49E linear hall sensor (SS49E)",
+  "category": "sensor",
+  "measures": [
+    "magnetic field"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Left leg, printed face towards you. Use 3V3 so the output stays under 3.3 V"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Middle leg"
+    },
+    {
+      "name": "OUT",
+      "role": "analog_out",
+      "notes": "Right leg. About VCC/2 with no magnet, moves up or down with field polarity. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      8.6,
+      3,
+      4
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "49e",
+    "ss49e",
+    "linear hall",
+    "hall",
+    "magnet",
+    "sensore hall",
+    "magnete"
+  ],
+  "sources": [
+    {
+      "title": "Honeywell SS49E datasheet",
+      "section": "Pin 1 Vs, 2 ground, 3 output; ratiometric output, null at about Vs/2"
+    }
+  ]
+}

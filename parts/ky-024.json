@@ -1,0 +1,20 @@
+{
+  "id": "ky-024",
+  "name": "KY-024 linear hall module (49E + LM393)",
+  "category": "sensor",
+  "measures": ["magnetic field"],
+  "pins": [
+    { "name": "AO", "role": "analog_out", "notes": "49E output, about VCC/2 with no magnet. To an ADC pin (prefer ADC1: GPIO 32 to 39)" },
+    { "name": "GND", "role": "ground", "notes": "Marked G on the board" },
+    { "name": "VCC", "role": "power", "notes": "Marked + on the board. Use 3V3 so AO stays under 3.3 V" },
+    { "name": "DO", "role": "digital_out", "notes": "Changes level when the field passes the trimmer threshold" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [36,15,8], "color": "#B22222" },
+  "keywords": ["ky-024", "linear hall", "hall", "magnet", "lm393", "sensore hall", "magnete"],
+  "sources": [
+    { "title": "Joy-IT KY-024 datasheet", "section": "Pins A0, G, +, D0" },
+    { "title": "Honeywell SS49E datasheet", "section": "Ratiometric output, null at about Vs/2" }
+  ]
+}

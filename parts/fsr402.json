@@ -1,0 +1,17 @@
+{
+  "id": "fsr402",
+  "name": "FSR 402 force sensitive resistor",
+  "category": "sensor",
+  "measures": ["force"],
+  "pins": [
+    { "name": "1", "role": "power", "notes": "One leg to 3V3" },
+    { "name": "2", "role": "analog_out", "notes": "Other leg to an ADC pin and through 10 kΩ to GND. To an ADC pin (prefer ADC1: GPIO 32 to 39)" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": { "shape": "led", "size": [18,56,0.5], "color": "#C8A04A" },
+  "keywords": ["fsr402", "fsr", "force sensor", "pressure pad", "interlink", "forza", "pressione"],
+  "sources": [
+    { "title": "Interlink FSR 400 Series datasheet", "section": "Resistance falls as force rises; voltage divider circuit; not meant for precise weighing" }
+  ]
+}

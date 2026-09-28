@@ -1,0 +1,22 @@
+{
+  "id": "encoder-omron-e6b2",
+  "name": "Omron E6B2-CWZ6C incremental encoder (A/B/Z)",
+  "category": "input",
+  "measures": ["rotation", "position", "speed"],
+  "pins": [
+    { "name": "BROWN", "role": "power", "notes": "Supply +. Needs 5 to 24 V: use VIN (5 V)" },
+    { "name": "BLUE", "role": "ground", "notes": "0 V" },
+    { "name": "BLACK", "role": "digital_out", "notes": "Phase A. NPN open collector: use INPUT_PULLUP or 4.7 kΩ to 3V3, never to the supply" },
+    { "name": "WHITE", "role": "digital_out", "notes": "Phase B. NPN open collector: pull-up to 3V3 only" },
+    { "name": "ORANGE", "role": "digital_out", "notes": "Phase Z (one pulse per turn). NPN open collector: pull-up to 3V3 only" },
+    { "name": "SHIELD", "role": "passive", "notes": "Leave unconnected or tie to GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "5-24",
+  "model": { "shape": "motor", "size": [40,40,35], "color": "#1A1A1A" },
+  "keywords": ["e6b2", "e6b2-cwz6c", "omron", "encoder", "incremental encoder", "quadrature", "encoder incrementale"],
+  "sources": [
+    { "title": "Omron E6B2-C datasheet", "section": "E6B2-CWZ6C: 5 to 24 V DC, NPN open-collector outputs A, B, Z" },
+    { "title": "Omron E6B2-C datasheet", "section": "Wire colours: brown +, blue 0 V, black A, white B, orange Z, shield" }
+  ]
+}
