@@ -56,6 +56,27 @@ const api: BoardPilotApi = {
     exportReport: call('session:exportReport'),
     info: call('session:info'),
   } as BoardPilotApi['session'],
+  parts: {
+    list: call('parts:list'),
+    save: call('parts:save'),
+    remove: call('parts:remove'),
+    importFromUrl: call('parts:import'),
+  } as BoardPilotApi['parts'],
+  project: {
+    autosave: (scene) => ipcRenderer.send('project:autosave', scene),
+    last: call('project:last'),
+    save: call('project:save'),
+    open: call('project:open'),
+  } as BoardPilotApi['project'],
+  license: {
+    status: call('license:status'),
+    activate: call('license:activate'),
+    openBuyPage: call('license:buy'),
+  } as BoardPilotApi['license'],
+  app: {
+    setLanguage: call('app:setLanguage'),
+    openExternal: call('app:openExternal'),
+  } as BoardPilotApi['app'],
   on: {
     state: listen('state'),
     live: listen('live'),

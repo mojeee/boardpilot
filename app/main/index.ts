@@ -8,6 +8,8 @@ import { HardwareHub } from './hardware/hub';
 import { Assistant } from './ai/assistant';
 import { registerIpc } from './ipc';
 import { SessionLog } from './session/sessionLog';
+import { UserParts } from './parts/userParts';
+import { License } from './license/license';
 
 /** Minimal .env.local reader (KEY=value lines). The key stays in this process only. */
 function loadEnvLocal() {
@@ -30,6 +32,8 @@ const mode = process.env.BOARDPILOT_MODE === 'real' ? 'real' : 'sim';
 const hub = new HardwareHub(dataDir, agentDir, mode);
 const sessionLog = new SessionLog(dataDir);
 const assistant = new Assistant(hub, process.env.ANTHROPIC_API_KEY || undefined);
+const userParts = new UserParts(join(dataDir, 'parts'));
+const license = new License(dataDir);
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -78,7 +82,8 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  registerIpc(hub, assistant, sessionLog, dataDir);
+  void userParts.load();
+  registerIpc(hub, assistant, sessionLog, dataDir, userParts, license);
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

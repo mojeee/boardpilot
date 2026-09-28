@@ -1,9 +1,14 @@
 // Floating card for the selected pin, part or wire.
 
 import type { BoardDef, PinFlag, TargetRef } from '@shared/types';
-import { PARTS, ROLE_VAR, canOutput, pinById, pinRoleInScene, targetLabel } from '@shared/board';
+import { PARTS, ROLE_HEX, ROLE_VAR, canOutput, partRoleColor, pinById, pinRoleInScene, targetLabel } from '@shared/board';
 import { useApp, useLive, useScene } from '../state/store';
 import { confirmGpioWrite } from '../state/hw';
+import { duplicateSelected, removeTarget, renamePart, rotateSelected } from '../state/sceneActions';
+import { isBuiltin } from '../state/partsLib';
+import { usePartEditor } from '../components/PartEditor';
+import { Icon } from '../components/Icon';
+import { t } from '@shared/i18n';
 
 const FLAG_TEXT: Partial<Record<PinFlag, { text: string; sev: 'warn' | 'info' }>> = {
   input_only: { text: 'Input only: can read, cannot drive an LED or other output. No internal pull-up.', sev: 'warn' },
@@ -108,10 +113,11 @@ function PartCard({ id }: { id: string }) {
   const sp = scene.parts.find((p) => p.id === id);
   const def = sp && PARTS[sp.partId];
   if (!sp || !def) return null;
+  const wires = scene.wires.filter((w) => w.from.part === id || w.to.part === id);
   return (
     <>
       <div className="card-head">
-        <span className="big">{sp.label ?? def.name}</span>
+        <input className="text-in rename" value={sp.label ?? ''} placeholder={def.name} onChange={(e) => renamePart(id, e.target.value)} title={t('Rename')} />
       </div>
       <div className="dim">{def.name}</div>
       <div className="chips">
@@ -122,33 +128,53 @@ function PartCard({ id }: { id: string }) {
           </span>
         ))}
         <span className="chip mono">{def.voltage} V</span>
+        {!isBuiltin(def.id) && <span className="chip ai-chip">{t('my part')}</span>}
       </div>
-      {def.measures && <p className="card-note">Measures {def.measures.join(', ')}.</p>}
+      <div className="part-tools">
+        <button className="btn small" title="R" onClick={() => rotateSelected(90)}>
+          <Icon name="rotate" size={14} /> {t('Rotate')}
+        </button>
+        <button className="btn small" title="⌘D" onClick={() => duplicateSelected()}>
+          <Icon name="copy" size={14} /> {t('Duplicate')}
+        </button>
+        <button className="btn small danger" title="Delete" onClick={() => removeTarget(`part:${id}`)}>
+          <Icon name="trash" size={14} /> {t('Remove')}
+        </button>
+      </div>
+      {def.measures && <p className="card-note">{t('Measures {what}.', { what: def.measures.join(', ') })}</p>}
       {findings.map((f) => (
         <p key={f.id} className={`card-flag ${f.severity === 'error' ? 'err' : 'warn'}`}>
-          {f.message} <span className="dim">{f.hint}</span>
+          {t(f.message)} <span className="dim">{t(f.hint)}</span>
         </p>
       ))}
       <div className="card-section">
-        <div className="label">Source</div>
+        <div className="label">{t('Pins')}</div>
+        {def.pins.map((p) => {
+          const w = wires.find((x) => (x.from.part === id && x.from.pin === p.name) || (x.to.part === id && x.to.pin === p.name));
+          const other = w ? (w.from.part === id ? w.to : w.from) : null;
+          return (
+            <div key={p.name} className="pin-line mono small">
+              <span className="swatch" style={{ background: ROLE_HEX[partRoleColor(p.role)] }} /> {p.name}
+              <span className="dim"> → {other ? (other.part === 'board' ? other.pin : `${other.part}.${other.pin}`) : t('not wired')}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="card-section">
+        <div className="label">{t('Source')}</div>
         {def.sources.map((s, i) => (
           <div key={i} className="small dim">
             {s.title}
             {s.section ? `, ${s.section}` : ''}
           </div>
         ))}
+        {def.origin?.url && <div className="small dim">{def.origin.url}</div>}
       </div>
-      <div className="row gap">
-        <button
-          className="btn small danger"
-          onClick={() => {
-            useScene.getState().updateScene((s) => ({ ...s, parts: s.parts.filter((p) => p.id !== id), wires: s.wires.filter((w) => w.from.part !== id && w.to.part !== id) }));
-            useScene.getState().select(null);
-          }}
-        >
-          Remove part
+      {!isBuiltin(def.id) && (
+        <button className="btn small ghost" onClick={() => usePartEditor.getState().open({ draft: def, replaceId: def.id })}>
+          <Icon name="edit" size={14} /> {t('Edit part definition')}
         </button>
-      </div>
+      )}
     </>
   );
 }
@@ -178,10 +204,7 @@ function WireCard({ board, id }: { board: BoardDef; id: string }) {
       <div className="row gap">
         <button
           className="btn small danger"
-          onClick={() => {
-            useScene.getState().updateScene((s) => ({ ...s, wires: s.wires.filter((x) => x.id !== id) }));
-            useScene.getState().select(null);
-          }}
+          onClick={() => removeTarget(`wire:${id}`)}
         >
           Remove wire
         </button>

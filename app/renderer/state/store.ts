@@ -85,13 +85,21 @@ interface SceneStore {
   wireMode: boolean;
   wireFrom: string | null;
   draggingPart: string | null;
+  libOpen: boolean;
   cameraPreset: { name: 'top' | 'side' | 'module' | 'home'; nonce: number };
-  setScene(s: Scene): void;
-  updateScene(fn: (s: Scene) => Scene): void;
+  past: Scene[];
+  future: Scene[];
+  /** Replace the scene. Pass keepHistory to make it undoable. */
+  setScene(s: Scene, keepHistory?: boolean): void;
+  /** Change the scene. Transient changes (drag moves) skip the undo history; call checkpoint() first. */
+  updateScene(fn: (s: Scene) => Scene, opts?: { transient?: boolean }): void;
+  checkpoint(): void;
+  undo(): void;
+  redo(): void;
   select(t: TargetRef | null): void;
   focusOn(targets: TargetRef[]): void;
   setHighlight(targets: TargetRef[]): void;
-  set(p: Partial<Pick<SceneStore, 'view' | 'labels' | 'wireFrom' | 'wireMode' | 'draggingPart'>>): void;
+  set(p: Partial<Pick<SceneStore, 'view' | 'labels' | 'wireFrom' | 'wireMode' | 'draggingPart' | 'libOpen'>>): void;
   preset(name: 'top' | 'side' | 'module' | 'home'): void;
 }
 
@@ -109,9 +117,31 @@ export const useScene = create<SceneStore>((set, get) => ({
   wireMode: false,
   wireFrom: null,
   draggingPart: null,
+  libOpen: false,
   cameraPreset: { name: 'home', nonce: 0 },
-  setScene: (s) => set(withFindings(s)),
-  updateScene: (fn) => set(withFindings(fn(get().scene))),
+  past: [],
+  future: [],
+  setScene: (s, keepHistory) =>
+    set(keepHistory ? { ...withFindings(s), past: [...get().past.slice(-99), get().scene], future: [] } : { ...withFindings(s), past: [], future: [] }),
+  updateScene: (fn, opts) => {
+    const before = get().scene;
+    const after = fn(before);
+    if (after === before) return;
+    set(opts?.transient ? withFindings(after) : { ...withFindings(after), past: [...get().past.slice(-99), before], future: [] });
+  },
+  checkpoint: () => set({ past: [...get().past.slice(-99), get().scene], future: [] }),
+  undo: () => {
+    const { past, scene, future } = get();
+    const prev = past[past.length - 1];
+    if (!prev) return;
+    set({ ...withFindings(prev), past: past.slice(0, -1), future: [scene, ...future] });
+  },
+  redo: () => {
+    const { past, scene, future } = get();
+    const next = future[0];
+    if (!next) return;
+    set({ ...withFindings(next), past: [...past, scene], future: future.slice(1) });
+  },
   select: (selected) => set({ selected }),
   focusOn: (targets) => set((s) => ({ focus: { targets, nonce: s.focus.nonce + 1 }, highlight: targets, selected: targets[0] ?? s.selected })),
   setHighlight: (highlight) => set({ highlight }),

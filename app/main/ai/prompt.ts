@@ -3,6 +3,7 @@
 
 import type { AiContext, BoardDef } from '@shared/types';
 import { PARTS } from '@shared/board';
+import { getLanguage } from '@shared/i18n';
 
 export const SYSTEM_PROMPT = `You are the assistant inside BoardPilot, a desktop app that guides beginners through embedded work on an ESP32 DevKit (30 pins, ESP32-WROOM-32).
 
@@ -63,6 +64,7 @@ export function buildContextBlock(board: BoardDef, ctx: AiContext): string {
     : null;
   return [
     '<context>',
+    `Reply language: ${getLanguage() === 'it' ? 'Italian (keep pin names, code and units as they are)' : 'English'}`,
     `Screen: ${ctx.screen}${ctx.flowId ? `, flow ${ctx.flowId}, step ${ctx.stepId ?? '?'}` : ''}`,
     `Board: ${board.name} (${board.id})`,
     `Board pins: ${JSON.stringify(pins)}`,

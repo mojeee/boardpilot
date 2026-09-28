@@ -5,7 +5,7 @@ import { useApp, useLive, useScene } from './state/store';
 import { agent, startStream } from './state/hw';
 import { useWizard } from './wizard/session';
 import { openTask } from './components/TaskRail';
-import { addPart } from './screens/NewProject';
+import { addPart } from './state/sceneActions';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -55,6 +55,19 @@ export async function runDemo(name: string, scenario: string | null) {
     openTask('connect');
     await startStream(20);
     useScene.getState().preset('home');
+  } else if (name === 'library') {
+    openTask('connect');
+    useScene.getState().set({ libOpen: true });
+    const a = addPart('mpu6050');
+    if (a) {
+      useScene.getState().select(`part:${a}`);
+    }
+  } else if (name === 'import') {
+    openTask('newProject');
+    const r = await window.bp.parts.importFromUrl('https://www.adafruit.com/product/3317');
+    const { usePartEditor } = await import('./components/PartEditor');
+    if (r.ok) usePartEditor.getState().open({ draft: r.value.draft, notes: r.value.notes, fromImport: true, usedAi: r.value.usedAi });
+    else usePartEditor.getState().open({ draft: null, notes: [r.error.humanMessage], fromImport: true });
   } else if (name === 'project') {
     useScene.getState().setScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

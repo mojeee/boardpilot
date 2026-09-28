@@ -1,6 +1,10 @@
 import { useApp } from '../state/store';
 import { confirmRestore } from '../state/hw';
 import { Icon } from './Icon';
+import { LicenseChip } from './License';
+import { LANGS, getLanguage, type Lang } from '@shared/i18n';
+import { changeLanguage } from '../state/lang';
+import { t } from '@shared/i18n';
 
 export function TopBar() {
   const conn = useApp((s) => s.conn);
@@ -44,6 +48,14 @@ export function TopBar() {
             <Icon name="restore" size={15} /> Restore my firmware
           </button>
         )}
+        <LicenseChip />
+        <select className="select lang-select" value={getLanguage()} onChange={(e) => changeLanguage(e.target.value as Lang)} title={t('Language')}>
+          {LANGS.map((l) => (
+            <option key={l.id} value={l.id}>
+              {l.id.toUpperCase()}
+            </option>
+          ))}
+        </select>
         <span className={`chip ${ai.enabled ? 'ai-chip' : ''}`} title={ai.enabled ? `AI model ${ai.model}` : 'Add ANTHROPIC_API_KEY to .env.local'}>
           AI {ai.enabled ? 'on' : 'off'}
         </span>

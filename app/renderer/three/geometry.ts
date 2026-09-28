@@ -16,28 +16,36 @@ export function boardPinTop(board: BoardDef, pinId: string): THREE.Vector3 | nul
   return new THREE.Vector3(x, y + 0.4, z);
 }
 
-/** Parts in front of the board face it with their pin edge (-z); parts behind face +z. */
-export function partFacing(sp: ScenePart): 1 | -1 {
-  return sp.position[2] >= 0 ? -1 : 1;
+/** Rotation of a part around the vertical axis, degrees. By default the pin edge faces the board. */
+export function partRotationDeg(sp: ScenePart): number {
+  return sp.rotation ?? (sp.position[2] >= 0 ? 0 : 180);
 }
 
-export function partPinLocal(def: PartDef, pinName: string, facing: 1 | -1): THREE.Vector3 | null {
+const SMALL_SHAPES = new Set(['led', 'button', 'pot', 'motor', 'relay']);
+
+/** Pin position in the part's own frame: pins in one row along the -z edge. */
+export function partPinLocal(def: PartDef, pinName: string): THREE.Vector3 | null {
   const i = def.pins.findIndex((p) => p.name === pinName);
   if (i < 0) return null;
   const n = def.pins.length;
   const [, d, h] = def.model.size;
   const x = (i - (n - 1) / 2) * PITCH;
-  const edge = def.model.shape === 'led' || def.model.shape === 'button' || def.model.shape === 'pot' ? d / 2 + 1.5 : d / 2 - 1.3;
-  const y = def.model.shape === 'breakout' || def.model.shape === 'oled' ? h + 2.2 : 0.8;
-  return new THREE.Vector3(facing === -1 ? x : -x, y, facing * edge);
+  const edge = SMALL_SHAPES.has(def.model.shape) ? d / 2 + 1.5 : d / 2 - 1.3;
+  const y = def.model.shape === 'breakout' || def.model.shape === 'oled' || def.model.shape === 'module' ? h + 2.2 : 0.8;
+  return new THREE.Vector3(x, y, -edge);
+}
+
+/** Pin offset from the part origin, rotated with the part. */
+export function partPinOffset(sp: ScenePart, def: PartDef, pinName: string): THREE.Vector3 | null {
+  const local = partPinLocal(def, pinName);
+  return local ? local.applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(partRotationDeg(sp))) : null;
 }
 
 export function partPinWorld(sp: ScenePart, pinName: string): THREE.Vector3 | null {
   const def = PARTS[sp.partId];
   if (!def) return null;
-  const local = partPinLocal(def, pinName, partFacing(sp));
-  if (!local) return null;
-  return local.add(new THREE.Vector3(sp.position[0], PART_BASE_Y, sp.position[2]));
+  const off = partPinOffset(sp, def, pinName);
+  return off ? off.add(new THREE.Vector3(sp.position[0], PART_BASE_Y, sp.position[2])) : null;
 }
 
 export function wireEndWorld(board: BoardDef, scene: Scene, end: { part: string; pin: string }): THREE.Vector3 | null {

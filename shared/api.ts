@@ -9,8 +9,10 @@ import type {
   HardwareMode,
   HelloReply,
   I2cTraceStep,
+  LicenseStatus,
   LiveFrame,
   LogEntry,
+  PartDef,
   PhotoRecognition,
   PortInfo,
   ProbeFrame,
@@ -70,6 +72,28 @@ export interface BoardPilotApi {
     saveFile(suggestedName: string, content: string): Promise<Result<string>>;
     exportReport(markdown: string, html: string, suggestedName: string): Promise<Result<{ markdownPath: string; pdfPath: string }>>;
     info(): Promise<{ dataDir: string; logPath: string; version: string }>;
+  };
+  parts: {
+    /** The user's own parts (built-in parts ship with the renderer). */
+    list(): Promise<PartDef[]>;
+    save(def: PartDef, replaceId?: string): Promise<Result<PartDef>>;
+    remove(id: string): Promise<Result<true>>;
+    importFromUrl(url: string): Promise<Result<{ draft: PartDef; notes: string[]; usedAi: boolean; pageTitle: string }>>;
+  };
+  project: {
+    autosave(scene: Scene): void;
+    last(): Promise<Scene | null>;
+    save(scene: Scene): Promise<Result<string>>;
+    open(): Promise<Result<Scene>>;
+  };
+  license: {
+    status(): Promise<LicenseStatus>;
+    activate(key: string): Promise<Result<LicenseStatus>>;
+    openBuyPage(): Promise<void>;
+  };
+  app: {
+    setLanguage(lang: 'en' | 'it'): Promise<void>;
+    openExternal(url: string): Promise<void>;
   };
   on: {
     state(cb: (s: ConnectionState) => void): Unsubscribe;

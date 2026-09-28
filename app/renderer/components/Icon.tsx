@@ -17,6 +17,18 @@ const P: Record<string, string> = {
   check: 'M5 12l5 5 9-10',
   x: 'M6 6l12 12M18 6L6 18',
   warn: 'M12 3l10 18H2zM12 10v5M12 18v.5',
+  plus: 'M12 5v14M5 12h14',
+  edit: 'M4 20h4L19 9l-4-4L4 16zM13 7l4 4',
+  trash: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13',
+  undo: 'M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3',
+  redo: 'M15 14l5-5-5-5M20 9H10a6 6 0 0 0 0 12h3',
+  folder: 'M3 6h6l2 2h10v11H3z',
+  save: 'M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7',
+  globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18',
+  key: 'M14 10a4 4 0 1 0-3.4 4L10 15H8v2H6v2H3v-3l7-7a4 4 0 0 0 4 1',
+  rotate: 'M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5',
+  copy: 'M8 8h12v12H8zM4 16V4h12',
+  box: 'M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9',
 };
 
 export function Icon({ name, size = 18 }: { name: keyof typeof P | string; size?: number }) {

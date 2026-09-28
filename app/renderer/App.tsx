@@ -17,6 +17,34 @@ import { Monitor } from './screens/Monitor';
 import { Report } from './screens/Report';
 import { NewProjectPanel } from './screens/NewProject';
 import { runDemo } from './demo';
+import { PartEditor } from './components/PartEditor';
+import { LicenseDialog, LockScreen, useLicense } from './components/License';
+import { usePartsLib } from './state/partsLib';
+import { useScene } from './state/store';
+
+let booted = false;
+/** One-time start-up: events, license, user parts, project autosave. */
+async function boot() {
+  if (booted) return;
+  booted = true;
+  await wireEvents();
+  await Promise.all([useLicense.getState().refresh(), usePartsLib.getState().load()]);
+  if (useApp.getState().conn.mode === 'real') {
+    const last = await window.bp.project.last();
+    if (last) useScene.getState().setScene(last);
+  }
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  useScene.subscribe((s, prev) => {
+    if (s.scene === prev.scene) return;
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => window.bp.project.autosave(useScene.getState().scene), 800);
+  });
+  const params = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
+  const screen = params.get('screen');
+  if (screen) openTask(screen as Parameters<typeof openTask>[0]);
+  const demo = params.get('demo');
+  if (demo) void runDemo(demo, params.get('scenario'));
+}
 
 function FlowStarter({ screen }: { screen: string }) {
   const t = TASKS.find((x) => x.screen === screen);
@@ -70,13 +98,7 @@ function Center() {
 
 export function App() {
   useEffect(() => {
-    void wireEvents().then(() => {
-      const params = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
-      const screen = params.get('screen');
-      if (screen) openTask(screen as Parameters<typeof openTask>[0]);
-      const demo = params.get('demo');
-      if (demo) void runDemo(demo, params.get('scenario'));
-    });
+    void boot();
   }, []);
 
   if (!window.bp) {
@@ -97,7 +119,10 @@ export function App() {
         <LogPanel />
       </div>
       <DevMenu />
+      <PartEditor />
+      <LicenseDialog />
       <ConfirmDialog />
+      <LockScreen />
     </div>
   );
 }

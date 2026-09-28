@@ -247,6 +247,8 @@ export interface PartPin {
   notes?: string;
 }
 
+export type PartShape = 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled' | 'chip' | 'module' | 'motor' | 'relay';
+
 export interface PartDef {
   id: string;
   name: string;
@@ -260,7 +262,9 @@ export interface PartDef {
   voltage: string;
   /** the part pulls its data lines up to this voltage when powered (breakouts with on-board pull-ups) */
   pullupsOnBoard?: boolean;
-  model: { shape: 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled'; size: [number, number, number]; color: string };
+  model: { shape: PartShape; size: [number, number, number]; color: string };
+  /** Where a user-imported part came from. Built-in parts have no origin. */
+  origin?: { url?: string; importedAt: string; method: 'ai' | 'manual' };
   keywords: string[];
   sources: { title: string; section?: string }[];
   starterSketch?: string;
@@ -281,6 +285,8 @@ export interface ScenePart {
   id: string;
   partId: string;
   position: [number, number, number];
+  /** Rotation around the vertical axis, degrees. Default: pins face the board. */
+  rotation?: number;
   label?: string;
   /** Set when the user confirmed an AI suggestion ("this photo shows a BME280") */
   confirmed?: boolean;
@@ -380,4 +386,15 @@ export interface ScenarioInfo {
   id: string;
   name: string;
   description: string;
+}
+
+/* ---------- license ---------- */
+
+export interface LicenseStatus {
+  state: 'trial' | 'licensed' | 'expired';
+  daysLeft: number;
+  trialDays: number;
+  licensee?: string;
+  plan?: string;
+  firstRun: string;
 }

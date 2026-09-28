@@ -1,8 +1,14 @@
 // Typed IPC handlers. Every handler returns data or a Result; nothing throws into the renderer.
 
-import { BrowserWindow, dialog, ipcMain, app } from 'electron';
-import { writeFile } from 'node:fs/promises';
-import type { AgentRequest, AiContext, HardwareMode, LogEntry, Result, WriteRequest } from '@shared/types';
+import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
+import { BUY_URL } from '@shared/brand';
+import { setLanguage } from '@shared/i18n';
+import type { UserParts } from './parts/userParts';
+import { importPartFromUrl } from './parts/importer';
+import type { License } from './license/license';
 import { EVENT_CHANNELS } from '@shared/api';
 import type { HardwareHub } from './hardware/hub';
 import type { Assistant } from './ai/assistant';
@@ -11,7 +17,7 @@ import { grant } from './session/safety';
 import type { SessionLog } from './session/sessionLog';
 import { toAppError } from './hardware/errors';
 
-export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string) {
+export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
 
   h('hw:state', () => hub.state);
@@ -84,6 +90,59 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       return { ok: false, error: toAppError(e) };
     }
   });
+
+  h('parts:list', () => parts.load());
+  h('parts:save', (def: PartDef, replaceId?: string) => parts.save(def, replaceId));
+  h('parts:remove', (id: string) => parts.remove(id));
+  h('parts:import', (url: string) => importPartFromUrl(url, ai));
+
+  const projDir = join(dataDir, 'projects');
+  const isScene = (x: unknown): x is Scene =>
+    typeof x === 'object' && x !== null && Array.isArray((x as Scene).parts) && Array.isArray((x as Scene).wires) && typeof (x as Scene).board === 'string';
+  ipcMain.on('project:autosave', (_e, scene: Scene) => {
+    void mkdir(projDir, { recursive: true }).then(() => writeFile(join(projDir, 'last.json'), JSON.stringify(scene))).catch(() => undefined);
+  });
+  h('project:last', async () => {
+    try {
+      const s = JSON.parse(await readFile(join(projDir, 'last.json'), 'utf8')) as unknown;
+      return isScene(s) ? s : null;
+    } catch {
+      return null;
+    }
+  });
+  h('project:save', async (scene: Scene): Promise<Result<string>> => {
+    const win = BrowserWindow.getFocusedWindow();
+    const opts: Electron.SaveDialogOptions = { defaultPath: 'my-project.boardpilot.json', filters: [{ name: 'BoardPilot project', extensions: ['json'] }] };
+    const r = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
+    if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: 'Not saved.', hint: '' } };
+    const used = [...new Set(scene.parts.map((p) => p.partId))];
+    // user parts travel with the project so it opens on another Mac
+    const { PARTS, BUILTIN_PART_IDS } = await import('@shared/board');
+    const customParts = used.filter((id) => !BUILTIN_PART_IDS.has(id)).map((id) => PARTS[id]).filter(Boolean);
+    await writeFile(r.filePath, JSON.stringify({ format: 'boardpilot-project@1', scene, customParts }, null, 2));
+    return { ok: true, value: r.filePath };
+  });
+  h('project:open', async (): Promise<Result<Scene>> => {
+    const win = BrowserWindow.getFocusedWindow();
+    const opts: Electron.OpenDialogOptions = { properties: ['openFile'], filters: [{ name: 'BoardPilot project', extensions: ['json'] }] };
+    const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
+    if (r.canceled || !r.filePaths[0]) return { ok: false, error: { code: 'cancelled', humanMessage: 'Nothing opened.', hint: '' } };
+    try {
+      const f = JSON.parse(await readFile(r.filePaths[0], 'utf8')) as { scene?: unknown; customParts?: unknown[] };
+      const scene = f.scene ?? f;
+      if (!isScene(scene)) throw new Error('not a project');
+      for (const cp of f.customParts ?? []) await parts.save(cp, (cp as PartDef).id);
+      return { ok: true, value: scene };
+    } catch {
+      return { ok: false, error: { code: 'bad_project', humanMessage: 'That file is not a BoardPilot project.', hint: 'Pick a .boardpilot.json file saved from the app.' } };
+    }
+  });
+
+  h('license:status', () => license.status());
+  h('license:activate', (key: string) => license.activate(key));
+  h('license:buy', () => shell.openExternal(BUY_URL));
+  h('app:setLanguage', (lang: 'en' | 'it') => setLanguage(lang));
+  h('app:openExternal', (url: string) => (/^https:\/\//.test(url) ? shell.openExternal(url) : undefined));
 
   // Forward hub events to every window.
   for (const ch of EVENT_CHANNELS) {
