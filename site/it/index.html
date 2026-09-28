@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="meta.title">BoardPilot: debugger per ESP32 con scheda 3D dal vivo</title>
+    <meta name="description" data-i18n-content="meta.description" content="Trova in pochi minuti gli errori di cablaggio dell’ESP32: scansione I2C, SDA/SCL invertiti, bus decodificato e pin in 3D. Prova gratuita, Mac e Windows." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/" />
+    <meta property="og:title" data-i18n-content="meta.ogTitle" content="BoardPilot · Guarda dentro il tuo ESP32" />
+    <meta property="og:description" data-i18n-content="meta.ogDescription" content="Un’app per Mac e Windows che trova gli errori di cablaggio, decodifica l’I2C e spiega cosa non va, con parole semplici. In italiano e in inglese." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" data-i18n-content="meta.ogAlt" content="BoardPilot mostra un ESP32 in 3D con i fili SDA e SCL invertiti evidenziati" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://boardpilot.agentflowbind.com/img/og.jpg" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="image" href="/img/debug.jpg" imagesrcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" imagesizes="(max-width: 920px) 100vw, 640px" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://boardpilot.agentflowbind.com/#website","url":"https://boardpilot.agentflowbind.com/","name":"BoardPilot","inLanguage":["en","it"]},{"@type":"SoftwareApplication","@id":"https://boardpilot.agentflowbind.com/#app","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/it/","description":"Trova in pochi minuti gli errori di cablaggio dell’ESP32: scansione I2C, SDA/SCL invertiti, bus decodificato e pin in 3D. Prova gratuita, Mac e Windows.","applicationCategory":"DeveloperApplication","applicationSubCategory":"Embedded development, ESP32 debugging","operatingSystem":"macOS 12+, Windows 10, Windows 11","softwareVersion":"0.2.0","inLanguage":["en","it"],"image":"https://boardpilot.agentflowbind.com/img/og.jpg","screenshot":["https://boardpilot.agentflowbind.com/img/debug.jpg","https://boardpilot.agentflowbind.com/img/test.jpg","https://boardpilot.agentflowbind.com/img/monitor.jpg","https://boardpilot.agentflowbind.com/img/library.jpg"],"downloadUrl":["https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-x64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-win-x64.exe"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","description":"Prova gratuita di 30 giorni"},"license":"https://github.com/mojeee/boardpilot/blob/main/LICENSE.md","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"sameAs":["https://github.com/mojeee/boardpilot"],"featureList":"Scheda ESP32 in 3D, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, libreria componenti, grafici dal vivo, simulatore"},{"@type":"WebPage","@id":"https://boardpilot.agentflowbind.com/it/#page","url":"https://boardpilot.agentflowbind.com/it/","name":"BoardPilot: debugger per ESP32 con scheda 3D dal vivo","inLanguage":"it","isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"},"about":{"@id":"https://boardpilot.agentflowbind.com/#app"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"BoardPilot è open source?","acceptedAnswer":{"@type":"Answer","text":"È source-available. Tutto il codice è pubblico su GitHub con la BoardPilot License: puoi leggerlo, studiarlo, modificarlo e compilarlo. Dopo i 30 giorni di prova serve una chiave di licenza. Il firmware (agente diagnostico e libreria BoardPilotProbe) è sotto licenza MIT."}},{"@type":"Question","name":"Quali schede supporta?","acceptedAnswer":{"@type":"Answer","text":"Oggi: l’ESP32 DevKit a 30 pin (ESP32-WROOM-32). Le schede sono file di dati, quindi i prossimi sono ESP32-S3 e STM32 con ST-Link."}},{"@type":"Question","name":"Il computer avvisa che l’app è di uno sviluppatore sconosciuto.","acceptedAnswer":{"@type":"Answer","text":"Le prime versioni non sono ancora firmate. Su Mac fai clic destro su BoardPilot in Applicazioni e scegli Apri (oppure Impostazioni di Sistema → Privacy e sicurezza → Apri comunque). Su Windows fai clic su Ulteriori informazioni → Esegui comunque nella finestra di SmartScreen."}},{"@type":"Question","name":"Mi serve una scheda per provarlo?","acceptedAnswer":{"@type":"Answer","text":"No. La modalità simulatore fa girare tutta l’app con una scheda virtuale e guasti realistici: fili invertiti, un finto BME280, cali di tensione, baud rate sbagliato."}},{"@type":"Question","name":"Serve internet o un account AI?","acceptedAnswer":{"@type":"Answer","text":"No. Controlli, misure e simulatore funzionano offline. L’assistente AI è facoltativo e funziona con la tua chiave API di Anthropic (Claude), OpenAI (GPT) o Google (Gemini)."}},{"@type":"Question","name":"Cosa installa sulla mia scheda?","acceptedAnswer":{"@type":"Answer","text":"Solo se confermi: un piccolo agente diagnostico che permette all’app di leggere i pin e fare test sul bus. Prima salva il tuo programma, che torna con un clic."}}]}]}</script>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><span class="logo"><span></span></span>BoardPilot</a>
+        <nav class="links">
+          <a href="#features" data-i18n="nav.features">Funzioni</a>
+          <a href="#how" data-i18n="nav.how">Come funziona</a>
+          <a href="#safety" data-i18n="nav.safety">Sicurezza</a>
+          <a href="#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/esp32-pinout/" data-i18n="nav.pinout">Piedinatura ESP32</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/" hreflang="en" class="">EN</a><a href="/it/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="glow"></div>
+        <div class="wrap hero-in">
+          <div class="hero-copy">
+            <span class="eyebrow" data-i18n="hero.eyebrow">Per maker, studenti e sviluppatori firmware</span>
+            <h1 data-i18n="hero.title">Guarda dentro il tuo ESP32.</h1>
+            <p class="lead" data-i18n="hero.lead">BoardPilot ti guida nel lavoro embedded su una scheda vera. Ogni pin, filo e transazione sul bus è visibile in 3D, e ogni risposta mostra da dove viene.</p>
+            <div class="cta" id="download">
+              <a class="btn primary" href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.5 0 2 .8 3.3.8 1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.2zM14 5.3c.7-.9 1.2-2 1-3.3-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1.1 3.1 1.1.1 2.3-.6 3-1.3z"/></svg>
+                <span data-i18n="cta.arm">Mac (Apple Silicon)</span>
+              </a>
+              <a class="btn" href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-x64.dmg" data-i18n="cta.intel">Mac Intel</a>
+              <a class="btn" href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-win-x64.exe">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M3 5.5l7.5-1v7H3zM11.5 4.4L21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.4z"/></svg>
+                <span data-i18n="cta.win">Windows</span>
+              </a>
+            </div>
+            <p class="fine" data-i18n="cta.fine">Gratis per 30 giorni · macOS 12+ e Windows 10/11 · Funziona anche senza scheda, in modalità simulatore</p>
+          </div>
+          <div class="hero-shot">
+            <div class="window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/debug.jpg" srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" sizes="(max-width: 920px) 100vw, 640px" width="1800" height="1109" data-i18n-alt="img.hero" alt="BoardPilot trova i fili SDA e SCL invertiti su un sensore BME280 collegato a un ESP32" fetchpriority="high" />
+            </div>
+            <div class="float-chip c1"><span class="tag measured" data-i18n="chip.measured">Misurato</span> <span data-i18n="chip.crossed">SDA e SCL sono invertiti</span></div>
+            <div class="float-chip c2 mono">0x76 W ACK · 0xD0 ACK · 0x60</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="strip">
+        <div class="wrap strip-in">
+          <div><b>30</b><span data-i18n="strip.pins">pin mappati dal datasheet Espressif</span></div>
+          <div><b>0</b><span data-i18n="strip.writes">scritture sulla scheda senza il tuo OK</span></div>
+          <div><b>8</b><span data-i18n="strip.sim">guasti simulati per imparare</span></div>
+          <div><b>EN · IT</b><span data-i18n="strip.lang">Italiano e inglese</span></div>
+        </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="feat.eyebrow">Cosa fa</span>
+          <h2 data-i18n="feat.title">Da “non funziona” al filo esatto.</h2>
+          <div class="grid3">
+            <article class="card">
+              <div class="icon i-green"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div>
+              <h3 data-i18n="f1.t">Una scheda 3D dal vivo</h3>
+              <p data-i18n="f1.d">Generata dal datasheet: ogni pin è cliccabile e mostra funzioni, avvisi e livello in tempo reale. I fili si illuminano quando il bus comunica.</p>
+            </article>
+            <article class="card">
+              <div class="icon i-violet"><svg viewBox="0 0 24 24"><path d="M8 9a4 4 0 0 1 8 0v5a4 4 0 0 1-8 0zM12 9v9M4 12h4M16 12h4"/></svg></div>
+              <h3 data-i18n="f2.t">Un debug guidato che misura</h3>
+              <p data-i18n="f2.d">Pull-up, scansione del bus, test di scambio SDA/SCL, ID del chip: l’app controlla passo passo e ti dice la causa, con le prove.</p>
+            </article>
+            <article class="card">
+              <div class="icon i-blue"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-8 4 5M3 21h18"/></svg></div>
+              <h3 data-i18n="f3.t">I2C decodificato, grafici dal vivo</h3>
+              <p data-i18n="f3.d">Vedi start, indirizzo, ACK e bit dei dati sotto la forma d’onda. Traccia i valori dei sensori e la memoria mentre gira il tuo firmware.</p>
+            </article>
+            <article class="card">
+              <div class="icon i-yellow"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16.5 13v7M13 16.5h7"/></svg></div>
+              <h3 data-i18n="f4.t">Libreria componenti, da qualsiasi link</h3>
+              <p data-i18n="f4.d">Aggiungi sensori, display e pulsanti, spostali e ruotali in 3D. Incolla il link di un prodotto e BoardPilot prepara il componente e il suo modello 3D, che controlli tu.</p>
+            </article>
+            <article class="card">
+              <div class="icon i-red"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.5"/></svg></div>
+              <h3 data-i18n="f5.t">Cablaggio controllato mentre costruisci</h3>
+              <p data-i18n="f5.d">Pin della flash, pin di sola lettura, pin di strapping, 5 V su un componente a 3,3 V, bus invertiti, massa mancante: segnalati sul pin, prima di dare tensione.</p>
+            </article>
+            <article class="card">
+              <div class="icon i-ai"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/></svg></div>
+              <h3 data-i18n="f6.t">Un assistente onesto</h3>
+              <p data-i18n="f6.d">AI facoltativa che dichiara solo ciò che ha misurato, etichetta le ipotesi come suggerimenti e cita la sezione del datasheet per tutto il resto.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section showcase">
+        <div class="wrap">
+          <div class="tabs" role="tablist">
+            <button class="on" data-shot="debug" data-i18n="tab.debug">Debug</button>
+            <button data-shot="test" data-i18n="tab.test">Test hardware</button>
+            <button data-shot="monitor" data-i18n="tab.monitor">Monitor</button>
+            <button data-shot="library" data-i18n="tab.library">Libreria componenti</button>
+            <button data-shot="import" data-i18n="tab.import">Importa da link</button>
+            <button data-shot="home" data-i18n="tab.home">Home</button>
+          </div>
+          <div class="window big">
+            <div class="window-bar"><i></i><i></i><i></i></div>
+            <img id="shot" src="/img/debug.jpg" srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1109" data-i18n-alt="img.shot" alt="Schermata di BoardPilot: risultato del debug guidato su una scheda ESP32 in 3D" loading="lazy" />
+          </div>
+          <p class="caption" id="shot-caption" data-i18n="cap.debug">Il debug guidato ha trovato SDA e SCL invertiti sul sensore e mostra quali fili scambiare.</p>
+        </div>
+      </section>
+
+      <section id="how" class="section">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="how.eyebrow">Come funziona</span>
+          <h2 data-i18n="how.title">Prima guarda. Chiede solo ciò che non vede.</h2>
+          <ol class="steps">
+            <li><span class="num">1</span><h3 data-i18n="s1.t">Collega</h3><p data-i18n="s1.d">BoardPilot trova la porta, legge chip, dimensione della flash e MAC. Nessuna porta? Ti guida tra cavo, driver e pulsante BOOT.</p></li>
+            <li><span class="num">2</span><h3 data-i18n="s2.t">Scegli un’attività</h3><p data-i18n="s2.d">Collega, nuovo progetto, flash, debug, monitor, test, report. Oppure descrivi il problema con parole tue.</p></li>
+            <li><span class="num">3</span><h3 data-i18n="s3.t">Ottieni la causa, con le prove</h3><p data-i18n="s3.d">Ogni risultato elenca cosa è stato misurato, cosa dice il datasheet e cosa fare dopo. Con un clic crei un report da condividere.</p></li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="safety" class="section alt">
+        <div class="wrap two">
+          <div>
+            <span class="eyebrow" data-i18n="safe.eyebrow">Sicurezza</span>
+            <h2 data-i18n="safe.title">La tua scheda, il tuo programma, la tua scelta.</h2>
+            <p class="lead" data-i18n="safe.lead">BoardPilot di base legge soltanto. Qualsiasi scrittura sulla scheda richiede la tua conferma esplicita, e prima salva una copia del tuo firmware.</p>
+          </div>
+          <ul class="checks">
+            <li data-i18n="safe.1">Backup completo della flash prima della prima scrittura, ripristino con un clic</li>
+            <li data-i18n="safe.2">L’AI può chiedere di scrivere, ma solo tu puoi confermare</li>
+            <li data-i18n="safe.3">Rifiuta i pin della flash e le uscite sui pin di sola lettura, anche nel firmware</li>
+            <li data-i18n="safe.4">Non mostra mai una tensione che non ha misurato</li>
+            <li data-i18n="safe.5">Modalità simulatore: impara e fai demo senza alcun hardware</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="pricing" class="section">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="price.eyebrow">Prezzi</span>
+          <h2 data-i18n="price.title">Prova tutto per 30 giorni.</h2>
+          <div class="plans">
+            <div class="plan">
+              <h3 data-i18n="p1.t">Prova gratuita</h3>
+              <div class="price"><b>€0</b><span data-i18n="p1.per">per 30 giorni</span></div>
+              <ul>
+                <li data-i18n="p1.a">Tutte le funzioni, senza account</li>
+                <li data-i18n="p1.b">Simulatore e schede reali</li>
+                <li data-i18n="p1.c">I tuoi dati restano sul tuo Mac</li>
+              </ul>
+              <a class="btn primary" href="#download" data-i18n="p1.cta">Scarica</a>
+            </div>
+            <div class="plan featured">
+              <h3 data-i18n="p2.t">Licenza</h3>
+              <div class="price"><b data-i18n="p2.price">In arrivo</b><span data-i18n="p2.per">una chiave per persona</span></div>
+              <ul>
+                <li data-i18n="p2.a">Continua a usare BoardPilot dopo la prova</li>
+                <li data-i18n="p2.b">Tutti gli aggiornamenti della stessa versione principale</li>
+                <li data-i18n="p2.c">Sostieni lo sviluppo di nuove schede (ESP32-S3, STM32)</li>
+              </ul>
+              <a class="btn" href="https://github.com/mojeee/boardpilot/issues/new?labels=license&amp;title=License%20request" data-i18n="p2.cta">Richiedi una chiave di licenza</a>
+            </div>
+            <div class="plan">
+              <h3 data-i18n="p3.t">Scuole e team</h3>
+              <div class="price"><b data-i18n="p3.price">Chiedici</b><span data-i18n="p3.per">per postazione</span></div>
+              <ul>
+                <li data-i18n="p3.a">Licenze per classi e laboratori</li>
+                <li data-i18n="p3.b">Scenari del simulatore per esercitazioni</li>
+                <li data-i18n="p3.c">Italiano e inglese</li>
+              </ul>
+              <a class="btn" href="https://github.com/mojeee/boardpilot/issues/new?labels=license&amp;title=Education%20or%20team%20license" data-i18n="p3.cta">Contatti</a>
+            </div>
+          </div>
+          <p class="fine center" data-i18n="price.fine">BoardPilot è source-available: il codice è pubblico su GitHub, puoi leggerlo, compilarlo e contribuire. Dopo la prova serve una chiave di licenza.</p>
+        </div>
+      </section>
+
+      <section id="faq" class="section alt">
+        <div class="wrap narrow">
+          <span class="eyebrow">FAQ</span>
+          <h2 data-i18n="faq.title">Domande</h2>
+          <details><summary data-i18n="q1">BoardPilot è open source?</summary><p data-i18n="a1">È source-available. Tutto il codice è pubblico su GitHub con la BoardPilot License: puoi leggerlo, studiarlo, modificarlo e compilarlo. Dopo i 30 giorni di prova serve una chiave di licenza. Il firmware (agente diagnostico e libreria BoardPilotProbe) è sotto licenza MIT.</p></details>
+          <details><summary data-i18n="q2">Quali schede supporta?</summary><p data-i18n="a2">Oggi: l’ESP32 DevKit a 30 pin (ESP32-WROOM-32). Le schede sono file di dati, quindi i prossimi sono ESP32-S3 e STM32 con ST-Link.</p></details>
+          <details><summary data-i18n="q3">Il computer avvisa che l’app è di uno sviluppatore sconosciuto.</summary><p data-i18n="a3">Le prime versioni non sono ancora firmate. Su Mac fai clic destro su BoardPilot in Applicazioni e scegli Apri (oppure Impostazioni di Sistema → Privacy e sicurezza → Apri comunque). Su Windows fai clic su Ulteriori informazioni → Esegui comunque nella finestra di SmartScreen.</p></details>
+          <details><summary data-i18n="q4">Mi serve una scheda per provarlo?</summary><p data-i18n="a4">No. La modalità simulatore fa girare tutta l’app con una scheda virtuale e guasti realistici: fili invertiti, un finto BME280, cali di tensione, baud rate sbagliato.</p></details>
+          <details><summary data-i18n="q5">Serve internet o un account AI?</summary><p data-i18n="a5">No. Controlli, misure e simulatore funzionano offline. L’assistente AI è facoltativo e funziona con la tua chiave API di Anthropic (Claude), OpenAI (GPT) o Google (Gemini).</p></details>
+          <details><summary data-i18n="q6">Cosa installa sulla mia scheda?</summary><p data-i18n="a6">Solo se confermi: un piccolo agente diagnostico che permette all’app di leggere i pin e fare test sul bus. Prima salva il tuo programma, che torna con un clic.</p></details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><span class="logo"><span></span></span>BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/esp32-pinout/" data-i18n="nav.pinout">Piedinatura ESP32</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
