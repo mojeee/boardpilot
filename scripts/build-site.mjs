@@ -34,7 +34,28 @@ const partsCloud = (lang) =>
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const unesc = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/<[^>]+>/g, '');
 
+/* cache busting: every CSS, JS and image URL carries a content hash, so browsers never show stale files */
+import { createHash } from 'node:crypto';
+const hashCache = new Map();
+function hashOf(rel) {
+  if (!hashCache.has(rel)) {
+    try {
+      hashCache.set(rel, createHash('sha1').update(readFileSync(join(root, 'site', rel))).digest('hex').slice(0, 10));
+    } catch {
+      hashCache.set(rel, null);
+    }
+  }
+  return hashCache.get(rel);
+}
+function bust(html) {
+  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/[\w.-]+|style\.css|app\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
+    const h = hashOf(rel);
+    return h ? `${url}?v=${h}` : m;
+  });
+}
+
 function write(rel, content) {
+  if (rel.endsWith('.html')) content = bust(content);
   const p = join(root, 'site', rel);
   mkdirSync(dirname(p), { recursive: true });
   writeFileSync(p, content);
