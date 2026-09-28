@@ -1,0 +1,40 @@
+/* Design tokens from CLAUDE.md. Every color in the UI comes from here. */
+:root {
+  --bg: #161b21;
+  --chrome: #12171c;
+  --panel: #1c232b;
+  --raised: #2c3541;
+  --line: #2c3540;
+  --viewport: #12171d;
+  --text: #e9edf1;
+  --muted: #a7b3bf;
+  --dim: #7d8997;
+  --ai: #c9beff;
+  --ai-bg: #231f38;
+  --ai-line: #3b3463;
+  --ok: #5ccb8f;
+  --warn: #f2a93b;
+  --err: #ff5d52;
+  --pcb: #1f3a5f;
+  --shield: #c9ced4;
+  --gold: #d9b45a;
+
+  --pin-power: #ff6b5e;
+  --pin-ground: #8a96a3;
+  --pin-sda: #3fb6e8;
+  --pin-scl: #9adcf7;
+  --pin-spi: #e07bd4;
+  --pin-uart: #f2a93b;
+  --pin-gpio: #5ccb8f;
+  --pin-adc: #e8d24a;
+
+  --font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --topbar-h: 56px;
+  --rail-w: 208px;
+  --right-w: 400px;
+  --log-h: 250px;
+  --radius: 8px;
+  --radius-sm: 5px;
+}

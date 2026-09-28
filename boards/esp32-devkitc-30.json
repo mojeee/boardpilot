@@ -1,0 +1,629 @@
+{
+  "id": "esp32-devkitc-30",
+  "name": "ESP32 DevKit (30 pins)",
+  "module": "ESP32-WROOM-32",
+  "chip": "ESP32",
+  "logicVolt": 3.3,
+  "pcbMm": {
+    "length": 51.5,
+    "width": 28.5,
+    "thickness": 1.6
+  },
+  "layoutPxPerMm": 7,
+  "header": {
+    "pitchMm": 2.54,
+    "rowSpacingMm": 25.4,
+    "firstPinOffsetMm": 42.06
+  },
+  "pins": [
+    {
+      "id": "D23",
+      "gpio": 23,
+      "row": "front",
+      "index": 0,
+      "label": "D23",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_MOSI"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D22",
+      "gpio": 22,
+      "row": "front",
+      "index": 1,
+      "label": "D22",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default",
+        "U0RTS"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "TX0",
+      "gpio": 1,
+      "row": "front",
+      "index": 2,
+      "label": "TX0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0TXD"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "USB serial TX. Used for uploading and the serial monitor."
+    },
+    {
+      "id": "RX0",
+      "gpio": 3,
+      "row": "front",
+      "index": 3,
+      "label": "RX0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0RXD"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "USB serial RX. Used for uploading and the serial monitor."
+    },
+    {
+      "id": "D21",
+      "gpio": 21,
+      "row": "front",
+      "index": 4,
+      "label": "D21",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SDA_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D19",
+      "gpio": 19,
+      "row": "front",
+      "index": 5,
+      "label": "D19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_MISO",
+        "U0CTS"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D18",
+      "gpio": 18,
+      "row": "front",
+      "index": 6,
+      "label": "D18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_SCK"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D5",
+      "gpio": 5,
+      "row": "front",
+      "index": 7,
+      "label": "D5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_CS"
+      ],
+      "flags": [
+        "strapping"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin (SDIO timing). Pulled up at reset. Fine to use after boot."
+    },
+    {
+      "id": "TX2",
+      "gpio": 17,
+      "row": "front",
+      "index": 8,
+      "label": "TX2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U2TXD"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "RX2",
+      "gpio": 16,
+      "row": "front",
+      "index": 9,
+      "label": "RX2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U2RXD"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D4",
+      "gpio": 4,
+      "row": "front",
+      "index": 10,
+      "label": "D4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH0",
+        "TOUCH0"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D2",
+      "gpio": 2,
+      "row": "front",
+      "index": 11,
+      "label": "D2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH2",
+        "TOUCH2"
+      ],
+      "flags": [
+        "strapping",
+        "adc2",
+        "touch",
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: must be LOW or floating to enter download mode. Drives the blue on-board LED on most DevKit V1 boards."
+    },
+    {
+      "id": "D15",
+      "gpio": 15,
+      "row": "front",
+      "index": 12,
+      "label": "D15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH3",
+        "TOUCH3",
+        "HSPI_CS",
+        "MTDO"
+      ],
+      "flags": [
+        "strapping",
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: LOW at reset silences the boot messages."
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "row": "front",
+      "index": 13,
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "row": "front",
+      "index": 14,
+      "label": "3V3",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "Output of the on-board 3.3 V regulator (about 600 mA shared with the ESP32)."
+    },
+    {
+      "id": "EN",
+      "gpio": null,
+      "row": "back",
+      "index": 0,
+      "label": "EN",
+      "kind": "enable",
+      "functions": [
+        "CHIP_PU"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Reset. Pulling it LOW resets the chip (same as the EN button)."
+    },
+    {
+      "id": "VP",
+      "gpio": 36,
+      "row": "back",
+      "index": 1,
+      "label": "VP",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH0",
+        "SENSOR_VP"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "VN",
+      "gpio": 39,
+      "row": "back",
+      "index": 2,
+      "label": "VN",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH3",
+        "SENSOR_VN"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D34",
+      "gpio": 34,
+      "row": "back",
+      "index": 3,
+      "label": "D34",
+      "kind": "gpio",
+      "functions": [
+        "ADC1_CH6"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D35",
+      "gpio": 35,
+      "row": "back",
+      "index": 4,
+      "label": "D35",
+      "kind": "gpio",
+      "functions": [
+        "ADC1_CH7"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D32",
+      "gpio": 32,
+      "row": "back",
+      "index": 5,
+      "label": "D32",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH4",
+        "TOUCH9",
+        "XTAL_32K_P"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D33",
+      "gpio": 33,
+      "row": "back",
+      "index": 6,
+      "label": "D33",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH5",
+        "TOUCH8",
+        "XTAL_32K_N"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D25",
+      "gpio": 25,
+      "row": "back",
+      "index": 7,
+      "label": "D25",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH8",
+        "DAC_1"
+      ],
+      "flags": [
+        "adc2",
+        "dac"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D26",
+      "gpio": 26,
+      "row": "back",
+      "index": 8,
+      "label": "D26",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH9",
+        "DAC_2"
+      ],
+      "flags": [
+        "adc2",
+        "dac"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D27",
+      "gpio": 27,
+      "row": "back",
+      "index": 9,
+      "label": "D27",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH7",
+        "TOUCH7"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D14",
+      "gpio": 14,
+      "row": "back",
+      "index": 10,
+      "label": "D14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH6",
+        "TOUCH6",
+        "HSPI_SCK",
+        "MTMS"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Outputs a short PWM signal at boot."
+    },
+    {
+      "id": "D12",
+      "gpio": 12,
+      "row": "back",
+      "index": 11,
+      "label": "D12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH5",
+        "TOUCH5",
+        "HSPI_MISO",
+        "MTDI"
+      ],
+      "flags": [
+        "strapping",
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: HIGH at reset selects 1.8 V flash voltage, so the board may not boot. Keep it LOW or floating at reset."
+    },
+    {
+      "id": "D13",
+      "gpio": 13,
+      "row": "back",
+      "index": 12,
+      "label": "D13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH4",
+        "TOUCH4",
+        "HSPI_MOSI",
+        "MTCK"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "row": "back",
+      "index": 13,
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "VIN",
+      "gpio": null,
+      "row": "back",
+      "index": 14,
+      "label": "VIN",
+      "kind": "power",
+      "functions": [
+        "VIN_5V"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "5 V from USB (or a 5 V input when USB is not connected)."
+    }
+  ],
+  "components": [
+    {
+      "type": "module",
+      "label": "ESP32-WROOM-32",
+      "rect": [
+        178,
+        37,
+        178,
+        126
+      ]
+    },
+    {
+      "type": "usb",
+      "label": "micro-USB",
+      "rect": [
+        -8,
+        74,
+        40,
+        52
+      ]
+    },
+    {
+      "type": "button",
+      "label": "EN",
+      "rect": [
+        42,
+        22,
+        28,
+        22
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BOOT",
+      "rect": [
+        42,
+        156,
+        28,
+        22
+      ]
+    },
+    {
+      "type": "regulator",
+      "label": "AMS1117-3.3",
+      "rect": [
+        84,
+        34,
+        46,
+        26
+      ]
+    },
+    {
+      "type": "bridge",
+      "label": "USB-UART",
+      "rect": [
+        88,
+        112,
+        34,
+        34
+      ]
+    },
+    {
+      "type": "led",
+      "label": "PWR",
+      "rect": [
+        146,
+        60,
+        10,
+        6
+      ]
+    },
+    {
+      "type": "led",
+      "label": "GPIO2",
+      "rect": [
+        146,
+        134,
+        10,
+        6
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "title": "Espressif ESP32 Series Datasheet",
+      "section": "Pin Description (IO_MUX pin functions)"
+    },
+    {
+      "title": "Espressif ESP32 Series Datasheet",
+      "section": "Strapping Pins (GPIO 0, 2, 5, 12, 15)"
+    },
+    {
+      "title": "Espressif ESP32 Technical Reference Manual",
+      "section": "IO_MUX and GPIO Matrix: GPIO 34-39 input only, no pull-ups"
+    },
+    {
+      "title": "Espressif ESP-IDF Programming Guide",
+      "section": "ADC: ADC2 cannot be used while Wi-Fi is running"
+    }
+  ]
+}

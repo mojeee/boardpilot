@@ -1,0 +1,253 @@
+{
+ "id": "keeps-resetting",
+ "name": "Board keeps resetting",
+ "description": "The firmware draws too much current when Wi-Fi starts; the brownout detector resets the board.",
+ "ports": [
+  {
+   "path": "/dev/cu.usbserial-0001",
+   "manufacturer": "Silicon Labs",
+   "vendorId": "10c4",
+   "productId": "ea60",
+   "serialNumber": "0001"
+  }
+ ],
+ "bridge": "CP210x",
+ "chip": {
+  "chip": "ESP32-D0WD-V3",
+  "revision": "v3.0",
+  "features": [
+   "Wi-Fi",
+   "Bluetooth",
+   "Dual core",
+   "240 MHz"
+  ],
+  "crystalMHz": 40,
+  "mac": "24:6F:28:A1:B2:C3",
+  "flashSize": "4MB",
+  "flashBytes": 4194304
+ },
+ "identify": "ok",
+ "scene": {
+  "board": "esp32-devkitc-30",
+  "parts": [
+   {
+    "id": "bme1",
+    "partId": "bme280-gy",
+    "position": [
+     12,
+     0,
+     44
+    ],
+    "label": "BME280"
+   },
+   {
+    "id": "led1",
+    "partId": "led-resistor",
+    "position": [
+     -2,
+     0,
+     -40
+    ],
+    "label": "LED"
+   },
+   {
+    "id": "pot1",
+    "partId": "potentiometer",
+    "position": [
+     20,
+     0,
+     -42
+    ],
+    "label": "Knob"
+   },
+   {
+    "id": "btn1",
+    "partId": "push-button",
+    "position": [
+     -22,
+     0,
+     -40
+    ],
+    "label": "Button"
+   }
+  ],
+  "wires": [
+   {
+    "id": "w1",
+    "from": {
+     "part": "board",
+     "pin": "D21"
+    },
+    "to": {
+     "part": "bme1",
+     "pin": "SDA"
+    },
+    "color": "#3FB6E8"
+   },
+   {
+    "id": "w2",
+    "from": {
+     "part": "board",
+     "pin": "D22"
+    },
+    "to": {
+     "part": "bme1",
+     "pin": "SCL"
+    },
+    "color": "#9ADCF7"
+   },
+   {
+    "id": "w3",
+    "from": {
+     "part": "board",
+     "pin": "3V3"
+    },
+    "to": {
+     "part": "bme1",
+     "pin": "VIN"
+    },
+    "color": "#FF6B5E"
+   },
+   {
+    "id": "w4",
+    "from": {
+     "part": "board",
+     "pin": "GND2"
+    },
+    "to": {
+     "part": "bme1",
+     "pin": "GND"
+    },
+    "color": "#8A96A3"
+   },
+   {
+    "id": "w5",
+    "from": {
+     "part": "board",
+     "pin": "D25"
+    },
+    "to": {
+     "part": "led1",
+     "pin": "A"
+    },
+    "color": "#5CCB8F"
+   },
+   {
+    "id": "w6",
+    "from": {
+     "part": "board",
+     "pin": "GND1"
+    },
+    "to": {
+     "part": "led1",
+     "pin": "K"
+    },
+    "color": "#8A96A3"
+   },
+   {
+    "id": "w7",
+    "from": {
+     "part": "board",
+     "pin": "D34"
+    },
+    "to": {
+     "part": "pot1",
+     "pin": "OUT"
+    },
+    "color": "#E8D24A"
+   },
+   {
+    "id": "w8",
+    "from": {
+     "part": "board",
+     "pin": "3V3"
+    },
+    "to": {
+     "part": "pot1",
+     "pin": "VCC"
+    },
+    "color": "#FF6B5E"
+   },
+   {
+    "id": "w9",
+    "from": {
+     "part": "board",
+     "pin": "GND1"
+    },
+    "to": {
+     "part": "pot1",
+     "pin": "GND"
+    },
+    "color": "#8A96A3"
+   },
+   {
+    "id": "w10",
+    "from": {
+     "part": "board",
+     "pin": "D27"
+    },
+    "to": {
+     "part": "btn1",
+     "pin": "1"
+    },
+    "color": "#5CCB8F"
+   },
+   {
+    "id": "w11",
+    "from": {
+     "part": "board",
+     "pin": "GND1"
+    },
+    "to": {
+     "part": "btn1",
+     "pin": "2"
+    },
+    "color": "#8A96A3"
+   }
+  ]
+ },
+ "physical": {
+  "i2c": [
+   {
+    "addr": "0x76",
+    "sda": 21,
+    "scl": 22,
+    "registers": {
+     "0xD0": "0x60",
+     "0xF3": "0x00"
+    },
+    "pullups": true,
+    "powered": true
+   }
+  ],
+  "pins": {
+   "34": {
+    "analog": {
+     "mv": 1840,
+     "noise": 12
+    }
+   },
+   "27": {
+    "external": "pullup"
+   }
+  }
+ },
+ "strappingAtBoot": {
+  "0": 1,
+  "2": 0,
+  "5": 1,
+  "12": 0,
+  "15": 1
+ },
+ "initialAgentPins": {
+  "25": {
+   "mode": "pwm",
+   "duty": 62,
+   "hz": 5000
+  }
+ },
+ "serial": {
+  "baud": 115200,
+  "mode": "resetting"
+ }
+}
