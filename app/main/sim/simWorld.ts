@@ -1,0 +1,308 @@
+// The simulated bench. Holds the physical truth of a scenario and answers agent commands the way
+// the real agent firmware would, including the pin safety rules.
+
+import type { AgentPinState, AgentReplyMap, AgentRequest, I2cTraceStep, StreamFrame } from '@shared/types';
+import { FLASH_GPIOS, INPUT_ONLY_GPIOS, isAdcGpio } from '@shared/board';
+import { DriverError } from '../hardware/errors';
+import { agentErrorText } from '@shared/protocol';
+import type { Scenario, SimPhysical, SimI2cDevice } from './scenario';
+
+import swapped from './scenarios/weather-station-swapped.json';
+import healthy from './scenarios/healthy.json';
+import bmp280 from './scenarios/bmp280-mixup.json';
+import unpowered from './scenarios/sensor-unpowered.json';
+import noBoard from './scenarios/no-board.json';
+import portBusy from './scenarios/port-busy.json';
+import resetting from './scenarios/keeps-resetting.json';
+import garbage from './scenarios/garbage-serial.json';
+
+export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage].map(
+  (s) => s as unknown as Scenario,
+);
+
+export const DEFAULT_SCENARIO = 'weather-station-swapped';
+
+/** GPIOs broken out on the 30-pin DevKit. */
+export const EXPOSED_GPIOS = [1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 39];
+const VALID_GPIOS = [0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 37, 38, 39];
+
+function agentError(code: string): DriverError {
+  const t = agentErrorText(code);
+  return new DriverError(`agent_${code}`, t.humanMessage, t.hint);
+}
+
+export class SimWorld {
+  scenario: Scenario;
+  firmware: 'user' | 'agent' = 'user';
+  fixed = false;
+  private driven = new Map<number, AgentPinState>();
+  private knobSweepStart = 0;
+  private readonly bootTime = Date.now();
+
+  constructor(scenarioId: string = DEFAULT_SCENARIO) {
+    this.scenario = SCENARIOS.find((s) => s.id === scenarioId) ?? SCENARIOS[0];
+  }
+
+  load(id: string) {
+    this.scenario = SCENARIOS.find((s) => s.id === id) ?? this.scenario;
+    this.firmware = 'user';
+    this.fixed = false;
+    this.driven.clear();
+  }
+
+  get physical(): SimPhysical {
+    return this.fixed && this.scenario.fixedPhysical ? this.scenario.fixedPhysical : this.scenario.physical;
+  }
+
+  fixWiring() {
+    this.fixed = true;
+  }
+
+  turnKnob() {
+    this.knobSweepStart = Date.now();
+  }
+
+  agentBoot() {
+    this.firmware = 'agent';
+    this.driven.clear();
+    for (const [g, s] of Object.entries(this.scenario.initialAgentPins ?? {})) this.driven.set(Number(g), { ...s });
+  }
+
+  millis() {
+    return Date.now() - this.bootTime;
+  }
+
+  /* ---------- physics ---------- */
+
+  private devicesOn(gpio: number): SimI2cDevice[] {
+    return this.physical.i2c.filter((d) => d.sda === gpio || d.scl === gpio);
+  }
+
+  externalPull(gpio: number): 'pullup' | 'pulldown' | null {
+    const p = this.physical.pins[String(gpio)];
+    if (p?.external) return p.external;
+    if (this.devicesOn(gpio).some((d) => d.pullups && d.powered)) return 'pullup';
+    return null;
+  }
+
+  analogMv(gpio: number): number | null {
+    const a = this.physical.pins[String(gpio)]?.analog;
+    if (!a) return null;
+    let mv = a.mv;
+    const since = Date.now() - this.knobSweepStart;
+    if (since < 8000) {
+      // "Turn the knob" demo: sweep 0 → 3300 → 0 over 8 s
+      const phase = since / 8000;
+      mv = Math.round(3300 * (phase < 0.5 ? phase * 2 : (1 - phase) * 2));
+    }
+    return Math.max(0, Math.min(3300, Math.round(mv + (Math.random() - 0.5) * 2 * a.noise)));
+  }
+
+  levelOf(gpio: number): 0 | 1 {
+    const d = this.driven.get(gpio);
+    if (d?.mode === 'out') return d.level ?? 0;
+    if (d?.mode === 'pwm') return Math.random() * 100 < (d.duty ?? 0) ? 1 : 0;
+    const mv = this.analogMv(gpio);
+    if (mv !== null) return mv > 1650 ? 1 : 0;
+    return this.externalPull(gpio) === 'pullup' ? 1 : 0;
+  }
+
+  pinState(gpio: number): AgentPinState {
+    if (gpio === 1 || gpio === 3) return { mode: 'uart' };
+    const d = this.driven.get(gpio);
+    if (d?.mode === 'pwm') return { mode: 'pwm', duty: d.duty, hz: d.hz, level: this.levelOf(gpio) };
+    if (d?.mode === 'out') return { mode: 'out', level: d.level };
+    if (d?.mode === 'adc') {
+      const mv = this.analogMv(gpio);
+      // Honest: an unconnected ADC pin still reads something; the sim returns a low floating value.
+      return { mode: 'adc', mv: mv ?? Math.round(Math.random() * 60) };
+    }
+    return { mode: 'in', level: this.levelOf(gpio) };
+  }
+
+  /* ---------- agent command handling ---------- */
+
+  private checkPin(gpio: number, output: boolean) {
+    if (FLASH_GPIOS.includes(gpio)) throw agentError('flash_pin');
+    if (!VALID_GPIOS.includes(gpio)) throw agentError('bad_pin');
+    if (gpio === 1 || gpio === 3) throw agentError('uart_pin');
+    if (output && INPUT_ONLY_GPIOS.includes(gpio)) throw agentError('input_only');
+  }
+
+  private findDevice(sda: number, scl: number, addr?: string): SimI2cDevice | undefined {
+    return this.physical.i2c.find(
+      (d) => d.powered && d.sda === sda && d.scl === scl && (!addr || d.addr.toLowerCase() === addr.toLowerCase()),
+    );
+  }
+
+  private busPulledUp(sda: number, scl: number) {
+    return this.externalPull(sda) === 'pullup' && this.externalPull(scl) === 'pullup';
+  }
+
+  handle<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>): AgentReplyMap[K] {
+    if (this.firmware !== 'agent') {
+      throw new DriverError('agent_missing', 'The diagnostic agent is not on the board.', 'Install it first (the app asks before writing).');
+    }
+    const r = req as AgentRequest;
+    switch (r.cmd) {
+      case 'hello':
+        return { agent: 'bp-agent', ver: '0.1', chip: this.scenario.chip.chip, heapFree: 201344 - Math.round(Math.random() * 400) } as AgentReplyMap[K];
+      case 'strapping':
+        return { strapping: this.scenario.strappingAtBoot } as AgentReplyMap[K];
+      case 'pins': {
+        const pins: Record<string, AgentPinState> = {};
+        for (const g of EXPOSED_GPIOS) pins[String(g)] = this.pinState(g);
+        return { pins } as AgentReplyMap[K];
+      }
+      case 'pullup_check': {
+        const external: Record<string, boolean> = {};
+        const levels: Record<string, 0 | 1> = {};
+        for (const g of r.pins) {
+          this.checkPin(g, false);
+          this.driven.delete(g);
+          external[String(g)] = this.externalPull(g) === 'pullup';
+          levels[String(g)] = this.levelOf(g);
+        }
+        return { external, levels } as AgentReplyMap[K];
+      }
+      case 'i2c_scan': {
+        this.checkPin(r.sda, true);
+        this.checkPin(r.scl, true);
+        const found: string[] = [];
+        const trace: I2cTraceStep[] = [];
+        if (this.busPulledUp(r.sda, r.scl)) {
+          for (const d of this.physical.i2c) {
+            if (d.powered && d.sda === r.sda && d.scl === r.scl) {
+              found.push(d.addr);
+              trace.push({ t: 'start' }, { t: 'addr', v: d.addr, rw: 'w', ack: true }, { t: 'stop' });
+            }
+          }
+        }
+        if (!found.length) trace.push({ t: 'start' }, { t: 'addr', v: '0x08', rw: 'w', ack: false }, { t: 'stop' });
+        return { found, trace } as AgentReplyMap[K];
+      }
+      case 'i2c_read': {
+        this.checkPin(r.sda, true);
+        this.checkPin(r.scl, true);
+        const dev = this.busPulledUp(r.sda, r.scl) ? this.findDevice(r.sda, r.scl, r.addr) : undefined;
+        const trace: I2cTraceStep[] = [{ t: 'start' }, { t: 'addr', v: r.addr, rw: 'w', ack: !!dev }];
+        if (!dev) {
+          trace.push({ t: 'stop' });
+          const t = agentErrorText('nack');
+          throw Object.assign(new DriverError('agent_nack', t.humanMessage, t.hint), { trace });
+        }
+        const data: string[] = [];
+        const regNum = parseInt(r.reg, 16);
+        for (let i = 0; i < Math.min(r.len, 32); i++) {
+          const key = '0x' + (regNum + i).toString(16).toUpperCase().padStart(2, '0');
+          const v = dev.registers[key] ?? '0x00';
+          data.push(v);
+        }
+        trace.push({ t: 'data', v: r.reg, dir: 'w', ack: true }, { t: 'restart' }, { t: 'addr', v: r.addr, rw: 'r', ack: true });
+        data.forEach((v, i) => trace.push({ t: 'data', v, dir: 'r', ack: i < data.length - 1 }));
+        trace.push({ t: 'stop' });
+        return { data, trace } as AgentReplyMap[K];
+      }
+      case 'adc': {
+        this.checkPin(r.pin, false);
+        if (!isAdcGpio(r.pin)) throw agentError('not_adc');
+        this.driven.set(r.pin, { mode: 'adc' });
+        const mv = this.analogMv(r.pin) ?? Math.round(Math.random() * 60);
+        return { mv, raw: Math.round((mv / 3300) * 4095) } as AgentReplyMap[K];
+      }
+      case 'pwm':
+        this.checkPin(r.pin, true);
+        this.driven.set(r.pin, { mode: 'pwm', duty: r.duty, hz: r.hz });
+        return {} as AgentReplyMap[K];
+      case 'gpio_write':
+        this.checkPin(r.pin, true);
+        this.driven.set(r.pin, { mode: 'out', level: r.level });
+        return {} as AgentReplyMap[K];
+      case 'gpio_read':
+        this.checkPin(r.pin, false);
+        return { level: this.levelOf(r.pin) } as AgentReplyMap[K];
+      case 'reset_pins':
+        this.driven.clear();
+        return {} as AgentReplyMap[K];
+      case 'stream':
+      case 'stream_stop':
+        return {} as AgentReplyMap[K];
+    }
+    throw agentError('unknown_cmd');
+  }
+
+  frame(pins: number[]): StreamFrame {
+    const out: Record<string, AgentPinState> = {};
+    for (const g of pins) out[String(g)] = this.pinState(g);
+    return { t: this.millis(), pins: out };
+  }
+
+  /* ---------- the user's own firmware on serial ---------- */
+
+  private sensorReachable() {
+    return !!this.findDevice(21, 22, '0x76') && this.busPulledUp(21, 22);
+  }
+
+  /** Lines the user's firmware prints during one tick. */
+  userFirmwareTick(tick: number): string[] {
+    const s = this.scenario.serial;
+    if (s.mode === 'resetting') {
+      const phase = tick % 30;
+      if (phase === 0)
+        return [
+          'ets Jun  8 2016 00:22:57',
+          '',
+          'rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)',
+          'configsip: 0, SPIWP:0xee',
+          'mode:DIO, clock div:1',
+          'load:0x3fff0030,len:1184',
+          'entry 0x400805e4',
+          'Starting Wi-Fi…',
+        ];
+      if (phase === 8) return ['Brownout detector was triggered', ''];
+      return [];
+    }
+    if (s.mode === 'lines') {
+      const lines = s.lines ?? [];
+      return lines.length ? [lines[tick % lines.length]] : [];
+    }
+    // weather
+    const out: string[] = [];
+    const t = this.millis();
+    const pot = this.analogMv(34);
+    if (!this.sensorReachable()) {
+      if (tick % 10 === 0) out.push('Could not find a valid BME280 sensor, check wiring!');
+      if (pot !== null) out.push(`@bp {"t":${t},"v":{"pot":${pot}},"pins":{"pot":34}}`);
+      return out;
+    }
+    const temp = 22.4 + Math.sin(t / 20000) * 0.6 + (Math.random() - 0.5) * 0.05;
+    const hum = 41.2 + Math.sin(t / 31000) * 2 + (Math.random() - 0.5) * 0.2;
+    const pres = 1013.2 + Math.sin(t / 60000) * 0.4 + (Math.random() - 0.5) * 0.05;
+    const v: Record<string, number> = {
+      temperature: +temp.toFixed(2),
+      humidity: +hum.toFixed(1),
+      pressure: +pres.toFixed(2),
+    };
+    if (pot !== null) v.pot = pot;
+    out.push(`@bp {"t":${t},"v":${JSON.stringify(v)},"pins":{"temperature":21,"humidity":21,"pressure":21,"pot":34}}`);
+    if (tick % 10 === 0) {
+      out.push(`T=${temp.toFixed(1)} C  H=${hum.toFixed(0)} %  P=${pres.toFixed(1)} hPa  knob=${pot ?? '-'} mV`);
+      const heap = 201000 - Math.round(Math.random() * 2000) - ((tick / 10) % 50) * 16;
+      out.push(`@bp {"t":${t},"mem":{"heapFree":${heap},"heapMin":188200,"heapSize":327680,"stackFree":5912}}`);
+    }
+    return out;
+  }
+}
+
+/** Turn a clean line into what a terminal shows at the wrong baud rate. */
+export function garble(line: string, seed: number): string {
+  const junk = ['⸮', 'ÿ', 'à', 'ø', '\u0000', '¾', 'ƒ', 'x', '§', 'Ñ'];
+  let s = '';
+  let x = seed + line.length * 7;
+  const n = Math.max(3, Math.round(line.length * 0.35));
+  for (let i = 0; i < n; i++) {
+    x = (x * 1103515245 + 12345) & 0x7fffffff;
+    s += junk[x % junk.length];
+  }
+  return s;
+}
