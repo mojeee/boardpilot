@@ -1,0 +1,22 @@
+{
+  "id": "gc9a01-round",
+  "name": "GC9A01 1.28\" round IPS 240x240 (SPI)",
+  "category": "display",
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "spi_sck", "notes": "SPI clock, not I2C" },
+    { "name": "SDA", "role": "spi_mosi", "notes": "SPI data (MOSI), not I2C" },
+    { "name": "DC", "role": "digital_in", "needsOutput": true,"notes": "Data / command select" },
+    { "name": "CS", "role": "spi_cs" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true,"notes": "Reset" },
+    { "name": "BL", "role": "passive", "notes": "Backlight: to 3V3 or a PWM pin" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": { "shape": "oled", "size": [36, 40, 4], "color": "#1F4FA8" },
+  "keywords": ["gc9a01", "round display", "circular", "1.28", "240x240", "display rotondo"],
+  "sources": [
+    { "title": "Galaxycore GC9A01 datasheet", "section": "4-line serial interface" }
+  ]
+}

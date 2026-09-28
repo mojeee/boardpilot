@@ -106,6 +106,17 @@ const it: Record<string, string> = {
   'No part matches. Import it from a link below, or create it by hand.':
     'Nessun componente corrisponde. Importalo da un link qui sotto o crealo a mano.',
   'Create a part by hand…': 'Crea un componente a mano…',
+  'The page mentions {chip}; the built-in part “{name}” is similar and can be compared.':
+    'La pagina cita {chip}; il componente integrato “{name}” è simile e puoi confrontarli.',
+  'The page is about {chip}. Pins, bus and addresses come from the built-in part “{name}”.':
+    'La pagina parla di {chip}. Pin, bus e indirizzi vengono dal componente integrato “{name}”.',
+  'Boards from different shops can order their pins differently: compare with the labels on your board.':
+    'Le schede di negozi diversi possono avere i pin in un ordine diverso: confronta con le scritte sulla tua scheda.',
+  '3D size taken from the page: {size} mm.': 'Dimensioni 3D prese dalla pagina: {size} mm.',
+  '3D board color measured from the product photo.': 'Colore della scheda 3D misurato dalla foto del prodotto.',
+  'Product photo': 'Foto del prodotto',
+  'Matched to a part in the library from the chip name on the page.': 'Abbinato a un componente della libreria grazie al nome del chip nella pagina.',
+  'parts library match (suggestion)': 'abbinamento con la libreria (suggerimento)',
 };
 
 export default it;

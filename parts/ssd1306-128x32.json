@@ -1,0 +1,20 @@
+{
+  "id": "ssd1306-128x32",
+  "name": "SSD1306 OLED 0.91\" 128x32 (I2C)",
+  "category": "display",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x3C"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "oled", "size": [38, 12, 3], "color": "#1A1A1A" },
+  "keywords": ["oled", "ssd1306", "0.91", "128x32", "display", "schermo"],
+  "sources": [
+    { "title": "Solomon Systech SSD1306 datasheet", "section": "I2C-bus interface: slave address 0111 10 SA0 (0x3C with SA0 = 0)" }
+  ]
+}

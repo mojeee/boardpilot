@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 (2026-09-28)
+
+- Windows version: NSIS installer (`BoardPilot-win-x64.exe`), esptool discovery for Windows Python installs, Windows driver hints, native window frame. Releases build macOS and Windows together.
+- Parts library grows from 7 to 155 built-in parts (sensors, displays, inputs, outputs, drivers, radios), each with pins, roles, bus, addresses, 3D shape and sources.
+- Add from a link now recognises the chip on the page and starts from the checked library part, reads the board size for the 3D model, measures the board color from the product photo and keeps a thumbnail.
+- AI provider of your choice: Claude, GPT or Gemini, with keys entered in AI settings and stored encrypted; model list, connection test.
+- SEO: separate Italian pages, structured data (SoftwareApplication, FAQ, TechArticle), sitemap with language alternates, robots.txt, Open Graph image, ESP32 pinout reference pages, IndexNow ping script; Google Search Console property for agentflowbind.com.
+
 ## 0.2.0 (2026-09-28)
 
 - Parts library panel on every 3D screen: search, filter, add; your own parts saved in the app data folder.

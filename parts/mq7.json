@@ -1,0 +1,20 @@
+{
+  "id": "mq7",
+  "name": "MQ-7 carbon monoxide sensor",
+  "category": "sensor",
+  "measures": ["carbon monoxide"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V for the heater (about 150 mA): use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DO", "role": "digital_out", "notes": "Threshold output. Its HIGH level is 5 V: use a voltage divider" },
+    { "name": "AO", "role": "analog_out", "notes": "Can reach 5 V: use a voltage divider before the ADC" }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "keywords": ["mq-7", "mq7", "carbon monoxide", "co", "monossido di carbonio", "gas"],
+  "sources": [
+    { "title": "Hanwei MQ-7 datasheet", "section": "CO sensing needs a 5 V / 1.4 V heater cycle; modules heat at a constant 5 V, so readings are only rough" },
+    { "title": "Hanwei MQ-7 datasheet", "section": "Needs a burn-in / warm-up time before readings are stable" }
+  ]
+}

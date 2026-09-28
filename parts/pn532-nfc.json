@@ -1,0 +1,21 @@
+{
+  "id": "pn532-nfc",
+  "name": "PN532 NFC/RFID module (I2C)",
+  "category": "input",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x24"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "module", "size": [42.7, 40.4, 4], "color": "#B22222" },
+  "keywords": ["pn532", "nfc", "rfid", "elechouse", "card reader", "lettore nfc"],
+  "sources": [
+    { "title": "NXP PN532 user manual", "section": "I2C address 0x48 8-bit (0x24 7-bit)" },
+    { "title": "Elechouse PN532 NFC module v3 manual", "section": "Mode switches: I2C = switch 1 ON, switch 2 OFF" }
+  ]
+}

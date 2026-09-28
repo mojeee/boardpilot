@@ -4,7 +4,7 @@
 import { spawn } from 'node:child_process';
 import { homedir } from 'node:os';
 import { readdirSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { delimiter, join } from 'node:path';
 import type { ChipInfo, UsbBridge } from '@shared/types';
 import { DriverError } from './errors';
 import { t } from '@shared/i18n';
@@ -16,14 +16,44 @@ export interface EsptoolCommand {
   version: string;
 }
 
-/** Apps started from Finder get a minimal PATH; add the usual places pip and Homebrew install to. */
-export function toolPath(): string {
-  const extra = ['/opt/homebrew/bin', '/usr/local/bin', join(homedir(), '.local/bin')];
-  const pyUser = join(homedir(), 'Library/Python');
-  if (existsSync(pyUser)) {
-    for (const v of readdirSync(pyUser)) extra.push(join(pyUser, v, 'bin'));
+const IS_WIN = process.platform === 'win32';
+
+/** Where pip puts Python scripts on Windows: %APPDATA%\Python\Python3xx\Scripts and the per-user install. */
+function windowsPythonDirs(): string[] {
+  const dirs: string[] = [];
+  const roots = [
+    process.env.APPDATA && join(process.env.APPDATA, 'Python'),
+    process.env.LOCALAPPDATA && join(process.env.LOCALAPPDATA, 'Programs', 'Python'),
+  ].filter((x): x is string => !!x);
+  for (const r of roots) {
+    if (!existsSync(r)) continue;
+    for (const v of readdirSync(r)) {
+      dirs.push(join(r, v, 'Scripts'), join(r, v));
+    }
   }
-  return [...extra, process.env.PATH ?? ''].join(':');
+  return dirs;
+}
+
+/** Apps started from Finder / the Start menu get a minimal PATH; add the usual places pip and Homebrew install to. */
+export function toolPath(): string {
+  const extra: string[] = [];
+  if (IS_WIN) {
+    extra.push(...windowsPythonDirs());
+  } else {
+    extra.push('/opt/homebrew/bin', '/usr/local/bin', join(homedir(), '.local/bin'));
+    const pyUser = join(homedir(), 'Library/Python');
+    if (existsSync(pyUser)) {
+      for (const v of readdirSync(pyUser)) extra.push(join(pyUser, v, 'bin'));
+    }
+  }
+  return [...extra, process.env.PATH ?? process.env.Path ?? ''].join(delimiter);
+}
+
+/** Install hint for the current operating system. */
+export function esptoolInstallHint(): string {
+  return IS_WIN
+    ? t('Install Python from python.org (tick “Add python.exe to PATH”), then open Command Prompt and run: py -m pip install esptool. Then restart BoardPilot.')
+    : t('Open Terminal and run: pip3 install esptool (or brew install esptool). Then restart BoardPilot.');
 }
 
 interface RunResult {
@@ -35,9 +65,9 @@ function run(cmd: string, args: string[], timeoutMs: number, onLine?: (l: string
   return new Promise((resolve, reject) => {
     let out = '';
     let tail = '';
-    const child = spawn(cmd, args, { env: { ...process.env, PATH: toolPath() } });
+    const child = spawn(cmd, args, { env: { ...process.env, PATH: toolPath() }, windowsHide: true });
     const timer = setTimeout(() => {
-      child.kill('SIGKILL');
+      child.kill(IS_WIN ? undefined : 'SIGKILL');
       reject(
         new DriverError(
           'timeout',
@@ -58,7 +88,7 @@ function run(cmd: string, args: string[], timeoutMs: number, onLine?: (l: string
     child.stderr.on('data', onData);
     child.on('error', (e: NodeJS.ErrnoException) => {
       clearTimeout(timer);
-      if (e.code === 'ENOENT') reject(new DriverError('esptool_missing', t('esptool is not installed.'), t('Open Terminal and run: pip3 install esptool')));
+      if (e.code === 'ENOENT') reject(new DriverError('esptool_missing', t('esptool is not installed.'), esptoolInstallHint()));
       else reject(e);
     });
     child.on('close', (code) => {
@@ -72,11 +102,18 @@ let cached: EsptoolCommand | null = null;
 
 export async function findEsptool(): Promise<EsptoolCommand> {
   if (cached) return cached;
-  const candidates: { cmd: string; baseArgs: string[] }[] = [
-    { cmd: 'esptool', baseArgs: [] },
-    { cmd: 'esptool.py', baseArgs: [] },
-    { cmd: 'python3', baseArgs: ['-m', 'esptool'] },
-  ];
+  // Node's spawn does not add .exe on Windows, so list the Windows names explicitly.
+  const candidates: { cmd: string; baseArgs: string[] }[] = IS_WIN
+    ? [
+        { cmd: 'esptool.exe', baseArgs: [] },
+        { cmd: 'py.exe', baseArgs: ['-m', 'esptool'] },
+        { cmd: 'python.exe', baseArgs: ['-m', 'esptool'] },
+      ]
+    : [
+        { cmd: 'esptool', baseArgs: [] },
+        { cmd: 'esptool.py', baseArgs: [] },
+        { cmd: 'python3', baseArgs: ['-m', 'esptool'] },
+      ];
   for (const c of candidates) {
     try {
       const r = await run(c.cmd, [...c.baseArgs, 'version'], 15000);
@@ -92,7 +129,7 @@ export async function findEsptool(): Promise<EsptoolCommand> {
   throw new DriverError(
     'esptool_missing',
     t('The app could not find esptool, the tool that talks to the ESP32 chip.'),
-    t('Open Terminal and run: pip3 install esptool. Then restart BoardPilot.'),
+    esptoolInstallHint(),
   );
 }
 
@@ -103,7 +140,7 @@ export function commandName(tool: EsptoolCommand, name: 'flash-id' | 'read-flash
 
 /** Map esptool's error output to a plain-language error. */
 export function classifyEsptoolError(out: string): DriverError {
-  if (/Resource busy|exclusively lock|Errno 16|port is busy/i.test(out)) {
+  if (/Resource busy|exclusively lock|Errno 16|port is busy|PermissionError\(13|Access is denied/i.test(out)) {
     return new DriverError(
       'port_busy',
       t('Another program is using this port, so the app cannot talk to the board.'),
@@ -117,7 +154,7 @@ export function classifyEsptoolError(out: string): DriverError {
       t('Hold the BOOT button, press and release EN, then release BOOT and try again. Some boards need this every time.'),
     );
   }
-  if (/could not open port|No such file or directory|device not configured/i.test(out)) {
+  if (/could not open port|No such file or directory|device not configured|FileNotFoundError|The system cannot find the file/i.test(out)) {
     return new DriverError('port_gone', t('The board disappeared while the app was talking to it.'), t('Check the USB cable is firmly plugged in, then search for boards again.'));
   }
   if (/Permission denied/i.test(out)) {

@@ -1,0 +1,31 @@
+{
+  "id": "tb6612fng-driver",
+  "name": "TB6612FNG dual motor driver",
+  "category": "output",
+  "pins": [
+    { "name": "VM", "role": "passive", "notes": "Motor supply up to 13.5 V from a separate supply" },
+    { "name": "VCC", "role": "power", "notes": "Logic supply: 3V3" },
+    { "name": "GND", "role": "ground" },
+    { "name": "AO1", "role": "passive", "notes": "Motor A" },
+    { "name": "AO2", "role": "passive", "notes": "Motor A" },
+    { "name": "BO2", "role": "passive", "notes": "Motor B" },
+    { "name": "BO1", "role": "passive", "notes": "Motor B" },
+    { "name": "GND2", "role": "ground" },
+    { "name": "PWMA", "role": "digital_in", "needsOutput": true,"notes": "Motor A speed (PWM)" },
+    { "name": "AIN2", "role": "digital_in", "needsOutput": true },
+    { "name": "AIN1", "role": "digital_in", "needsOutput": true },
+    { "name": "STBY", "role": "digital_in", "needsOutput": true,"notes": "Must be HIGH to run" },
+    { "name": "BIN1", "role": "digital_in", "needsOutput": true },
+    { "name": "BIN2", "role": "digital_in", "needsOutput": true },
+    { "name": "PWMB", "role": "digital_in", "needsOutput": true,"notes": "Motor B speed (PWM)" },
+    { "name": "GND3", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [41.6, 20.3, 3], "color": "#B22222" },
+  "keywords": ["tb6612fng", "tb6612", "motor driver", "h-bridge", "driver motore"],
+  "sources": [
+    { "title": "Toshiba TB6612FNG datasheet", "section": "VCC 2.7 to 5.5 V, VM up to 13.5 V, 1.2 A per channel" },
+    { "title": "Pololu / SparkFun TB6612FNG carrier", "section": "Pinout" }
+  ]
+}

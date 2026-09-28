@@ -1,0 +1,21 @@
+{
+  "id": "st7789-240",
+  "name": "ST7789 1.3\" IPS 240x240 (SPI)",
+  "category": "display",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power", "notes": "3.3 V" },
+    { "name": "SCL", "role": "spi_sck", "notes": "SPI clock, not I2C" },
+    { "name": "SDA", "role": "spi_mosi", "notes": "SPI data (MOSI), not I2C" },
+    { "name": "RES", "role": "digital_in", "needsOutput": true,"notes": "Reset" },
+    { "name": "DC", "role": "digital_in", "needsOutput": true,"notes": "Data / command select" },
+    { "name": "BLK", "role": "passive", "notes": "Backlight. Leave unconnected (on) or drive LOW to switch off" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": { "shape": "oled", "size": [28, 39, 4], "color": "#1F4FA8" },
+  "keywords": ["st7789", "ips", "tft", "240x240", "1.3", "color display", "display", "schermo"],
+  "sources": [
+    { "title": "Sitronix ST7789 datasheet", "section": "Serial interface; this module ties CS LOW (SPI mode 3)" }
+  ]
+}

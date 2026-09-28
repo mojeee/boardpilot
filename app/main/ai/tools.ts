@@ -1,11 +1,13 @@
 // Tools the assistant may call. Read-only tools run through the HardwareHub; write tools only
 // ask the UI to show a confirmation dialog. The model never gets a confirmation token.
+// Tool definitions are provider-neutral (ToolSpec); providers/*.ts convert them for Claude, GPT and Gemini.
 
-import type Anthropic from '@anthropic-ai/sdk';
 import type { LogEntry, TargetRef, WriteRequest } from '@shared/types';
 import type { HardwareHub } from '../hardware/hub';
+import type { JsonSchema, ToolSpec } from './providers/types';
 
-const obj = (properties: Record<string, unknown>, required: string[]): Anthropic.Tool.InputSchema => ({
+// Written as strict JSON Schema; providers/schema.ts adapts it (Gemini subset, OpenAI strict check).
+const obj = (properties: Record<string, unknown>, required: string[]): JsonSchema => ({
   type: 'object',
   properties,
   required,
@@ -14,26 +16,26 @@ const obj = (properties: Record<string, unknown>, required: string[]): Anthropic
 
 const gpio = { type: 'integer', description: 'ESP32 GPIO number, e.g. 21 for D21' };
 
-export const TOOLS: Anthropic.Tool[] = [
+export const TOOLS: ToolSpec[] = [
   {
     name: 'read_pins',
     description: 'Read the current mode and digital level of every exposed GPIO through the diagnostic agent. Voltage (mv) is present only for pins the ADC measured.',
-    input_schema: obj({}, []),
+    parameters: obj({}, []),
   },
   {
     name: 'pullup_check',
     description: 'Check whether pins have an external pull-up: internal pulls are disabled and the level read. HIGH with nothing driving it means an external pull-up.',
-    input_schema: obj({ pins: { type: 'array', items: gpio } }, ['pins']),
+    parameters: obj({ pins: { type: 'array', items: gpio } }, ['pins']),
   },
   {
     name: 'i2c_scan',
     description: 'Scan the I2C bus with the given SDA/SCL GPIOs. To test for crossed wires, scan once as wired and once with sda and scl exchanged.',
-    input_schema: obj({ sda: gpio, scl: gpio }, ['sda', 'scl']),
+    parameters: obj({ sda: gpio, scl: gpio }, ['sda', 'scl']),
   },
   {
     name: 'i2c_read',
     description: 'Read registers from an I2C device, e.g. the ID register 0xD0 of a BME280 (expects 0x60; 0x58 means BMP280).',
-    input_schema: obj(
+    parameters: obj(
       {
         sda: gpio,
         scl: gpio,
@@ -47,32 +49,32 @@ export const TOOLS: Anthropic.Tool[] = [
   {
     name: 'adc_read',
     description: 'Measure the voltage on an ADC-capable pin (ADC1: GPIO 32-39; ADC2 pins fail while Wi-Fi is on).',
-    input_schema: obj({ pin: gpio }, ['pin']),
+    parameters: obj({ pin: gpio }, ['pin']),
   },
   {
     name: 'get_log',
     description: 'Get the most recent session log entries (checks, findings, user actions).',
-    input_schema: obj({ limit: { type: 'integer', minimum: 1, maximum: 200 } }, []),
+    parameters: obj({ limit: { type: 'integer', minimum: 1, maximum: 200 } }, []),
   },
   {
     name: 'highlight',
     description: 'Focus the 3D board view on pins, wires or parts. Targets look like "pin:D21", "wire:w1", "part:bme1".',
-    input_schema: obj({ targets: { type: 'array', items: { type: 'string' } } }, ['targets']),
+    parameters: obj({ targets: { type: 'array', items: { type: 'string' } } }, ['targets']),
   },
   {
     name: 'ask_user',
     description: 'Ask the user a question with a few short answer options (shown as buttons). End your turn after calling this.',
-    input_schema: obj({ question: { type: 'string' }, options: { type: 'array', items: { type: 'string' } } }, ['question', 'options']),
+    parameters: obj({ question: { type: 'string' }, options: { type: 'array', items: { type: 'string' } } }, ['question', 'options']),
   },
   {
     name: 'request_flash',
     description: 'Ask the user to confirm installing the diagnostic agent (after a flash backup). Only opens a confirmation dialog; nothing is written unless the user confirms.',
-    input_schema: obj({ reason: { type: 'string' } }, ['reason']),
+    parameters: obj({ reason: { type: 'string' } }, ['reason']),
   },
   {
     name: 'request_gpio_write',
     description: 'Ask the user to confirm driving an output pin HIGH or LOW. Only opens a confirmation dialog.',
-    input_schema: obj({ pin: gpio, level: { type: 'integer', enum: [0, 1] }, reason: { type: 'string' } }, ['pin', 'level', 'reason']),
+    parameters: obj({ pin: gpio, level: { type: 'integer', enum: [0, 1] }, reason: { type: 'string' } }, ['pin', 'level', 'reason']),
   },
 ];
 

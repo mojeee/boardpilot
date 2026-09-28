@@ -1,0 +1,19 @@
+{
+  "id": "sound-module-ky037",
+  "name": "KY-037 big sound sensor",
+  "category": "sensor",
+  "measures": ["sound"],
+  "pins": [
+    { "name": "AO", "role": "analog_out", "notes": "To an ADC pin (prefer ADC1: GPIO 32 to 39)" },
+    { "name": "GND", "role": "ground", "notes": "Marked G on the board" },
+    { "name": "VCC", "role": "power", "notes": "Marked + on the board. Use 3V3" },
+    { "name": "DO", "role": "digital_out", "notes": "Changes level above the trimmer threshold" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [44, 15, 10], "color": "#B22222" },
+  "keywords": ["ky-037", "sound", "microphone", "suono", "microfono"],
+  "sources": [
+    { "title": "Joy-IT KY-037 datasheet", "section": "Pins A0, G, +, D0" }
+  ]
+}

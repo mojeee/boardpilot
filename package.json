@@ -1,7 +1,7 @@
 {
   "name": "boardpilot",
   "productName": "BoardPilot",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Guided embedded software work on a real ESP32 board, with a live 3D view.",
   "private": true,
   "main": "out/main/index.js",
@@ -15,7 +15,8 @@
     "build:agent": "bash scripts/build-agent.sh",
     "dist:mac": "electron-vite build && electron-builder --mac",
     "build:site": "node scripts/build-site.mjs",
-    "seo:ping": "node scripts/indexnow.mjs"
+    "seo:ping": "node scripts/indexnow.mjs",
+    "dist:win": "electron-vite build && electron-builder --win"
   },
   "build": {
     "appId": "com.agentflowbind.boardpilot",
@@ -51,7 +52,29 @@
       "title": "BoardPilot ${version}"
     },
     "publish": null,
-    "npmRebuild": false
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "BoardPilot-win-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "BoardPilot"
+    },
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    }
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",

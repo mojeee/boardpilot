@@ -1,0 +1,21 @@
+{
+  "id": "scd40",
+  "name": "SCD40 CO2 sensor",
+  "category": "sensor",
+  "measures": ["co2","temperature","humidity"],
+  "pins": [
+    { "name": "VIN", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x62"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [18, 18, 7], "color": "#1A1A1A" },
+  "keywords": ["scd40", "scd41", "sensirion", "co2", "carbon dioxide", "anidride carbonica", "qualità aria"],
+  "sources": [
+    { "title": "Sensirion SCD4x datasheet", "section": "I2C address 0x62; supply 2.4 to 5.5 V" }
+  ]
+}

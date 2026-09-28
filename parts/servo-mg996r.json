@@ -1,0 +1,17 @@
+{
+  "id": "servo-mg996r",
+  "name": "MG996R high-torque servo",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground", "notes": "Brown wire. Also connect to the ESP32 GND" },
+    { "name": "VCC", "role": "power", "notes": "Red wire. Use a separate 5 to 6 V supply rated 2 A or more, not the ESP32" },
+    { "name": "SIG", "role": "digital_in", "needsOutput": true,"notes": "Orange wire. 50 Hz PWM" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "motor", "size": [40.7, 19.7, 40], "color": "#1A1A1A" },
+  "keywords": ["mg996r", "servo", "high torque", "motor", "servomotore"],
+  "sources": [
+    { "title": "Tower Pro MG996R datasheet", "section": "Supply 4.8 to 7.2 V; stall current about 2.5 A" }
+  ]
+}

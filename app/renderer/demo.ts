@@ -64,10 +64,14 @@ export async function runDemo(name: string, scenario: string | null) {
     }
   } else if (name === 'import') {
     openTask('newProject');
-    const r = await window.bp.parts.importFromUrl('https://www.adafruit.com/product/3317');
+    const url = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('url') ?? 'https://www.adafruit.com/product/3317';
+    const r = await window.bp.parts.importFromUrl(url);
     const { usePartEditor } = await import('./components/PartEditor');
     if (r.ok) usePartEditor.getState().open({ draft: r.value.draft, notes: r.value.notes, fromImport: true, usedAi: r.value.usedAi });
     else usePartEditor.getState().open({ draft: null, notes: [r.error.humanMessage], fromImport: true });
+  } else if (name === 'aisettings') {
+    const { openAiSettings } = await import('./components/AiSettings');
+    openAiSettings();
   } else if (name === 'project') {
     useScene.getState().setScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

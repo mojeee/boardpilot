@@ -1,0 +1,18 @@
+{
+  "id": "soil-moisture-capacitive",
+  "name": "Capacitive soil moisture sensor v1.2",
+  "category": "sensor",
+  "measures": ["soil moisture"],
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power" },
+    { "name": "AOUT", "role": "analog_out", "notes": "Lower voltage means wetter soil. To an ADC pin (prefer ADC1: GPIO 32 to 39)" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [23, 80, 3], "color": "#1A1A1A" },
+  "keywords": ["soil moisture", "capacitive", "plant", "garden", "umidità terreno", "terreno", "piante"],
+  "sources": [
+    { "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki", "section": "Supply 3.3 to 5.5 V, analog output 0 to 3.0 V" }
+  ]
+}

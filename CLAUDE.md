@@ -4,7 +4,7 @@ Read this file fully before any work. It describes what we are building, the rul
 
 ## What we are building
 
-A desktop app (macOS first, Windows later) that guides people with any level of knowledge through embedded software work on a real board. The user picks a task, a step-by-step wizard asks only for what the app cannot detect itself, the work runs, and everything that happens is shown live: in a log and on a 3D model of the board, where every pin, wire and bus transaction is visible.
+A desktop app for macOS and Windows that guides people with any level of knowledge through embedded software work on a real board. The user picks a task, a step-by-step wizard asks only for what the app cannot detect itself, the work runs, and everything that happens is shown live: in a log and on a 3D model of the board, where every pin, wire and bus transaction is visible.
 
 **Phase 1 scope: embedded software on ESP32 only.** Target board: ESP32-DevKitC / "DevKit V1" 30-pin with ESP32-WROOM-32. Other boards (ESP32-S3, STM32 with ST-Link) come later, so nothing may be hard-coded to one board: boards are data files.
 
@@ -38,8 +38,10 @@ Target UI: the screenshots in `/design` (Home, Debug wizard, 3D workspace, Test 
 - **Serial:** `serialport` npm package, used only in the Electron main process.
 - **Chip tools:** `esptool` (Python, installed with pip) spawned as a child process for chip identification, flash backup, restore and flashing.
 - **Firmware builds:** `arduino-cli` with the `esp32:esp32` core, used to build the diagnostic agent. Ship prebuilt agent binaries in `/resources/agent` so end users never need arduino-cli.
-- **AI:** `@anthropic-ai/sdk`, called only from the main process. API key from `ANTHROPIC_API_KEY` in `.env.local` (git-ignored). Default model `claude-sonnet-5`; use `claude-haiku-4-5-20251001` for fast, simple classification.
-- **Security:** `contextIsolation: true`, `nodeIntegration: false`, typed API exposed through the preload script. The renderer never sees the API key, never touches the filesystem or serial ports directly.
+- **AI:** the user picks the provider in AI settings: Anthropic Claude (`@anthropic-ai/sdk`, default `claude-sonnet-5`, fast `claude-haiku-4-5-20251001`), OpenAI GPT or Google Gemini (both via `fetch`, no SDK; defaults in `shared/ai.ts`). Called only from the main process through `app/main/ai/providers/`. Keys are entered in the app and stored encrypted with Electron `safeStorage`; `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` in `.env.local` are fallbacks.
+- **Security:** `contextIsolation: true`, `nodeIntegration: false`, typed API exposed through the preload script. The renderer never sees an API key, never touches the filesystem or serial ports directly.
+- **Languages:** English and Italian. Every user-facing string goes through `t()` from `shared/i18n` with an Italian entry in `shared/i18n/it/*.ts` (enforced by `tests/i18n.test.ts`).
+- **Parts:** every `parts/*.json` is a built-in part (loaded with `import.meta.glob`); user parts live in the app data folder. Website: `scripts/build-site.mjs` generates `site/`.
 - **Tests:** Vitest for logic (wiring rules, flow engine, protocol parsing). Playwright for Electron smoke tests later.
 
 ## Folder structure

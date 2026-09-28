@@ -1,0 +1,30 @@
+{
+  "id": "shift-register-74hc595",
+  "name": "74HC595 shift register",
+  "category": "output",
+  "pins": [
+    { "name": "Q1", "role": "passive", "notes": "Output 1" },
+    { "name": "Q2", "role": "passive" },
+    { "name": "Q3", "role": "passive" },
+    { "name": "Q4", "role": "passive" },
+    { "name": "Q5", "role": "passive" },
+    { "name": "Q6", "role": "passive" },
+    { "name": "Q7", "role": "passive" },
+    { "name": "GND", "role": "ground" },
+    { "name": "Q7S", "role": "passive", "notes": "Serial out to the next 74HC595" },
+    { "name": "MR", "role": "passive", "notes": "Master reset, active LOW: tie to VCC" },
+    { "name": "SHCP", "role": "digital_in", "needsOutput": true,"notes": "Shift clock" },
+    { "name": "STCP", "role": "digital_in", "needsOutput": true,"notes": "Latch clock" },
+    { "name": "OE", "role": "passive", "notes": "Output enable, active LOW: tie to GND" },
+    { "name": "DS", "role": "digital_in", "needsOutput": true,"notes": "Serial data in" },
+    { "name": "Q0", "role": "passive", "notes": "Output 0" },
+    { "name": "VCC", "role": "power" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "chip", "size": [41.6, 6.4, 3.3], "color": "#1A1A1A" },
+  "keywords": ["74hc595", "shift register", "sn74hc595", "more outputs", "registro a scorrimento"],
+  "sources": [
+    { "title": "Nexperia 74HC595 datasheet", "section": "Pinning: pin 1 Q1 to pin 16 VCC; supply 2 to 6 V" }
+  ]
+}

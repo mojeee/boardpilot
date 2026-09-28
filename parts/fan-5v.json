@@ -1,0 +1,16 @@
+{
+  "id": "fan-5v",
+  "name": "Fan 5 V (2 wires)",
+  "category": "output",
+  "pins": [
+    { "name": "+", "role": "power", "notes": "Red wire, 5 V: use VIN. To switch it from code, add a MOSFET or transistor in the ground wire" },
+    { "name": "-", "role": "ground", "notes": "Black wire" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "motor", "size": [30, 30, 10], "color": "#1A1A1A" },
+  "keywords": ["fan", "cooling", "5v fan", "ventola", "raffreddamento"],
+  "sources": [
+    { "title": "Generic 30 mm 5 V DC fan", "section": "Typical current 100 to 200 mA" }
+  ]
+}

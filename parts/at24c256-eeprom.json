@@ -1,0 +1,21 @@
+{
+  "id": "at24c256-eeprom",
+  "name": "AT24C256 I2C EEPROM module",
+  "category": "output",
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "WP", "role": "passive", "notes": "Write protect: LOW (default) allows writing" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x50", "0x51", "0x52", "0x53", "0x54", "0x55", "0x56", "0x57"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "module", "size": [30, 20, 5], "color": "#1F4FA8" },
+  "keywords": ["at24c256", "at24c32", "eeprom", "memory", "storage", "memoria"],
+  "sources": [
+    { "title": "Microchip AT24C256C datasheet", "section": "Device address 1010 A2 A1 A0 (0x50 to 0x57)" }
+  ]
+}

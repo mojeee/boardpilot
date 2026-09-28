@@ -1,0 +1,17 @@
+{
+  "id": "ttp223-touch",
+  "name": "TTP223 capacitive touch button",
+  "category": "input",
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "SIG", "role": "digital_out", "notes": "HIGH while touched (default mode)" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "button", "size": [15, 11, 2], "color": "#B22222" },
+  "keywords": ["ttp223", "touch", "capacitive", "touch button", "tocco", "pulsante touch"],
+  "sources": [
+    { "title": "Tontek TTP223 datasheet", "section": "Supply 2.0 to 5.5 V; direct output mode active HIGH by default" }
+  ]
+}

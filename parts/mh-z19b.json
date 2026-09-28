@@ -1,0 +1,22 @@
+{
+  "id": "mh-z19b",
+  "name": "MH-Z19B CO2 sensor",
+  "category": "sensor",
+  "measures": ["co2"],
+  "pins": [
+    { "name": "VIN", "role": "power", "notes": "Needs 4.5 to 5.5 V: use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "TX", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud, 3.3 V level)" },
+    { "name": "RX", "role": "digital_in", "needsOutput": true,"notes": "UART: the part receives data here. Connect to an ESP32 TX pin" },
+    { "name": "PWM", "role": "digital_out", "notes": "PWM output, optional" },
+    { "name": "HD", "role": "passive", "notes": "Zero calibration: pulling LOW for 7 s calibrates to 400 ppm. Leave unconnected" },
+    { "name": "VO", "role": "analog_out", "notes": "Analog output, optional (not on all versions)" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [33, 20, 9], "color": "#1E7A3C" },
+  "keywords": ["mh-z19b", "mh-z19", "winsen", "co2", "ndir", "anidride carbonica"],
+  "sources": [
+    { "title": "Winsen MH-Z19B user manual", "section": "Pins Vin, GND, Tx, Rx, PWM, HD, Vo; UART 9600 baud, 3.3 V logic" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "rgb-led-ca",
+  "name": "RGB LED (common anode)",
+  "category": "output",
+  "pins": [
+    { "name": "R", "role": "digital_in", "needsOutput": true,"notes": "Red, through a 220 Ω resistor. LOW = on" },
+    { "name": "+", "role": "power", "notes": "Longest leg, common anode: to 3V3" },
+    { "name": "G", "role": "digital_in", "needsOutput": true,"notes": "Green, through a 220 Ω resistor. LOW = on" },
+    { "name": "B", "role": "digital_in", "needsOutput": true,"notes": "Blue, through a 220 Ω resistor. LOW = on" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "led", "size": [11.2, 5, 8.6], "color": "#F2F2F2" },
+  "keywords": ["rgb led", "common anode", "led", "color", "led rgb", "anodo comune"],
+  "sources": [
+    { "title": "Generic 5 mm RGB LED datasheet", "section": "Leg order R, common (longest), G, B" }
+  ]
+}

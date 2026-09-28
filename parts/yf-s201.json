@@ -1,0 +1,18 @@
+{
+  "id": "yf-s201",
+  "name": "YF-S201 water flow sensor",
+  "category": "sensor",
+  "measures": ["flow"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Red wire. Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground", "notes": "Black wire" },
+    { "name": "SIG", "role": "digital_out", "notes": "Yellow wire. Pulses at the supply level: use a voltage divider. About 7.5 pulses per second per L/min" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [60, 35, 26], "color": "#1A1A1A" },
+  "keywords": ["yf-s201", "water flow", "flow meter", "hall", "flussometro", "portata", "acqua"],
+  "sources": [
+    { "title": "Seeed YF-S201 water flow sensor wiki", "section": "Supply 5 to 18 V; pulse output, F = 7.5 × Q (L/min)" }
+  ]
+}

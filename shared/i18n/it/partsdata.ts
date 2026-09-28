@@ -1,0 +1,43 @@
+// Italian translations. Key = the exact English text passed to t().
+// Values of `measures` in the built-in part files (/parts/*.json). The UI shows them with t(measure).
+// temperature, humidity, pressure, acceleration and rotation are translated in three.ts.
+const it: Record<string, string> = {
+  gas: 'gas',
+  smoke: 'fumo',
+  alcohol: 'alcol',
+  methane: 'metano',
+  'carbon monoxide': 'monossido di carbonio',
+  'air quality': 'qualità dell’aria',
+  eco2: 'eCO2',
+  tvoc: 'TVOC',
+  co2: 'CO2',
+  particulates: 'polveri sottili',
+  light: 'luce',
+  color: 'colore',
+  uv: 'raggi UV',
+  gesture: 'gesti',
+  proximity: 'prossimità',
+  distance: 'distanza',
+  motion: 'movimento',
+  presence: 'presenza',
+  'magnetic field': 'campo magnetico',
+  orientation: 'orientamento',
+  heading: 'direzione',
+  vibration: 'vibrazione',
+  current: 'corrente',
+  voltage: 'tensione',
+  power: 'potenza',
+  'heart rate': 'battito cardiaco',
+  'blood oxygen': 'ossigeno nel sangue',
+  'soil moisture': 'umidità del terreno',
+  rain: 'pioggia',
+  'water level': 'livello dell’acqua',
+  flow: 'flusso',
+  sound: 'suono',
+  flame: 'fiamma',
+  weight: 'peso',
+  position: 'posizione',
+  time: 'ora',
+};
+
+export default it;

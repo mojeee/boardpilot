@@ -1,0 +1,18 @@
+{
+  "id": "ssr-g3mb",
+  "name": "Solid state relay module (G3MB-202P)",
+  "category": "output",
+  "pins": [
+    { "name": "DC+", "role": "power", "notes": "Needs 5 V: use VIN" },
+    { "name": "DC-", "role": "ground" },
+    { "name": "CH1", "role": "digital_in", "needsOutput": true,"notes": "LOW = on on most modules" },
+    { "name": "SW1", "role": "passive", "notes": "Load terminals: AC only, 2 A max. Mains voltage is dangerous" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "relay", "size": [25, 34, 25], "color": "#1F4FA8" },
+  "keywords": ["ssr", "solid state relay", "g3mb-202p", "omron", "relè statico", "relè"],
+  "sources": [
+    { "title": "Omron G3MB datasheet", "section": "AC load only (zero cross), 2 A max, input 5 V" }
+  ]
+}

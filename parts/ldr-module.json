@@ -1,0 +1,20 @@
+{
+  "id": "ldr-module",
+  "name": "Light sensor module (LDR + LM393)",
+  "category": "sensor",
+  "measures": ["light"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Use 3V3 so AO stays within the ADC range" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DO", "role": "digital_out", "notes": "HIGH/LOW when light crosses the threshold set with the trimmer" },
+    { "name": "AO", "role": "analog_out", "notes": "To an ADC pin (prefer ADC1: GPIO 32 to 39)" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [32, 14, 8], "color": "#1F4FA8" },
+  "keywords": ["ldr", "photoresistor", "light", "lm393", "fotoresistenza", "luce"],
+  "sources": [
+    { "title": "Texas Instruments LM393 datasheet", "section": "Open-collector comparator output" },
+    { "title": "Espressif ESP32 Technical Reference Manual", "section": "ADC: input range and attenuation" }
+  ]
+}

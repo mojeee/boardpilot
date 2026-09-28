@@ -1,0 +1,17 @@
+{
+  "id": "limit-switch",
+  "name": "Limit switch (micro switch)",
+  "category": "input",
+  "pins": [
+    { "name": "COM", "role": "ground" },
+    { "name": "NO", "role": "digital_out", "notes": "Normally open. To a GPIO with INPUT_PULLUP: LOW when pressed" },
+    { "name": "NC", "role": "passive", "notes": "Normally closed. Leave unconnected" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "button", "size": [20, 10, 6.4], "color": "#1A1A1A" },
+  "keywords": ["limit switch", "micro switch", "endstop", "finecorsa", "microinterruttore"],
+  "sources": [
+    { "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" }
+  ]
+}

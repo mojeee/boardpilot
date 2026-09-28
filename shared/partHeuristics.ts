@@ -79,3 +79,46 @@ export function guessPartFromText(title: string, text: string, url: string): { d
     notes,
   };
 }
+
+/* ---------- richer "add from a link": library match and dimensions ---------- */
+
+/** Chip or module names inside a part's name/keywords, e.g. "bme280", "hc-sr04", "vl53l0x". */
+function chipTokens(def: PartDef): string[] {
+  const words = [def.name, ...def.keywords].join(' ').toLowerCase().split(/[\s,()/]+/);
+  return [...new Set(words.filter((w) => w.length >= 4 && /[a-z]/.test(w) && /\d/.test(w)))];
+}
+
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Find the built-in part a product page is about, by the chip names it mentions.
+ * A mention in the page title counts much more than one in the body text.
+ */
+export function findLibraryMatch(title: string, text: string, parts: PartDef[]): { part: PartDef; token: string } | null {
+  const t = title.toLowerCase();
+  const body = text.toLowerCase().slice(0, 60000);
+  let best: { part: PartDef; token: string; score: number } | null = null;
+  for (const p of parts) {
+    for (const tok of chipTokens(p)) {
+      const re = new RegExp(`(^|[^a-z0-9])${esc(tok)}([^a-z0-9]|$)`, 'g');
+      const inTitle = re.test(t) ? 1 : 0;
+      const inBody = Math.min(5, (body.match(re) ?? []).length);
+      const score = inTitle * 6 + inBody;
+      if (score >= 3 && (!best || score > best.score || (score === best.score && tok.length > best.token.length))) {
+        best = { part: p, token: tok, score };
+      }
+    }
+  }
+  return best ? { part: best.part, token: best.token } : null;
+}
+
+/** Board size from text like "Size: 45 x 20 x 15 mm" or "25mm × 15mm". Returns [w, d, h?] in mm. */
+export function extractDimensionsMm(text: string): number[] | null {
+  const n = '(\\d{1,3}(?:[.,]\\d+)?)';
+  const re = new RegExp(`${n}\\s*(?:mm)?\\s*[x×*]\\s*${n}\\s*(?:mm)?(?:\\s*[x×*]\\s*${n})?\\s*mm`, 'i');
+  const m = re.exec(text);
+  if (!m) return null;
+  const vals = [m[1], m[2], m[3]].filter(Boolean).map((v) => Number(v.replace(',', '.')));
+  if (vals.some((v) => !Number.isFinite(v) || v < 2 || v > 150)) return null;
+  return vals;
+}

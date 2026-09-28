@@ -1,0 +1,20 @@
+{
+  "id": "hc-05-bluetooth",
+  "name": "HC-05 Bluetooth serial module",
+  "category": "output",
+  "pins": [
+    { "name": "EN", "role": "digital_in", "needsOutput": true,"notes": "KEY/EN: HIGH at power-up enters AT command mode. Leave unconnected normally" },
+    { "name": "VCC", "role": "power", "notes": "Needs 3.6 to 6 V: use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "TXD", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (3.3 V level)" },
+    { "name": "RXD", "role": "digital_in", "needsOutput": true,"notes": "UART: the part receives data here. Connect to an ESP32 TX pin" },
+    { "name": "STATE", "role": "digital_out", "notes": "HIGH when connected, optional" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [37, 16, 5], "color": "#1F4FA8" },
+  "keywords": ["hc-05", "bluetooth", "serial", "spp", "wireless", "seriale"],
+  "sources": [
+    { "title": "HC-05 Bluetooth module datasheet", "section": "Pins EN/KEY, VCC, GND, TXD, RXD, STATE; UART at 3.3 V levels" }
+  ]
+}

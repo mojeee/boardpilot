@@ -1,0 +1,27 @@
+{
+  "id": "l298n-driver",
+  "name": "L298N dual motor driver",
+  "category": "output",
+  "pins": [
+    { "name": "ENA", "role": "digital_in", "needsOutput": true,"notes": "Motor A speed (PWM). Remove the jumper to use it" },
+    { "name": "IN1", "role": "digital_in", "needsOutput": true,"notes": "Motor A direction" },
+    { "name": "IN2", "role": "digital_in", "needsOutput": true,"notes": "Motor A direction" },
+    { "name": "IN3", "role": "digital_in", "needsOutput": true,"notes": "Motor B direction" },
+    { "name": "IN4", "role": "digital_in", "needsOutput": true,"notes": "Motor B direction" },
+    { "name": "ENB", "role": "digital_in", "needsOutput": true,"notes": "Motor B speed (PWM). Remove the jumper to use it" },
+    { "name": "12V", "role": "passive", "notes": "Motor supply 5 to 35 V from a separate supply" },
+    { "name": "GND", "role": "ground", "notes": "Share it with the motor supply and the ESP32 GND" },
+    { "name": "5V", "role": "passive", "notes": "5 V output of the on-board regulator (jumper on, supply up to 12 V)" },
+    { "name": "OUT1", "role": "passive", "notes": "Motor A" },
+    { "name": "OUT2", "role": "passive", "notes": "Motor A" },
+    { "name": "OUT3", "role": "passive", "notes": "Motor B" },
+    { "name": "OUT4", "role": "passive", "notes": "Motor B" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [43, 43, 27], "color": "#B22222" },
+  "keywords": ["l298n", "motor driver", "h-bridge", "dc motor", "driver motore", "ponte h"],
+  "sources": [
+    { "title": "ST L298 datasheet", "section": "Logic inputs: HIGH level from 2.3 V; about 2 V drop across the bridge" }
+  ]
+}

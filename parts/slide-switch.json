@@ -1,0 +1,17 @@
+{
+  "id": "slide-switch",
+  "name": "Slide switch (SPDT)",
+  "category": "input",
+  "pins": [
+    { "name": "A", "role": "digital_out", "notes": "To a GPIO; use INPUT_PULLUP. LOW when the slider is on this side" },
+    { "name": "COM", "role": "ground", "notes": "Middle pin" },
+    { "name": "B", "role": "passive", "notes": "Leave unconnected, or use a second GPIO" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "button", "size": [8.6, 3.5, 4], "color": "#1A1A1A" },
+  "keywords": ["slide switch", "spdt", "switch", "on off", "interruttore", "deviatore"],
+  "sources": [
+    { "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" }
+  ]
+}

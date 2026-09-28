@@ -1,0 +1,20 @@
+{
+  "id": "mq5",
+  "name": "MQ-5 LPG + natural gas sensor",
+  "category": "sensor",
+  "measures": ["gas"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V for the heater (about 150 mA): use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DO", "role": "digital_out", "notes": "Threshold output. Its HIGH level is 5 V: use a voltage divider" },
+    { "name": "AO", "role": "analog_out", "notes": "Can reach 5 V: use a voltage divider before the ADC" }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "keywords": ["mq-5", "mq5", "lpg", "natural gas", "gas", "metano"],
+  "sources": [
+    { "title": "Hanwei MQ-5 datasheet", "section": "Sensitive to LPG and natural gas; heater 5 V" },
+    { "title": "Hanwei MQ-5 datasheet", "section": "Needs a burn-in / warm-up time before readings are stable" }
+  ]
+}

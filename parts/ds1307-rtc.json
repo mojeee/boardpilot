@@ -1,0 +1,25 @@
+{
+  "id": "ds1307-rtc",
+  "name": "DS1307 real-time clock (Tiny RTC)",
+  "category": "sensor",
+  "measures": ["time"],
+  "pins": [
+    { "name": "SQ", "role": "passive", "notes": "Square wave output. Leave unconnected" },
+    { "name": "DS", "role": "passive", "notes": "Optional DS18B20 footprint. Leave unconnected" },
+    { "name": "SCL", "role": "i2c_scl", "notes": "Pulled up to 5 V on the board: remove the pull-ups or use a level shifter" },
+    { "name": "SDA", "role": "i2c_sda", "notes": "Pulled up to 5 V on the board: remove the pull-ups or use a level shifter" },
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "BAT", "role": "passive", "notes": "Battery voltage. Leave unconnected" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x68", "0x50"],
+  "voltage": "5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "module", "size": [27, 28, 10], "color": "#1F4FA8" },
+  "keywords": ["ds1307", "rtc", "tiny rtc", "real time clock", "clock", "orologio"],
+  "sources": [
+    { "title": "Maxim DS1307 datasheet", "section": "I2C address 0x68; supply 4.5 to 5.5 V" },
+    { "title": "Microchip AT24C32 datasheet", "section": "EEPROM on the Tiny RTC board at 0x50" }
+  ]
+}

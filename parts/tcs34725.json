@@ -1,0 +1,25 @@
+{
+  "id": "tcs34725",
+  "name": "TCS34725 colour sensor",
+  "category": "sensor",
+  "measures": ["color","light"],
+  "pins": [
+    { "name": "LED", "role": "digital_in", "needsOutput": true,"notes": "Pull LOW to switch the white LED off; leave open for on" },
+    { "name": "INT", "role": "int", "notes": "Interrupt output, optional" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "3V3", "role": "passive", "notes": "Output of the on-board regulator. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "VIN", "role": "power" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x29"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [20, 20, 1.6], "color": "#1F4FA8" },
+  "keywords": ["tcs34725", "rgb", "color", "colour sensor", "colore", "sensore colore"],
+  "sources": [
+    { "title": "ams TCS3472 datasheet", "section": "I2C address 0x29" },
+    { "title": "ams TCS3472 datasheet", "section": "ID register 0x12 (needs the command bit, so not read here)" }
+  ]
+}

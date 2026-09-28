@@ -1,0 +1,23 @@
+{
+  "id": "hx711",
+  "name": "HX711 load cell amplifier",
+  "category": "sensor",
+  "measures": ["weight"],
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "DT", "role": "digital_out", "notes": "Data out of the HX711" },
+    { "name": "SCK", "role": "digital_in", "needsOutput": true,"notes": "Clock driven by the ESP32 (not SPI)" },
+    { "name": "VCC", "role": "power" },
+    { "name": "E+", "role": "passive", "notes": "Load cell red wire (excitation +)" },
+    { "name": "E-", "role": "passive", "notes": "Load cell black wire (excitation -)" },
+    { "name": "A-", "role": "passive", "notes": "Load cell white wire (signal -)" },
+    { "name": "A+", "role": "passive", "notes": "Load cell green wire (signal +). Wire colours vary by load cell" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [34, 21, 3], "color": "#1E7A3C" },
+  "keywords": ["hx711", "load cell", "scale", "weight", "bilancia", "peso", "cella di carico"],
+  "sources": [
+    { "title": "Avia Semiconductor HX711 datasheet", "section": "Serial interface PD_SCK and DOUT; supply 2.6 to 5.5 V" }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "vibration-motor-module",
+  "name": "Vibration motor module",
+  "category": "output",
+  "pins": [
+    { "name": "IN", "role": "digital_in", "needsOutput": true,"notes": "HIGH = vibrate. The module has its own transistor" },
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "motor", "size": [26, 21, 8], "color": "#1A1A1A" },
+  "keywords": ["vibration motor", "haptic", "coin motor", "vibrazione", "motorino"],
+  "sources": [
+    { "title": "Generic coin vibration motor module", "section": "Transistor driver with flyback diode" }
+  ]
+}

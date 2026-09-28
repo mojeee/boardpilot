@@ -1,0 +1,19 @@
+{
+  "id": "joystick-ky023",
+  "name": "Analog joystick (KY-023)",
+  "category": "input",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "+5V", "role": "power", "notes": "Connect to 3V3 anyway, so the outputs stay within the ADC range" },
+    { "name": "VRX", "role": "analog_out", "notes": "To an ADC pin (prefer ADC1: GPIO 32 to 39)" },
+    { "name": "VRY", "role": "analog_out", "notes": "To an ADC pin (prefer ADC1: GPIO 32 to 39)" },
+    { "name": "SW", "role": "digital_out", "notes": "Button: LOW when pressed. Use INPUT_PULLUP" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [34, 26, 32], "color": "#1A1A1A" },
+  "keywords": ["joystick", "ky-023", "thumbstick", "analog", "levetta", "controller"],
+  "sources": [
+    { "title": "Joy-IT KY-023 datasheet", "section": "Pins GND, +5V, VRx, VRy, SW; two 10 kΩ potentiometers" }
+  ]
+}

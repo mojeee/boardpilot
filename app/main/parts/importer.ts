@@ -3,7 +3,8 @@
 // user to check; nothing is saved automatically.
 
 import type { PartDef, Result } from '@shared/types';
-import { guessPartFromText } from '@shared/partHeuristics';
+import { extractDimensionsMm, findLibraryMatch, guessPartFromText } from '@shared/partHeuristics';
+import { BUILTIN_PART_IDS, PARTS } from '@shared/board';
 import { validatePartDef } from '@shared/partSchema';
 import { t } from '@shared/i18n';
 import type { Assistant } from '../ai/assistant';
@@ -14,6 +15,8 @@ export interface ImportResult {
   draft: PartDef;
   notes: string[];
   usedAi: boolean;
+  /** Where the pins came from: the AI, a built-in library part, or keyword rules. */
+  basis: 'ai' | 'library' | 'keywords';
   pageTitle: string;
 }
 
@@ -36,6 +39,22 @@ export function htmlToText(html: string): { title: string; text: string } {
     .replace(/\n\s*\n+/g, '\n')
     .trim();
   return { title: decodeTitle(title), text: `${desc}\n${text}` };
+}
+
+/** Product photo URL from Open Graph / Twitter meta tags or schema.org Product JSON. */
+export function productImageUrl(html: string, base: URL): string | null {
+  const m =
+    /<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i.exec(html) ??
+    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i.exec(html) ??
+    /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i.exec(html) ??
+    /"image"\s*:\s*"(https?:[^"]+\.(?:jpe?g|png|webp)[^"]*)"/i.exec(html);
+  if (!m) return null;
+  try {
+    const u = new URL(m[1].replace(/&amp;/g, '&'), base);
+    return u.protocol === 'https:' || u.protocol === 'http:' ? u.toString() : null;
+  } catch {
+    return null;
+  }
 }
 
 function decodeTitle(s: string) {
@@ -69,25 +88,81 @@ export async function importPartFromUrl(url: string, ai: Assistant): Promise<Res
 
   let title = u.hostname;
   let text = '';
+  let imageUrl: string | null = null;
   if (!isPdf) {
-    const page = htmlToText(buf.toString('utf8'));
+    const html = buf.toString('utf8');
+    const page = htmlToText(html);
     title = page.title || title;
     text = page.text.slice(0, 40000);
+    imageUrl = productImageUrl(html, u);
   }
 
+  const builtins = Object.values(PARTS).filter((p) => BUILTIN_PART_IDS.has(p.id));
+  const match = isPdf ? null : findLibraryMatch(title, text, builtins);
+  const dims = isPdf ? null : extractDimensionsMm(text);
+  const origin = (method: 'ai' | 'manual') => ({ url: u.toString(), importedAt: new Date().toISOString(), method });
+
+  let draft: PartDef | null = null;
+  let notes: string[] = [];
+  let usedAi = false;
+  let basis: ImportResult['basis'] = 'keywords';
   if (ai.enabled) {
     const r = await ai.extractPart({ url: u.toString(), title, text, pdfBase64: isPdf ? buf.toString('base64') : undefined });
     if (r.ok) {
-      const v = validatePartDef({ ...r.value.part, origin: { url: u.toString(), importedAt: new Date().toISOString(), method: 'ai' } });
-      if (v.ok) return { ok: true, value: { draft: v.value, notes: r.value.notes, usedAi: true, pageTitle: title } };
+      const v = validatePartDef({ ...r.value.part, origin: origin('ai') });
+      if (v.ok) {
+        draft = v.value;
+        notes = r.value.notes;
+        usedAi = true;
+        basis = 'ai';
+        if (match) notes.push(t('The page mentions {chip}; the built-in part “{name}” is similar and can be compared.', { chip: match.token.toUpperCase(), name: match.part.name }));
+      }
     }
-    // fall through to the keyword rules if the AI failed
+    // fall through to the library / keyword rules if the AI failed
   }
-  if (isPdf) {
-    return fail('pdf_needs_ai', t('Reading a PDF datasheet needs the AI assistant.'), t('Add ANTHROPIC_API_KEY to .env.local, or use the product page link, or add the part by hand.'));
+  if (!draft && isPdf) {
+    return fail('pdf_needs_ai', t('Reading a PDF datasheet needs the AI assistant.'), t('Turn on the AI assistant in AI settings (add an API key), or use the product page link, or add the part by hand.'));
   }
-  const g = guessPartFromText(title, text, u.toString());
-  const v = validatePartDef(g.draft);
-  if (!v.ok) return v;
-  return { ok: true, value: { draft: v.value, notes: g.notes, usedAi: false, pageTitle: title } };
+  if (!draft && match) {
+    // The page is about a chip we already know: start from the library definition (checked data).
+    const pageName = title.split(/\s[|–—-]\s|\|/)[0].trim().slice(0, 60) || match.part.name;
+    const v = validatePartDef({ ...match.part, id: undefined, name: pageName, origin: origin('manual'), sources: [...match.part.sources, { title: pageName, section: u.toString() }] });
+    if (v.ok) {
+      draft = v.value;
+      basis = 'library';
+      notes = [
+        t('The page is about {chip}. Pins, bus and addresses come from the built-in part “{name}”.', { chip: match.token.toUpperCase(), name: match.part.name }),
+        t('Boards from different shops can order their pins differently: compare with the labels on your board.'),
+      ];
+    }
+  }
+  if (!draft) {
+    const g = guessPartFromText(title, text, u.toString());
+    const v = validatePartDef(g.draft);
+    if (!v.ok) return v;
+    draft = v.value;
+    notes = g.notes;
+  }
+
+  // 3D model: real size from the page, color and thumbnail from the product photo.
+  if (dims && dims.length >= 2) {
+    const size: [number, number, number] = [Math.max(dims[0], dims[1]), Math.min(dims[0], dims[1]), dims[2] ?? draft.model.size[2]];
+    const v = validatePartDef({ ...draft, model: { ...draft.model, size } });
+    if (v.ok) {
+      draft = v.value;
+      notes.push(t('3D size taken from the page: {size} mm.', { size: dims.join(' × ') }));
+    }
+  }
+  if (imageUrl) {
+    const { fetchProductImage } = await import('./productImage');
+    const img = await fetchProductImage(imageUrl);
+    if (img) {
+      const v = validatePartDef({ ...draft, image: img.thumb, model: { ...draft.model, color: img.color ?? draft.model.color } });
+      if (v.ok) {
+        draft = v.value;
+        if (img.color) notes.push(t('3D board color measured from the product photo.'));
+      }
+    }
+  }
+  return { ok: true, value: { draft, notes, usedAi, basis, pageTitle: title } };
 }

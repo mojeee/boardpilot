@@ -1,0 +1,18 @@
+{
+  "id": "ds18b20-module",
+  "name": "DS18B20 module (KY-001 style)",
+  "category": "sensor",
+  "measures": ["temperature"],
+  "pins": [
+    { "name": "S", "role": "onewire", "notes": "Data. The 4.7 kΩ pull-up is on the module" },
+    { "name": "VCC", "role": "power", "notes": "Middle pin, marked + on some boards" },
+    { "name": "GND", "role": "ground", "notes": "Marked - on the board" }
+  ],
+  "bus": "onewire",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [18, 15, 8], "color": "#1A1A1A" },
+  "keywords": ["ds18b20", "ky-001", "onewire", "temperature", "module", "modulo", "temperatura"],
+  "sources": [
+    { "title": "Maxim DS18B20 datasheet", "section": "Pin description and 1-Wire pull-up" }
+  ]
+}
