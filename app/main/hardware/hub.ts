@@ -8,6 +8,7 @@ import type {
   AgentReplyMap,
   AgentRequest,
   BackupInfo,
+  BoardDef,
   ChipInfo,
   ConnectionState,
   FirmwareImage,
@@ -21,12 +22,13 @@ import type {
   ScenarioInfo,
 } from '@shared/types';
 import { parseProbeLine } from '@shared/probe';
+import { canBackupFlash, getBoard, isEspFamily, pinByGpio, BOARDS } from '@shared/board';
 import { t } from '@shared/i18n';
 import type { AgentClient, HardwareDriver, SerialStream } from './driver';
 import { DriverError, guard, toAppError } from './errors';
 import { RealDriver } from './realDriver';
 import { SimDriver } from '../sim/simDriver';
-import { SCENARIOS, SimWorld, DEFAULT_SCENARIO } from '../sim/simWorld';
+import { SimWorld, DEFAULT_SCENARIO } from '../sim/simWorld';
 import { consume } from '../session/safety';
 import { BackupStore } from '../session/backups';
 
@@ -41,6 +43,19 @@ export interface HubEvents {
 }
 
 const WRITE_CMDS = new Set(['gpio_write', 'pwm']);
+
+/**
+ * Where the user's firmware file goes. ESP32: a single app .bin at 0x10000 (after bootloader and
+ * partition table); merged images at 0x0. STM32 .bin files at the start of internal flash
+ * (0x08000000). uf2 and hex files carry their own addresses.
+ */
+export function userImageOffset(board: BoardDef, filePath: string): number {
+  if (/\.(uf2|hex)$/i.test(filePath)) return 0;
+  if (board.toolchain.flasher === 'esptool') return /merged|factory/i.test(filePath) ? 0 : 0x10000;
+  if (board.toolchain.flasher === 'stm32') return 0x08000000;
+  if (board.toolchain.flasher === 'picotool') return 0x10000000;
+  return 0;
+}
 
 export class HardwareHub extends EventEmitter<HubEvents> {
   private driver: HardwareDriver;
@@ -63,6 +78,7 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     this.driver = this.makeDriver(mode);
     this.st = {
       mode,
+      board: this.world.board.id,
       port: null,
       chip: null,
       agent: null,
@@ -75,7 +91,34 @@ export class HardwareHub extends EventEmitter<HubEvents> {
 
   private makeDriver(mode: HardwareMode): HardwareDriver {
     const dir = join(this.dataDir, 'backups');
-    return mode === 'sim' ? new SimDriver(this.world, dir) : new RealDriver(dir);
+    const d = mode === 'sim' ? new SimDriver(this.world, dir) : new RealDriver(dir);
+    d.setBoard(this.board);
+    return d;
+  }
+
+  get board() {
+    return getBoard(this.st?.board ?? this.world.board.id);
+  }
+
+  /** The user picked another board: tools, pin rules and the simulated bench follow it. */
+  async setBoard(boardId: string): Promise<Result<ConnectionState>> {
+    if (!BOARDS[boardId]) return { ok: false, error: { code: 'unknown_board', humanMessage: t('This board is not in the library.'), hint: t('Pick a board from the list.') } };
+    if (boardId === this.st.board) return { ok: true, value: this.st };
+    await this.closeLinks();
+    const board = getBoard(boardId);
+    this.driver.setBoard(board);
+    this.patch({
+      board: boardId,
+      port: null,
+      chip: null,
+      agent: null,
+      streaming: false,
+      serialOpen: false,
+      backups: [],
+      scenario: this.st.mode === 'sim' ? this.world.scenario.id : null,
+    });
+    this.log('info', t('Board set to {name}.', { name: board.name }), `library: ${board.id}`);
+    return { ok: true, value: this.st };
   }
 
   get state(): ConnectionState {
@@ -111,7 +154,7 @@ export class HardwareHub extends EventEmitter<HubEvents> {
   }
 
   scenarios(): ScenarioInfo[] {
-    return SCENARIOS.map((s) => ({ id: s.id, name: t(s.name), description: t(s.description) }));
+    return this.world.scenarios.map((s) => ({ id: s.id, name: t(s.name), description: t(s.description) }));
   }
 
   scenarioScene() {
@@ -160,11 +203,16 @@ export class HardwareHub extends EventEmitter<HubEvents> {
 
   /* ---------- writes (all need a confirmation token) ---------- */
 
-  private async ensureBackup(): Promise<BackupInfo> {
+  private async ensureBackup(): Promise<BackupInfo | null> {
     const { port, chip } = this.st;
     if (!port || !chip) throw new DriverError('not_identified', t('The board has not been identified yet.'), t('Run “Connect and identify” first.'));
     const existing = await this.backups.forMac(chip.mac);
     if (existing.length) return existing[0];
+    if (!canBackupFlash(this.board)) {
+      // The confirmation dialog told the user that this board cannot be backed up.
+      this.log('warning', t('This board cannot read its program back, so no backup was made. The confirmation you gave covered this.'), `library: ${this.board.id}`);
+      return null;
+    }
     this.log('action', t('Backing up the program currently on the board, so it can be restored with one click.'));
     const b = await this.driver.backupFlash(port, chip, (pct) => this.emit('progress', { task: t('Backing up your firmware'), pct }));
     await this.backups.add(b);
@@ -174,20 +222,31 @@ export class HardwareHub extends EventEmitter<HubEvents> {
   }
 
   private agentImage(token: string): FirmwareImage {
-    if (this.st.mode === 'sim') return { name: 'bp-agent 0.1 (simulated)', kind: 'agent', parts: [], confirmToken: token };
-    const manifestPath = join(this.agentDir, 'manifest.json');
+    const board = this.board;
+    if (!board.toolchain.agent) {
+      throw new DriverError(
+        'agent_unavailable',
+        t('The diagnostic agent is not available for the {board} yet.', { board: board.name }),
+        t('You can still check the wiring in 3D, flash your own firmware and use the serial monitor.'),
+      );
+    }
+    if (this.st.mode === 'sim') return { name: 'bp-agent 0.2 (simulated)', kind: 'agent', parts: [], confirmToken: token };
+    // resources/agent/<board id>/manifest.json; builds before 0.5 kept the ESP32 DevKit agent at the top level.
+    let dir = join(this.agentDir, board.id);
+    if (!existsSync(join(dir, 'manifest.json')) && board.id === 'esp32-devkitc-30') dir = this.agentDir;
+    const manifestPath = join(dir, 'manifest.json');
     if (!existsSync(manifestPath)) {
       throw new DriverError(
         'agent_not_built',
         t('The diagnostic agent firmware is not included in this copy of the app yet.'),
-        t('Build it once with “npm run build:agent” (needs arduino-cli and the esp32 core), then try again.'),
+        t('Build it once with “npm run build:agent” (needs arduino-cli and the board’s core), then try again.'),
       );
     }
-    const m = JSON.parse(readFileSync(manifestPath, 'utf8')) as { parts: { offset: string; file: string }[] };
+    const m = JSON.parse(readFileSync(manifestPath, 'utf8')) as { ver?: string; parts: { offset: string; file: string }[] };
     return {
-      name: 'bp-agent 0.1',
+      name: `bp-agent ${m.ver ?? ''}`.trim(),
       kind: 'agent',
-      parts: m.parts.map((p) => ({ offset: parseInt(p.offset, 16), path: join(this.agentDir, p.file) })),
+      parts: m.parts.map((p) => ({ offset: parseInt(p.offset, 16), path: join(dir, p.file) })),
       confirmToken: token,
     };
   }
@@ -233,15 +292,17 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     const client = await this.driver.openAgent(port);
     this.agentClient = client;
     client.onEvent((event, body) => {
-      if (event === 'boot' && typeof body.strapping === 'object' && body.strapping) {
+      if (event === 'boot' && typeof body.strapping === 'object' && body.strapping && Object.keys(body.strapping).length) {
         const s = body.strapping as Record<string, number>;
-        const high12 = s['12'] === 1;
+        // ESP32 only: MTDI (GPIO 12) HIGH at reset selects 1.8 V flash (ESP32 Series Datasheet, "Strapping Pins").
+        const high12 = this.board.family === 'esp32' && isEspFamily(this.board) && s['12'] === 1;
+        const pin12 = pinByGpio(this.board, 12);
         this.log(
           high12 ? 'warning' : 'info',
           t('Strapping pins at reset: {pins}.', { pins: Object.entries(s).map(([g, v]) => `GPIO ${g}=${v}`).join(', ') }) +
             (high12 ? ' ' + t('GPIO 12 was HIGH at reset: this can select the wrong flash voltage.') : ''),
           'measured: agent boot report',
-          high12 ? 'pin:D12' : undefined,
+          high12 && pin12 ? `pin:${pin12.id}` : undefined,
         );
       }
     });
@@ -333,8 +394,7 @@ export class HardwareHub extends EventEmitter<HubEvents> {
         this.patch({ agent: null, streaming: false });
         await this.ensureBackup();
         const size = this.st.mode === 'sim' ? 262144 : readFileSync(filePath).length;
-        // A single app .bin goes at 0x10000 (after bootloader and partition table). Merged images start at 0x0.
-        const offset = /merged|factory/i.test(filePath) ? 0 : 0x10000;
+        const offset = userImageOffset(this.board, filePath);
         this.log('action', t('Writing {file} at {offset}.', { file: filePath.split('/').pop() ?? filePath, offset: `0x${offset.toString(16)}` }));
         await this.driver.flash(port, { name: filePath, kind: 'user', parts: [{ offset, path: filePath }], confirmToken: token }, (pct) =>
           this.emit('progress', { task: t('Flashing your firmware'), pct }),

@@ -1,0 +1,1011 @@
+{
+  "id": "rpi-pico",
+  "name": "Raspberry Pi Pico",
+  "vendor": "Raspberry Pi",
+  "family": "rp2040",
+  "module": "RP2040",
+  "chip": "RP2040",
+  "cpu": "Dual-core Arm Cortex-M0+ at 133 MHz, 264 KB SRAM, 2 MB flash",
+  "logicVolt": 3.3,
+  "flashBytes": 2097152,
+  "ramBytes": 270336,
+  "pcbMm": {
+    "length": 51.0,
+    "width": 21.0,
+    "thickness": 1.0
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "male-down",
+  "pcbColor": "#1B6B3A",
+  "summary": "A small, low-cost board with the Raspberry Pi RP2040 chip. 3.3 V logic (not 5 V tolerant), breadboard friendly, and flashed by dragging a file onto it.",
+  "pins": [
+    {
+      "id": "GP0",
+      "gpio": 0,
+      "posMm": [
+        1.37,
+        19.39
+      ],
+      "label": "GP0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_TX",
+        "SPI0_MISO",
+        "I2C0_SDA",
+        "PWM0_A",
+        "Serial1_TX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP1",
+      "gpio": 1,
+      "posMm": [
+        3.91,
+        19.39
+      ],
+      "label": "GP1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_RX",
+        "SPI0_CS",
+        "I2C0_SCL",
+        "PWM0_B",
+        "Serial1_RX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        6.45,
+        19.39
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GP2",
+      "gpio": 2,
+      "posMm": [
+        8.99,
+        19.39
+      ],
+      "label": "GP2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_CTS",
+        "SPI0_SCK",
+        "I2C1_SDA",
+        "PWM1_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP3",
+      "gpio": 3,
+      "posMm": [
+        11.53,
+        19.39
+      ],
+      "label": "GP3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_RTS",
+        "SPI0_MOSI",
+        "I2C1_SCL",
+        "PWM1_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP4",
+      "gpio": 4,
+      "posMm": [
+        14.07,
+        19.39
+      ],
+      "label": "GP4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SDA_default",
+        "UART1_TX",
+        "SPI0_MISO",
+        "I2C0_SDA",
+        "PWM2_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP5",
+      "gpio": 5,
+      "posMm": [
+        16.61,
+        19.39
+      ],
+      "label": "GP5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default",
+        "UART1_RX",
+        "SPI0_CS",
+        "I2C0_SCL",
+        "PWM2_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        19.15,
+        19.39
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GP6",
+      "gpio": 6,
+      "posMm": [
+        21.69,
+        19.39
+      ],
+      "label": "GP6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_CTS",
+        "SPI0_SCK",
+        "I2C1_SDA",
+        "PWM3_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP7",
+      "gpio": 7,
+      "posMm": [
+        24.23,
+        19.39
+      ],
+      "label": "GP7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_RTS",
+        "SPI0_MOSI",
+        "I2C1_SCL",
+        "PWM3_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP8",
+      "gpio": 8,
+      "posMm": [
+        26.77,
+        19.39
+      ],
+      "label": "GP8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_TX",
+        "SPI1_MISO",
+        "I2C0_SDA",
+        "PWM4_A",
+        "Serial2_TX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP9",
+      "gpio": 9,
+      "posMm": [
+        29.31,
+        19.39
+      ],
+      "label": "GP9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_RX",
+        "SPI1_CS",
+        "I2C0_SCL",
+        "PWM4_B",
+        "Serial2_RX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        31.85,
+        19.39
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GP10",
+      "gpio": 10,
+      "posMm": [
+        34.39,
+        19.39
+      ],
+      "label": "GP10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_CTS",
+        "SPI1_SCK",
+        "I2C1_SDA",
+        "PWM5_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP11",
+      "gpio": 11,
+      "posMm": [
+        36.93,
+        19.39
+      ],
+      "label": "GP11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_RTS",
+        "SPI1_MOSI",
+        "I2C1_SCL",
+        "PWM5_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP12",
+      "gpio": 12,
+      "posMm": [
+        39.47,
+        19.39
+      ],
+      "label": "GP12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_TX",
+        "SPI1_MISO",
+        "I2C0_SDA",
+        "PWM6_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP13",
+      "gpio": 13,
+      "posMm": [
+        42.01,
+        19.39
+      ],
+      "label": "GP13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_RX",
+        "SPI1_CS",
+        "I2C0_SCL",
+        "PWM6_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND4",
+      "gpio": null,
+      "posMm": [
+        44.55,
+        19.39
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GP14",
+      "gpio": 14,
+      "posMm": [
+        47.09,
+        19.39
+      ],
+      "label": "GP14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_CTS",
+        "SPI1_SCK",
+        "I2C1_SDA",
+        "PWM7_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP15",
+      "gpio": 15,
+      "posMm": [
+        49.63,
+        19.39
+      ],
+      "label": "GP15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_RTS",
+        "SPI1_MOSI",
+        "I2C1_SCL",
+        "PWM7_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP16",
+      "gpio": 16,
+      "posMm": [
+        49.63,
+        1.61
+      ],
+      "label": "GP16",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MISO_default",
+        "UART0_TX",
+        "SPI0_MISO",
+        "I2C0_SDA",
+        "PWM0_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP17",
+      "gpio": 17,
+      "posMm": [
+        47.09,
+        1.61
+      ],
+      "label": "GP17",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_CS_default",
+        "UART0_RX",
+        "SPI0_CS",
+        "I2C0_SCL",
+        "PWM0_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND5",
+      "gpio": null,
+      "posMm": [
+        44.55,
+        1.61
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GP18",
+      "gpio": 18,
+      "posMm": [
+        42.01,
+        1.61
+      ],
+      "label": "GP18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_SCK_default",
+        "UART0_CTS",
+        "SPI0_SCK",
+        "I2C1_SDA",
+        "PWM1_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP19",
+      "gpio": 19,
+      "posMm": [
+        39.47,
+        1.61
+      ],
+      "label": "GP19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MOSI_default",
+        "UART0_RTS",
+        "SPI0_MOSI",
+        "I2C1_SCL",
+        "PWM1_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP20",
+      "gpio": 20,
+      "posMm": [
+        36.93,
+        1.61
+      ],
+      "label": "GP20",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_TX",
+        "SPI0_MISO",
+        "I2C0_SDA",
+        "PWM2_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GP21",
+      "gpio": 21,
+      "posMm": [
+        34.39,
+        1.61
+      ],
+      "label": "GP21",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_RX",
+        "SPI0_CS",
+        "I2C0_SCL",
+        "PWM2_B"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND6",
+      "gpio": null,
+      "posMm": [
+        31.85,
+        1.61
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GP22",
+      "gpio": 22,
+      "posMm": [
+        29.31,
+        1.61
+      ],
+      "label": "GP22",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_CTS",
+        "SPI0_SCK",
+        "I2C1_SDA",
+        "PWM3_A"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "RUN",
+      "gpio": null,
+      "posMm": [
+        26.77,
+        1.61
+      ],
+      "label": "RUN",
+      "kind": "enable",
+      "functions": [
+        "RESET"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Reset pin. Connect it to GND for a moment to restart the board. It has an internal pull-up."
+    },
+    {
+      "id": "GP26",
+      "gpio": 26,
+      "posMm": [
+        24.23,
+        1.61
+      ],
+      "label": "GP26",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC0",
+        "UART1_CTS",
+        "SPI1_SCK",
+        "I2C1_SDA",
+        "PWM5_A",
+        "Wire1_SDA"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Analog input ADC0 (0 to 3.3 V). Never put more than 3.3 V on this pin."
+    },
+    {
+      "id": "GP27",
+      "gpio": 27,
+      "posMm": [
+        21.69,
+        1.61
+      ],
+      "label": "GP27",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1",
+        "UART1_RTS",
+        "SPI1_MOSI",
+        "I2C1_SCL",
+        "PWM5_B",
+        "Wire1_SCL"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Analog input ADC1 (0 to 3.3 V). Never put more than 3.3 V on this pin."
+    },
+    {
+      "id": "AGND",
+      "gpio": null,
+      "posMm": [
+        19.15,
+        1.61
+      ],
+      "label": "AGND",
+      "kind": "ground",
+      "functions": [
+        "GND",
+        "ADC_GND"
+      ],
+      "flags": [],
+      "maxVolt": 0,
+      "notes": "Analog ground for GP26 to GP28. Use it as the ground for analog sensors."
+    },
+    {
+      "id": "GP28",
+      "gpio": 28,
+      "posMm": [
+        16.61,
+        1.61
+      ],
+      "label": "GP28",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2",
+        "UART0_TX",
+        "SPI1_MISO",
+        "I2C0_SDA",
+        "PWM6_A"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Analog input ADC2 (0 to 3.3 V). Never put more than 3.3 V on this pin."
+    },
+    {
+      "id": "ADC_VREF",
+      "gpio": null,
+      "posMm": [
+        14.07,
+        1.61
+      ],
+      "label": "ADC_VREF",
+      "kind": "power",
+      "functions": [
+        "ADC_VREF"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "Reference voltage for the analog inputs (filtered 3.3 V). Do not power parts from it."
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        11.53,
+        1.61
+      ],
+      "label": "3V3(OUT)",
+      "kind": "power",
+      "functions": [
+        "3V3_OUT"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V output for sensors and modules. Keep the load under 300 mA."
+    },
+    {
+      "id": "3V3_EN",
+      "gpio": null,
+      "posMm": [
+        8.99,
+        1.61
+      ],
+      "label": "3V3_EN",
+      "kind": "enable",
+      "functions": [
+        "3V3_EN"
+      ],
+      "flags": [],
+      "maxVolt": 5.5,
+      "notes": "Turns the 3.3 V supply on or off. Leave it unconnected; connecting it to GND switches the board off."
+    },
+    {
+      "id": "GND7",
+      "gpio": null,
+      "posMm": [
+        6.45,
+        1.61
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "VSYS",
+      "gpio": null,
+      "posMm": [
+        3.91,
+        1.61
+      ],
+      "label": "VSYS",
+      "kind": "power",
+      "functions": [
+        "VSYS"
+      ],
+      "flags": [],
+      "maxVolt": 5.5,
+      "supplies": 4.7,
+      "notes": "Main power input (1.8 to 5.5 V). From USB it is about 4.7 V (5 V minus a diode drop)."
+    },
+    {
+      "id": "VBUS",
+      "gpio": null,
+      "posMm": [
+        1.37,
+        1.61
+      ],
+      "label": "VBUS",
+      "kind": "power",
+      "functions": [
+        "VBUS"
+      ],
+      "flags": [],
+      "maxVolt": 5.5,
+      "supplies": 5,
+      "notes": "5 V straight from the USB cable. It is 0 V when USB is not plugged in."
+    },
+    {
+      "id": "SWCLK",
+      "gpio": null,
+      "posMm": [
+        49.4,
+        13.04
+      ],
+      "mount": "pad",
+      "label": "SWCLK",
+      "kind": "enable",
+      "functions": [
+        "SWD_CLK"
+      ],
+      "flags": [
+        "swd"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Debug clock for a debug probe (SWD). Not a GPIO."
+    },
+    {
+      "id": "SWD_GND",
+      "gpio": null,
+      "posMm": [
+        49.4,
+        10.5
+      ],
+      "mount": "pad",
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0,
+      "notes": "Ground pin of the 3-pin debug header."
+    },
+    {
+      "id": "SWDIO",
+      "gpio": null,
+      "posMm": [
+        49.4,
+        7.96
+      ],
+      "mount": "pad",
+      "label": "SWDIO",
+      "kind": "enable",
+      "functions": [
+        "SWD_IO"
+      ],
+      "flags": [
+        "swd"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Debug data for a debug probe (SWD). Not a GPIO."
+    }
+  ],
+  "components": [
+    {
+      "type": "usb",
+      "label": "micro-USB",
+      "rect": [
+        -13,
+        65,
+        55,
+        80
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BOOTSEL",
+      "rect": [
+        100,
+        121,
+        38,
+        38
+      ]
+    },
+    {
+      "type": "led",
+      "label": "GP25",
+      "rect": [
+        40,
+        156,
+        16,
+        10
+      ]
+    },
+    {
+      "type": "regulator",
+      "label": "RT6150 SMPS",
+      "rect": [
+        92,
+        62,
+        30,
+        30
+      ]
+    },
+    {
+      "type": "chip",
+      "label": "W25Q16JV flash",
+      "rect": [
+        175,
+        134,
+        30,
+        20
+      ]
+    },
+    {
+      "type": "mcu",
+      "label": "RP2040",
+      "rect": [
+        225,
+        70,
+        70,
+        70
+      ]
+    },
+    {
+      "type": "crystal",
+      "label": "12 MHz",
+      "rect": [
+        326,
+        115,
+        32,
+        25
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "RP2040 datasheet",
+    "i2c": {
+      "sda": "GP4",
+      "scl": "GP5",
+      "remappable": false,
+      "note": "Only certain pin pairs can be I2C on this chip, and SDA and SCL cannot be swapped in software. Wire uses GP4 (SDA) and GP5 (SCL); Wire.setSDA()/Wire.setSCL() before Wire.begin() can move I2C0 to GP0/GP1, GP8/GP9, GP12/GP13, GP16/GP17 or GP20/GP21. Wire1 defaults to GP26/GP27."
+    },
+    "spi": {
+      "mosi": "GP19",
+      "miso": "GP16",
+      "sck": "GP18",
+      "cs": "GP17"
+    },
+    "safeIo": [
+      "GP15",
+      "GP14",
+      "GP13",
+      "GP12",
+      "GP11",
+      "GP10",
+      "GP22",
+      "GP21",
+      "GP20",
+      "GP6",
+      "GP7",
+      "GP2",
+      "GP3"
+    ],
+    "adcPins": [
+      "GP26",
+      "GP27",
+      "GP28"
+    ],
+    "adcMaxMv": 3300
+  },
+  "toolchain": {
+    "flasher": "picotool",
+    "fqbn": "rp2040:rp2040:rpipico",
+    "core": "rp2040:rp2040",
+    "coreUrl": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
+    "imageFormat": "uf2",
+    "agent": false,
+    "link": "usb-bootloader",
+    "uploadNote": "If the board is not found, hold the BOOTSEL button while plugging in the USB cable."
+  },
+  "usb": [
+    {
+      "vid": "2e8a",
+      "pid": "000a",
+      "note": "Running a sketch (Arduino-Pico or Pico SDK USB serial)"
+    },
+    {
+      "vid": "2e8a",
+      "pid": "0003",
+      "note": "BOOTSEL mode: RP2040 USB bootloader (UF2 drive)"
+    },
+    {
+      "vid": "2e8a",
+      "pid": "0005",
+      "note": "Running MicroPython"
+    }
+  ],
+  "links": [
+    {
+      "title": "Raspberry Pi Pico product page",
+      "url": "https://www.raspberrypi.com/products/raspberry-pi-pico/"
+    },
+    {
+      "title": "Raspberry Pi Pico datasheet",
+      "url": "https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf"
+    },
+    {
+      "title": "Raspberry Pi Pico pinout (PDF)",
+      "url": "https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf"
+    },
+    {
+      "title": "RP2040 datasheet",
+      "url": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf"
+    },
+    {
+      "title": "Getting started with Raspberry Pi Pico-series",
+      "url": "https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf"
+    },
+    {
+      "title": "Arduino-Pico core documentation",
+      "url": "https://arduino-pico.readthedocs.io/"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Raspberry Pi Pico datasheet",
+      "section": "2. Mechanical specification, Figure 3 (51 x 21 x 1 mm, 17.78 mm row spacing, 48.26 mm pin span)",
+      "url": "https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf"
+    },
+    {
+      "title": "Raspberry Pi Pico datasheet",
+      "section": "1. About, Figure 2 pinout; 2.1 Pinout (VBUS, VSYS, 3V3_EN, 3V3, ADC_VREF, AGND, RUN; GPIO23-25, 29 internal)",
+      "url": "https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf"
+    },
+    {
+      "title": "Raspberry Pi Pico datasheet",
+      "section": "4.3 Using the ADC (GPIO26-29 diode to IOVDD, 3.3 V max); 4.4 Powerchain (VSYS = VBUS minus Schottky drop)",
+      "url": "https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf"
+    },
+    {
+      "title": "RP2040 datasheet",
+      "section": "2.19.2 Function Select (UART/SPI/I2C/PWM per GPIO)",
+      "url": "https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf"
+    },
+    {
+      "title": "earlephilhower/arduino-pico",
+      "section": "variants/rpipico/pins_arduino.h (Wire, SPI, Serial1/2 pins) and boards.txt (board ids, USB ids)",
+      "url": "https://github.com/earlephilhower/arduino-pico"
+    },
+    {
+      "title": "Raspberry Pi USB product ID list (raspberrypi/usb-pid)",
+      "section": "Internal PIDs 0x0003, 0x0005, 0x0009, 0x000A, 0x000F",
+      "url": "https://github.com/raspberrypi/usb-pid"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AiReply, AiSource } from '@shared/types';
 import { getBoard, targetLabel } from '@shared/board';
-import { useAi, useApp, useScene } from '../state/store';
+import { currentBoard, useAi, useApp, useScene } from '../state/store';
 import { askAi } from './ai';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
@@ -24,7 +24,7 @@ export function ReplyView({ reply }: { reply: AiReply }) {
         <div className="chips">
           {reply.highlight.map((h) => (
             <button key={h} className="chip link mono" onClick={() => useScene.getState().focusOn([h])}>
-              {targetLabel(getBoard(), scene, h)}
+              {targetLabel(currentBoard(), scene, h)}
             </button>
           ))}
         </div>

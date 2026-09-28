@@ -6,7 +6,7 @@ Read this file fully before any work. It describes what we are building, the rul
 
 A desktop app for macOS and Windows that guides people with any level of knowledge through embedded software work on a real board. The user picks a task, a step-by-step wizard asks only for what the app cannot detect itself, the work runs, and everything that happens is shown live: in a log and on a 3D model of the board, where every pin, wire and bus transaction is visible.
 
-**Phase 1 scope: embedded software on ESP32 only.** Target board: ESP32-DevKitC / "DevKit V1" 30-pin with ESP32-WROOM-32. Other boards (ESP32-S3, STM32 with ST-Link) come later, so nothing may be hard-coded to one board: boards are data files.
+**Boards:** started with the ESP32 DevKit 30-pin; since 0.5 the app supports 13 boards across ESP32, RP2040/RP2350, AVR, STM32, nRF52 and Teensy. Nothing may be hard-coded to one board: boards are data files in `/boards` (pin rules, flags, default buses, toolchain, USB ids, sources), validated by `scripts/check-boards.mjs`. Chip tools per family live in `app/main/hardware/tools/`.
 
 Phase 1 tasks (the home screen options):
 1. Connect and identify a board

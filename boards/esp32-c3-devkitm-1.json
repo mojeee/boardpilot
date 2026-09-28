@@ -1,0 +1,744 @@
+{
+  "id": "esp32-c3-devkitm-1",
+  "name": "ESP32-C3-DevKitM-1",
+  "vendor": "Espressif",
+  "family": "esp32c3",
+  "module": "ESP32-C3-MINI-1",
+  "chip": "ESP32-C3",
+  "cpu": "Single-core 32-bit RISC-V at 160 MHz, 400 KB SRAM, 4 MB flash in the chip package, Wi-Fi and Bluetooth LE",
+  "logicVolt": 3.3,
+  "flashBytes": 4194304,
+  "ramBytes": 409600,
+  "pcbMm": {
+    "length": 38.91,
+    "width": 25.4,
+    "thickness": 1.6
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "male-down",
+  "pcbColor": "#1a1a1a",
+  "summary": "Espressif's small ESP32-C3 board with Wi-Fi, Bluetooth LE, a RISC-V core and an RGB LED. Breadboard friendly, 3.3 V logic.",
+  "pins": [
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        36.85,
+        1.27
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        34.31,
+        1.27
+      ],
+      "label": "3V3",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V from the on-board regulator. You can feed 3.3 V in here instead of USB, but never both at once."
+    },
+    {
+      "id": "3V3_2",
+      "gpio": null,
+      "sameAs": "3V3",
+      "posMm": [
+        31.77,
+        1.27
+      ],
+      "label": "3V3",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "Same 3.3 V rail as the other 3V3 pin."
+    },
+    {
+      "id": "IO2",
+      "gpio": 2,
+      "posMm": [
+        29.23,
+        1.27
+      ],
+      "label": "2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH2",
+        "FSPIQ"
+      ],
+      "flags": [
+        "strapping",
+        "adc1"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: should be HIGH at reset. Do not let a part pull it LOW while the board starts."
+    },
+    {
+      "id": "IO3",
+      "gpio": 3,
+      "posMm": [
+        26.69,
+        1.27
+      ],
+      "label": "3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH3"
+      ],
+      "flags": [
+        "adc1"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        24.15,
+        1.27
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "RST",
+      "gpio": null,
+      "posMm": [
+        21.61,
+        1.27
+      ],
+      "label": "RST",
+      "kind": "enable",
+      "functions": [
+        "CHIP_PU"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Reset. Pulling it LOW restarts the chip (same as the RST button)."
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        19.07,
+        1.27
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "IO0",
+      "gpio": 0,
+      "posMm": [
+        16.53,
+        1.27
+      ],
+      "label": "0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH0",
+        "XTAL_32K_P"
+      ],
+      "flags": [
+        "adc1"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO1",
+      "gpio": 1,
+      "posMm": [
+        13.99,
+        1.27
+      ],
+      "label": "1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH1",
+        "XTAL_32K_N"
+      ],
+      "flags": [
+        "adc1"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO10",
+      "gpio": 10,
+      "posMm": [
+        11.45,
+        1.27
+      ],
+      "label": "10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "FSPICS0"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND4",
+      "gpio": null,
+      "posMm": [
+        8.91,
+        1.27
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "5V",
+      "gpio": null,
+      "posMm": [
+        6.37,
+        1.27
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [
+        "5V"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "5 V from the micro-USB port. You can power the board here with 5 V instead of USB, but never both at once."
+    },
+    {
+      "id": "5V_2",
+      "gpio": null,
+      "sameAs": "5V",
+      "posMm": [
+        3.83,
+        1.27
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [
+        "5V"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "Same 5 V rail as the other 5V pin."
+    },
+    {
+      "id": "GND5",
+      "gpio": null,
+      "posMm": [
+        1.29,
+        1.27
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GND6",
+      "gpio": null,
+      "posMm": [
+        36.85,
+        24.13
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "TX",
+      "gpio": 21,
+      "chipPin": "GPIO21",
+      "posMm": [
+        34.31,
+        24.13
+      ],
+      "label": "TX",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0TXD"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "USB serial TX through the CP2102N. Used for uploading and the serial monitor."
+    },
+    {
+      "id": "RX",
+      "gpio": 20,
+      "chipPin": "GPIO20",
+      "posMm": [
+        31.77,
+        24.13
+      ],
+      "label": "RX",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0RXD"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "USB serial RX through the CP2102N. Used for uploading and the serial monitor."
+    },
+    {
+      "id": "GND7",
+      "gpio": null,
+      "posMm": [
+        29.23,
+        24.13
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "IO9",
+      "gpio": 9,
+      "posMm": [
+        26.69,
+        24.13
+      ],
+      "label": "9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default"
+      ],
+      "flags": [
+        "strapping"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin wired to the BOOT button: LOW at reset starts upload mode instead of your program. Arduino's default I2C SCL."
+    },
+    {
+      "id": "IO8",
+      "gpio": 8,
+      "posMm": [
+        24.15,
+        24.13
+      ],
+      "label": "8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RGB_LED",
+        "I2C_SDA_default"
+      ],
+      "flags": [
+        "strapping",
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin and the RGB LED data line. It must be HIGH at reset for uploading to work. Arduino's default I2C SDA."
+    },
+    {
+      "id": "GND8",
+      "gpio": null,
+      "posMm": [
+        21.61,
+        24.13
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "IO7",
+      "gpio": 7,
+      "posMm": [
+        19.07,
+        24.13
+      ],
+      "label": "7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "FSPID",
+        "MTDO",
+        "SPI_CS_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO6",
+      "gpio": 6,
+      "posMm": [
+        16.53,
+        24.13
+      ],
+      "label": "6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "FSPICLK",
+        "MTCK",
+        "SPI_MOSI_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO5",
+      "gpio": 5,
+      "posMm": [
+        13.99,
+        24.13
+      ],
+      "label": "5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH0",
+        "FSPIWP",
+        "MTDI",
+        "SPI_MISO_default"
+      ],
+      "flags": [
+        "adc2"
+      ],
+      "maxVolt": 3.3,
+      "notes": "ADC2 on the ESP32-C3 gives unstable readings (chip errata) and is not supported by ESP-IDF. Use GPIO 0 to 4 for analog."
+    },
+    {
+      "id": "IO4",
+      "gpio": 4,
+      "posMm": [
+        11.45,
+        24.13
+      ],
+      "label": "4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH4",
+        "FSPIHD",
+        "MTMS",
+        "SPI_SCK_default"
+      ],
+      "flags": [
+        "adc1"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND9",
+      "gpio": null,
+      "posMm": [
+        8.91,
+        24.13
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "IO18",
+      "gpio": 18,
+      "posMm": [
+        6.37,
+        24.13
+      ],
+      "label": "18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "USB_D-"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Native USB D- of the chip. This board's micro-USB port does not use it, so it is free, but it starts up in USB mode."
+    },
+    {
+      "id": "IO19",
+      "gpio": 19,
+      "posMm": [
+        3.83,
+        24.13
+      ],
+      "label": "19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "USB_D+"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Native USB D+ of the chip. This board's micro-USB port does not use it, so it is free, but it has a USB pull-up at start-up."
+    },
+    {
+      "id": "GND10",
+      "gpio": null,
+      "posMm": [
+        1.29,
+        24.13
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    }
+  ],
+  "components": [
+    {
+      "type": "module",
+      "label": "ESP32-C3-MINI-1",
+      "rect": [
+        277,
+        61,
+        166,
+        132
+      ]
+    },
+    {
+      "type": "usb",
+      "label": "micro-USB",
+      "rect": [
+        -7,
+        84,
+        74,
+        87
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BOOT",
+      "rect": [
+        6,
+        37,
+        52,
+        28
+      ]
+    },
+    {
+      "type": "button",
+      "label": "RST",
+      "rect": [
+        6,
+        189,
+        52,
+        28
+      ]
+    },
+    {
+      "type": "bridge",
+      "label": "CP2102N",
+      "rect": [
+        113,
+        86,
+        38,
+        38
+      ]
+    },
+    {
+      "type": "regulator",
+      "label": "LDO 3.3 V",
+      "rect": [
+        175,
+        76,
+        61,
+        83
+      ]
+    },
+    {
+      "type": "led",
+      "label": "RGB GPIO8",
+      "rect": [
+        207,
+        170,
+        28,
+        48
+      ]
+    },
+    {
+      "type": "led",
+      "label": "PWR",
+      "rect": [
+        78,
+        38,
+        29,
+        15
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "ESP32-C3 Series Datasheet",
+    "i2c": {
+      "sda": "IO8",
+      "scl": "IO9",
+      "remappable": true,
+      "note": "Any GPIO can be I2C on the ESP32-C3. Arduino's defaults, GPIO 8 (SDA) and GPIO 9 (SCL), are strapping pins and GPIO 8 also drives the RGB LED."
+    },
+    "spi": {
+      "mosi": "IO6",
+      "miso": "IO5",
+      "sck": "IO4",
+      "cs": "IO7"
+    },
+    "safeIo": [
+      "IO4",
+      "IO5",
+      "IO6",
+      "IO7",
+      "IO10",
+      "IO3",
+      "IO0",
+      "IO1"
+    ],
+    "adcPins": [
+      "IO0",
+      "IO1",
+      "IO3",
+      "IO4",
+      "IO2"
+    ],
+    "inputPins": [
+      "IO10",
+      "IO3",
+      "IO0",
+      "IO1"
+    ],
+    "adcWifiConflict": true,
+    "adcMaxMv": 3300
+  },
+  "toolchain": {
+    "flasher": "esptool",
+    "fqbn": "esp32:esp32:esp32c3",
+    "core": "esp32:esp32",
+    "coreUrl": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
+    "esptoolChip": "esp32c3",
+    "imageFormat": "bin",
+    "agent": true,
+    "link": "usb-serial",
+    "uploadNote": "If uploading does not start, hold BOOT, press and release RST, then release BOOT."
+  },
+  "usb": [
+    {
+      "vid": "10c4",
+      "pid": "ea60",
+      "note": "Silicon Labs CP2102N USB-to-UART bridge (the board's micro-USB port)"
+    },
+    {
+      "vid": "303a",
+      "pid": "1001",
+      "note": "ESP32-C3 built-in USB Serial/JTAG, only if a USB cable is wired to GPIO 18/19 (not the micro-USB port)"
+    }
+  ],
+  "links": [
+    {
+      "title": "ESP32-C3-DevKitM-1 user guide",
+      "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c3/esp32-c3-devkitm-1/user_guide.html"
+    },
+    {
+      "title": "ESP32-C3-DevKitM-1 schematic",
+      "url": "https://dl.espressif.com/dl/schematics/SCH_ESP32-C3-DEVKITM-1_V1_20200915A.pdf"
+    },
+    {
+      "title": "ESP32-C3-DevKitM-1 dimensions",
+      "url": "https://dl.espressif.com/dl/schematics/DIMENSION_ESP32-C3-DEVKITM-1_V1_20200915AA.pdf"
+    },
+    {
+      "title": "ESP32-C3 Series Datasheet",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf"
+    },
+    {
+      "title": "ESP32-C3-MINI-1 / 1U Datasheet",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-c3-mini-1_datasheet_en.pdf"
+    }
+  ],
+  "sources": [
+    {
+      "title": "ESP32-C3-DevKitM-1 user guide",
+      "section": "Header Block (J1, J3) and footnote on strapping pins GPIO2, 8, 9; Description of Components",
+      "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c3/esp32-c3-devkitm-1/user_guide.html"
+    },
+    {
+      "title": "ESP32-C3-DevKitM-1 schematic V1 (2020-09-15)",
+      "section": "CP2102N-A02 bridge, micro-USB, RGB LED on GPIO8, BOOT on GPIO9",
+      "url": "https://dl.espressif.com/dl/schematics/SCH_ESP32-C3-DEVKITM-1_V1_20200915A.pdf"
+    },
+    {
+      "title": "ESP32-C3-DevKitM-1 dimensions (DXF V1 2020-09-15)",
+      "section": "Board outline 38.91 x 25.40 mm, header pad centres, component outlines",
+      "url": "https://dl.espressif.com/dl/schematics/DIMENSION_ESP32-C3-DEVKITM-1_V1_20200915AA.dxf"
+    },
+    {
+      "title": "ESP32-C3 Series Datasheet v2.4",
+      "section": "3 Boot Configurations (Tables 3-1, 3-3); 2.3 IO pins: GPIO18/19 USB_PU note",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf"
+    },
+    {
+      "title": "ESP-IDF Programming Guide (ESP32-C3)",
+      "section": "ADC Oneshot: Hardware Limitations (ADC2 oneshot not supported, results not stable; see ESP32-C3 errata)",
+      "url": "https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-reference/peripherals/adc/adc_oneshot.html"
+    },
+    {
+      "title": "arduino-esp32 variants/esp32c3/pins_arduino.h",
+      "section": "SDA 8, SCL 9, SS 7, MOSI 6, MISO 5, SCK 4, TX 21, RX 20, PIN_RGB_LED 8",
+      "url": "https://github.com/espressif/arduino-esp32/blob/master/variants/esp32c3/pins_arduino.h"
+    }
+  ]
+}

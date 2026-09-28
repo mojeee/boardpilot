@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import type { LogType } from '@shared/types';
 import { targetLabel, getBoard } from '@shared/board';
-import { useLog, useScene } from '../state/store';
+import { currentBoard, useLog, useScene } from '../state/store';
 import { t } from '@shared/i18n';
 
 const FILTERS: (LogType | 'all')[] = ['all', 'check', 'found', 'warning', 'failed', 'action', 'info'];
@@ -50,7 +50,7 @@ export function LogPanel() {
             <span className="log-time mono">{new Date(e.t).toLocaleTimeString([], { hour12: false })}</span>
             <span className={`log-type t-${e.type}`}>{t(TYPE_CHIP[e.type] ?? e.type)}</span>
             <span className="log-text">{e.text}</span>
-            {e.target && <span className="log-target mono">{targetLabel(getBoard(), scene, e.target)}</span>}
+            {e.target && <span className="log-target mono">{targetLabel(currentBoard(), scene, e.target)}</span>}
             {e.source && <span className={`log-src ${e.source.startsWith('measured') ? 'measured' : ''}`}>{e.source}</span>}
           </div>
         ))}

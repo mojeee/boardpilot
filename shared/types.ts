@@ -32,7 +32,18 @@ export function parseTarget(ref: string): { kind: 'pin' | 'wire' | 'part'; id: s
 
 /* ---------- ports and chips ---------- */
 
-export type UsbBridge = 'CP210x' | 'CH340' | 'CH9102' | 'FTDI' | 'ESP32 native USB' | 'unknown';
+export type UsbBridge =
+  | 'CP210x'
+  | 'CH340'
+  | 'CH9102'
+  | 'FTDI'
+  | 'ESP32 native USB'
+  | 'ATmega16U2'
+  | 'RP2040 native USB'
+  | 'ST-LINK'
+  | 'J-Link'
+  | 'Teensy USB'
+  | 'unknown';
 
 export interface PortInfo {
   path: string;
@@ -41,8 +52,10 @@ export interface PortInfo {
   productId?: string;
   serialNumber?: string;
   bridge: UsbBridge;
-  /** True when the USB bridge is one commonly used on ESP32 boards. */
-  likelyEsp32: boolean;
+  /** True when the USB ids belong to a development board or a bridge commonly used on one. */
+  likelyBoard: boolean;
+  /** Boards from the library whose USB ids match this port, best match first. */
+  boardIds?: string[];
 }
 
 export interface ChipInfo {
@@ -112,7 +125,7 @@ export type AgentRequest =
   | { cmd: 'stream_stop' }
   | { cmd: 'reset_pins' };
 
-export interface HelloReply { agent: string; ver: string; chip: string; heapFree: number }
+export interface HelloReply { agent: string; ver: string; chip: string; heapFree: number; board?: string }
 export interface PinsReply { pins: Record<string, AgentPinState> }
 export interface PullupReply { external: Record<string, boolean>; levels?: Record<string, 0 | 1> }
 export interface I2cScanReply { found: string[]; trace: I2cTraceStep[] }
@@ -175,21 +188,50 @@ export type PinFlag =
   | 'input_only'
   | 'flash'
   | 'strapping'
+  /** Strapping pin whose wrong level at reset stops the board from booting (ESP32 GPIO 12). */
+  | 'strapping_critical'
   | 'adc1'
   | 'adc2'
+  /** Analog input on boards without ESP32-style ADC1/ADC2 blocks. */
+  | 'adc'
   | 'uart0'
   | 'touch'
   | 'dac'
   | 'onboard_led'
-  | 'no_internal_pull';
+  | 'no_internal_pull'
+  /** Tolerates 5 V on its input even though the chip runs at 3.3 V (STM32 "FT" pins, for example). */
+  | 'five_volt_tolerant'
+  /** Used by something on the board (USB, debug probe link, radio). Usable only with care. */
+  | 'reserved'
+  /** Native USB data line (D+ / D-). */
+  | 'usb'
+  /** Debug port (SWDIO, SWCLK, JTAG). */
+  | 'swd';
 
 export type PinKind = 'gpio' | 'power' | 'ground' | 'enable';
 
+/** How the pin is mounted: header pins pointing down (breadboard boards), sockets on top (Arduino style), pins up, or a pad. */
+export type PinMount = 'male-down' | 'female-up' | 'male-up' | 'pad';
+
 export interface PinDef {
   id: string;
+  /**
+   * The number used in code with the board's Arduino core (digitalRead(gpio)): the GPIO number on
+   * ESP32 and RP2040/RP2350, the Arduino pin number on AVR and Teensy, (port × 16 + pin) on STM32
+   * (STM32duino PinName: PA0 = 0, PB0 = 16, PC13 = 45) and (port × 32 + pin) on nRF52 (P1.01 = 33).
+   * null for power, ground and reset pins.
+   */
   gpio: number | null;
-  row: 'front' | 'back';
-  index: number;
+  /** MCU pin name when it differs from the label, e.g. "PA5", "P0.13", "PD2". */
+  chipPin?: string;
+  /** Legacy two-row layout (see BoardDef.header). New boards use posMm. */
+  row?: 'front' | 'back';
+  index?: number;
+  /** Centre of the pin in mm from the PCB top-left corner: [along the length, across the width]. */
+  posMm?: [number, number];
+  mount?: PinMount;
+  /** Id of another pin that is the same electrical signal (Uno SDA = A4, Nucleo morpho = Arduino header). */
+  sameAs?: string;
   label: string;
   kind: PinKind;
   functions: string[];
@@ -201,23 +243,90 @@ export interface PinDef {
 }
 
 export interface BoardComponent {
-  type: 'module' | 'usb' | 'button' | 'led' | 'regulator' | 'bridge';
+  type: 'module' | 'mcu' | 'chip' | 'usb' | 'jack' | 'button' | 'led' | 'regulator' | 'bridge' | 'crystal' | 'antenna' | 'connector' | 'switch';
   label?: string;
   /** [x, y, w, h] in layout px (see BoardDef.layoutPxPerMm), origin at PCB top-left, x along length */
   rect: [number, number, number, number];
+  /** Height above the PCB in mm (defaults per type). */
+  heightMm?: number;
+  color?: string;
+}
+
+export type BoardFamily = 'esp32' | 'esp32s3' | 'esp32c3' | 'rp2040' | 'rp2350' | 'avr' | 'stm32' | 'nrf52' | 'imxrt';
+
+/** The tool that reads and writes the board's flash. */
+export type Flasher = 'esptool' | 'picotool' | 'avrdude' | 'stm32' | 'nrfjprog' | 'teensy';
+
+export interface BoardRules {
+  /** Datasheet cited by wiring findings, e.g. "ESP32 Series Datasheet". */
+  datasheet: string;
+  /** Default I2C pins (pin ids). remappable: any GPIO can be SDA/SCL in software (ESP32). */
+  i2c: { sda: string; scl: string; remappable: boolean; note?: string };
+  spi?: { mosi: string; miso: string; sck: string; cs: string };
+  /** Output-capable pins with no side effects, in order of preference, for automatic assignment. */
+  safeIo: string[];
+  /** Analog inputs in order of preference. */
+  adcPins: string[];
+  /** Pins that are fine for plain inputs (buttons, interrupts), tried before safeIo. */
+  inputPins?: string[];
+  /** ESP32: ADC2 pins stop working while Wi-Fi is on. */
+  adcWifiConflict?: boolean;
+  /** Full-scale of the ADC in millivolts (3300 or 5000). */
+  adcMaxMv: number;
+}
+
+export interface BoardToolchain {
+  flasher: Flasher;
+  /** arduino-cli fully qualified board name, e.g. "esp32:esp32:esp32s3". */
+  fqbn: string;
+  /** arduino-cli core to install, e.g. "rp2040:rp2040". */
+  core: string;
+  /** Extra board manager URL for the core, when it is not in the default index. */
+  coreUrl?: string;
+  /** Chip name for esptool --chip (esp32, esp32s3, esp32c3). */
+  esptoolChip?: string;
+  /** avrdude part and programmer, e.g. { part: "m328p", programmer: "arduino", baud: 115200 }. */
+  avrdude?: { part: string; programmer: string; baud: number };
+  /** Firmware file type the flasher takes: "bin", "uf2", "hex". */
+  imageFormat: 'bin' | 'uf2' | 'hex';
+  /** Is the diagnostic agent bundled for this board? */
+  agent: boolean;
+  /** Plain-language note for getting the board into upload mode, if the user may need it. */
+  uploadNote?: string;
+  /** How the flash is reached: over USB serial, the USB bootloader, or an on-board debug probe. */
+  link: 'usb-serial' | 'usb-bootloader' | 'debug-probe';
 }
 
 export interface BoardDef {
   id: string;
   name: string;
+  vendor: string;
+  family: BoardFamily;
+  /** Module or MCU part on the board, e.g. "ESP32-WROOM-32", "RP2040", "STM32F401RET6". */
   module: string;
   chip: string;
+  /** One line: core, clock, memory. */
+  cpu: string;
   logicVolt: number;
+  flashBytes?: number;
+  ramBytes?: number;
   pcbMm: { length: number; width: number; thickness: number };
   layoutPxPerMm: number;
-  header: { pitchMm: number; rowSpacingMm: number; firstPinOffsetMm: number };
+  /** Legacy two-row header layout for pins that use row/index instead of posMm. */
+  header?: { pitchMm: number; rowSpacingMm: number; firstPinOffsetMm: number };
+  /** Default pin mount for the board (pins can override it). */
+  headerStyle: PinMount;
+  /** PCB color, if not the usual blue. */
+  pcbColor?: string;
   pins: PinDef[];
   components: BoardComponent[];
+  rules: BoardRules;
+  toolchain: BoardToolchain;
+  /** USB ids that identify this board (lower-case hex, no 0x). pid omitted = any product of the vendor. */
+  usb: { vid: string; pid?: string; note?: string }[];
+  /** Short plain-language description for the board picker. */
+  summary: string;
+  links?: { title: string; url: string }[];
   sources: { title: string; section?: string; url?: string }[];
 }
 
@@ -315,6 +424,8 @@ export interface WiringFinding {
     | 'uart0_pin'
     | 'not_adc'
     | 'wrong_pin_type'
+    | 'reserved_pin'
+    | 'logic_level'
     | 'unknown_pin';
   severity: 'error' | 'warning' | 'info';
   message: string;
@@ -375,6 +486,8 @@ export type HardwareMode = 'sim' | 'real';
 
 export interface ConnectionState {
   mode: HardwareMode;
+  /** Board picked by the user (id from /boards). */
+  board: string;
   port: string | null;
   chip: ChipInfo | null;
   agent: HelloReply | null;

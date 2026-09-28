@@ -2,18 +2,23 @@
 // (USB end is -x), z across it (front pin row is +z), y up.
 
 import * as THREE from 'three';
-import type { BoardDef, PartDef, Scene, ScenePart, TargetRef } from '@shared/types';
-import { pinById, pinPositionMm, PARTS } from '@shared/board';
+import type { BoardDef, PartDef, PinMount, Scene, ScenePart, TargetRef } from '@shared/types';
+import { pinById, pinMount, pinPositionMm, PARTS } from '@shared/board';
 
 export const PART_BASE_Y = -3;
 export const FLOOR_Y = -9;
 export const PITCH = 2.54;
 
+/** Height of the wire end above the PCB: top of a socket (Arduino style), tip of an upward pin, or the pad. */
+export function pinLiftMm(mount: PinMount): number {
+  return mount === 'female-up' ? 8.5 : mount === 'male-up' ? 6 : 0;
+}
+
 export function boardPinTop(board: BoardDef, pinId: string): THREE.Vector3 | null {
   const p = pinById(board, pinId);
   if (!p) return null;
   const [x, y, z] = pinPositionMm(board, p);
-  return new THREE.Vector3(x, y + 0.4, z);
+  return new THREE.Vector3(x, y + pinLiftMm(pinMount(board, p)) + 0.4, z);
 }
 
 /** Rotation of a part around the vertical axis, degrees. By default the pin edge faces the board. */

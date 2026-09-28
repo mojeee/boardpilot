@@ -1,8 +1,9 @@
 // The simulated bench. Holds the physical truth of a scenario and answers agent commands the way
 // the real agent firmware would, including the pin safety rules.
 
-import type { AgentPinState, AgentReplyMap, AgentRequest, I2cTraceStep, StreamFrame } from '@shared/types';
-import { FLASH_GPIOS, INPUT_ONLY_GPIOS, isAdcGpio } from '@shared/board';
+import type { AgentPinState, AgentReplyMap, AgentRequest, BoardDef, I2cTraceStep, StreamFrame } from '@shared/types';
+import { DEFAULT_BOARD_ID, getBoard, headerGpios, isAdcPin, pinByGpio } from '@shared/board';
+import { benchScenarios } from './bench';
 import { DriverError } from '../hardware/errors';
 import { t } from '@shared/i18n';
 import { agentErrorText } from '@shared/protocol';
@@ -17,15 +18,16 @@ import portBusy from './scenarios/port-busy.json';
 import resetting from './scenarios/keeps-resetting.json';
 import garbage from './scenarios/garbage-serial.json';
 
+/** Hand-written benches for the ESP32 DevKit. Other boards get generated benches (see bench.ts). */
 export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage].map(
   (s) => s as unknown as Scenario,
 );
 
 export const DEFAULT_SCENARIO = 'weather-station-swapped';
 
-/** GPIOs broken out on the 30-pin DevKit. */
-export const EXPOSED_GPIOS = [1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 39];
-const VALID_GPIOS = [0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 37, 38, 39];
+export function scenariosFor(board: BoardDef): Scenario[] {
+  return board.id === DEFAULT_BOARD_ID ? SCENARIOS : benchScenarios(board);
+}
 
 function agentError(code: string): DriverError {
   const text = agentErrorText(code);
@@ -33,6 +35,7 @@ function agentError(code: string): DriverError {
 }
 
 export class SimWorld {
+  board: BoardDef;
   scenario: Scenario;
   firmware: 'user' | 'agent' = 'user';
   fixed = false;
@@ -40,15 +43,41 @@ export class SimWorld {
   private knobSweepStart = 0;
   private readonly bootTime = Date.now();
 
-  constructor(scenarioId: string = DEFAULT_SCENARIO) {
-    this.scenario = SCENARIOS.find((s) => s.id === scenarioId) ?? SCENARIOS[0];
+  constructor(scenarioId: string = DEFAULT_SCENARIO, board: BoardDef = getBoard()) {
+    this.board = board;
+    const list = scenariosFor(board);
+    this.scenario = list.find((s) => s.id === scenarioId) ?? list[0];
   }
 
-  load(id: string) {
-    this.scenario = SCENARIOS.find((s) => s.id === id) ?? this.scenario;
+  get scenarios(): Scenario[] {
+    return scenariosFor(this.board);
+  }
+
+  /** Put a different board on the simulated bench. Keeps the same kind of scenario when there is one. */
+  setBoard(board: BoardDef) {
+    if (board.id === this.board.id) return;
+    const kind = this.scenario.id.replace(/^.*:/, '');
+    this.board = board;
+    const list = scenariosFor(board);
+    this.scenario = list.find((s) => s.id.replace(/^.*:/, '') === kind) ?? list[0];
     this.firmware = 'user';
     this.fixed = false;
     this.driven.clear();
+  }
+
+  load(id: string) {
+    this.scenario = this.scenarios.find((s) => s.id === id) ?? this.scenario;
+    this.firmware = 'user';
+    this.fixed = false;
+    this.driven.clear();
+  }
+
+  private get adcMax() {
+    return this.board.rules.adcMaxMv;
+  }
+
+  private get sensorPins() {
+    return this.scenario.serial.pins ?? { sda: 21, scl: 22, pot: 34 };
   }
 
   get physical(): SimPhysical {
@@ -92,11 +121,11 @@ export class SimWorld {
     let mv = a.mv;
     const since = Date.now() - this.knobSweepStart;
     if (since < 8000) {
-      // "Turn the knob" demo: sweep 0 → 3300 → 0 over 8 s
+      // "Turn the knob" demo: sweep 0 → full scale → 0 over 8 s
       const phase = since / 8000;
-      mv = Math.round(3300 * (phase < 0.5 ? phase * 2 : (1 - phase) * 2));
+      mv = Math.round(this.adcMax * (phase < 0.5 ? phase * 2 : (1 - phase) * 2));
     }
-    return Math.max(0, Math.min(3300, Math.round(mv + (Math.random() - 0.5) * 2 * a.noise)));
+    return Math.max(0, Math.min(this.adcMax, Math.round(mv + (Math.random() - 0.5) * 2 * a.noise)));
   }
 
   levelOf(gpio: number): 0 | 1 {
@@ -104,12 +133,12 @@ export class SimWorld {
     if (d?.mode === 'out') return d.level ?? 0;
     if (d?.mode === 'pwm') return Math.random() * 100 < (d.duty ?? 0) ? 1 : 0;
     const mv = this.analogMv(gpio);
-    if (mv !== null) return mv > 1650 ? 1 : 0;
+    if (mv !== null) return mv > this.adcMax / 2 ? 1 : 0;
     return this.externalPull(gpio) === 'pullup' ? 1 : 0;
   }
 
   pinState(gpio: number): AgentPinState {
-    if (gpio === 1 || gpio === 3) return { mode: 'uart' };
+    if (pinByGpio(this.board, gpio)?.flags.includes('uart0')) return { mode: 'uart' };
     const d = this.driven.get(gpio);
     if (d?.mode === 'pwm') return { mode: 'pwm', duty: d.duty, hz: d.hz, level: this.levelOf(gpio) };
     if (d?.mode === 'out') return { mode: 'out', level: d.level };
@@ -123,11 +152,13 @@ export class SimWorld {
 
   /* ---------- agent command handling ---------- */
 
+  /** Same rules as the agent firmware, read from the board file. */
   private checkPin(gpio: number, output: boolean) {
-    if (FLASH_GPIOS.includes(gpio)) throw agentError('flash_pin');
-    if (!VALID_GPIOS.includes(gpio)) throw agentError('bad_pin');
-    if (gpio === 1 || gpio === 3) throw agentError('uart_pin');
-    if (output && INPUT_ONLY_GPIOS.includes(gpio)) throw agentError('input_only');
+    const p = pinByGpio(this.board, gpio);
+    if (p?.flags.includes('flash')) throw agentError('flash_pin');
+    if (!p || p.kind !== 'gpio') throw agentError('bad_pin');
+    if (p.flags.includes('uart0')) throw agentError('uart_pin');
+    if (output && p.flags.includes('input_only')) throw agentError('input_only');
   }
 
   private findDevice(sda: number, scl: number, addr?: string): SimI2cDevice | undefined {
@@ -147,12 +178,18 @@ export class SimWorld {
     const r = req as AgentRequest;
     switch (r.cmd) {
       case 'hello':
-        return { agent: 'bp-agent', ver: '0.1', chip: this.scenario.chip.chip, heapFree: 201344 - Math.round(Math.random() * 400) } as AgentReplyMap[K];
+        return {
+          agent: 'bp-agent',
+          ver: '0.2',
+          chip: this.scenario.chip.chip,
+          board: this.board.id,
+          heapFree: (this.board.ramBytes ? Math.round(this.board.ramBytes * 0.6) : 201344) - Math.round(Math.random() * 400),
+        } as AgentReplyMap[K];
       case 'strapping':
         return { strapping: this.scenario.strappingAtBoot } as AgentReplyMap[K];
       case 'pins': {
         const pins: Record<string, AgentPinState> = {};
-        for (const g of EXPOSED_GPIOS) pins[String(g)] = this.pinState(g);
+        for (const g of headerGpios(this.board)) pins[String(g)] = this.pinState(g);
         return { pins } as AgentReplyMap[K];
       }
       case 'pullup_check': {
@@ -206,10 +243,12 @@ export class SimWorld {
       }
       case 'adc': {
         this.checkPin(r.pin, false);
-        if (!isAdcGpio(r.pin)) throw agentError('not_adc');
+        const ap = pinByGpio(this.board, r.pin);
+        if (!ap || !isAdcPin(ap)) throw agentError('not_adc');
         this.driven.set(r.pin, { mode: 'adc' });
         const mv = this.analogMv(r.pin) ?? Math.round(Math.random() * 60);
-        return { mv, raw: Math.round((mv / 3300) * 4095) } as AgentReplyMap[K];
+        const full = this.board.family === 'avr' ? 1023 : 4095;
+        return { mv, raw: Math.round((mv / this.adcMax) * full) } as AgentReplyMap[K];
       }
       case 'pwm':
         this.checkPin(r.pin, true);
@@ -241,7 +280,8 @@ export class SimWorld {
   /* ---------- the user's own firmware on serial ---------- */
 
   private sensorReachable() {
-    return !!this.findDevice(21, 22, '0x76') && this.busPulledUp(21, 22);
+    const { sda, scl } = this.sensorPins;
+    return !!this.findDevice(sda, scl, '0x76') && this.busPulledUp(sda, scl);
   }
 
   /** Lines the user's firmware prints during one tick. */
@@ -270,10 +310,11 @@ export class SimWorld {
     // weather
     const out: string[] = [];
     const t = this.millis();
-    const pot = this.analogMv(34);
+    const sp = this.sensorPins;
+    const pot = sp.pot === null ? null : this.analogMv(sp.pot);
     if (!this.sensorReachable()) {
       if (tick % 10 === 0) out.push('Could not find a valid BME280 sensor, check wiring!');
-      if (pot !== null) out.push(`@bp {"t":${t},"v":{"pot":${pot}},"pins":{"pot":34}}`);
+      if (pot !== null) out.push(`@bp {"t":${t},"v":{"pot":${pot}},"pins":{"pot":${sp.pot}}}`);
       return out;
     }
     const temp = 22.4 + Math.sin(t / 20000) * 0.6 + (Math.random() - 0.5) * 0.05;
@@ -285,7 +326,9 @@ export class SimWorld {
       pressure: +pres.toFixed(2),
     };
     if (pot !== null) v.pot = pot;
-    out.push(`@bp {"t":${t},"v":${JSON.stringify(v)},"pins":{"temperature":21,"humidity":21,"pressure":21,"pot":34}}`);
+    out.push(
+      `@bp {"t":${t},"v":${JSON.stringify(v)},"pins":{"temperature":${sp.sda},"humidity":${sp.sda},"pressure":${sp.sda}${sp.pot === null ? '' : `,"pot":${sp.pot}`}}}`,
+    );
     if (tick % 10 === 0) {
       out.push(`T=${temp.toFixed(1)} C  H=${hum.toFixed(0)} %  P=${pres.toFixed(1)} hPa  knob=${pot ?? '-'} mV`);
       const heap = 201000 - Math.round(Math.random() * 2000) - ((tick / 10) % 50) * 16;

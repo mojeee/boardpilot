@@ -1,0 +1,844 @@
+{
+  "id": "arduino-uno-r3",
+  "name": "Arduino Uno R3",
+  "vendor": "Arduino (and many clones)",
+  "family": "avr",
+  "module": "ATmega328P",
+  "chip": "ATmega328P",
+  "cpu": "8-bit AVR ATmega328P at 16 MHz, 2 KB SRAM, 32 KB flash, 1 KB EEPROM",
+  "logicVolt": 5,
+  "flashBytes": 32768,
+  "ramBytes": 2048,
+  "pcbMm": {
+    "length": 68.58,
+    "width": 53.34,
+    "thickness": 1.6
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "female-up",
+  "pcbColor": "#0F7C8C",
+  "summary": "The classic Arduino board for learning. It uses 5 V logic, so 3.3 V-only sensors need a level shifter.",
+  "pins": [
+    {
+      "id": "SCL",
+      "gpio": 19,
+      "chipPin": "PC5",
+      "posMm": [
+        18.796,
+        2.54
+      ],
+      "sameAs": "A5",
+      "label": "SCL",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC5",
+        "I2C_SCL_default"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5,
+      "notes": "Same signal as A5 (I2C clock)."
+    },
+    {
+      "id": "SDA",
+      "gpio": 18,
+      "chipPin": "PC4",
+      "posMm": [
+        21.336,
+        2.54
+      ],
+      "sameAs": "A4",
+      "label": "SDA",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC4",
+        "I2C_SDA_default"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5,
+      "notes": "Same signal as A4 (I2C data)."
+    },
+    {
+      "id": "AREF",
+      "gpio": null,
+      "posMm": [
+        23.876,
+        2.54
+      ],
+      "label": "AREF",
+      "kind": "power",
+      "functions": [
+        "ADC_REF"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "Analog reference input. Leave it unconnected unless your code calls analogReference(EXTERNAL); never power parts from it."
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        26.416,
+        2.54
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "D13",
+      "gpio": 13,
+      "chipPin": "PB5",
+      "posMm": [
+        28.956,
+        2.54
+      ],
+      "label": "13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_SCK_default"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 5,
+      "notes": "The built-in LED \"L\" is on this pin (also SPI clock)."
+    },
+    {
+      "id": "D12",
+      "gpio": 12,
+      "chipPin": "PB4",
+      "posMm": [
+        31.496,
+        2.54
+      ],
+      "label": "12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MISO_default"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D11",
+      "gpio": 11,
+      "chipPin": "PB3",
+      "posMm": [
+        34.036,
+        2.54
+      ],
+      "label": "~11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM",
+        "SPI_MOSI_default"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D10",
+      "gpio": 10,
+      "chipPin": "PB2",
+      "posMm": [
+        36.576,
+        2.54
+      ],
+      "label": "~10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM",
+        "SPI_CS_default"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "SPI chip select. Keep it an OUTPUT when using SPI, or SPI can stop working."
+    },
+    {
+      "id": "D9",
+      "gpio": 9,
+      "chipPin": "PB1",
+      "posMm": [
+        39.116,
+        2.54
+      ],
+      "label": "~9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D8",
+      "gpio": 8,
+      "chipPin": "PB0",
+      "posMm": [
+        41.656,
+        2.54
+      ],
+      "label": "8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D7",
+      "gpio": 7,
+      "chipPin": "PD7",
+      "posMm": [
+        45.72,
+        2.54
+      ],
+      "label": "7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D6",
+      "gpio": 6,
+      "chipPin": "PD6",
+      "posMm": [
+        48.26,
+        2.54
+      ],
+      "label": "~6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D5",
+      "gpio": 5,
+      "chipPin": "PD5",
+      "posMm": [
+        50.8,
+        2.54
+      ],
+      "label": "~5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D4",
+      "gpio": 4,
+      "chipPin": "PD4",
+      "posMm": [
+        53.34,
+        2.54
+      ],
+      "label": "4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D3",
+      "gpio": 3,
+      "chipPin": "PD3",
+      "posMm": [
+        55.88,
+        2.54
+      ],
+      "label": "~3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "INT1",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D2",
+      "gpio": 2,
+      "chipPin": "PD2",
+      "posMm": [
+        58.42,
+        2.54
+      ],
+      "label": "2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "INT0"
+      ],
+      "flags": [],
+      "maxVolt": 5
+    },
+    {
+      "id": "D1",
+      "gpio": 1,
+      "chipPin": "PD1",
+      "posMm": [
+        60.96,
+        2.54
+      ],
+      "label": "TX→1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_TX"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 5,
+      "notes": "Serial TX. Shared with the USB link: using it for parts can break uploads and the serial monitor."
+    },
+    {
+      "id": "D0",
+      "gpio": 0,
+      "chipPin": "PD0",
+      "posMm": [
+        63.5,
+        2.54
+      ],
+      "label": "RX←0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART0_RX"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 5,
+      "notes": "Serial RX. Shared with the USB link: using it for parts can break uploads and the serial monitor."
+    },
+    {
+      "id": "IOREF",
+      "gpio": null,
+      "posMm": [
+        30.48,
+        50.8
+      ],
+      "label": "IOREF",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "Tells shields that this board uses 5 V logic. Connected to 5V; not meant to power parts."
+    },
+    {
+      "id": "RESET",
+      "gpio": null,
+      "posMm": [
+        33.02,
+        50.8
+      ],
+      "label": "RESET",
+      "kind": "enable",
+      "functions": [
+        "RESET"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "notes": "Reset input. Pull it LOW (or press the button) to restart the board."
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        35.56,
+        50.8
+      ],
+      "label": "3.3V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V output, 50 mA max. Enough for one or two small sensors."
+    },
+    {
+      "id": "5V",
+      "gpio": null,
+      "posMm": [
+        38.1,
+        50.8
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "5 V output from USB or the on-board regulator."
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        40.64,
+        50.8
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        43.18,
+        50.8
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "VIN",
+      "gpio": null,
+      "posMm": [
+        45.72,
+        50.8
+      ],
+      "label": "Vin",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 20,
+      "supplies": 0,
+      "notes": "Power input (7-12 V recommended, 20 V max) from the barrel jack or an external supply. It is not fed from USB, so do not use it to power parts."
+    },
+    {
+      "id": "A0",
+      "gpio": 14,
+      "chipPin": "PC0",
+      "posMm": [
+        50.8,
+        50.8
+      ],
+      "label": "A0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC0"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A1",
+      "gpio": 15,
+      "chipPin": "PC1",
+      "posMm": [
+        53.34,
+        50.8
+      ],
+      "label": "A1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A2",
+      "gpio": 16,
+      "chipPin": "PC2",
+      "posMm": [
+        55.88,
+        50.8
+      ],
+      "label": "A2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A3",
+      "gpio": 17,
+      "chipPin": "PC3",
+      "posMm": [
+        58.42,
+        50.8
+      ],
+      "label": "A3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC3"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "A4",
+      "gpio": 18,
+      "chipPin": "PC4",
+      "posMm": [
+        60.96,
+        50.8
+      ],
+      "label": "A4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC4",
+        "I2C_SDA_default"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5,
+      "notes": "Default I2C SDA (same signal as the SDA pin)."
+    },
+    {
+      "id": "A5",
+      "gpio": 19,
+      "chipPin": "PC5",
+      "posMm": [
+        63.5,
+        50.8
+      ],
+      "label": "A5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC5",
+        "I2C_SCL_default"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 5,
+      "notes": "Default I2C SCL (same signal as the SCL pin)."
+    }
+  ],
+  "components": [
+    {
+      "type": "mcu",
+      "label": "ATmega328P",
+      "rect": [
+        286,
+        333,
+        355,
+        74
+      ],
+      "color": "#1b1b1b"
+    },
+    {
+      "type": "usb",
+      "label": "USB-B",
+      "rect": [
+        -63,
+        92,
+        163,
+        120
+      ],
+      "heightMm": 11
+    },
+    {
+      "type": "jack",
+      "label": "DC jack",
+      "rect": [
+        -18,
+        405,
+        145,
+        90
+      ],
+      "heightMm": 11
+    },
+    {
+      "type": "bridge",
+      "label": "ATmega16U2",
+      "rect": [
+        174,
+        162,
+        50,
+        50
+      ]
+    },
+    {
+      "type": "regulator",
+      "label": "5V reg",
+      "rect": [
+        45,
+        325,
+        65,
+        70
+      ]
+    },
+    {
+      "type": "button",
+      "label": "RESET",
+      "rect": [
+        33,
+        22,
+        60,
+        35
+      ]
+    },
+    {
+      "type": "led",
+      "label": "PWR",
+      "rect": [
+        578,
+        158,
+        13,
+        20
+      ],
+      "color": "#5CCB8F"
+    },
+    {
+      "type": "led",
+      "label": "L",
+      "rect": [
+        273,
+        102,
+        13,
+        20
+      ],
+      "color": "#F2A93B"
+    },
+    {
+      "type": "led",
+      "label": "TX",
+      "rect": [
+        273,
+        158,
+        13,
+        20
+      ],
+      "color": "#F2A93B"
+    },
+    {
+      "type": "led",
+      "label": "RX",
+      "rect": [
+        273,
+        180,
+        13,
+        20
+      ],
+      "color": "#F2A93B"
+    },
+    {
+      "type": "crystal",
+      "label": "16 MHz",
+      "rect": [
+        397,
+        278,
+        32,
+        13
+      ]
+    },
+    {
+      "type": "connector",
+      "label": "ICSP",
+      "rect": [
+        624,
+        216,
+        56,
+        76
+      ]
+    },
+    {
+      "type": "connector",
+      "label": "ICSP 16U2",
+      "rect": [
+        145,
+        46,
+        76,
+        56
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "ATmega328P datasheet",
+    "i2c": {
+      "sda": "A4",
+      "scl": "A5",
+      "remappable": false,
+      "note": "I2C only works on A4 (SDA) and A5 (SCL); the SDA/SCL pins near AREF are the same signals."
+    },
+    "spi": {
+      "mosi": "D11",
+      "miso": "D12",
+      "sck": "D13",
+      "cs": "D10"
+    },
+    "safeIo": [
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6",
+      "D7",
+      "D8",
+      "D9"
+    ],
+    "adcPins": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "inputPins": [
+      "D2",
+      "D3",
+      "D4",
+      "D7",
+      "D8"
+    ],
+    "adcMaxMv": 5000
+  },
+  "toolchain": {
+    "flasher": "avrdude",
+    "fqbn": "arduino:avr:uno",
+    "core": "arduino:avr",
+    "avrdude": {
+      "part": "m328p",
+      "programmer": "arduino",
+      "baud": 115200
+    },
+    "imageFormat": "hex",
+    "agent": false,
+    "link": "usb-serial"
+  },
+  "usb": [
+    {
+      "vid": "2341",
+      "pid": "0043",
+      "note": "Arduino Uno R3 (ATmega16U2 USB-serial)"
+    },
+    {
+      "vid": "2341",
+      "pid": "0001",
+      "note": "Arduino Uno (early, ATmega8U2)"
+    },
+    {
+      "vid": "2a03",
+      "pid": "0043",
+      "note": "Arduino Uno R3 made by arduino.org"
+    },
+    {
+      "vid": "2341",
+      "pid": "0243",
+      "note": "Arduino Uno (also listed in the official boards.txt)"
+    },
+    {
+      "vid": "2341",
+      "pid": "006a",
+      "note": "Arduino Uno (also listed in the official boards.txt)"
+    },
+    {
+      "vid": "1a86",
+      "pid": "7523",
+      "note": "WCH CH340 USB-serial bridge on clones (also used by many other boards)"
+    },
+    {
+      "vid": "03eb",
+      "pid": "2fef",
+      "note": "ATmega16U2 in DFU mode (only while updating the USB chip firmware)"
+    }
+  ],
+  "links": [
+    {
+      "title": "Arduino Uno Rev3 product page",
+      "url": "https://docs.arduino.cc/hardware/uno-rev3/"
+    },
+    {
+      "title": "Uno Rev3 full pinout (PDF)",
+      "url": "https://docs.arduino.cc/resources/pinouts/A000066-full-pinout.pdf"
+    },
+    {
+      "title": "Uno Rev3 datasheet (PDF)",
+      "url": "https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf"
+    },
+    {
+      "title": "ATmega328P datasheet",
+      "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Arduino UNO Rev3 Eagle design files (UNO-TH_Rev3e)",
+      "section": "Board outline and header pad coordinates (IOH, IOL, POWER, AD)",
+      "url": "https://content.arduino.cc/assets/UNO-TH_Rev3e-reference.zip"
+    },
+    {
+      "title": "Arduino UNO R3 datasheet (A000066)",
+      "section": "Connector pinouts; IOREF connected to 5V; VIN 6-20 V",
+      "url": "https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf"
+    },
+    {
+      "title": "Arduino UNO R3 full pinout (A000066)",
+      "url": "https://docs.arduino.cc/resources/pinouts/A000066-full-pinout.pdf"
+    },
+    {
+      "title": "Microchip ATmega328P datasheet (DS40002061)",
+      "section": "1 Pin Configurations; 14.3 Alternate Port Functions; 24 Analog-to-Digital Converter",
+      "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf"
+    },
+    {
+      "title": "arduino/ArduinoCore-avr variants/standard/pins_arduino.h",
+      "section": "Arduino pin numbers, SPI/I2C defaults, LED_BUILTIN, A0=14",
+      "url": "https://github.com/arduino/ArduinoCore-avr/blob/master/variants/standard/pins_arduino.h"
+    },
+    {
+      "title": "arduino/ArduinoCore-avr boards.txt",
+      "section": "USB VID/PID, upload protocol and speed",
+      "url": "https://github.com/arduino/ArduinoCore-avr/blob/master/boards.txt"
+    }
+  ]
+}

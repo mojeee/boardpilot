@@ -72,6 +72,27 @@ export async function runDemo(name: string, scenario: string | null) {
   } else if (name === 'aisettings') {
     const { openAiSettings } = await import('./components/AiSettings');
     openAiSettings();
+  } else if (name === 'board') {
+    // #demo=board&board=rpi-pico[&view=2d][&agent=1]: the weather-station bench on any board.
+    const params = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
+    const id = params.get('board') ?? 'rpi-pico';
+    useScene.getState().setScene({ board: id, parts: [], wires: [] });
+    await until(() => useApp.getState().conn.board === id);
+    const list = await window.bp.sim.scenarios();
+    const sc = list.find((x) => x.id.endsWith('weather-station-swapped')) ?? list[0];
+    if (sc) {
+      await window.bp.sim.load(sc.id);
+      useScene.getState().setScene(await window.bp.sim.scene());
+    }
+    openTask('connect');
+    if (params.get('view') === '2d') useScene.getState().set({ view: '2d' });
+    if (params.get('agent')) {
+      await connectAndInstall();
+      await startStream(20);
+    }
+  } else if (name === 'boards') {
+    const { openBoardPicker } = await import('./components/BoardPicker');
+    openBoardPicker();
   } else if (name === 'project') {
     useScene.getState().setScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

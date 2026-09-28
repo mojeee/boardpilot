@@ -30,7 +30,7 @@ export function makeCtx(hub: HardwareHub, scene: Scene) {
   let current = scene;
   const ctx: FlowContext = {
     hw: hwFor(hub),
-    board: getBoard(),
+    board: getBoard(scene.board),
     parts: PARTS,
     scene: () => current,
     updateScene: (fn) => {

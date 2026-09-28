@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Piedinatura Arduino Nano: quali pin si possono usare</title>
+    <meta name="description" content="Piedinatura Arduino Nano (ATmega328P): tutti i 30 pin con le funzioni, i pin da evitare, i pin I2C/SPI predefiniti e come programmarla. Logica a 5 V." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/boards/arduino-nano/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-nano/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-nano/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-nano/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/boards/arduino-nano/" />
+    <meta property="og:title" content="Piedinatura Arduino Nano: quali pin si possono usare" />
+    <meta property="og:description" content="Piedinatura Arduino Nano (ATmega328P): tutti i 30 pin con le funzioni, i pin da evitare, i pin I2C/SPI predefiniti e come programmarla. Logica a 5 V." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=a7abf8b701" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Piedinatura Arduino Nano","description":"Piedinatura Arduino Nano (ATmega328P): tutti i 30 pin con le funzioni, i pin da evitare, i pin I2C/SPI predefiniti e come programmarla. Logica a 5 V.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/arduino-nano/","image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"},"about":{"@type":"Product","name":"Arduino Nano","brand":"Arduino (and many clones)","description":"A small, breadboard-friendly Arduino with the same chip as the Uno. It uses 5 V logic, so 3.3 V-only sensors need a level shifter."}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"Arduino Nano","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-nano/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
+          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/boards/" hreflang="en" class="">EN</a><a href="/it/boards/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/boards/">Piedinature delle schede</a> / <span>Arduino Nano</span></nav>
+        <h1>Piedinatura Arduino Nano</h1>
+        <p class="lead">Un Arduino piccolo, comodo sulla breadboard, con lo stesso chip della Uno. Usa logica a 5 V, quindi i sensori solo a 3,3 V hanno bisogno di un convertitore di livello (level shifter).</p>
+      </div>
+      <figure class="wrap pinout-fig">
+        <svg viewBox="0 0 578.16 553.36" role="img" aria-labelledby="pinout-title" class="pinout-svg"><title id="pinout-title">Piedinatura Arduino Nano</title><rect x="30" y="170" width="518.16" height="213.36" rx="10" fill="#1D5A8E" stroke="#3d5a80"/><rect x="231.60000000000002" y="224" width="66" height="84" rx="3" fill="#1b1b1b"/><text x="264.6" y="271" text-anchor="middle" class="svg-mod">ATmega328P</text><rect x="8.399999999999991" y="209.6" width="145.2" height="139.2" rx="3" fill="#C9CED4"/><rect x="298.79999999999995" y="261.2" width="36" height="43.2" rx="3" fill="#15181c"/><rect x="360" y="215.6" width="24" height="15.600000000000001" rx="3" fill="#5CCB8F"/><rect x="360" y="248" width="24" height="15.600000000000001" rx="3" fill="#FF5D52"/><rect x="372" y="281.6" width="24" height="15.600000000000001" rx="3" fill="#3FB6E8"/><rect x="372" y="323.6" width="24" height="15.600000000000001" rx="3" fill="#F2A93B"/><rect x="486" y="230" width="61.199999999999996" height="91.19999999999999" rx="3" fill="#15181c"/><circle cx="75.71999999999998" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(75.71999999999998,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D12 · PB4</text><text x="84" y="5" text-anchor="start" class="svg-fn">SPI_MISO</text></g><circle cx="106.19999999999999" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(106.19999999999999,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D11 · PB3</text><text x="84" y="5" text-anchor="start" class="svg-fn">PWM</text></g><circle cx="136.68" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(136.68,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D10 · PB2</text><text x="84" y="5" text-anchor="start" class="svg-fn">PWM</text></g><circle cx="167.16" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(167.16,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D9 · PB1</text><text x="84" y="5" text-anchor="start" class="svg-fn">PWM</text></g><circle cx="197.64000000000001" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(197.64000000000001,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D8 · PB0</text></g><circle cx="228.12" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(228.12,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D7 · PD7</text></g><circle cx="258.6" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(258.6,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D6 · PD6</text><text x="84" y="5" text-anchor="start" class="svg-fn">PWM</text></g><circle cx="289.08" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(289.08,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D5 · PD5</text><text x="84" y="5" text-anchor="start" class="svg-fn">PWM</text></g><circle cx="319.56" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(319.56,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D4 · PD4</text></g><circle cx="350.04" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(350.04,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D3 · PD3</text><text x="84" y="5" text-anchor="start" class="svg-fn">INT1</text></g><circle cx="380.52" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(380.52,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">D2 · PD2</text><text x="84" y="5" text-anchor="start" class="svg-fn">INT0</text></g><circle cx="411" cy="185.24" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(411,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">GND</text></g><circle cx="441.48" cy="185.24" r="10" fill="#12171C" stroke="#7D8997" stroke-width="3"/><g transform="translate(441.48,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">RST</text><text x="84" y="5" text-anchor="start" class="svg-fn">RESET</text></g><circle cx="471.96" cy="185.24" r="10" fill="#12171C" stroke="#F2A93B" stroke-width="3"/><g transform="translate(471.96,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">RX0 · PD0</text><text x="84" y="5" text-anchor="start" class="svg-fn">UART0_RX</text></g><circle cx="502.43999999999994" cy="185.24" r="10" fill="#12171C" stroke="#F2A93B" stroke-width="3"/><g transform="translate(502.43999999999994,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">TX1 · PD1</text><text x="84" y="5" text-anchor="start" class="svg-fn">UART0_TX</text></g><circle cx="75.71999999999998" cy="368.12" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(75.71999999999998,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">D13 · PB5</text><text x="-84" y="5" text-anchor="end" class="svg-fn">SPI_SCK</text></g><circle cx="106.19999999999999" cy="368.12" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(106.19999999999999,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">3V3</text></g><circle cx="136.68" cy="368.12" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(136.68,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">REF</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC_REF</text></g><circle cx="167.16" cy="368.12" r="10" fill="#12171C" stroke="#E8D24A" stroke-width="3"/><g transform="translate(167.16,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A0 · PC0</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC0</text></g><circle cx="197.64000000000001" cy="368.12" r="10" fill="#12171C" stroke="#E8D24A" stroke-width="3"/><g transform="translate(197.64000000000001,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A1 · PC1</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC1</text></g><circle cx="228.12" cy="368.12" r="10" fill="#12171C" stroke="#E8D24A" stroke-width="3"/><g transform="translate(228.12,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A2 · PC2</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC2</text></g><circle cx="258.6" cy="368.12" r="10" fill="#12171C" stroke="#E8D24A" stroke-width="3"/><g transform="translate(258.6,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A3 · PC3</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC3</text></g><circle cx="289.08" cy="368.12" r="10" fill="#12171C" stroke="#3FB6E8" stroke-width="3"/><g transform="translate(289.08,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A4 · PC4</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC4</text></g><circle cx="319.56" cy="368.12" r="10" fill="#12171C" stroke="#3FB6E8" stroke-width="3"/><g transform="translate(319.56,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A5 · PC5</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC5</text></g><circle cx="350.04" cy="368.12" r="10" fill="#12171C" stroke="#E8D24A" stroke-width="3"/><g transform="translate(350.04,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A6 · ADC6</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC6</text></g><circle cx="380.52" cy="368.12" r="10" fill="#12171C" stroke="#E8D24A" stroke-width="3"/><g transform="translate(380.52,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">A7 · ADC7</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC7</text></g><circle cx="411" cy="368.12" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(411,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">5V</text></g><circle cx="441.48" cy="368.12" r="10" fill="#12171C" stroke="#7D8997" stroke-width="3"/><g transform="translate(441.48,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">RST</text><text x="-84" y="5" text-anchor="end" class="svg-fn">RESET</text></g><circle cx="471.96" cy="368.12" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(471.96,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">GND</text></g><circle cx="502.43999999999994" cy="368.12" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(502.43999999999994,388.12) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">VIN</text></g></svg>
+        <figcaption>Vista dall’alto, connettore USB a sinistra. Colori: rosso alimentazione, grigio massa, verde GPIO, giallo analogici, arancione seriale USB, blu I2C.</figcaption>
+      </figure>
+      <div class="wrap narrow">
+        <h2>In breve</h2>
+        <dl class="defaults">
+          <dt>Chip</dt><dd>ATmega328P</dd>
+          <dt>Processore</dt><dd>8-bit AVR ATmega328P at 16 MHz, 2 KB SRAM, 32 KB flash, 1 KB EEPROM</dd>
+          <dt>Livello logico</dt><dd>5 V. I sensori solo a 3,3 V richiedono un traslatore di livello.</dd>
+          <dt>Strumento di programmazione</dt><dd>avrdude</dd>
+          <dt>Scheda Arduino (FQBN)</dt><dd class="mono">arduino:avr:nano</dd>
+          <dt>Vista dei pin dal vivo in BoardPilot</dt><dd>Controllo del cablaggio, programmazione e monitor seriale; vista dal vivo in arrivo</dd>
+        </dl>
+        <h2>Pin da evitare o da usare con attenzione</h2>
+        <div class="facts"><div class="fact"><h3>Sola lettura: A6 (ADC6), A7 (ADC7)</h3><p>Non possono pilotare uscite e non hanno pull-up interna.</p></div><div class="fact"><h3>Seriale USB: RX0 (PD0), TX1 (PD1)</h3><p>Usati per il caricamento e il monitor seriale. Qualsiasi cosa collegata qui può impedire il caricamento.</p></div></div>
+        <h2>Pin adatti a LED, pulsanti e segnali</h2>
+        <p class="mono">D2, D3, D4, D5, D6, D7, D8, D9</p>
+        <h2>Pin predefiniti in Arduino</h2>
+        <dl class="defaults"><dt>I2C</dt><dd>SDA = A4, SCL = A5. Con le impostazioni predefinite della libreria Wire funzionano solo questi pin. L’I2C funziona solo su A4 (SDA) e A5 (SCL).</dd><dt>SPI</dt><dd>MOSI = D11, MISO = D12, SCK = D13, CS = D10.</dd><dt>Ingressi analogici</dt><dd>A0, A1, A2, A3, A6, A7, A4, A5 (0–5 V)</dd></dl>
+        <h2>Come programmarla</h2><p>I cloni con il vecchio bootloader caricano a 57600 baud: se il caricamento non riesce, scegli “ATmega328P (Old Bootloader)”.</p>
+        <h2>Tutti i 30 pin</h2>
+        <div class="table-wrap"><table class="pin-table">
+          <thead><tr><th>Pin</th><th>GPIO</th><th>Pin del chip</th><th>Funzioni</th><th>Note</th></tr></thead>
+          <tbody>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D12</td><td class="mono">12</td><td class="mono">PB4</td><td class="mono small">GPIO, SPI_MISO (predef.)</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D11</td><td class="mono">11</td><td class="mono">PB3</td><td class="mono small">GPIO, PWM, SPI_MOSI (predef.)</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D10</td><td class="mono">10</td><td class="mono">PB2</td><td class="mono small">GPIO, PWM, SPI_CS (predef.)</td><td>Chip select SPI. Tienilo come OUTPUT quando usi l’SPI, altrimenti l’SPI può smettere di funzionare.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D9</td><td class="mono">9</td><td class="mono">PB1</td><td class="mono small">GPIO, PWM</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D8</td><td class="mono">8</td><td class="mono">PB0</td><td class="mono small">GPIO</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D7</td><td class="mono">7</td><td class="mono">PD7</td><td class="mono small">GPIO</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D6</td><td class="mono">6</td><td class="mono">PD6</td><td class="mono small">GPIO, PWM</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D5</td><td class="mono">5</td><td class="mono">PD5</td><td class="mono small">GPIO, PWM</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D4</td><td class="mono">4</td><td class="mono">PD4</td><td class="mono small">GPIO</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D3</td><td class="mono">3</td><td class="mono">PD3</td><td class="mono small">GPIO, INT1, PWM</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D2</td><td class="mono">2</td><td class="mono">PD2</td><td class="mono small">GPIO, INT0</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small"></td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#7D8997"></span>RST</td><td class="mono">—</td><td class="mono"></td><td class="mono small">RESET</td><td>Ingresso di reset. Portalo a LOW (o premi il pulsante) per riavviare la scheda.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#F2A93B"></span>RX0</td><td class="mono">0</td><td class="mono">PD0</td><td class="mono small">GPIO, UART0_RX</td><td>RX seriale. Condiviso con il collegamento USB: usarlo per i componenti può bloccare il caricamento e il monitor seriale.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#F2A93B"></span>TX1</td><td class="mono">1</td><td class="mono">PD1</td><td class="mono small">GPIO, UART0_TX</td><td>TX seriale. Condiviso con il collegamento USB: usarlo per i componenti può bloccare il caricamento e il monitor seriale.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>D13</td><td class="mono">13</td><td class="mono">PB5</td><td class="mono small">GPIO, SPI_SCK (predef.)</td><td>Il LED integrato &quot;L&quot; è su questo pin (è anche il clock SPI).</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>3V3</td><td class="mono">—</td><td class="mono"></td><td class="mono small"></td><td>3,3 V dal chip USB (FT232RL, massimo 50 mA; spesso meno sui cloni). Debole: va bene solo per un sensore piccolo.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>REF</td><td class="mono">—</td><td class="mono"></td><td class="mono small">ADC_REF</td><td>Ingresso di riferimento analogico. Lascialo scollegato a meno che il tuo codice non chiami analogReference(EXTERNAL); non alimentare mai componenti da qui.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>A0</td><td class="mono">14</td><td class="mono">PC0</td><td class="mono small">GPIO, ADC0</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>A1</td><td class="mono">15</td><td class="mono">PC1</td><td class="mono small">GPIO, ADC1</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>A2</td><td class="mono">16</td><td class="mono">PC2</td><td class="mono small">GPIO, ADC2</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>A3</td><td class="mono">17</td><td class="mono">PC3</td><td class="mono small">GPIO, ADC3</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#3FB6E8"></span>A4</td><td class="mono">18</td><td class="mono">PC4</td><td class="mono small">GPIO, ADC4, I2C_SDA (predef.)</td><td>SDA I2C predefinito (stesso segnale del pin SDA).</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#3FB6E8"></span>A5</td><td class="mono">19</td><td class="mono">PC5</td><td class="mono small">GPIO, ADC5, I2C_SCL (predef.)</td><td>SCL I2C predefinito (stesso segnale del pin SCL).</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>A6</td><td class="mono">20</td><td class="mono">ADC6</td><td class="mono small">ADC6</td><td>Solo ingresso analogico: niente digitalWrite, niente digitalRead e nessun pull-up interno.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>A7</td><td class="mono">21</td><td class="mono">ADC7</td><td class="mono small">ADC7</td><td>Solo ingresso analogico: niente digitalWrite, niente digitalRead e nessun pull-up interno.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>5V</td><td class="mono">—</td><td class="mono"></td><td class="mono small"></td><td>Uscita a 5 V dalla USB o dal regolatore sulla scheda.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#7D8997"></span>RST</td><td class="mono">—</td><td class="mono"></td><td class="mono small">RESET</td><td>Ingresso di reset. Portalo a LOW (o premi il pulsante) per riavviare la scheda.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small"></td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>VIN</td><td class="mono">—</td><td class="mono"></td><td class="mono small"></td><td>Ingresso di alimentazione (consigliati 7-12 V) dal jack o da un alimentatore esterno. Non riceve tensione dalla USB, quindi non usarlo per alimentare componenti.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="cta-box">
+          <h2>Controlla il cablaggio con BoardPilot</h2>
+          <p>BoardPilot mostra questa scheda in 3D, segnala i pin rischiosi mentre colleghi e la programma in sicurezza, con un backup prima.</p>
+          <a class="btn primary" href="/it/#download">Scarica BoardPilot</a>
+        </div>
+        <h2>Fonti</h2>
+        <ul class="fine"><li><a href="https://www.arduino.cc/en/uploads/Main/ArduinoNano30Eagle.zip" rel="nofollow noopener">Arduino Nano 3.0 Eagle design files</a>, Board outline, J1/J2 header pads and nets (3V3 from FT232RL pin 17 3V3OUT)</li><li><a href="https://docs.arduino.cc/resources/datasheets/A000005-datasheet.pdf" rel="nofollow noopener">Arduino Nano datasheet (A000005)</a>, 5 Connector Pinouts; 6 Mechanical Information (43.2 x 18 mm, rows 15.24 mm apart)</li><li><a href="https://github.com/arduino/ArduinoCore-avr/blob/master/variants/eightanaloginputs/pins_arduino.h" rel="nofollow noopener">arduino/ArduinoCore-avr variants/eightanaloginputs/pins_arduino.h</a>, A6 = 20, A7 = 21</li><li><a href="https://ftdichip.com/wp-content/uploads/2020/08/DS_FT232R.pdf" rel="nofollow noopener">FTDI FT232R datasheet</a>, 3V3OUT pin: 3.3 V LDO output, up to 50 mA</li><li><a href="https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf" rel="nofollow noopener">Microchip ATmega328P datasheet (DS40002061)</a>, 1 Pin Configurations; 14.3 Alternate Port Functions; 24 Analog-to-Digital Converter</li><li><a href="https://github.com/arduino/ArduinoCore-avr/blob/master/variants/standard/pins_arduino.h" rel="nofollow noopener">arduino/ArduinoCore-avr variants/standard/pins_arduino.h</a>, Arduino pin numbers, SPI/I2C defaults, LED_BUILTIN, A0=14</li><li><a href="https://github.com/arduino/ArduinoCore-avr/blob/master/boards.txt" rel="nofollow noopener">arduino/ArduinoCore-avr boards.txt</a>, USB VID/PID, upload protocol and speed</li><li><a href="https://github.com/mojeee/boardpilot/blob/main/boards/arduino-nano.sources.md">File dei dati della scheda e note sulle fonti su GitHub</a></li></ul>
+        <p><a href="/it/boards/">← Tutte le schede</a></p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,1136 @@
+{
+  "id": "esp32-s3-devkitc-1",
+  "name": "ESP32-S3-DevKitC-1",
+  "vendor": "Espressif",
+  "family": "esp32s3",
+  "module": "ESP32-S3-WROOM-1-N8R8",
+  "chip": "ESP32-S3",
+  "cpu": "Dual-core Xtensa LX7 at 240 MHz, 512 KB SRAM, 8 MB flash, 8 MB octal PSRAM, Wi-Fi and Bluetooth LE",
+  "logicVolt": 3.3,
+  "flashBytes": 8388608,
+  "ramBytes": 524288,
+  "pcbMm": {
+    "length": 62.87,
+    "width": 25.4,
+    "thickness": 1.6
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "male-down",
+  "pcbColor": "#1a1a1a",
+  "summary": "Espressif's own ESP32-S3 board: Wi-Fi, Bluetooth LE, two USB ports and an RGB LED. Breadboard friendly, 3.3 V logic.",
+  "pins": [
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        61.3,
+        1.27
+      ],
+      "label": "3V3",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "3.3 V from the on-board regulator. You can feed 3.3 V in here instead of USB, but never both at once."
+    },
+    {
+      "id": "3V3_2",
+      "gpio": null,
+      "sameAs": "3V3",
+      "posMm": [
+        58.76,
+        1.27
+      ],
+      "label": "3V3",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "Same 3.3 V rail as the other 3V3 pin."
+    },
+    {
+      "id": "RST",
+      "gpio": null,
+      "posMm": [
+        56.22,
+        1.27
+      ],
+      "label": "RST",
+      "kind": "enable",
+      "functions": [
+        "CHIP_PU"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Reset. Pulling it LOW restarts the chip (same as the RESET button)."
+    },
+    {
+      "id": "IO4",
+      "gpio": 4,
+      "posMm": [
+        53.68,
+        1.27
+      ],
+      "label": "4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO4",
+        "TOUCH4",
+        "ADC1_CH3"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO5",
+      "gpio": 5,
+      "posMm": [
+        51.14,
+        1.27
+      ],
+      "label": "5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO5",
+        "TOUCH5",
+        "ADC1_CH4"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO6",
+      "gpio": 6,
+      "posMm": [
+        48.6,
+        1.27
+      ],
+      "label": "6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO6",
+        "TOUCH6",
+        "ADC1_CH5"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO7",
+      "gpio": 7,
+      "posMm": [
+        46.06,
+        1.27
+      ],
+      "label": "7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO7",
+        "TOUCH7",
+        "ADC1_CH6"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO15",
+      "gpio": 15,
+      "posMm": [
+        43.52,
+        1.27
+      ],
+      "label": "15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO15",
+        "U0RTS",
+        "ADC2_CH4",
+        "XTAL_32K_P"
+      ],
+      "flags": [
+        "adc2"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO16",
+      "gpio": 16,
+      "posMm": [
+        40.98,
+        1.27
+      ],
+      "label": "16",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO16",
+        "U0CTS",
+        "ADC2_CH5",
+        "XTAL_32K_N"
+      ],
+      "flags": [
+        "adc2"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO17",
+      "gpio": 17,
+      "posMm": [
+        38.44,
+        1.27
+      ],
+      "label": "17",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO17",
+        "U1TXD",
+        "ADC2_CH6"
+      ],
+      "flags": [
+        "adc2"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO18",
+      "gpio": 18,
+      "posMm": [
+        35.9,
+        1.27
+      ],
+      "label": "18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO18",
+        "U1RXD",
+        "ADC2_CH7",
+        "CLK_OUT3"
+      ],
+      "flags": [
+        "adc2"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO8",
+      "gpio": 8,
+      "posMm": [
+        33.36,
+        1.27
+      ],
+      "label": "8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO8",
+        "TOUCH8",
+        "ADC1_CH7",
+        "SUBSPICS1",
+        "I2C_SDA_default"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Arduino's default I2C SDA pin on the ESP32-S3."
+    },
+    {
+      "id": "IO3",
+      "gpio": 3,
+      "posMm": [
+        30.82,
+        1.27
+      ],
+      "label": "3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO3",
+        "TOUCH3",
+        "ADC1_CH2"
+      ],
+      "flags": [
+        "strapping",
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin for the JTAG source. It is ignored unless special eFuses are burned, so it is normally fine to use."
+    },
+    {
+      "id": "IO46",
+      "gpio": 46,
+      "posMm": [
+        28.28,
+        1.27
+      ],
+      "label": "46",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [
+        "strapping"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: keep it LOW (its default) at reset, or uploading may fail."
+    },
+    {
+      "id": "IO9",
+      "gpio": 9,
+      "posMm": [
+        25.74,
+        1.27
+      ],
+      "label": "9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO9",
+        "TOUCH9",
+        "ADC1_CH8",
+        "FSPIHD",
+        "SUBSPIHD",
+        "I2C_SCL_default"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Arduino's default I2C SCL pin on the ESP32-S3."
+    },
+    {
+      "id": "IO10",
+      "gpio": 10,
+      "posMm": [
+        23.2,
+        1.27
+      ],
+      "label": "10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO10",
+        "TOUCH10",
+        "ADC1_CH9",
+        "FSPICS0",
+        "FSPIIO4",
+        "SUBSPICS0",
+        "SPI_CS_default"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO11",
+      "gpio": 11,
+      "posMm": [
+        20.66,
+        1.27
+      ],
+      "label": "11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO11",
+        "TOUCH11",
+        "ADC2_CH0",
+        "FSPID",
+        "FSPIIO5",
+        "SUBSPID",
+        "SPI_MOSI_default"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO12",
+      "gpio": 12,
+      "posMm": [
+        18.12,
+        1.27
+      ],
+      "label": "12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO12",
+        "TOUCH12",
+        "ADC2_CH1",
+        "FSPICLK",
+        "FSPIIO6",
+        "SUBSPICLK",
+        "SPI_SCK_default"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO13",
+      "gpio": 13,
+      "posMm": [
+        15.58,
+        1.27
+      ],
+      "label": "13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO13",
+        "TOUCH13",
+        "ADC2_CH2",
+        "FSPIQ",
+        "FSPIIO7",
+        "SUBSPIQ",
+        "SPI_MISO_default"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO14",
+      "gpio": 14,
+      "posMm": [
+        13.04,
+        1.27
+      ],
+      "label": "14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO14",
+        "TOUCH14",
+        "ADC2_CH3",
+        "FSPIWP",
+        "FSPIDQS",
+        "SUBSPIWP"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "5V",
+      "gpio": null,
+      "posMm": [
+        10.5,
+        1.27
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [
+        "5V"
+      ],
+      "flags": [],
+      "maxVolt": 5,
+      "supplies": 5,
+      "notes": "5 V from the USB ports. You can power the board here with 5 V instead of USB, but never both at once."
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        7.96,
+        1.27
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        61.3,
+        24.13
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "TX",
+      "gpio": 43,
+      "chipPin": "GPIO43",
+      "posMm": [
+        58.76,
+        24.13
+      ],
+      "label": "TX",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0TXD",
+        "CLK_OUT1"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "USB serial TX through the CP2102N (port labelled UART). Used for uploading and the serial monitor."
+    },
+    {
+      "id": "RX",
+      "gpio": 44,
+      "chipPin": "GPIO44",
+      "posMm": [
+        56.22,
+        24.13
+      ],
+      "label": "RX",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0RXD",
+        "CLK_OUT2"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "USB serial RX through the CP2102N (port labelled UART). Used for uploading and the serial monitor."
+    },
+    {
+      "id": "IO1",
+      "gpio": 1,
+      "posMm": [
+        53.68,
+        24.13
+      ],
+      "label": "1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO1",
+        "TOUCH1",
+        "ADC1_CH0"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO2",
+      "gpio": 2,
+      "posMm": [
+        51.14,
+        24.13
+      ],
+      "label": "2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO2",
+        "TOUCH2",
+        "ADC1_CH1"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO42",
+      "gpio": 42,
+      "posMm": [
+        48.6,
+        24.13
+      ],
+      "label": "42",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "MTMS"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO41",
+      "gpio": 41,
+      "posMm": [
+        46.06,
+        24.13
+      ],
+      "label": "41",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "MTDI",
+        "CLK_OUT1"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO40",
+      "gpio": 40,
+      "posMm": [
+        43.52,
+        24.13
+      ],
+      "label": "40",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "MTDO",
+        "CLK_OUT2"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO39",
+      "gpio": 39,
+      "posMm": [
+        40.98,
+        24.13
+      ],
+      "label": "39",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "MTCK",
+        "CLK_OUT3",
+        "SUBSPICS1"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO38",
+      "gpio": 38,
+      "posMm": [
+        38.44,
+        24.13
+      ],
+      "label": "38",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "FSPIWP",
+        "SUBSPIWP",
+        "RGB_LED"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Drives the RGB LED on v1.1 boards. Arduino's RGB_BUILTIN points to GPIO 48 (the v1.0 LED pin), so use 38 for this LED."
+    },
+    {
+      "id": "IO37",
+      "gpio": 37,
+      "posMm": [
+        35.9,
+        24.13
+      ],
+      "label": "37",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPIDQS",
+        "FSPIQ",
+        "SUBSPIQ"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Used inside the module by the octal PSRAM (N8R8 and other R8 / R16V boards). Not available: do not use."
+    },
+    {
+      "id": "IO36",
+      "gpio": 36,
+      "posMm": [
+        33.36,
+        24.13
+      ],
+      "label": "36",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPIIO7",
+        "FSPICLK",
+        "SUBSPICLK"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Used inside the module by the octal PSRAM (N8R8 and other R8 / R16V boards). Not available: do not use."
+    },
+    {
+      "id": "IO35",
+      "gpio": 35,
+      "posMm": [
+        30.82,
+        24.13
+      ],
+      "label": "35",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPIIO6",
+        "FSPID",
+        "SUBSPID"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Used inside the module by the octal PSRAM (N8R8 and other R8 / R16V boards). Not available: do not use."
+    },
+    {
+      "id": "IO0",
+      "gpio": 0,
+      "posMm": [
+        28.28,
+        24.13
+      ],
+      "label": "0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO0"
+      ],
+      "flags": [
+        "strapping"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin wired to the BOOT button: LOW at reset starts upload mode instead of your program."
+    },
+    {
+      "id": "IO45",
+      "gpio": 45,
+      "posMm": [
+        25.74,
+        24.13
+      ],
+      "label": "45",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [
+        "strapping",
+        "strapping_critical"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: HIGH at reset selects 1.8 V flash voltage, so the board may not boot. Keep it LOW or floating at reset."
+    },
+    {
+      "id": "IO48",
+      "gpio": 48,
+      "posMm": [
+        23.2,
+        24.13
+      ],
+      "label": "48",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPICLK_N",
+        "SUBSPICLK_N_DIFF"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Free on v1.1 boards. On the older v1.0 board this pin drives the RGB LED."
+    },
+    {
+      "id": "IO47",
+      "gpio": 47,
+      "posMm": [
+        20.66,
+        24.13
+      ],
+      "label": "47",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPICLK_P",
+        "SUBSPICLK_P_DIFF"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO21",
+      "gpio": 21,
+      "posMm": [
+        18.12,
+        24.13
+      ],
+      "label": "21",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO21"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO20",
+      "gpio": 20,
+      "posMm": [
+        15.58,
+        24.13
+      ],
+      "label": "20",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO20",
+        "U1CTS",
+        "ADC2_CH9",
+        "CLK_OUT1",
+        "USB_D+"
+      ],
+      "flags": [
+        "adc2",
+        "usb"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Native USB D+ (the port labelled USB). Using it breaks that USB port."
+    },
+    {
+      "id": "IO19",
+      "gpio": 19,
+      "posMm": [
+        13.04,
+        24.13
+      ],
+      "label": "19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_GPIO19",
+        "U1RTS",
+        "ADC2_CH8",
+        "CLK_OUT2",
+        "USB_D-"
+      ],
+      "flags": [
+        "adc2",
+        "usb"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Native USB D- (the port labelled USB). Using it breaks that USB port."
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        10.5,
+        24.13
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GND4",
+      "gpio": null,
+      "posMm": [
+        7.96,
+        24.13
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    }
+  ],
+  "components": [
+    {
+      "type": "module",
+      "label": "ESP32-S3-WROOM-1",
+      "rect": [
+        437,
+        38,
+        255,
+        180
+      ]
+    },
+    {
+      "type": "usb",
+      "label": "micro-USB UART",
+      "rect": [
+        -9,
+        19,
+        72,
+        82
+      ]
+    },
+    {
+      "type": "usb",
+      "label": "micro-USB USB",
+      "rect": [
+        -9,
+        153,
+        72,
+        82
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BOOT",
+      "rect": [
+        129,
+        60,
+        22,
+        31
+      ]
+    },
+    {
+      "type": "button",
+      "label": "RESET",
+      "rect": [
+        129,
+        164,
+        22,
+        31
+      ]
+    },
+    {
+      "type": "bridge",
+      "label": "CP2102N",
+      "rect": [
+        183,
+        117,
+        38,
+        38
+      ]
+    },
+    {
+      "type": "regulator",
+      "label": "LDO 3.3 V",
+      "rect": [
+        335,
+        96,
+        57,
+        78
+      ]
+    },
+    {
+      "type": "led",
+      "label": "RGB GPIO38",
+      "rect": [
+        273,
+        58,
+        35,
+        35
+      ]
+    },
+    {
+      "type": "led",
+      "label": "PWR",
+      "rect": [
+        336,
+        184,
+        28,
+        15
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "ESP32-S3 Series Datasheet",
+    "i2c": {
+      "sda": "IO8",
+      "scl": "IO9",
+      "remappable": true,
+      "note": "Any GPIO can be I2C on the ESP32-S3. Arduino's Wire uses GPIO 8 (SDA) and GPIO 9 (SCL) by default."
+    },
+    "spi": {
+      "mosi": "IO11",
+      "miso": "IO13",
+      "sck": "IO12",
+      "cs": "IO10"
+    },
+    "safeIo": [
+      "IO4",
+      "IO5",
+      "IO6",
+      "IO7",
+      "IO15",
+      "IO16",
+      "IO17",
+      "IO18",
+      "IO21",
+      "IO47",
+      "IO1",
+      "IO2",
+      "IO14"
+    ],
+    "adcPins": [
+      "IO1",
+      "IO2",
+      "IO4",
+      "IO5",
+      "IO6",
+      "IO7",
+      "IO10",
+      "IO3",
+      "IO8",
+      "IO9"
+    ],
+    "inputPins": [
+      "IO39",
+      "IO40",
+      "IO41",
+      "IO42",
+      "IO21",
+      "IO14"
+    ],
+    "adcWifiConflict": true,
+    "adcMaxMv": 3300
+  },
+  "toolchain": {
+    "flasher": "esptool",
+    "fqbn": "esp32:esp32:esp32s3",
+    "core": "esp32:esp32",
+    "coreUrl": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
+    "esptoolChip": "esp32s3",
+    "imageFormat": "bin",
+    "agent": true,
+    "link": "usb-serial",
+    "uploadNote": "Use the port labelled UART. If uploading does not start, hold BOOT, press and release RESET, then release BOOT."
+  },
+  "usb": [
+    {
+      "vid": "10c4",
+      "pid": "ea60",
+      "note": "Silicon Labs CP2102N USB-to-UART bridge (port labelled UART)"
+    },
+    {
+      "vid": "303a",
+      "pid": "1001",
+      "note": "ESP32-S3 built-in USB Serial/JTAG (port labelled USB); the same id is used in download mode"
+    },
+    {
+      "vid": "1a86",
+      "pid": "55d3",
+      "note": "WCH CH343 USB-to-UART bridge, used on many third-party copies of this board (often with USB-C)"
+    }
+  ],
+  "links": [
+    {
+      "title": "ESP32-S3-DevKitC-1 v1.1 user guide",
+      "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html"
+    },
+    {
+      "title": "ESP32-S3-DevKitC-1 v1.1 schematic",
+      "url": "https://dl.espressif.com/dl/schematics/SCH_ESP32-S3-DevKitC-1_V1.1_20221130.pdf"
+    },
+    {
+      "title": "ESP32-S3-DevKitC-1 v1.1 dimensions",
+      "url": "https://dl.espressif.com/dl/schematics/esp_idf/DXF_ESP32-S3-DevKitC-1_V1.1_20220429.pdf"
+    },
+    {
+      "title": "ESP32-S3 Series Datasheet",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s3_datasheet_en.pdf"
+    },
+    {
+      "title": "ESP32-S3-WROOM-1 / 1U Datasheet",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf"
+    }
+  ],
+  "sources": [
+    {
+      "title": "ESP32-S3-DevKitC-1 v1.1 user guide",
+      "section": "Header Block (J1, J3), Description of Components, Hardware Revision Details",
+      "url": "https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html"
+    },
+    {
+      "title": "ESP32-S3-DevKitC-1 v1.1 schematic (2022-11-30)",
+      "section": "Sheet 2: CP2102N-A02, two micro-USB connectors, RGB LED on GPIO38, BOOT on GPIO0",
+      "url": "https://dl.espressif.com/dl/schematics/SCH_ESP32-S3-DevKitC-1_V1.1_20221130.pdf"
+    },
+    {
+      "title": "ESP32-S3-DevKitC-1 v1.1 dimensions (DXF 2022-04-29)",
+      "section": "Board outline, header pad centres, component outlines",
+      "url": "https://dl.espressif.com/dl/schematics/esp_idf/DXF_ESP32-S3-DevKitC-1_V1.1_20220429.dxf"
+    },
+    {
+      "title": "ESP32-S3 Series Datasheet v2.2",
+      "section": "3 Boot Configurations (strapping pins GPIO0, 3, 45, 46; Tables 3-1, 3-3, 3-4, 3-5)",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s3_datasheet_en.pdf"
+    },
+    {
+      "title": "ESP32-S3-WROOM-1 / 1U Datasheet v1.8",
+      "section": "Pin Definitions note b: IO35-37 used by octal PSRAM; Table 1-1 ordering codes",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf"
+    },
+    {
+      "title": "ESP-IDF Programming Guide (ESP32-S3)",
+      "section": "ADC Oneshot: Hardware Limitations (ADC2 is also used by Wi-Fi)",
+      "url": "https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/api-reference/peripherals/adc/adc_oneshot.html"
+    },
+    {
+      "title": "arduino-esp32 variants/esp32s3/pins_arduino.h",
+      "section": "SDA 8, SCL 9, SS 10, MOSI 11, MISO 13, SCK 12, PIN_RGB_LED 48, USB 303a:1001",
+      "url": "https://github.com/espressif/arduino-esp32/blob/master/variants/esp32s3/pins_arduino.h"
+    }
+  ]
+}

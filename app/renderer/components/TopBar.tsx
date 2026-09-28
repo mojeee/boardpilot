@@ -8,12 +8,16 @@ import { changeLanguage } from '../state/lang';
 import { t } from '@shared/i18n';
 import { PROVIDER_INFO } from '@shared/ai';
 import { openAiSettings } from './AiSettings';
+import { openBoardPicker } from './BoardPicker';
+import { useScene } from '../state/store';
+import { getBoard } from '@shared/board';
 
 export function TopBar() {
   const conn = useApp((s) => s.conn);
   const progress = useApp((s) => s.progress);
   const ai = useApp((s) => s.ai);
   const devOpen = useApp((s) => s.devOpen);
+  const board = getBoard(useScene((s) => s.scene.board));
 
   return (
     <header className="topbar">
@@ -21,6 +25,9 @@ export function TopBar() {
         <LogoMark size={24} />
         BoardPilot
       </div>
+      <button className="chip board-chip" onClick={openBoardPicker} title={t('Change the board')}>
+        <Icon name="board" size={14} /> {board.name}
+      </button>
       <div className="conn">
         <span className={`dot ${conn.chip ? 'ok' : 'off'}`} />
         {conn.chip ? (

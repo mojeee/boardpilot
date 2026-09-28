@@ -22,6 +22,7 @@ const api: BoardPilotApi = {
   hw: {
     state: call('hw:state'),
     setMode: call('hw:setMode'),
+    setBoard: call('hw:setBoard'),
     listPorts: call('hw:listPorts'),
     identify: call('hw:identify'),
     installAgent: call('hw:installAgent'),

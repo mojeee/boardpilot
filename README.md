@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-<p align="center"><b>See inside your ESP32.</b> A desktop app that finds wiring mistakes, decodes I2C and shows every pin, wire and bus transaction on a live 3D board.<br>English and Italian · macOS and Windows · works without hardware in simulator mode.</p>
+<p align="center"><b>See inside your board.</b> A desktop app that finds wiring mistakes, decodes I2C and shows every pin, wire and bus transaction on a live 3D board: ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52 and Teensy.<br>English and Italian · macOS and Windows · works without hardware in simulator mode.</p>
 
 <p align="center">
   <a href="https://github.com/mojeee/boardpilot/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/mojeee/boardpilot?label=download&color=5CCB8F"></a>
@@ -22,7 +22,7 @@
   <a href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-x64.dmg">Mac (Intel)</a> ·
   <a href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-win-x64.exe">Windows</a> ·
   <a href="https://boardpilot.agentflowbind.com/parts/"><b>Parts library</b></a> ·
-  <a href="https://boardpilot.agentflowbind.com/esp32-pinout/">ESP32 pinout</a> ·
+  <a href="https://boardpilot.agentflowbind.com/boards/">Board pinouts</a> ·
   <a href="docs/README.md">Docs</a>
 </p>
 
@@ -36,6 +36,19 @@ Most "my sensor does not work" problems are wiring: SDA and SCL swapped, a missi
 - **Safe by default.** Read-only unless you confirm; your firmware is backed up before the first write and comes back with one click.
 - **Honest AI.** The optional assistant only states what it measured, labels guesses as suggestions and cites sources.
 
+## Supported boards
+
+| Family | Boards | Flashing |
+|---|---|---|
+| ESP32 | ESP32 DevKit (30 pins), ESP32-S3-DevKitC-1, ESP32-C3-DevKitM-1 | esptool |
+| Raspberry Pi | Pico, Pico W (RP2040), Pico 2 (RP2350) | picotool / UF2 |
+| Arduino (AVR) | Uno R3, Nano, Mega 2560 | avrdude |
+| STM32 | NUCLEO-F401RE, Black Pill F411CE | STM32CubeProgrammer, stlink or dfu-util |
+| Nordic | nRF52840 DK | nrfjprog |
+| Teensy | Teensy 4.1 | Teensy Loader |
+
+Boards are data files in [`boards/`](boards/) (pins with positions, flags and sources, default buses, toolchain, USB ids); validate them with `node scripts/check-boards.mjs`. Pinout pages: <https://boardpilot.agentflowbind.com/boards/>.
+
 ## Features
 
 | | |
@@ -45,7 +58,7 @@ Most "my sensor does not work" problems are wiring: SDA and SCL swapped, a missi
 
 Also: connect and identify (esptool v4/v5), safe flashing with automatic backup, new-project pin assignment with a starter sketch, reports as Markdown and PDF, English and Italian UI, 30-day free trial.
 
-## The open ESP32 parts library
+## The open parts library
 
 **380+ sensors, displays, drivers, radios and modules**, each with its pins and roles, supply voltage, I2C addresses, chip-ID register, 3D shape and sources. The data is **free to reuse under [CC BY 4.0](parts/LICENSE)**:
 
@@ -71,7 +84,7 @@ Download from the [latest release](https://github.com/mojeee/boardpilot/releases
 ```bash
 npm install
 npm run dev          # the app, in simulator mode
-npm test             # 900+ tests (Vitest); npm run typecheck
+npm test             # 2000+ tests (Vitest); npm run typecheck
 npm run build:agent  # rebuild the ESP32 diagnostic agent (arduino-cli + esp32 core)
 npm run dist:mac     # .dmg files in dist/
 npm run dist:win     # Windows installer in dist/

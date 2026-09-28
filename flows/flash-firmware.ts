@@ -5,14 +5,17 @@ import { ensureBoardStep, fmtErr } from './common';
 export const flashFirmware: FlowDef = {
   id: 'flash-firmware',
   title: 'Flash firmware',
-  description: 'Write a .bin file to the board, after a backup, and check that it starts.',
+  description: 'Write a firmware file to the board, after a backup, and check that it starts.',
   steps: [
     ensureBoardStep(),
     {
       id: 'file',
       type: 'input',
       title: 'Choose the firmware file',
-      body: 'Pick the .bin file your build produced (Arduino: Sketch → Export Compiled Binary). A single app image is written at 0x10000; a “merged” image at 0x0.',
+      body: (ctx) =>
+        ctx.board.toolchain.flasher === 'esptool'
+          ? 'Pick the .bin file your build produced (Arduino: Sketch → Export Compiled Binary). A single app image is written at 0x10000; a “merged” image at 0x0.'
+          : t('Pick the .{ext} file your build produced (Arduino: Sketch → Export Compiled Binary).', { ext: ctx.board.toolchain.imageFormat }),
       inputs: ['firmware'],
       async run(ctx, answer) {
         if (answer?.kind !== 'input' || !answer.value) return { status: 'failed', summary: 'No file chosen.' };
@@ -32,7 +35,7 @@ export const flashFirmware: FlowDef = {
       confirm: {
         write: 'flash_user',
         details: [
-          'If this board has no backup yet, the app first saves a full copy of its flash on this Mac.',
+          'If this board has no backup yet, the app first saves a full copy of its flash on this computer. Boards that cannot be read back (Teensy) are not backed up.',
           'Then the new firmware is written. The board restarts afterwards.',
           '“Restore my firmware” can put the old program back.',
         ],
@@ -42,7 +45,7 @@ export const flashFirmware: FlowDef = {
         const r = await ctx.hw.flashUser(answer.token, String(ctx.data.file));
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         const kb = Math.round(r.value.bytes / 1024);
-        ctx.log('found', t('Wrote {kb} KB.', { kb }), { source: 'measured: esptool write-flash' });
+        ctx.log('found', t('Wrote {kb} KB.', { kb }), { source: `measured: ${ctx.board.toolchain.flasher} write` });
         return { status: 'ok', summary: t('Written ({kb} KB).', { kb }) };
       },
       fallbacks: [{ id: 'retry', label: 'Show the confirmation again', kind: 'retry' }],
@@ -82,7 +85,7 @@ export const flashFirmware: FlowDef = {
                 .slice(0, 3)
                 .map((l) => ({ text: t('Board printed: {text}', { text: l.slice(0, 100) }), source: 'measured: serial capture', confidence: 'measured' as const })),
             ],
-            sources: ['esptool write-flash'],
+            sources: [`${ctx.board.toolchain.flasher} write`],
             nextSteps: ['Open Monitor to watch it run.'],
             highlight: [],
           },

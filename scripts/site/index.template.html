@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title data-i18n="meta.title">BoardPilot: ESP32 debugger with a live 3D board</title>
-    <meta name="description" data-i18n-content="meta.description" content="Find ESP32 wiring mistakes in minutes: I2C scan, crossed SDA/SCL detection, decoded bus and every pin in 3D. Free 30-day trial for Mac and Windows." />
+    <title data-i18n="meta.title">BoardPilot: debugger for ESP32, Raspberry Pi Pico, Arduino and STM32 with a live 3D board</title>
+    <meta name="description" data-i18n-content="meta.description" content="Find wiring mistakes on ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52 and Teensy boards: I2C scan, crossed SDA/SCL detection, decoded bus and every pin in 3D. Mac and Windows." />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <link rel="canonical" href="{{URL}}" />
     <link rel="alternate" hreflang="en" href="{{SITE}}/" />
@@ -13,7 +13,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="BoardPilot" />
     <meta property="og:url" content="{{URL}}" />
-    <meta property="og:title" data-i18n-content="meta.ogTitle" content="BoardPilot · See inside your ESP32" />
+    <meta property="og:title" data-i18n-content="meta.ogTitle" content="BoardPilot · See inside your board" />
     <meta property="og:description" data-i18n-content="meta.ogDescription" content="A Mac app that finds wiring mistakes, decodes I2C and explains what went wrong, in plain words. English and Italian." />
     <meta property="og:image" content="{{SITE}}/img/og.jpg" />
     <meta property="og:image:width" content="1200" />
@@ -45,7 +45,7 @@
           <a href="#pricing" data-i18n="nav.pricing">Pricing</a>
           <a href="#faq" data-i18n="nav.faq">FAQ</a>
           <a href="{{PARTS}}" data-i18n="nav.parts">Parts library</a>
-          <a href="{{PINOUT}}" data-i18n="nav.pinout">ESP32 pinout</a>
+          <a href="{{BOARDS}}" data-i18n="nav.pinout">Boards</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -65,7 +65,7 @@
         <div class="wrap hero-in">
           <div class="hero-copy">
             <span class="eyebrow" data-i18n="hero.eyebrow">For makers, students and firmware developers</span>
-            <h1 data-i18n="hero.title">See inside your ESP32.</h1>
+            <h1 data-i18n="hero.title">See inside your board.</h1>
             <p class="lead" data-i18n="hero.lead">BoardPilot guides you through embedded work on a real board. Every pin, wire and bus transaction is visible in 3D, and every answer shows where it came from.</p>
             <div class="cta" id="download">
               <a class="btn primary" href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg">
@@ -93,7 +93,7 @@
 
       <section class="strip">
         <div class="wrap strip-in">
-          <div><b>30</b><span data-i18n="strip.pins">pins mapped from the Espressif datasheet</span></div>
+          <div><b>{{BOARDS_COUNT}}</b><span data-i18n="strip.pins">boards: ESP32, Pico, Arduino, STM32, nRF52, Teensy</span></div>
           <div><b>0</b><span data-i18n="strip.writes">writes to your board without your OK</span></div>
           <div><b>8</b><span data-i18n="strip.sim">simulated faults to learn with</span></div>
           <div><b>EN · IT</b><span data-i18n="strip.lang">English and Italian</span></div>
@@ -161,14 +161,24 @@
         <div class="wrap two">
           <div>
             <span class="eyebrow" data-i18n="lib.eyebrow">Open parts library</span>
-            <h2><span class="big-num">{{PARTS_COUNT}}</span> <span data-i18n="lib.title">parts, ready to wire to an ESP32.</span></h2>
-            <p class="lead" data-i18n="lib.lead">Sensors, displays, motor drivers, radios and more: pins, supply voltage, I2C addresses, chip ID checks, a 3D model and a safe ESP32 wiring for each. Free to reuse under CC BY 4.0.</p>
+            <h2><span class="big-num">{{PARTS_COUNT}}</span> <span data-i18n="lib.title">parts, ready to wire to your board.</span></h2>
+            <p class="lead" data-i18n="lib.lead">Sensors, displays, motor drivers, radios and more: pins, supply voltage, I2C addresses, chip ID checks, a 3D model and a safe wiring for each. Free to reuse under CC BY 4.0.</p>
             <div class="cta">
               <a class="btn primary" href="{{PARTS}}" data-i18n="lib.browse">Browse the parts library</a>
               <a class="btn" href="/parts.json" data-i18n="lib.json">Download JSON</a>
             </div>
           </div>
           <div class="part-cloud">{{PARTS_CLOUD}}</div>
+        </div>
+      </section>
+
+      <section id="boards" class="section alt">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="boards.eyebrow">Supported boards</span>
+          <h2 data-i18n="boards.title">The boards embedded developers use every day.</h2>
+          <p class="lead" data-i18n="boards.lead">Pick your board: the 3D model, the pin rules, flashing and the simulator follow it. Every board has a free pinout page with the pins to avoid.</p>
+          <div class="board-cards">{{BOARD_CARDS}}</div>
+          <div class="cta"><a class="btn" href="{{BOARDS}}" data-i18n="boards.all">All board pinouts</a></div>
         </div>
       </section>
 
@@ -222,7 +232,7 @@
               <ul>
                 <li data-i18n="p2.a">Keep using BoardPilot after the trial</li>
                 <li data-i18n="p2.b">All updates in the same major version</li>
-                <li data-i18n="p2.c">Supports development of new boards (ESP32-S3, STM32)</li>
+                <li data-i18n="p2.c">Supports development of new boards and features</li>
               </ul>
               <a class="btn" href="https://github.com/mojeee/boardpilot/issues/new?labels=license&amp;title=License%20request" data-i18n="p2.cta">Request a license key</a>
             </div>
@@ -246,7 +256,7 @@
           <span class="eyebrow">FAQ</span>
           <h2 data-i18n="faq.title">Questions</h2>
           <details><summary data-i18n="q1">Is BoardPilot open source?</summary><p data-i18n="a1">It is source-available. All the code is public on GitHub under the BoardPilot License: you can read, study, modify and build it. Using it after the 30-day trial needs a license key. The firmware (diagnostic agent and BoardPilotProbe library) is MIT licensed.</p></details>
-          <details><summary data-i18n="q2">Which boards does it support?</summary><p data-i18n="a2">Today: the ESP32 DevKit with 30 pins (ESP32-WROOM-32). Boards are data files, so ESP32-S3 and STM32 with ST-Link are next.</p></details>
+          <details><summary data-i18n="q2">Which boards does it support?</summary><p data-i18n="a2">ESP32 DevKit, ESP32-S3 and ESP32-C3 DevKits, Raspberry Pi Pico, Pico W and Pico 2, Arduino Uno, Nano and Mega, STM32 Nucleo-F401RE and Black Pill, Nordic nRF52840 DK and Teensy 4.1. Boards are data files, so more are easy to add.</p></details>
           <details><summary data-i18n="q3">My computer warns that the app is from an unknown developer.</summary><p data-i18n="a3">The early builds are not signed yet. On Mac, right-click BoardPilot in Applications and choose Open (or System Settings → Privacy &amp; Security → Open Anyway). On Windows, click More info → Run anyway in the SmartScreen window.</p></details>
           <details><summary data-i18n="q4">Do I need a board to try it?</summary><p data-i18n="a4">No. Simulator mode runs the whole app with a virtual board and realistic faults: crossed wires, a fake BME280, brownouts, wrong baud rate.</p></details>
           <details><summary data-i18n="q5">Does it need the internet or an AI account?</summary><p data-i18n="a5">No. Checks, measurements and the simulator work offline. The AI assistant is optional: try it with the free demo (a limited, older Gemini model, for testing only) or use your own key for Claude, GPT or Gemini.</p></details>
@@ -263,7 +273,7 @@
           <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
           <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
           <a href="{{PARTS}}" data-i18n="nav.parts">Parts library</a>
-          <a href="{{PINOUT}}" data-i18n="nav.pinout">ESP32 pinout</a>
+          <a href="{{BOARDS}}" data-i18n="nav.pinout">Boards</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>

@@ -14,7 +14,7 @@ const obj = (properties: Record<string, unknown>, required: string[]): JsonSchem
   additionalProperties: false,
 });
 
-const gpio = { type: 'integer', description: 'ESP32 GPIO number, e.g. 21 for D21' };
+const gpio = { type: 'integer', description: 'GPIO number of a board pin as listed in the context (the "gpio" field), e.g. 21 for D21 on an ESP32' };
 
 export const TOOLS: ToolSpec[] = [
   {

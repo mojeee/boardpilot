@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
-import { useApp, useLive, log, type Series } from '../state/store';
+import { currentBoard, useApp, useLive, log, type Series } from '../state/store';
 import { startStream, agent } from '../state/hw';
 import { ROLE_HEX, getBoard, pinByGpio } from '@shared/board';
 import { openTask } from '../components/TaskRail';
@@ -19,7 +19,7 @@ const BAUDS = [9600, 57600, 74880, 115200, 230400];
 /** Color of a series = color of the pin it comes from (plots match the 3D view). */
 function seriesColor(s: Series): string {
   if (s.pin === undefined) return s.color;
-  const p = pinByGpio(getBoard(), s.pin);
+  const p = pinByGpio(currentBoard(), s.pin);
   if (!p) return s.color;
   if (p.functions.includes('I2C_SDA_default')) return s.key.startsWith('probe:') ? s.color : ROLE_HEX.sda;
   if (p.flags.includes('adc1') || p.flags.includes('adc2')) return s.unit === 'mV' ? ROLE_HEX.adc : ROLE_HEX.gpio;

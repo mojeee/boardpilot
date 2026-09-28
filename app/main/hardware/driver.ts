@@ -5,6 +5,7 @@ import type {
   AgentReplyMap,
   AgentRequest,
   BackupInfo,
+  BoardDef,
   ChipInfo,
   FirmwareImage,
   PortInfo,
@@ -13,6 +14,8 @@ import type {
 
 export interface HardwareDriver {
   readonly kind: 'sim' | 'real';
+  /** The board the user picked. Chip tools, pin rules and the simulated bench follow it. */
+  setBoard(board: BoardDef): void;
   listPorts(): Promise<PortInfo[]>;
   identify(port: string): Promise<ChipInfo>;
   /** Full flash to the app data folder. */

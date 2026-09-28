@@ -6,18 +6,33 @@ import * as THREE from 'three';
 import type { BoardDef } from '@shared/types';
 import { useScene } from '../state/store';
 import { targetPoint } from './geometry';
+import { rectToMm } from '@shared/board';
 
 interface Controls {
   target: THREE.Vector3;
   update(): void;
 }
 
-const PRESETS: Record<string, { pos: [number, number, number]; target: [number, number, number] }> = {
-  home: { pos: [-38, 72, 96], target: [0, -2, 0] },
-  top: { pos: [0, 125, 0.01], target: [0, 0, 0] },
-  side: { pos: [0, 22, 82], target: [0, 0, 6] },
-  module: { pos: [26, 34, 30], target: [14, 0, 0] },
-};
+type Preset = { pos: [number, number, number]; target: [number, number, number] };
+
+/**
+ * Camera presets, tuned for the 51.5 × 28.5 mm ESP32 DevKit and scaled for bigger boards (the
+ * parts sit around the board, so the width counts with a margin). "Module" looks at the main chip.
+ */
+export function presetsFor(board: BoardDef): Record<string, Preset> {
+  const { length, width } = board.pcbMm;
+  const k = Math.max(1, length / 51.5, (width + 60) / (28.5 + 60));
+  const main =
+    board.components.find((c) => c.type === 'module') ??
+    [...board.components].filter((c) => c.type === 'mcu').sort((a, b) => b.rect[2] * b.rect[3] - a.rect[2] * a.rect[3])[0];
+  const m = main ? rectToMm(board, main.rect) : { cx: 14, cz: 0 };
+  return {
+    home: { pos: [-38 * k, 72 * k, 96 * k], target: [0, -2, 0] },
+    top: { pos: [0, 125 * k, 0.01], target: [0, 0, 0] },
+    side: { pos: [0, 22 * k, 82 * k], target: [0, 0, 6] },
+    module: { pos: [m.cx + 12, 34, m.cz + 30], target: [m.cx, 0, m.cz] },
+  };
+}
 
 export function CameraRig({ board }: { board: BoardDef }) {
   const camera = useThree((s) => s.camera);
@@ -32,10 +47,10 @@ export function CameraRig({ board }: { board: BoardDef }) {
   };
 
   useEffect(() => {
-    const p = PRESETS[preset.name];
+    const p = presetsFor(board)[preset.name];
     if (p) flyTo(new THREE.Vector3(...p.pos), new THREE.Vector3(...p.target));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preset.nonce, controls]);
+  }, [preset.nonce, controls, board.id]);
 
   useEffect(() => {
     if (!focus.nonce || !controls) return;

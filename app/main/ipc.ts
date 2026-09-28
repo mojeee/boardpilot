@@ -22,6 +22,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
 
   h('hw:state', () => hub.state);
   h('hw:setMode', (mode: HardwareMode) => hub.setMode(mode));
+  h('hw:setBoard', (boardId: string) => hub.setBoard(String(boardId)));
   h('hw:listPorts', () => hub.listPorts());
   h('hw:identify', (port: string) => hub.identify(port));
   h('hw:installAgent', (token: string) => hub.installAgent(token));
@@ -59,7 +60,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
     const win = BrowserWindow.getFocusedWindow();
     const opts: Electron.OpenDialogOptions = {
       properties: ['openFile'],
-      filters: kind === 'firmware' ? [{ name: 'Firmware image', extensions: ['bin'] }] : [{ name: 'Datasheet', extensions: ['pdf'] }],
+      filters: kind === 'firmware' ? [{ name: 'Firmware image', extensions: [hub.board.toolchain.imageFormat, ...(hub.board.toolchain.imageFormat === 'bin' ? [] : ['bin'])] }] : [{ name: 'Datasheet', extensions: ['pdf'] }],
     };
     const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
     return r.canceled ? null : r.filePaths[0] ?? null;

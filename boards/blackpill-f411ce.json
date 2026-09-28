@@ -1,0 +1,1142 @@
+{
+  "id": "blackpill-f411ce",
+  "name": "WeAct Black Pill STM32F411CE",
+  "vendor": "WeAct Studio",
+  "family": "stm32",
+  "module": "STM32F411CEU6",
+  "chip": "STM32F411CE",
+  "cpu": "Arm Cortex-M4 with FPU at 100 MHz, 128 KB SRAM, 512 KB flash",
+  "logicVolt": 3.3,
+  "flashBytes": 524288,
+  "ramBytes": 131072,
+  "pcbMm": {
+    "length": 52.81,
+    "width": 20.78,
+    "thickness": 1.6
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "male-down",
+  "pcbColor": "#1a1a1a",
+  "summary": "A tiny, low-cost STM32F411 board with USB-C. Fast (100 MHz), breadboard friendly, 3.3 V logic, and most pins tolerate 5 V.",
+  "pins": [
+    {
+      "id": "5V",
+      "gpio": null,
+      "posMm": [
+        1.4,
+        2.78
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5.5,
+      "supplies": 5,
+      "notes": "5 V from USB-C (after a protection diode). Can also power the board."
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        3.94,
+        2.78
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        6.48,
+        2.78
+      ],
+      "label": "3V3",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 3.6,
+      "supplies": 3.3,
+      "notes": "3.3 V output for sensors."
+    },
+    {
+      "id": "PB10",
+      "gpio": 26,
+      "posMm": [
+        9.02,
+        2.78
+      ],
+      "label": "B10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C2_SCL",
+        "SPI2_SCK",
+        "TIM2_CH3",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PB2",
+      "gpio": 18,
+      "posMm": [
+        11.56,
+        2.78
+      ],
+      "label": "B2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "BOOT1"
+      ],
+      "flags": [
+        "strapping",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "BOOT1 (10 kohm to GND on the board). Only matters when BOOT0 is held at reset."
+    },
+    {
+      "id": "PB1",
+      "gpio": 17,
+      "posMm": [
+        14.1,
+        2.78
+      ],
+      "label": "B1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN9",
+        "TIM3_CH4",
+        "TIM1_CH3N",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PB0",
+      "gpio": 16,
+      "posMm": [
+        16.64,
+        2.78
+      ],
+      "label": "B0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN8",
+        "TIM3_CH3",
+        "TIM1_CH2N",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA7",
+      "gpio": 7,
+      "posMm": [
+        19.18,
+        2.78
+      ],
+      "label": "A7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN7",
+        "SPI_MOSI_default",
+        "SPI1_MOSI",
+        "TIM1_CH1N",
+        "TIM3_CH2",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA6",
+      "gpio": 6,
+      "posMm": [
+        21.72,
+        2.78
+      ],
+      "label": "A6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN6",
+        "SPI_MISO_default",
+        "SPI1_MISO",
+        "TIM3_CH1",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA5",
+      "gpio": 5,
+      "posMm": [
+        24.26,
+        2.78
+      ],
+      "label": "A5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN5",
+        "SPI_SCK_default",
+        "SPI1_SCK",
+        "TIM2_CH1",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA4",
+      "gpio": 4,
+      "posMm": [
+        26.8,
+        2.78
+      ],
+      "label": "A4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN4",
+        "SPI_CS_default",
+        "SPI1_NSS",
+        "SPI3_NSS"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA3",
+      "gpio": 3,
+      "posMm": [
+        29.34,
+        2.78
+      ],
+      "label": "A3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN3",
+        "UART2_RX",
+        "TIM2_CH4",
+        "TIM5_CH4",
+        "TIM9_CH2",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA2",
+      "gpio": 2,
+      "posMm": [
+        31.88,
+        2.78
+      ],
+      "label": "A2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN2",
+        "UART2_TX",
+        "TIM2_CH3",
+        "TIM5_CH3",
+        "TIM9_CH1",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA1",
+      "gpio": 1,
+      "posMm": [
+        34.42,
+        2.78
+      ],
+      "label": "A1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN1",
+        "TIM2_CH2",
+        "TIM5_CH2",
+        "UART2_RTS",
+        "PWM"
+      ],
+      "flags": [
+        "adc",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
+    },
+    {
+      "id": "PA0",
+      "gpio": 0,
+      "posMm": [
+        36.96,
+        2.78
+      ],
+      "label": "A0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_IN0",
+        "TIM2_CH1",
+        "TIM5_CH1",
+        "UART2_CTS",
+        "WKUP",
+        "PWM"
+      ],
+      "flags": [
+        "reserved",
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "KEY button is on this pin (to GND through 330 ohm): use INPUT_PULLUP, pressed = LOW. Not 5 V tolerant."
+    },
+    {
+      "id": "NRST",
+      "gpio": null,
+      "posMm": [
+        39.5,
+        2.78
+      ],
+      "label": "R",
+      "kind": "enable",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Reset: connect to GND to restart the board (same as the NRST button)."
+    },
+    {
+      "id": "PC15",
+      "gpio": 47,
+      "posMm": [
+        42.04,
+        2.78
+      ],
+      "label": "C15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "OSC32_OUT"
+      ],
+      "flags": [
+        "reserved",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "32.768 kHz crystal pin. Leave it free."
+    },
+    {
+      "id": "PC14",
+      "gpio": 46,
+      "posMm": [
+        44.58,
+        2.78
+      ],
+      "label": "C14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "OSC32_IN"
+      ],
+      "flags": [
+        "reserved",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 3.3,
+      "notes": "32.768 kHz crystal pin. Leave it free."
+    },
+    {
+      "id": "PC13",
+      "gpio": 45,
+      "posMm": [
+        47.12,
+        2.78
+      ],
+      "label": "C13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "RTC_OUT"
+      ],
+      "flags": [
+        "onboard_led",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "Blue onboard LED, active LOW (LOW = on). Weak pin: do not drive other loads from it."
+    },
+    {
+      "id": "VB",
+      "gpio": null,
+      "posMm": [
+        49.66,
+        2.78
+      ],
+      "label": "VB",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 3.6,
+      "supplies": 0,
+      "notes": "Input for a backup battery that keeps the RTC running. Gives no power."
+    },
+    {
+      "id": "PB12",
+      "gpio": 28,
+      "posMm": [
+        1.4,
+        18.0
+      ],
+      "label": "B12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI2_NSS",
+        "TIM1_BKIN"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PB13",
+      "gpio": 29,
+      "posMm": [
+        3.94,
+        18.0
+      ],
+      "label": "B13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI2_SCK",
+        "TIM1_CH1N",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PB14",
+      "gpio": 30,
+      "posMm": [
+        6.48,
+        18.0
+      ],
+      "label": "B14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI2_MISO",
+        "TIM1_CH2N",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PB15",
+      "gpio": 31,
+      "posMm": [
+        9.02,
+        18.0
+      ],
+      "label": "B15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI2_MOSI",
+        "TIM1_CH3N",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PA8",
+      "gpio": 8,
+      "posMm": [
+        11.56,
+        18.0
+      ],
+      "label": "A8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "TIM1_CH1",
+        "I2C3_SCL",
+        "UART1_CK",
+        "MCO1",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PA9",
+      "gpio": 9,
+      "posMm": [
+        14.1,
+        18.0
+      ],
+      "label": "A9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_TX",
+        "TIM1_CH2",
+        "USB_VBUS",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PA10",
+      "gpio": 10,
+      "posMm": [
+        16.64,
+        18.0
+      ],
+      "label": "A10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART1_RX",
+        "TIM1_CH3",
+        "USB_ID",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PA11",
+      "gpio": 11,
+      "posMm": [
+        19.18,
+        18.0
+      ],
+      "label": "A11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "USB_DM",
+        "UART1_CTS",
+        "UART6_TX",
+        "TIM1_CH4",
+        "PWM"
+      ],
+      "flags": [
+        "usb",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "USB D- to the USB-C port. Used for USB serial and upload."
+    },
+    {
+      "id": "PA12",
+      "gpio": 12,
+      "posMm": [
+        21.72,
+        18.0
+      ],
+      "label": "A12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "USB_DP",
+        "UART1_RTS",
+        "UART6_RX",
+        "TIM1_ETR"
+      ],
+      "flags": [
+        "usb",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "USB D+ to the USB-C port. Used for USB serial and upload."
+    },
+    {
+      "id": "PA15",
+      "gpio": 15,
+      "posMm": [
+        24.26,
+        18.0
+      ],
+      "label": "A15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "JTDI",
+        "TIM2_CH1",
+        "SPI1_NSS",
+        "SPI3_NSS",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "JTAG JTDI after reset; works as a normal pin in Arduino."
+    },
+    {
+      "id": "PB3",
+      "gpio": 19,
+      "posMm": [
+        26.8,
+        18.0
+      ],
+      "label": "B3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SWO",
+        "TIM2_CH2",
+        "SPI1_SCK",
+        "SPI3_SCK",
+        "I2C2_SDA",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "JTAG SWO after reset; works as a normal pin in Arduino."
+    },
+    {
+      "id": "PB4",
+      "gpio": 20,
+      "posMm": [
+        29.34,
+        18.0
+      ],
+      "label": "B4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "TIM3_CH1",
+        "SPI1_MISO",
+        "SPI3_MISO",
+        "I2C3_SDA",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "JTAG NJTRST after reset; works as a normal pin in Arduino."
+    },
+    {
+      "id": "PB5",
+      "gpio": 21,
+      "posMm": [
+        31.88,
+        18.0
+      ],
+      "label": "B5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "TIM3_CH2",
+        "SPI1_MOSI",
+        "SPI3_MOSI",
+        "PWM"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Not 5 V tolerant on the F411 (keep it at 3.3 V or below)."
+    },
+    {
+      "id": "PB6",
+      "gpio": 22,
+      "posMm": [
+        34.42,
+        18.0
+      ],
+      "label": "B6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default",
+        "I2C1_SCL",
+        "UART1_TX",
+        "TIM4_CH1",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PB7",
+      "gpio": 23,
+      "posMm": [
+        36.96,
+        18.0
+      ],
+      "label": "B7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SDA_default",
+        "I2C1_SDA",
+        "UART1_RX",
+        "TIM4_CH2",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PB8",
+      "gpio": 24,
+      "posMm": [
+        39.5,
+        18.0
+      ],
+      "label": "B8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C1_SCL",
+        "TIM4_CH3",
+        "TIM10_CH1",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "PB9",
+      "gpio": 25,
+      "posMm": [
+        42.04,
+        18.0
+      ],
+      "label": "B9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C1_SDA",
+        "TIM4_CH4",
+        "TIM11_CH1",
+        "SPI2_NSS",
+        "PWM"
+      ],
+      "flags": [
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5
+    },
+    {
+      "id": "5V_2",
+      "gpio": null,
+      "posMm": [
+        44.58,
+        18.0
+      ],
+      "sameAs": "5V",
+      "label": "5V",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 5.5,
+      "supplies": 5,
+      "notes": "Same 5 V rail as the other 5V pin."
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        47.12,
+        18.0
+      ],
+      "label": "G",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "3V3_2",
+      "gpio": null,
+      "posMm": [
+        49.66,
+        18.0
+      ],
+      "sameAs": "3V3",
+      "label": "3V3",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 3.6,
+      "supplies": 3.3,
+      "notes": "Same 3.3 V rail as the other 3V3 pin."
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        45.88,
+        6.58
+      ],
+      "mount": "male-up",
+      "label": "GND",
+      "kind": "ground",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "PA14",
+      "gpio": 14,
+      "posMm": [
+        45.88,
+        9.12
+      ],
+      "mount": "male-up",
+      "label": "SCK",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SWCLK"
+      ],
+      "flags": [
+        "swd",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "SWD debug clock (SWCLK). Leave it free if you use an ST-LINK."
+    },
+    {
+      "id": "PA13",
+      "gpio": 13,
+      "posMm": [
+        45.88,
+        11.66
+      ],
+      "mount": "male-up",
+      "label": "DIO",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SWDIO"
+      ],
+      "flags": [
+        "swd",
+        "five_volt_tolerant"
+      ],
+      "maxVolt": 5,
+      "notes": "SWD debug data (SWDIO). Leave it free if you use an ST-LINK."
+    },
+    {
+      "id": "3V3_SWD",
+      "gpio": null,
+      "posMm": [
+        45.88,
+        14.2
+      ],
+      "mount": "male-up",
+      "sameAs": "3V3",
+      "label": "3V3",
+      "kind": "power",
+      "functions": [],
+      "flags": [],
+      "maxVolt": 3.6,
+      "supplies": 3.3,
+      "notes": "3.3 V on the SWD header (same rail as 3V3)."
+    }
+  ],
+  "components": [
+    {
+      "type": "usb",
+      "label": "USB-C",
+      "rect": [
+        -13,
+        53,
+        90,
+        84
+      ]
+    },
+    {
+      "type": "regulator",
+      "label": "3.3 V LDO",
+      "rect": [
+        100,
+        80,
+        23,
+        23
+      ]
+    },
+    {
+      "type": "button",
+      "label": "NRST",
+      "rect": [
+        127,
+        62,
+        53,
+        35
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BOOT0",
+      "rect": [
+        127,
+        110,
+        53,
+        35
+      ]
+    },
+    {
+      "type": "mcu",
+      "label": "STM32F411CEU6",
+      "rect": [
+        232,
+        69,
+        70,
+        70
+      ]
+    },
+    {
+      "type": "crystal",
+      "label": "25 MHz",
+      "rect": [
+        348,
+        61,
+        27,
+        32
+      ]
+    },
+    {
+      "type": "crystal",
+      "label": "32.768 kHz",
+      "rect": [
+        352,
+        107,
+        19,
+        32
+      ]
+    },
+    {
+      "type": "button",
+      "label": "KEY",
+      "rect": [
+        390,
+        105,
+        55,
+        37
+      ]
+    },
+    {
+      "type": "led",
+      "label": "C13",
+      "rect": [
+        413,
+        49,
+        23,
+        10
+      ],
+      "color": "#3F7FE8"
+    },
+    {
+      "type": "led",
+      "label": "PWR",
+      "rect": [
+        413,
+        149,
+        23,
+        10
+      ],
+      "color": "#FF5D52"
+    },
+    {
+      "type": "connector",
+      "label": "SWD",
+      "rect": [
+        466,
+        53,
+        20,
+        102
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "STM32F411xC/xE datasheet (DS10314)",
+    "i2c": {
+      "sda": "PB7",
+      "scl": "PB6",
+      "remappable": false,
+      "note": "Wire uses PB7 for SDA and PB6 for SCL. Only specific STM32 pin pairs can do I2C (for example PB9/PB8 with Wire.setSDA/setSCL)."
+    },
+    "spi": {
+      "mosi": "PA7",
+      "miso": "PA6",
+      "sck": "PA5",
+      "cs": "PA4"
+    },
+    "safeIo": [
+      "PB12",
+      "PB13",
+      "PB14",
+      "PB15",
+      "PA8",
+      "PB10",
+      "PB0",
+      "PB1",
+      "PB8",
+      "PB9",
+      "PA15"
+    ],
+    "adcPins": [
+      "PA1",
+      "PA2",
+      "PA3",
+      "PB0",
+      "PB1",
+      "PA4",
+      "PA5",
+      "PA6",
+      "PA7",
+      "PA0"
+    ],
+    "inputPins": [
+      "PA0",
+      "PB12",
+      "PB13",
+      "PB14",
+      "PB15"
+    ],
+    "adcMaxMv": 3300
+  },
+  "toolchain": {
+    "flasher": "stm32",
+    "fqbn": "STMicroelectronics:stm32:GenF4:pnum=BLACKPILL_F411CE,usb=CDCgen,upload_method=dfuMethod",
+    "core": "STMicroelectronics:stm32",
+    "coreUrl": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
+    "imageFormat": "bin",
+    "agent": false,
+    "link": "usb-bootloader",
+    "uploadNote": "To upload over USB, hold BOOT0, press and release NRST, then release BOOT0 (DFU mode). An ST-LINK on the SWD pins also works."
+  },
+  "usb": [
+    {
+      "vid": "0483",
+      "pid": "df11",
+      "note": "STM32 built-in DFU bootloader (BOOT0 held during reset)"
+    },
+    {
+      "vid": "0483",
+      "pid": "5740",
+      "note": "USB serial of a sketch built by STM32duino with USB support set to CDC"
+    }
+  ],
+  "links": [
+    {
+      "title": "WeActStudio.MiniSTM32F4x1 (schematic, pinout, board shape)",
+      "url": "https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1"
+    },
+    {
+      "title": "Pinout diagram (STM32F4x1 v2.0+ Pin Layout)",
+      "url": "https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1/blob/master/General%20document/STM32F4x1%20v2.0%2B%20Pin%20Layout.pdf"
+    },
+    {
+      "title": "STM32F411xC/xE datasheet (DS10314)",
+      "url": "https://www.st.com/resource/en/datasheet/stm32f411ce.pdf"
+    }
+  ],
+  "sources": [
+    {
+      "title": "WeAct MiniF4x1Cx V3.1 Board Shape",
+      "section": "Top view: 52.81 x 20.78 mm, rows 15.22 mm apart, pin order, SWD header",
+      "url": "https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1/tree/master/Hardware"
+    },
+    {
+      "title": "WeAct MiniF4x1Cx V3.1 schematic",
+      "section": "Headers P1/P2/P3, KEY (PA0, 330R), BOOT0/PB2 pull-downs, LED PC13 active low, Y1 32.768 kHz, Y2 25 MHz, USB-C PA11/PA12, U3 flash footprint PA4-PA7",
+      "url": "https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1/tree/master/Hardware"
+    },
+    {
+      "title": "ST STM32F411xC/xE datasheet DS10314 (DocID026289 Rev 7)",
+      "section": "Table 8 pin definitions: FT pins, PA0 and PB5 are TC; ADC1_IN channels",
+      "url": "https://www.st.com/resource/en/datasheet/stm32f411ce.pdf"
+    },
+    {
+      "title": "stm32duino Arduino_Core_STM32",
+      "section": "variants/STM32F4xx/F411C(C-E)(U-Y)/variant_BLACKPILL_F411CE.h (PIN_WIRE_SDA PB7, PIN_WIRE_SCL PB6, SPI PA7/PA6/PA5/PA4, LED PC13, USER_BTN PA0); boards.txt GenF4; platform.txt USB ids",
+      "url": "https://github.com/stm32duino/Arduino_Core_STM32"
+    }
+  ]
+}

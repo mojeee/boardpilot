@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ESP32-C3-DevKitM-1 pinout: which pins are safe to use</title>
+    <meta name="description" content="ESP32-C3-DevKitM-1 pinout (ESP32-C3): all 30 pins with functions, the pins to avoid, default I2C/SPI pins and how to flash it. 3.3 V logic." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/esp32-c3-devkitm-1/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/" />
+    <meta property="og:title" content="ESP32-C3-DevKitM-1 pinout: which pins are safe to use" />
+    <meta property="og:description" content="ESP32-C3-DevKitM-1 pinout (ESP32-C3): all 30 pins with functions, the pins to avoid, default I2C/SPI pins and how to flash it. 3.3 V logic." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=a7abf8b701" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ESP32-C3-DevKitM-1 pinout","description":"ESP32-C3-DevKitM-1 pinout (ESP32-C3): all 30 pins with functions, the pins to avoid, default I2C/SPI pins and how to flash it. 3.3 V logic.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/","image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"},"about":{"@type":"Product","name":"ESP32-C3-DevKitM-1","brand":"Espressif","description":"Espressif's small ESP32-C3 board with Wi-Fi, Bluetooth LE, a RISC-V core and an RGB LED. Breadboard friendly, 3.3 V logic."}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"ESP32-C3-DevKitM-1","item":"https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/#how" data-i18n="nav.how">How it works</a>
+          <a href="/#safety" data-i18n="nav.safety">Safety</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/boards/" hreflang="en" class="on">EN</a><a href="/it/boards/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/boards/">Board pinouts</a> / <span>ESP32-C3-DevKitM-1</span></nav>
+        <h1>ESP32-C3-DevKitM-1 pinout</h1>
+        <p class="lead">Espressif's small ESP32-C3 board with Wi-Fi, Bluetooth LE, a RISC-V core and an RGB LED. Breadboard friendly, 3.3 V logic.</p>
+      </div>
+      <figure class="wrap pinout-fig">
+        <svg viewBox="0 0 526.92 644.8" role="img" aria-labelledby="pinout-title" class="pinout-svg"><title id="pinout-title">ESP32-C3-DevKitM-1 pinout</title><rect x="30" y="170" width="466.91999999999996" height="304.79999999999995" rx="10" fill="#1a1a1a" stroke="#3d5a80"/><rect x="362.4" y="243.2" width="199.20000000000002" height="158.39999999999998" rx="3" fill="#2a3a2e"/><text x="462" y="327.4" text-anchor="middle" class="svg-mod">ESP32-C3-MINI-1</text><rect x="21.60000000000001" y="270.8" width="88.80000000000001" height="104.39999999999999" rx="3" fill="#C9CED4"/><rect x="37.20000000000002" y="214.39999999999998" width="62.400000000000006" height="33.599999999999994" rx="3" fill="#15181c"/><rect x="37.20000000000002" y="396.79999999999995" width="62.400000000000006" height="33.599999999999994" rx="3" fill="#15181c"/><rect x="165.60000000000002" y="273.2" width="45.599999999999994" height="45.599999999999994" rx="3" fill="#15181c"/><rect x="240" y="261.2" width="73.19999999999999" height="99.60000000000001" rx="3" fill="#15181c"/><rect x="278.4" y="374" width="33.599999999999994" height="57.599999999999994" rx="3" fill="#ff6b5e"/><rect x="123.60000000000001" y="215.60000000000002" width="34.8" height="18" rx="3" fill="#ff6b5e"/><circle cx="472.20000000000005" cy="185.24" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(472.20000000000005,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">GND</text><text x="84" y="5" text-anchor="start" class="svg-fn">GND</text></g><circle cx="441.72" cy="185.24" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(441.72,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">3V3</text><text x="84" y="5" text-anchor="start" class="svg-fn">3V3</text></g><circle cx="411.24" cy="185.24" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(411.24,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">3V3</text><text x="84" y="5" text-anchor="start" class="svg-fn">3V3</text></g><circle cx="380.76" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(380.76,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">2</text><text x="84" y="5" text-anchor="start" class="svg-fn">ADC1_CH2</text></g><circle cx="350.28000000000003" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(350.28000000000003,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">3</text><text x="84" y="5" text-anchor="start" class="svg-fn">ADC1_CH3</text></g><circle cx="319.79999999999995" cy="185.24" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(319.79999999999995,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">GND</text><text x="84" y="5" text-anchor="start" class="svg-fn">GND</text></g><circle cx="289.32" cy="185.24" r="10" fill="#12171C" stroke="#7D8997" stroke-width="3"/><g transform="translate(289.32,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">RST</text><text x="84" y="5" text-anchor="start" class="svg-fn">CHIP_PU</text></g><circle cx="258.84000000000003" cy="185.24" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(258.84000000000003,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">GND</text><text x="84" y="5" text-anchor="start" class="svg-fn">GND</text></g><circle cx="228.36" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(228.36,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">0</text><text x="84" y="5" text-anchor="start" class="svg-fn">ADC1_CH0</text></g><circle cx="197.88" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(197.88,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">1</text><text x="84" y="5" text-anchor="start" class="svg-fn">ADC1_CH1</text></g><circle cx="167.39999999999998" cy="185.24" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(167.39999999999998,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">10</text><text x="84" y="5" text-anchor="start" class="svg-fn">FSPICS0</text></g><circle cx="136.92000000000002" cy="185.24" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(136.92000000000002,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">GND</text><text x="84" y="5" text-anchor="start" class="svg-fn">GND</text></g><circle cx="106.44000000000001" cy="185.24" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(106.44000000000001,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">5V</text><text x="84" y="5" text-anchor="start" class="svg-fn">5V</text></g><circle cx="75.96000000000001" cy="185.24" r="10" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><g transform="translate(75.96000000000001,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">5V</text><text x="84" y="5" text-anchor="start" class="svg-fn">5V</text></g><circle cx="45.47999999999999" cy="185.24" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(45.47999999999999,165.24) rotate(-90)"><text x="4" y="5" text-anchor="start" class="svg-pin">GND</text><text x="84" y="5" text-anchor="start" class="svg-fn">GND</text></g><circle cx="472.20000000000005" cy="459.56" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(472.20000000000005,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">GND</text><text x="-84" y="5" text-anchor="end" class="svg-fn">GND</text></g><circle cx="441.72" cy="459.56" r="10" fill="#12171C" stroke="#F2A93B" stroke-width="3"/><g transform="translate(441.72,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">TX · GPIO21</text><text x="-84" y="5" text-anchor="end" class="svg-fn">U0TXD</text></g><circle cx="411.24" cy="459.56" r="10" fill="#12171C" stroke="#F2A93B" stroke-width="3"/><g transform="translate(411.24,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">RX · GPIO20</text><text x="-84" y="5" text-anchor="end" class="svg-fn">U0RXD</text></g><circle cx="380.76" cy="459.56" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(380.76,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">GND</text><text x="-84" y="5" text-anchor="end" class="svg-fn">GND</text></g><circle cx="350.28000000000003" cy="459.56" r="10" fill="#12171C" stroke="#3FB6E8" stroke-width="3"/><g transform="translate(350.28000000000003,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">9</text><text x="-84" y="5" text-anchor="end" class="svg-fn">I2C_SCL</text></g><circle cx="319.79999999999995" cy="459.56" r="10" fill="#12171C" stroke="#3FB6E8" stroke-width="3"/><g transform="translate(319.79999999999995,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">8</text><text x="-84" y="5" text-anchor="end" class="svg-fn">RGB_LED</text></g><circle cx="289.32" cy="459.56" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(289.32,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">GND</text><text x="-84" y="5" text-anchor="end" class="svg-fn">GND</text></g><circle cx="258.84000000000003" cy="459.56" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(258.84000000000003,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">7</text><text x="-84" y="5" text-anchor="end" class="svg-fn">FSPID</text></g><circle cx="228.36" cy="459.56" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(228.36,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">6</text><text x="-84" y="5" text-anchor="end" class="svg-fn">FSPICLK</text></g><circle cx="197.88" cy="459.56" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(197.88,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">5</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC2_CH0</text></g><circle cx="167.39999999999998" cy="459.56" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(167.39999999999998,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">4</text><text x="-84" y="5" text-anchor="end" class="svg-fn">ADC1_CH4</text></g><circle cx="136.92000000000002" cy="459.56" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(136.92000000000002,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">GND</text><text x="-84" y="5" text-anchor="end" class="svg-fn">GND</text></g><circle cx="106.44000000000001" cy="459.56" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(106.44000000000001,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">18</text><text x="-84" y="5" text-anchor="end" class="svg-fn">USB_D-</text></g><circle cx="75.96000000000001" cy="459.56" r="10" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><g transform="translate(75.96000000000001,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">19</text><text x="-84" y="5" text-anchor="end" class="svg-fn">USB_D+</text></g><circle cx="45.47999999999999" cy="459.56" r="10" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><g transform="translate(45.47999999999999,479.56) rotate(-90)"><text x="-4" y="5" text-anchor="end" class="svg-pin">GND</text><text x="-84" y="5" text-anchor="end" class="svg-fn">GND</text></g></svg>
+        <figcaption>Top view, USB connector on the left. Colors: red power, grey ground, green GPIO, yellow analog, orange USB serial, blue I2C.</figcaption>
+      </figure>
+      <div class="wrap narrow">
+        <h2>At a glance</h2>
+        <dl class="defaults">
+          <dt>Chip</dt><dd>ESP32-C3 (ESP32-C3-MINI-1)</dd>
+          <dt>Processor</dt><dd>Single-core 32-bit RISC-V at 160 MHz, 400 KB SRAM, 4 MB flash in the chip package, Wi-Fi and Bluetooth LE</dd>
+          <dt>Logic level</dt><dd>3.3 V. Not 5 V tolerant unless marked below.</dd>
+          <dt>Flashing tool</dt><dd>esptool</dd>
+          <dt>Arduino board (FQBN)</dt><dd class="mono">esp32:esp32:esp32c3</dd>
+          <dt>Live pin view in BoardPilot</dt><dd>Yes (diagnostic agent available)</dd>
+        </dl>
+        <h2>Pins to avoid or use with care</h2>
+        <div class="facts"><div class="fact"><h3>Strapping pins: 2, 9, 8</h3><p>Their level at reset changes how the board boots. Usually fine after boot.</p></div><div class="fact"><h3>USB serial: TX (GPIO21), RX (GPIO20)</h3><p>Used for uploading and the serial monitor. Anything connected here can break uploads.</p></div></div>
+        <h2>Good pins for LEDs, buttons and signals</h2>
+        <p class="mono">4, 5, 6, 7, 10, 3, 0, 1</p>
+        <h2>Default pins in Arduino</h2>
+        <dl class="defaults"><dt>I2C</dt><dd>SDA = 8, SCL = 9. Any output-capable pins work with Wire.begin(sda, scl). Any GPIO can be I2C on the ESP32-C3. Arduino's defaults, GPIO 8 (SDA) and GPIO 9 (SCL), are strapping pins and GPIO 8 also drives the RGB LED.</dd><dt>SPI</dt><dd>MOSI = 6, MISO = 5, SCK = 4, CS = 7.</dd><dt>Analog inputs</dt><dd>0, 1, 3, 4, 2 (0–3.3 V)</dd></dl>
+        <h2>How to flash it</h2><p>If uploading does not start, hold BOOT, press and release RST, then release BOOT.</p>
+        <h2>All 30 pins</h2>
+        <div class="table-wrap"><table class="pin-table">
+          <thead><tr><th>Pin</th><th>GPIO</th><th>Chip pin</th><th>Functions</th><th>Notes</th></tr></thead>
+          <tbody>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>3V3</td><td class="mono">—</td><td class="mono"></td><td class="mono small">3V3</td><td>3.3 V from the on-board regulator. You can feed 3.3 V in here instead of USB, but never both at once.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>3V3</td><td class="mono">—</td><td class="mono"></td><td class="mono small">3V3</td><td>Same 3.3 V rail as the other 3V3 pin.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>2</td><td class="mono">2</td><td class="mono"></td><td class="mono small">GPIO, ADC1_CH2, FSPIQ</td><td>Strapping pin: should be HIGH at reset. Do not let a part pull it LOW while the board starts.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>3</td><td class="mono">3</td><td class="mono"></td><td class="mono small">GPIO, ADC1_CH3</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#7D8997"></span>RST</td><td class="mono">—</td><td class="mono"></td><td class="mono small">CHIP_PU</td><td>Reset. Pulling it LOW restarts the chip (same as the RST button).</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>0</td><td class="mono">0</td><td class="mono"></td><td class="mono small">GPIO, ADC1_CH0, XTAL_32K_P</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>1</td><td class="mono">1</td><td class="mono"></td><td class="mono small">GPIO, ADC1_CH1, XTAL_32K_N</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>10</td><td class="mono">10</td><td class="mono"></td><td class="mono small">GPIO, FSPICS0</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>5V</td><td class="mono">—</td><td class="mono"></td><td class="mono small">5V</td><td>5 V from the micro-USB port. You can power the board here with 5 V instead of USB, but never both at once.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>5V</td><td class="mono">—</td><td class="mono"></td><td class="mono small">5V</td><td>Same 5 V rail as the other 5V pin.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#F2A93B"></span>TX</td><td class="mono">21</td><td class="mono">GPIO21</td><td class="mono small">GPIO, U0TXD</td><td>USB serial TX through the CP2102N. Used for uploading and the serial monitor.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#F2A93B"></span>RX</td><td class="mono">20</td><td class="mono">GPIO20</td><td class="mono small">GPIO, U0RXD</td><td>USB serial RX through the CP2102N. Used for uploading and the serial monitor.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#3FB6E8"></span>9</td><td class="mono">9</td><td class="mono"></td><td class="mono small">GPIO, I2C_SCL (default)</td><td>Strapping pin wired to the BOOT button: LOW at reset starts upload mode instead of your program. Arduino's default I2C SCL.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#3FB6E8"></span>8</td><td class="mono">8</td><td class="mono"></td><td class="mono small">GPIO, RGB_LED, I2C_SDA (default)</td><td>Strapping pin and the RGB LED data line. It must be HIGH at reset for uploading to work. Arduino's default I2C SDA.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>7</td><td class="mono">7</td><td class="mono"></td><td class="mono small">GPIO, FSPID, MTDO, SPI_CS (default)</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>6</td><td class="mono">6</td><td class="mono"></td><td class="mono small">GPIO, FSPICLK, MTCK, SPI_MOSI (default)</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>5</td><td class="mono">5</td><td class="mono"></td><td class="mono small">GPIO, ADC2_CH0, FSPIWP, MTDI, SPI_MISO (default)</td><td>ADC2 on the ESP32-C3 gives unstable readings (chip errata) and is not supported by ESP-IDF. Use GPIO 0 to 4 for analog.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>4</td><td class="mono">4</td><td class="mono"></td><td class="mono small">GPIO, ADC1_CH4, FSPIHD, MTMS, SPI_SCK (default)</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>18</td><td class="mono">18</td><td class="mono"></td><td class="mono small">GPIO, USB_D-</td><td>Native USB D- of the chip. This board's micro-USB port does not use it, so it is free, but it starts up in USB mode.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>19</td><td class="mono">19</td><td class="mono"></td><td class="mono small">GPIO, USB_D+</td><td>Native USB D+ of the chip. This board's micro-USB port does not use it, so it is free, but it has a USB pull-up at start-up.</td></tr>
+<tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td class="mono">—</td><td class="mono"></td><td class="mono small">GND</td><td></td></tr>
+          </tbody>
+        </table></div>
+        <div class="cta-box">
+          <h2>Check your wiring with BoardPilot</h2>
+          <p>BoardPilot shows this board in 3D, flags risky pins as you wire, and flashes it safely with a backup first.</p>
+          <a class="btn primary" href="/#download">Download BoardPilot</a>
+        </div>
+        <h2>Sources</h2>
+        <ul class="fine"><li><a href="https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c3/esp32-c3-devkitm-1/user_guide.html" rel="nofollow noopener">ESP32-C3-DevKitM-1 user guide</a>, Header Block (J1, J3) and footnote on strapping pins GPIO2, 8, 9; Description of Components</li><li><a href="https://dl.espressif.com/dl/schematics/SCH_ESP32-C3-DEVKITM-1_V1_20200915A.pdf" rel="nofollow noopener">ESP32-C3-DevKitM-1 schematic V1 (2020-09-15)</a>, CP2102N-A02 bridge, micro-USB, RGB LED on GPIO8, BOOT on GPIO9</li><li><a href="https://dl.espressif.com/dl/schematics/DIMENSION_ESP32-C3-DEVKITM-1_V1_20200915AA.dxf" rel="nofollow noopener">ESP32-C3-DevKitM-1 dimensions (DXF V1 2020-09-15)</a>, Board outline 38.91 x 25.40 mm, header pad centres, component outlines</li><li><a href="https://www.espressif.com/sites/default/files/documentation/esp32-c3_datasheet_en.pdf" rel="nofollow noopener">ESP32-C3 Series Datasheet v2.4</a>, 3 Boot Configurations (Tables 3-1, 3-3); 2.3 IO pins: GPIO18/19 USB_PU note</li><li><a href="https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-reference/peripherals/adc/adc_oneshot.html" rel="nofollow noopener">ESP-IDF Programming Guide (ESP32-C3)</a>, ADC Oneshot: Hardware Limitations (ADC2 oneshot not supported, results not stable; see ESP32-C3 errata)</li><li><a href="https://github.com/espressif/arduino-esp32/blob/master/variants/esp32c3/pins_arduino.h" rel="nofollow noopener">arduino-esp32 variants/esp32c3/pins_arduino.h</a>, SDA 8, SCL 9, SS 7, MOSI 6, MISO 5, SCK 4, TX 21, RX 20, PIN_RGB_LED 8</li><li><a href="https://github.com/mojeee/boardpilot/blob/main/boards/esp32-c3-devkitm-1.sources.md">Board data file and source notes on GitHub</a></li></ul>
+        <p><a href="/boards/">← All boards</a></p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

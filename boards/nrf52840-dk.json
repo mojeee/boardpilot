@@ -1,0 +1,1388 @@
+{
+  "id": "nrf52840-dk",
+  "name": "Nordic nRF52840 DK",
+  "vendor": "Nordic Semiconductor",
+  "family": "nrf52",
+  "module": "nRF52840",
+  "chip": "nRF52840-QIAA",
+  "cpu": "Arm Cortex-M4F at 64 MHz, 256 KB RAM, 1 MB flash, Bluetooth LE, Thread/Zigbee (802.15.4), NFC, native USB",
+  "logicVolt": 3.3,
+  "flashBytes": 1048576,
+  "ramBytes": 262144,
+  "pcbMm": {
+    "length": 133.985,
+    "width": 63.5,
+    "thickness": 1.55
+  },
+  "layoutPxPerMm": 10,
+  "headerStyle": "female-up",
+  "summary": "Nordic's official development kit for the nRF52840 Bluetooth chip, with a built-in J-Link debugger, 4 buttons, 4 LEDs and Arduino-style headers. Pins run at 3.0 V and are not 5 V tolerant.",
+  "pins": [
+    {
+      "id": "SCL",
+      "gpio": 27,
+      "chipPin": "P0.27",
+      "posMm": [
+        18.796,
+        7.62
+      ],
+      "label": "P0.27",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Arduino SCL (I2C clock). The DK connects I2C pull-up resistors to this line when a shield is detected (SB33)."
+    },
+    {
+      "id": "SDA",
+      "gpio": 26,
+      "chipPin": "P0.26",
+      "posMm": [
+        21.336,
+        7.62
+      ],
+      "label": "P0.26",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SDA_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Arduino SDA (I2C data). The DK connects I2C pull-up resistors to this line when a shield is detected (SB33)."
+    },
+    {
+      "id": "AREF",
+      "gpio": 2,
+      "chipPin": "P0.02",
+      "posMm": [
+        23.876,
+        7.62
+      ],
+      "label": "P0.02",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "AIN0",
+        "AREF"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Arduino AREF position, wired to P0.02 (analog input AIN0)."
+    },
+    {
+      "id": "GND1",
+      "gpio": null,
+      "posMm": [
+        26.416,
+        7.62
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "D13",
+      "gpio": 47,
+      "chipPin": "P1.15",
+      "posMm": [
+        28.956,
+        7.62
+      ],
+      "label": "P1.15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_SCK_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D12",
+      "gpio": 46,
+      "chipPin": "P1.14",
+      "posMm": [
+        31.496,
+        7.62
+      ],
+      "label": "P1.14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MISO_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D11",
+      "gpio": 45,
+      "chipPin": "P1.13",
+      "posMm": [
+        34.036,
+        7.62
+      ],
+      "label": "P1.13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_MOSI_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D10",
+      "gpio": 44,
+      "chipPin": "P1.12",
+      "posMm": [
+        36.576,
+        7.62
+      ],
+      "label": "P1.12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SPI_CS_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D9",
+      "gpio": 43,
+      "chipPin": "P1.11",
+      "posMm": [
+        39.116,
+        7.62
+      ],
+      "label": "P1.11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D8",
+      "gpio": 42,
+      "chipPin": "P1.10",
+      "posMm": [
+        41.656,
+        7.62
+      ],
+      "label": "P1.10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D7",
+      "gpio": 40,
+      "chipPin": "P1.08",
+      "posMm": [
+        45.72,
+        7.62
+      ],
+      "label": "P1.08",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "With the TRACE switch (SW7) set to Alt, Button 2 is moved to this pin."
+    },
+    {
+      "id": "D6",
+      "gpio": 39,
+      "chipPin": "P1.07",
+      "posMm": [
+        48.26,
+        7.62
+      ],
+      "label": "P1.07",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "With the TRACE switch (SW7) set to Alt, Button 1 is moved to this pin."
+    },
+    {
+      "id": "D5",
+      "gpio": 38,
+      "chipPin": "P1.06",
+      "posMm": [
+        50.8,
+        7.62
+      ],
+      "label": "P1.06",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D4",
+      "gpio": 37,
+      "chipPin": "P1.05",
+      "posMm": [
+        53.34,
+        7.62
+      ],
+      "label": "P1.05",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D3",
+      "gpio": 36,
+      "chipPin": "P1.04",
+      "posMm": [
+        55.88,
+        7.62
+      ],
+      "label": "P1.04",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D2",
+      "gpio": 35,
+      "chipPin": "P1.03",
+      "posMm": [
+        58.42,
+        7.62
+      ],
+      "label": "P1.03",
+      "kind": "gpio",
+      "functions": [
+        "GPIO"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "D1",
+      "gpio": 34,
+      "chipPin": "P1.02",
+      "posMm": [
+        60.96,
+        7.62
+      ],
+      "label": "P1.02",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial1_TX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Serial1 TX in the Arduino core."
+    },
+    {
+      "id": "D0",
+      "gpio": 33,
+      "chipPin": "P1.01",
+      "posMm": [
+        63.5,
+        7.62
+      ],
+      "label": "P1.01",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "Serial1_RX"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Serial1 RX in the Arduino core."
+    },
+    {
+      "id": "P0_10",
+      "gpio": 10,
+      "chipPin": "P0.10",
+      "posMm": [
+        68.58,
+        7.62
+      ],
+      "label": "P0.10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "NFC2"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "NFC antenna pin by default. To use it as a normal pin, set CONFIG_NFCT_PINS_AS_GPIOS in your firmware."
+    },
+    {
+      "id": "P0_09",
+      "gpio": 9,
+      "chipPin": "P0.09",
+      "posMm": [
+        71.12,
+        7.62
+      ],
+      "label": "P0.09",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "NFC1"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "NFC antenna pin by default. To use it as a normal pin, set CONFIG_NFCT_PINS_AS_GPIOS in your firmware."
+    },
+    {
+      "id": "P0_08",
+      "gpio": 8,
+      "chipPin": "P0.08",
+      "posMm": [
+        73.66,
+        7.62
+      ],
+      "label": "P0.08",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART_RXD",
+        "Serial2_RX"
+      ],
+      "flags": [
+        "uart0",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Serial RX from the on-board debugger (the USB virtual COM port). Serial2 in the Arduino core."
+    },
+    {
+      "id": "P0_07",
+      "gpio": 7,
+      "chipPin": "P0.07",
+      "posMm": [
+        76.2,
+        7.62
+      ],
+      "label": "P0.07",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART_CTS",
+        "TRACECLK"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Flow-control line (CTS) of the USB virtual COM port. Free when flow control is off, or with switch SW7 set to off."
+    },
+    {
+      "id": "P0_06",
+      "gpio": 6,
+      "chipPin": "P0.06",
+      "posMm": [
+        78.74,
+        7.62
+      ],
+      "label": "P0.06",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART_TXD",
+        "Serial2_TX"
+      ],
+      "flags": [
+        "uart0",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Serial TX to the on-board debugger (the USB virtual COM port). Serial2 in the Arduino core."
+    },
+    {
+      "id": "P0_05",
+      "gpio": 5,
+      "chipPin": "P0.05",
+      "posMm": [
+        81.28,
+        7.62
+      ],
+      "label": "P0.05",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "UART_RTS",
+        "AIN3"
+      ],
+      "flags": [
+        "reserved",
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Flow-control line (RTS) of the USB virtual COM port. Free when flow control is off, or with switch SW7 set to off."
+    },
+    {
+      "id": "P0_01",
+      "gpio": 1,
+      "chipPin": "P0.01",
+      "posMm": [
+        83.82,
+        7.62
+      ],
+      "label": "P0.01",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "XL2"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Used by the 32.768 kHz crystal. Not connected to this header unless you cut SB1 and short SB3."
+    },
+    {
+      "id": "P0_00",
+      "gpio": 0,
+      "chipPin": "P0.00",
+      "posMm": [
+        86.36,
+        7.62
+      ],
+      "label": "P0.00",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "XL1"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Used by the 32.768 kHz crystal. Not connected to this header unless you cut SB2 and short SB4."
+    },
+    {
+      "id": "VDD1",
+      "gpio": null,
+      "posMm": [
+        27.94,
+        55.88
+      ],
+      "label": "VDD",
+      "kind": "power",
+      "functions": [
+        "VDD"
+      ],
+      "flags": [],
+      "maxVolt": 3.0,
+      "supplies": 3.0,
+      "notes": "DK supply VDD: 3.0 V by default (fixed 3 V regulator)."
+    },
+    {
+      "id": "IOREF",
+      "gpio": null,
+      "posMm": [
+        30.48,
+        55.88
+      ],
+      "label": "VDD",
+      "kind": "power",
+      "functions": [
+        "IOREF",
+        "VDD"
+      ],
+      "flags": [],
+      "maxVolt": 3.0,
+      "supplies": 3.0,
+      "notes": "Arduino IOREF: tells a shield the logic level, which is VDD (3.0 V by default)."
+    },
+    {
+      "id": "RESET",
+      "gpio": null,
+      "posMm": [
+        33.02,
+        55.88
+      ],
+      "label": "RESET",
+      "kind": "enable",
+      "functions": [
+        "RESET"
+      ],
+      "flags": [],
+      "maxVolt": 3.0,
+      "notes": "Not connected by default. Solder bridges SB43-SB46 can link it to the chip reset (P0.18) or the IF BOOT/RESET button."
+    },
+    {
+      "id": "VDD",
+      "gpio": null,
+      "posMm": [
+        35.56,
+        55.88
+      ],
+      "label": "VDD",
+      "kind": "power",
+      "functions": [
+        "VDD",
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.0,
+      "supplies": 3.0,
+      "notes": "Arduino 3.3V position. On this DK it carries VDD, 3.0 V by default."
+    },
+    {
+      "id": "5V",
+      "gpio": null,
+      "posMm": [
+        38.1,
+        55.88
+      ],
+      "label": "5V",
+      "kind": "power",
+      "functions": [
+        "5V"
+      ],
+      "flags": [],
+      "maxVolt": 5.0,
+      "supplies": 5.0,
+      "notes": "5 V from the DK's boost regulator. Never connect it to an nRF52840 pin."
+    },
+    {
+      "id": "GND2",
+      "gpio": null,
+      "posMm": [
+        40.64,
+        55.88
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "GND3",
+      "gpio": null,
+      "posMm": [
+        43.18,
+        55.88
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    },
+    {
+      "id": "A0",
+      "gpio": 3,
+      "chipPin": "P0.03",
+      "posMm": [
+        50.8,
+        55.88
+      ],
+      "label": "P0.03 (A0)",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "AIN1",
+        "A0"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "A1",
+      "gpio": 4,
+      "chipPin": "P0.04",
+      "posMm": [
+        53.34,
+        55.88
+      ],
+      "label": "P0.04",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "AIN2",
+        "A1"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3,
+      "notes": "With the TRACE switch (SW7) set to Alt, the virtual COM port CTS line is moved to this pin."
+    },
+    {
+      "id": "A2",
+      "gpio": 28,
+      "chipPin": "P0.28",
+      "posMm": [
+        55.88,
+        55.88
+      ],
+      "label": "P0.28",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "AIN4",
+        "A2"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "A3",
+      "gpio": 29,
+      "chipPin": "P0.29",
+      "posMm": [
+        58.42,
+        55.88
+      ],
+      "label": "P0.29",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "AIN5",
+        "A3"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "A4",
+      "gpio": 30,
+      "chipPin": "P0.30",
+      "posMm": [
+        60.96,
+        55.88
+      ],
+      "label": "P0.30",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "AIN6",
+        "A4"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "A5",
+      "gpio": 31,
+      "chipPin": "P0.31",
+      "posMm": [
+        63.5,
+        55.88
+      ],
+      "label": "P0.31",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "AIN7",
+        "A5"
+      ],
+      "flags": [
+        "adc"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "P0_11",
+      "gpio": 11,
+      "chipPin": "P0.11",
+      "posMm": [
+        93.98,
+        10.16
+      ],
+      "label": "P0.11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "BUTTON1",
+        "TRACEDATA1"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Button 1 on the DK, active low: reads 0 when pressed. Use INPUT_PULLUP (no external pull-up on the board)."
+    },
+    {
+      "id": "P0_13",
+      "gpio": 13,
+      "chipPin": "P0.13",
+      "posMm": [
+        93.98,
+        12.7
+      ],
+      "label": "P0.13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "LED1",
+        "LED_BUILTIN"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "LED 1 (green) on the DK, active low: write 0 to turn it on. Cut SB5 to free the pin. LED_BUILTIN in the Arduino core."
+    },
+    {
+      "id": "P0_15",
+      "gpio": 15,
+      "chipPin": "P0.15",
+      "posMm": [
+        93.98,
+        15.24
+      ],
+      "label": "P0.15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "LED3"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "LED 3 (green) on the DK, active low: write 0 to turn it on. Cut SB7 to free the pin."
+    },
+    {
+      "id": "P0_17",
+      "gpio": 17,
+      "chipPin": "P0.17",
+      "posMm": [
+        93.98,
+        17.78
+      ],
+      "label": "P0.17",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "QSPI_CS"
+      ],
+      "flags": [
+        "flash",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Wired to the on-board 64 Mbit QSPI flash; not connected to this header unless you cut SB13 and short SB23."
+    },
+    {
+      "id": "P0_19",
+      "gpio": 19,
+      "chipPin": "P0.19",
+      "posMm": [
+        93.98,
+        20.32
+      ],
+      "label": "P0.19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "QSPI_SCK"
+      ],
+      "flags": [
+        "flash",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Wired to the on-board 64 Mbit QSPI flash; not connected to this header unless you cut SB11 and short SB21."
+    },
+    {
+      "id": "P0_21",
+      "gpio": 21,
+      "chipPin": "P0.21",
+      "posMm": [
+        93.98,
+        22.86
+      ],
+      "label": "P0.21",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "QSPI_IO1"
+      ],
+      "flags": [
+        "flash",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Wired to the on-board 64 Mbit QSPI flash; not connected to this header unless you cut SB14 and short SB24."
+    },
+    {
+      "id": "P0_23",
+      "gpio": 23,
+      "chipPin": "P0.23",
+      "posMm": [
+        93.98,
+        25.4
+      ],
+      "label": "P0.23",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "QSPI_IO3"
+      ],
+      "flags": [
+        "flash",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Wired to the on-board 64 Mbit QSPI flash; not connected to this header unless you cut SB10 and short SB20."
+    },
+    {
+      "id": "P0_25",
+      "gpio": 25,
+      "chipPin": "P0.25",
+      "posMm": [
+        93.98,
+        27.94
+      ],
+      "label": "P0.25",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "BUTTON4"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Button 4 on the DK, active low: reads 0 when pressed. Use INPUT_PULLUP (no external pull-up on the board)."
+    },
+    {
+      "id": "P1_09",
+      "gpio": 41,
+      "chipPin": "P1.09",
+      "posMm": [
+        93.98,
+        30.48
+      ],
+      "label": "P1.09",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "TRACEDATA3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "P0_12",
+      "gpio": 12,
+      "chipPin": "P0.12",
+      "posMm": [
+        96.52,
+        10.16
+      ],
+      "label": "P0.12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "BUTTON2",
+        "TRACEDATA2"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Button 2 on the DK, active low: reads 0 when pressed. Use INPUT_PULLUP (no external pull-up on the board)."
+    },
+    {
+      "id": "P0_14",
+      "gpio": 14,
+      "chipPin": "P0.14",
+      "posMm": [
+        96.52,
+        12.7
+      ],
+      "label": "P0.14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "LED2"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "LED 2 (green) on the DK, active low: write 0 to turn it on. Cut SB6 to free the pin."
+    },
+    {
+      "id": "P0_16",
+      "gpio": 16,
+      "chipPin": "P0.16",
+      "posMm": [
+        96.52,
+        15.24
+      ],
+      "label": "P0.16",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "LED4"
+      ],
+      "flags": [
+        "onboard_led"
+      ],
+      "maxVolt": 3.3,
+      "notes": "LED 4 (green) on the DK, active low: write 0 to turn it on. Cut SB8 to free the pin."
+    },
+    {
+      "id": "P0_18",
+      "gpio": 18,
+      "chipPin": "P0.18",
+      "posMm": [
+        96.52,
+        17.78
+      ],
+      "label": "P0.18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "nRESET"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "The chip's reset pin when pin reset is enabled (the IF BOOT/RESET button uses it). Avoid using it as a normal pin."
+    },
+    {
+      "id": "P0_20",
+      "gpio": 20,
+      "chipPin": "P0.20",
+      "posMm": [
+        96.52,
+        20.32
+      ],
+      "label": "P0.20",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "QSPI_IO0"
+      ],
+      "flags": [
+        "flash",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Wired to the on-board 64 Mbit QSPI flash; not connected to this header unless you cut SB12 and short SB22."
+    },
+    {
+      "id": "P0_22",
+      "gpio": 22,
+      "chipPin": "P0.22",
+      "posMm": [
+        96.52,
+        22.86
+      ],
+      "label": "P0.22",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "QSPI_IO2"
+      ],
+      "flags": [
+        "flash",
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Wired to the on-board 64 Mbit QSPI flash; not connected to this header unless you cut SB15 and short SB25."
+    },
+    {
+      "id": "P0_24",
+      "gpio": 24,
+      "chipPin": "P0.24",
+      "posMm": [
+        96.52,
+        25.4
+      ],
+      "label": "P0.24",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "BUTTON3"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Button 3 on the DK, active low: reads 0 when pressed. Use INPUT_PULLUP (no external pull-up on the board)."
+    },
+    {
+      "id": "P1_00",
+      "gpio": 32,
+      "chipPin": "P1.00",
+      "posMm": [
+        96.52,
+        27.94
+      ],
+      "label": "P1.00",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SWO",
+        "TRACEDATA0"
+      ],
+      "flags": [
+        "reserved"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Debug trace output (SWO) to the on-board debugger. Usable as a pin if you do not use trace."
+    },
+    {
+      "id": "GND4",
+      "gpio": null,
+      "posMm": [
+        96.52,
+        30.48
+      ],
+      "label": "GND",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0
+    }
+  ],
+  "components": [
+    {
+      "type": "mcu",
+      "label": "nRF52840",
+      "rect": [
+        1117,
+        224,
+        70,
+        70
+      ],
+      "color": "#1b1b1b"
+    },
+    {
+      "type": "chip",
+      "label": "Interface MCU (J-Link OB)",
+      "rect": [
+        347,
+        300,
+        70,
+        70
+      ],
+      "color": "#1b1b1b"
+    },
+    {
+      "type": "chip",
+      "label": "64 Mbit QSPI flash",
+      "rect": [
+        1109,
+        373,
+        60,
+        50
+      ],
+      "color": "#1b1b1b"
+    },
+    {
+      "type": "usb",
+      "label": "micro-USB",
+      "rect": [
+        -10,
+        280,
+        70,
+        76
+      ],
+      "heightMm": 3
+    },
+    {
+      "type": "usb",
+      "label": "micro-USB",
+      "rect": [
+        859,
+        548,
+        76,
+        88
+      ],
+      "heightMm": 3
+    },
+    {
+      "type": "button",
+      "label": "BUTTON 1",
+      "rect": [
+        1026,
+        465,
+        62,
+        63
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BUTTON 2",
+      "rect": [
+        1128,
+        465,
+        62,
+        63
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BUTTON 3",
+      "rect": [
+        1026,
+        558,
+        62,
+        63
+      ]
+    },
+    {
+      "type": "button",
+      "label": "BUTTON 4",
+      "rect": [
+        1128,
+        558,
+        62,
+        63
+      ]
+    },
+    {
+      "type": "button",
+      "label": "IF BOOT/RESET",
+      "rect": [
+        742,
+        558,
+        62,
+        63
+      ]
+    },
+    {
+      "type": "switch",
+      "label": "Power",
+      "rect": [
+        12,
+        563,
+        86,
+        36
+      ]
+    },
+    {
+      "type": "led",
+      "label": "LED1",
+      "rect": [
+        1105,
+        92,
+        16,
+        8
+      ]
+    },
+    {
+      "type": "led",
+      "label": "LED2",
+      "rect": [
+        1168,
+        92,
+        16,
+        8
+      ]
+    },
+    {
+      "type": "led",
+      "label": "LED3",
+      "rect": [
+        1105,
+        130,
+        16,
+        8
+      ]
+    },
+    {
+      "type": "led",
+      "label": "LED4",
+      "rect": [
+        1168,
+        130,
+        16,
+        8
+      ]
+    },
+    {
+      "type": "crystal",
+      "label": "32.768 kHz",
+      "rect": [
+        1071,
+        242,
+        32,
+        15
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "nRF52840 Product Specification",
+    "i2c": {
+      "sda": "SDA",
+      "scl": "SCL",
+      "remappable": false,
+      "note": "The nRF52840 I2C (TWIM) block can use almost any pin, but the Arduino core's Wire is fixed to P0.26 (SDA) and P0.27 (SCL), the Arduino SDA/SCL sockets."
+    },
+    "spi": {
+      "mosi": "D11",
+      "miso": "D12",
+      "sck": "D13",
+      "cs": "D10"
+    },
+    "safeIo": [
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D8",
+      "D9",
+      "D6",
+      "D7"
+    ],
+    "adcPins": [
+      "A0",
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "inputPins": [
+      "D2",
+      "D3",
+      "D4",
+      "D5"
+    ],
+    "adcMaxMv": 3600
+  },
+  "toolchain": {
+    "flasher": "nrfjprog",
+    "fqbn": "adafruit:nrf52:pca10056",
+    "core": "adafruit:nrf52",
+    "coreUrl": "https://adafruit.github.io/arduino-board-index/package_adafruit_index.json",
+    "imageFormat": "hex",
+    "agent": false,
+    "uploadNote": "Plug USB into the port on the short edge (interface MCU, J2) and set the power switch to ON; before the first Arduino sketch, burn the Adafruit bootloader and SoftDevice once.",
+    "link": "debug-probe"
+  },
+  "usb": [
+    {
+      "vid": "1366",
+      "pid": "1015",
+      "note": "SEGGER J-Link OB interface MCU (J2): J-Link + 1 virtual COM port + drag-and-drop drive"
+    },
+    {
+      "vid": "1366",
+      "pid": "1051",
+      "note": "SEGGER J-Link OB interface MCU (J2): J-Link + 2 virtual COM ports + drive (newer J-Link OB firmware)"
+    },
+    {
+      "vid": "1366",
+      "pid": "1061",
+      "note": "SEGGER J-Link OB interface MCU (J2) with the WinUSB driver: 2 virtual COM ports + drive"
+    },
+    {
+      "vid": "239a",
+      "pid": "80da",
+      "note": "nRF52840 native USB (J3) running a sketch built with the Adafruit nRF52 core"
+    },
+    {
+      "vid": "239a",
+      "pid": "00da",
+      "note": "nRF52840 native USB (J3) in the Adafruit nRF52 bootloader (only after it has been burned)"
+    }
+  ],
+  "links": [
+    {
+      "title": "nRF52840 DK product page",
+      "url": "https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK"
+    },
+    {
+      "title": "nRF52840 DK Hardware User Guide",
+      "url": "https://docs.nordicsemi.com/bundle/ug_nrf52840_dk/page/UG/dk/intro.html"
+    },
+    {
+      "title": "nRF52840 Product Specification",
+      "url": "https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html"
+    },
+    {
+      "title": "nRF52840 DK hardware files (schematic, layout, pick and place)",
+      "url": "https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/dev-kits/nrf52840-dk/nrf52840-development-kit---hardware-files-3_0_3.zip"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Nordic nRF52840 DK Hardware v1.0.0 User Guide (4440_050, 2020-12-03)",
+      "section": "4.6 Connector interface, Figure 21 Arduino signals routing, 4.6.1 Analog pin map, 4.7 Buttons and LEDs, 4.5 External memory, 4.8 32.768 kHz crystal, 3.2 Virtual serial port, 4.11 NFC, 4.13 Solder bridges",
+      "url": "https://docs.nordicsemi.com/bundle/ug_nrf52840_dk/page/UG/dk/intro.html"
+    },
+    {
+      "title": "nRF52840 DK hardware files 3.0.3 (PCA10056)",
+      "section": "400236_Pick_And_Place.csv (connector and part centres), 400236.GM1 board outline (5.275 x 2.5 in), laminate stack-up, schematic sheet 5 (connectors)",
+      "url": "https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/dev-kits/nrf52840-dk/nrf52840-development-kit---hardware-files-3_0_3.zip"
+    },
+    {
+      "title": "Nordic nRF52840 Product Specification",
+      "section": "Pin assignments (aQFN73): AIN0-AIN7 = P0.02-P0.05, P0.28-P0.31; Absolute maximum ratings (I/O pin voltage max VDD + 0.3 V)",
+      "url": "https://docs.nordicsemi.com/bundle/ps_nrf52840/page/keyfeatures_html5.html"
+    },
+    {
+      "title": "adafruit/Adafruit_nRF52_Arduino variants/pca10056/variant.h",
+      "section": "Pin numbers (port*32+pin), PIN_WIRE_SDA 26 / SCL 27, SPI MOSI 45 / MISO 46 / SCK 47 / SS 44, Serial1 P1.01/P1.02, Serial2 P0.08/P0.06",
+      "url": "https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/variants/pca10056/variant.h"
+    },
+    {
+      "title": "adafruit/Adafruit_nRF52_Arduino boards.txt",
+      "section": "pca10056 entry: USB 239a:80da / 239a:00da, S140 6.1.1 linker script",
+      "url": "https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/boards.txt"
+    },
+    {
+      "title": "SEGGER J-Link udev rules, quoted on Nordic DevZone",
+      "section": "J-Link product ids 0x1015, 0x1051, 0x1061",
+      "url": "https://devzone.nordicsemi.com/f/nordic-q-a/53473/how-to-change-usb-attrs-product-of-ncp-and-cli-firmware"
+    }
+  ]
+}

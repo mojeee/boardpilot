@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { stepBody, stepOptions, type StepDef, type ResultData, type StepState } from '@shared/flow';
 import { FLOWS } from '@flows/index';
 import { PARTS, getBoard, targetLabel } from '@shared/board';
-import { useApp, useConfirm, useScene, log } from '../state/store';
+import { currentBoard, useApp, useConfirm, useScene, log } from '../state/store';
 import { useWizard } from './session';
 import { askAi } from '../components/ai';
 import { AskBox, AssistantPanel } from '../components/AssistantPanel';
@@ -164,7 +164,7 @@ function ResultCard({ r }: { r: ResultData }) {
         <div className="chips">
           {r.highlight.map((h) => (
             <button key={h} className="chip link mono" onClick={() => useScene.getState().focusOn([h])}>
-              {targetLabel(getBoard(), scene, h)}
+              {targetLabel(currentBoard(), scene, h)}
             </button>
           ))}
         </div>

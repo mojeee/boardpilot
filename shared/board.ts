@@ -1,10 +1,91 @@
 // Board and part helpers shared by main and renderer. Pure functions only.
 
 import type { BoardDef, PartDef, PinDef, Scene, PartPinRole, TargetRef } from './types';
-import esp32Devkit30 from '../boards/esp32-devkitc-30.json';
-export const BOARDS: Record<string, BoardDef> = {
-  [esp32Devkit30.id]: esp32Devkit30 as unknown as BoardDef,
+/** Every JSON file in /boards is a board definition (Vite bundles them at build time). */
+const BOARD_FILES = import.meta.glob<{ default: unknown }>('../boards/*.json', { eager: true });
+
+export const BOARDS: Record<string, BoardDef> = Object.fromEntries(
+  Object.values(BOARD_FILES)
+    .map((m) => m.default as BoardDef)
+    .filter((b) => b && typeof b.id === 'string' && Array.isArray(b.pins))
+    .map((b) => [b.id, b]),
+);
+
+/** Board ids in picker order: the order families are listed in, then by name. */
+const FAMILY_ORDER: BoardDef['family'][] = ['esp32', 'esp32s3', 'esp32c3', 'rp2040', 'rp2350', 'avr', 'stm32', 'nrf52', 'imxrt'];
+export function boardList(): BoardDef[] {
+  return Object.values(BOARDS).sort(
+    (a, b) => FAMILY_ORDER.indexOf(a.family) - FAMILY_ORDER.indexOf(b.family) || a.name.localeCompare(b.name),
+  );
+}
+
+/** Family names for the picker. */
+export const FAMILY_LABEL: Record<BoardDef['family'], string> = {
+  esp32: 'ESP32',
+  esp32s3: 'ESP32-S3',
+  esp32c3: 'ESP32-C3',
+  rp2040: 'Raspberry Pi RP2040',
+  rp2350: 'Raspberry Pi RP2350',
+  avr: 'Arduino (AVR)',
+  stm32: 'STM32',
+  nrf52: 'Nordic nRF52',
+  imxrt: 'Teensy (i.MX RT)',
 };
+
+/**
+ * Does the chip a tool reported fit the selected board? Used to warn when the project is set to one
+ * board but another is plugged in. Unknown combinations count as a match (no false alarms).
+ */
+export function chipMatchesBoard(chip: string, board: BoardDef): boolean {
+  const c = chip.toUpperCase();
+  switch (board.family) {
+    case 'esp32':
+      return /ESP32/.test(c) && !/ESP32-(S2|S3|C2|C3|C5|C6|H2|P4)/.test(c);
+    case 'esp32s3':
+      return /ESP32-S3/.test(c);
+    case 'esp32c3':
+      return /ESP32-C3/.test(c);
+    case 'rp2040':
+      return /RP2040/.test(c) || !/RP2350/.test(c);
+    case 'rp2350':
+      return /RP2350/.test(c) || !/RP2040/.test(c);
+    case 'avr':
+      return !/^ATMEGA/.test(c) || c.replace(/[^A-Z0-9]/g, '').startsWith(board.chip.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 9));
+    case 'stm32': {
+      const want = board.chip.toUpperCase().slice(0, 9);
+      return !/STM32F\d/.test(c) || c.includes(want);
+    }
+    case 'nrf52':
+      return !/NRF5/.test(c) || c.includes(board.chip.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8));
+    default:
+      return true;
+  }
+}
+
+/** Teensy's bootloader can only write, so its program cannot be backed up (PJRC Teensy Loader docs). */
+export const canBackupFlash = (b: BoardDef) => b.toolchain.flasher !== 'teensy';
+
+export const isEspFamily = (b: BoardDef) => b.family === 'esp32' || b.family === 'esp32s3' || b.family === 'esp32c3';
+
+/** Boards whose USB ids match a port, exact vid:pid matches first. */
+export function boardsForUsb(vendorId?: string, productId?: string): string[] {
+  const v = vendorId?.toLowerCase().replace(/^0x/, '').padStart(4, '0');
+  const p = productId?.toLowerCase().replace(/^0x/, '').padStart(4, '0');
+  if (!v) return [];
+  const exact: string[] = [];
+  const vendorOnly: string[] = [];
+  for (const b of boardList()) {
+    for (const u of b.usb) {
+      if (u.vid !== v) continue;
+      if (u.pid === p) {
+        exact.push(b.id);
+        break;
+      }
+      if (u.pid === undefined) vendorOnly.push(b.id);
+    }
+  }
+  return [...new Set([...exact, ...vendorOnly])];
+}
 
 /** Every JSON file in /parts is a built-in part (Vite bundles them at build time). */
 const PART_FILES = import.meta.glob<{ default: unknown }>('../parts/*.json', { eager: true });
@@ -41,19 +122,35 @@ export function pinByGpio(board: BoardDef, gpio: number): PinDef | undefined {
   return board.pins.find((p) => p.gpio === gpio);
 }
 
-/* ---------- ESP32 chip rules (ESP32 Series Datasheet, "Pin Description" and "Strapping Pins") ---------- */
+/* ---------- pin rules (read from the board file; each board cites its own datasheet) ---------- */
 
-/** GPIO 6-11 are wired to the SPI flash inside the module. */
-export const FLASH_GPIOS = [6, 7, 8, 9, 10, 11];
-/** GPIO 34-39 are input only, with no internal pull-up/down (TRM, IO_MUX and GPIO Matrix). */
-export const INPUT_ONLY_GPIOS = [34, 35, 36, 37, 38, 39];
-/** Level at reset changes boot behaviour. */
-export const STRAPPING_GPIOS = [0, 2, 5, 12, 15];
-export const ADC1_GPIOS = [32, 33, 34, 35, 36, 37, 38, 39];
-export const ADC2_GPIOS = [0, 2, 4, 12, 13, 14, 15, 25, 26, 27];
-
-export const isAdcGpio = (g: number) => ADC1_GPIOS.includes(g) || ADC2_GPIOS.includes(g);
+export const isAdcPin = (p: PinDef) => p.flags.includes('adc') || p.flags.includes('adc1') || p.flags.includes('adc2');
 export const canOutput = (p: PinDef) => p.kind === 'gpio' && !p.flags.includes('input_only') && !p.flags.includes('flash');
+
+/** GPIO numbers of pins on the board's headers, in board order, without duplicates. */
+export function headerGpios(board: BoardDef): number[] {
+  return [...new Set(board.pins.filter((p) => p.kind === 'gpio' && p.gpio !== null).map((p) => p.gpio as number))];
+}
+
+export function pinsWithFlag(board: BoardDef, flag: PinDef['flags'][number]): PinDef[] {
+  return board.pins.filter((p) => p.flags.includes(flag));
+}
+
+/** Supply pin for a part: a pin supplying the part's voltage, the board's logic voltage first. */
+export function powerPinFor(board: BoardDef, partVoltage: string): PinDef | undefined {
+  const nums = partVoltage.split('-').map(Number).filter((n) => Number.isFinite(n));
+  const lo = nums.length ? Math.min(...nums) : 3.3;
+  const hi = nums.length ? Math.max(...nums) : 3.3;
+  const supplies = board.pins.filter((p) => p.kind === 'power' && p.supplies !== undefined && !/VIN|VBAT|AREF|VREF|IOREF/i.test(p.id));
+  const fits = supplies.filter((p) => (p.supplies as number) >= lo - 0.2 && (p.supplies as number) <= hi + 0.2);
+  const pick = (list: PinDef[]) =>
+    list.find((p) => p.supplies === board.logicVolt) ?? list.sort((a, b) => (a.supplies as number) - (b.supplies as number))[0];
+  return pick(fits) ?? supplies.find((p) => p.supplies === 3.3) ?? supplies[0];
+}
+
+export function groundPins(board: BoardDef): PinDef[] {
+  return board.pins.filter((p) => p.kind === 'ground' && !/AGND/i.test(p.id));
+}
 
 /* ---------- colors by role (design tokens) ---------- */
 
@@ -112,7 +209,7 @@ export function pinBaseRole(p: PinDef): PinRoleColor {
   if (p.kind === 'ground') return 'ground';
   if (p.kind === 'enable') return 'none';
   if (p.flags.includes('uart0')) return 'uart';
-  if (p.flags.includes('input_only')) return 'adc';
+  if (p.flags.includes('input_only') || (p.flags.includes('adc') && /^A\d/.test(p.label))) return 'adc';
   return 'gpio';
 }
 
@@ -135,13 +232,46 @@ export function pinRoleInScene(board: BoardDef, scene: Scene, pinId: string): Pi
 
 /**
  * Position of a board pin in board millimetres. Origin at the PCB centre, x along the length
- * (USB end is -x), z across the width (front row is +z), y up.
+ * (USB end is -x), z across the width (front row / bottom edge is +z), y up.
+ * Pins use posMm (from the PCB top-left corner) or, on legacy two-row boards, row and index.
  */
 export function pinPositionMm(board: BoardDef, p: PinDef): [number, number, number] {
-  const { length, thickness } = board.pcbMm;
-  const x = board.header.firstPinOffsetMm - p.index * board.header.pitchMm - length / 2;
-  const z = (p.row === 'front' ? 1 : -1) * (board.header.rowSpacingMm / 2);
+  const { length, width, thickness } = board.pcbMm;
+  if (p.posMm) return [p.posMm[0] - length / 2, thickness / 2, p.posMm[1] - width / 2];
+  const h = board.header ?? { pitchMm: 2.54, rowSpacingMm: width - 3, firstPinOffsetMm: length - 3 };
+  const x = h.firstPinOffsetMm - (p.index ?? 0) * h.pitchMm - length / 2;
+  const z = (p.row === 'front' ? 1 : -1) * (h.rowSpacingMm / 2);
   return [x, thickness / 2, z];
+}
+
+export function pinMount(board: BoardDef, p: PinDef) {
+  return p.mount ?? board.headerStyle ?? 'male-down';
+}
+
+/**
+ * Which way a pin's label goes: away from the board, towards the nearest edge. Pins with another
+ * pin further out in the same direction (inner row of a double header) point inwards instead.
+ */
+export function pinOutward(board: BoardDef, p: PinDef): [number, number] {
+  const { length, width } = board.pcbMm;
+  const [x, , z] = pinPositionMm(board, p);
+  // Nearest edge; the long edges win ties (corner pins belong to their header row). Pins far from
+  // every edge (a column in the middle of the board) label to the right.
+  const edges = [
+    { dir: [0, -1] as [number, number], dist: z + width / 2 - 0.6 },
+    { dir: [0, 1] as [number, number], dist: width / 2 - z - 0.6 },
+    { dir: [-1, 0] as [number, number], dist: x + length / 2 },
+    { dir: [1, 0] as [number, number], dist: length / 2 - x },
+  ].sort((a, b) => a.dist - b.dist);
+  const d: [number, number] = edges[0].dist > 6 ? [1, 0] : edges[0].dir;
+  const blocked = board.pins.some((q) => {
+    if (q === p) return false;
+    const [qx, , qz] = pinPositionMm(board, q);
+    const along = (qx - x) * d[0] + (qz - z) * d[1];
+    const across = Math.abs((qx - x) * d[1] - (qz - z) * d[0]);
+    return along > 1.5 && along < 3.5 && across < 0.8;
+  });
+  return blocked ? [-d[0], -d[1]] : d;
 }
 
 /** Board-layout rect (px) → centre and size in mm, in the same frame as pinPositionMm. */

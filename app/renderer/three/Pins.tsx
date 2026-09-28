@@ -6,13 +6,19 @@ import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { BoardDef, PinDef, TargetRef } from '@shared/types';
-import { ROLE_HEX, pinPositionMm, pinRoleInScene } from '@shared/board';
+import { ROLE_HEX, pinMount, pinOutward, pinPositionMm, pinRoleInScene } from '@shared/board';
 import { useLive, useScene } from '../state/store';
+import { pinLiftMm } from './geometry';
 
 const GOLD = '#D9B45A';
+const PLASTIC = '#1a1d21';
+const PITCH = 2.54;
 
 function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
   const [x, y, z] = pinPositionMm(board, pin);
+  const mount = pinMount(board, pin);
+  const lift = pinLiftMm(mount);
+  const [ox, oz] = useMemo(() => pinOutward(board, pin), [board, pin]);
   const scene = useScene((s) => s.scene);
   const findings = useScene((s) => s.findings);
   const labels = useScene((s) => s.labels);
@@ -52,7 +58,7 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
       if (mv !== undefined) {
         const h = Math.max(0.2, (mv / 3300) * 10);
         bar.current.scale.y = h;
-        bar.current.position.y = 1.2 + h / 2;
+        bar.current.position.y = lift + 1.2 + h / 2;
       }
     }
   });
@@ -67,8 +73,8 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
     st.select(target);
   };
 
-  const labelOffset = pin.row === 'front' ? 3.4 : -3.4;
   const dimmed = wireMode && pin.kind === 'enable';
+  const thick = board.pcbMm.thickness;
 
   return (
     <group position={[x, y, z]}>
@@ -77,36 +83,69 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
         <cylinderGeometry args={[0.85, 0.85, 0.12, 20]} />
         <meshStandardMaterial color={GOLD} metalness={0.4} roughness={0.35} />
       </mesh>
-      {/* header pin going down */}
-      <mesh position={[0, -5.2, 0]}>
-        <boxGeometry args={[0.64, 10, 0.64]} />
-        <meshStandardMaterial color={GOLD} metalness={0.4} roughness={0.35} />
-      </mesh>
+      {mount === 'male-down' && (
+        <>
+          {/* plastic spacer under the board and the header pin going down */}
+          <mesh position={[0, -thick - 1.25, 0]}>
+            <boxGeometry args={[PITCH, 2.5, PITCH]} />
+            <meshStandardMaterial color={PLASTIC} roughness={0.8} />
+          </mesh>
+          <mesh position={[0, -5.2, 0]}>
+            <boxGeometry args={[0.64, 10, 0.64]} />
+            <meshStandardMaterial color={GOLD} metalness={0.4} roughness={0.35} />
+          </mesh>
+        </>
+      )}
+      {mount === 'male-up' && (
+        <>
+          <mesh position={[0, 1.25, 0]}>
+            <boxGeometry args={[PITCH, 2.5, PITCH]} />
+            <meshStandardMaterial color={PLASTIC} roughness={0.8} />
+          </mesh>
+          <mesh position={[0, lift / 2, 0]}>
+            <boxGeometry args={[0.64, lift, 0.64]} />
+            <meshStandardMaterial color={GOLD} metalness={0.4} roughness={0.35} />
+          </mesh>
+        </>
+      )}
+      {mount === 'female-up' && (
+        <>
+          {/* socket: black body with a hole on top */}
+          <mesh position={[0, lift / 2, 0]}>
+            <boxGeometry args={[PITCH, lift, PITCH]} />
+            <meshStandardMaterial color={PLASTIC} roughness={0.8} />
+          </mesh>
+          <mesh position={[0, lift + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[0.95, 0.95]} />
+            <meshBasicMaterial color="#050607" />
+          </mesh>
+        </>
+      )}
       {/* role ring */}
-      <mesh ref={ring} position={[0, 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh ref={ring} position={[0, lift + 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <torusGeometry args={[1.05, 0.2, 10, 28]} />
         <meshStandardMaterial ref={ringMat} color={color} emissive={color} emissiveIntensity={0.2} roughness={0.4} transparent opacity={dimmed ? 0.3 : 1} />
       </mesh>
       {isSelected && (
-        <mesh position={[0, 0.25, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh position={[0, lift + 0.25, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.55, 1.8, 32]} />
           <meshBasicMaterial color="#ffffff" side={THREE.DoubleSide} />
         </mesh>
       )}
       {wireFrom === pin.id && (
-        <mesh position={[0, 0.25, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh position={[0, lift + 0.25, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.55, 1.9, 32]} />
           <meshBasicMaterial color="#C9BEFF" side={THREE.DoubleSide} />
         </mesh>
       )}
       {/* ADC level bar */}
-      <mesh ref={bar} position={[0, 1.2, labelOffset * 0.2]} visible={false}>
+      <mesh ref={bar} position={[ox * 0.7, lift + 1.2, oz * 0.7]} visible={false}>
         <boxGeometry args={[0.7, 1, 0.7]} />
         <meshStandardMaterial color={ROLE_HEX.adc} emissive={ROLE_HEX.adc} emissiveIntensity={0.6} />
       </mesh>
       {/* warning marker */}
       {finding && (
-        <mesh position={[0, 3.2, 0]}>
+        <mesh position={[0, lift + 3.2, 0]}>
           <octahedronGeometry args={[0.8]} />
           <meshStandardMaterial
             color={finding.severity === 'error' ? '#FF5D52' : finding.severity === 'warning' ? '#F2A93B' : '#7D8997'}
@@ -117,7 +156,7 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
       )}
       {/* generous invisible hit area so pins are easy to click */}
       <mesh
-        position={[0, 0.5, 0]}
+        position={[0, lift + 0.5, 0]}
         onClick={onClick}
         onPointerOver={(e) => {
           e.stopPropagation();
@@ -129,8 +168,8 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
         <boxGeometry args={[2.3, 3, 2.3]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
-      {labels && (
-        <Html position={[0, 0.3, labelOffset]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
+      {labels && (board.pins.length <= 48 || inUse || isSelected || isHighlighted) && (
+        <Html position={[ox * 3.4, lift + 0.3, oz * 3.4]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
           <div className={`pin-label ${isHighlighted || isSelected ? 'hot' : ''}`} style={{ borderColor: color }}>
             {pin.label}
           </div>

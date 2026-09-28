@@ -2,15 +2,8 @@
 // strapping pins and the USB serial pins; shares one I2C bus on the default pins.
 
 import type { BoardDef, PartDef, Scene, SceneWire } from './types';
-import { ROLE_HEX, partRoleColor } from './board';
+import { ROLE_HEX, groundPins, partRoleColor, powerPinFor } from './board';
 import { t } from './i18n';
-
-/** Output-capable, not strapping, not UART0, in order of preference. */
-const SAFE_IO = ['D25', 'D26', 'D27', 'D32', 'D33', 'D23', 'D19', 'D18', 'D4', 'D13', 'D14', 'RX2', 'TX2'];
-/** ADC1 first (works with Wi-Fi on). Input-only pins are fine for analog inputs. */
-const ADC_PINS = ['D34', 'D35', 'VP', 'VN', 'D32', 'D33'];
-/** Inputs that need no pull-up can use the input-only pins first. */
-const INPUT_PINS = ['D35', 'VP', 'VN', 'D34'];
 
 export interface Assignment {
   scene: Scene;
@@ -18,11 +11,22 @@ export interface Assignment {
 }
 
 export function assignPins(scene: Scene, board: BoardDef, parts: Record<string, PartDef>): Assignment {
+  // Pin preferences come from the board file: output-capable pins with no side effects first,
+  // ADC pins that keep working with Wi-Fi first, input-only pins for plain inputs.
+  const SAFE_IO = board.rules.safeIo;
+  const ADC_PINS = board.rules.adcPins;
+  const INPUT_PINS = board.rules.inputPins ?? [];
+  const grounds = groundPins(board).map((p) => p.id);
   const used = new Set<string>();
   const notes: string[] = [];
   for (const w of scene.wires) {
     if (w.from.part === 'board') used.add(w.from.pin);
     if (w.to.part === 'board') used.add(w.to.pin);
+  }
+  // Keep the I2C bus pins free for I2C parts.
+  if (scene.parts.some((p) => parts[p.partId]?.bus === 'i2c')) {
+    used.add(board.rules.i2c.sda);
+    used.add(board.rules.i2c.scl);
   }
   const wired = (partId: string, pin: string) =>
     scene.wires.some((w) => (w.from.part === partId && w.from.pin === pin) || (w.to.part === partId && w.to.pin === pin));
@@ -44,18 +48,18 @@ export function assignPins(scene: Scene, board: BoardDef, parts: Record<string, 
       let boardPin: string | undefined;
       switch (pp.role) {
         case 'power':
-          boardPin = '3V3';
+          boardPin = powerPinFor(board, def.voltage)?.id;
           break;
         case 'ground':
-          boardPin = gndToggle++ % 2 ? 'GND2' : 'GND1';
+          boardPin = grounds.length ? grounds[gndToggle++ % grounds.length] : undefined;
           break;
         case 'i2c_sda':
-          boardPin = 'D21';
-          used.add('D21');
+          boardPin = board.rules.i2c.sda;
+          used.add(boardPin);
           break;
         case 'i2c_scl':
-          boardPin = 'D22';
-          used.add('D22');
+          boardPin = board.rules.i2c.scl;
+          used.add(boardPin);
           break;
         case 'analog_out':
           boardPin = take(ADC_PINS);

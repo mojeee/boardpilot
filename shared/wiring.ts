@@ -2,7 +2,7 @@
 // Runs on every scene change; each finding becomes a warning on a pin or wire and a log line.
 
 import type { BoardDef, PartDef, PartPinRole, PinDef, Scene, SceneWire, TargetRef, WiringFinding } from './types';
-import { FLASH_GPIOS, isAdcGpio, ADC2_GPIOS, pinById } from './board';
+import { isAdcPin, isEspFamily, pinById, powerPinFor } from './board';
 import { t } from './i18n';
 
 interface Connection {
@@ -15,16 +15,23 @@ interface Connection {
   role: PartPinRole | undefined;
 }
 
-const DATASHEET = 'datasheet: ESP32 Series Datasheet';
-
 /** Roles that need the board pin to drive a signal. */
 const NEEDS_OUTPUT: PartPinRole[] = ['i2c_sda', 'i2c_scl', 'spi_mosi', 'spi_sck', 'spi_cs', 'digital_in', 'onewire'];
+/** Roles where the part drives the line (or pulls it up), so its voltage reaches the board pin. */
+const PART_DRIVES: PartPinRole[] = ['digital_out', 'analog_out', 'int', 'spi_miso', 'onewire', 'i2c_sda', 'i2c_scl'];
 /** Roles that may share one board pin with other parts of the same role (a bus). */
 const SHAREABLE: PartPinRole[] = ['i2c_sda', 'i2c_scl', 'spi_mosi', 'spi_miso', 'spi_sck', 'power', 'ground'];
 
 /** "A", "A and B", "A and B and C": one translated join per pair, same English as before. */
 function joinAnd(items: string[]): string {
   return items.slice(1).reduce((acc, x) => t('{a} and {b}', { a: acc, b: x }), items[0] ?? '');
+}
+
+/** A few pin labels from a board rule list, for hints ("such as D25, D26 or D27"). */
+function examples(board: BoardDef, ids: string[], n = 3): string {
+  const labels = ids.map((id) => pinById(board, id)?.label ?? id).slice(0, n);
+  if (labels.length <= 1) return labels[0] ?? '';
+  return t('{a} or {b}', { a: labels.slice(0, -1).join(', '), b: labels[labels.length - 1] });
 }
 
 function partMaxVolt(v: string): number {
@@ -68,6 +75,9 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
   };
 
   const conns = connections(scene, board, parts);
+  const DATASHEET = `datasheet: ${board.rules.datasheet}`;
+  const powerLabel = (c: Connection) => (c.partDef ? powerPinFor(board, c.partDef.voltage)?.label : undefined) ?? '3V3';
+  const outputExamples = examples(board, board.rules.safeIo);
   const partName = (c: Connection) =>
     scene.parts.find((p) => p.id === c.partInstance)?.label ?? c.partDef?.name ?? c.partInstance;
 
@@ -88,13 +98,13 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
     const gpio = bp.gpio;
     const label = bp.label;
 
-    // Flash pins (not broken out on the 30-pin board, but other boards may expose them).
-    if (gpio !== null && (FLASH_GPIOS.includes(gpio) || bp.flags.includes('flash'))) {
+    // Flash pins: wired to the flash chip on the module or board.
+    if (gpio !== null && bp.flags.includes('flash')) {
       add({
         rule: 'flash_pin',
         severity: 'error',
         message: t('{pin} (GPIO {gpio}) is wired to the board’s internal flash memory.', { pin: label, gpio }),
-        hint: t('Never use GPIO 6 to 11. Move this wire to a free GPIO.'),
+        hint: t('Never use the flash pins. Move this wire to a free pin such as {pins}.', { pins: outputExamples }),
         targets: [pinT, wireT],
         source: `${DATASHEET}, Pin Description`,
       });
@@ -110,8 +120,17 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
           rule: 'voltage_mismatch',
           severity: 'error',
           message: t('{part} {partPin} (power) goes to GND. The part gets no power.', { part: partName(c), partPin: c.partPin }),
-          hint: t('Move it to 3V3.'),
+          hint: t('Move it to {pin}.', { pin: powerLabel(c) }),
           targets: [pinT, wireT],
+        });
+      } else if (bp.kind === 'power' && bp.supplies === 0) {
+        add({
+          rule: 'voltage_mismatch',
+          severity: 'warning',
+          message: t('{pin} is a power input. It only has voltage when the board is powered through it, not from USB.', { pin: label }),
+          hint: t('Use {pin} for power.', { pin: powerLabel(c) }),
+          targets: [pinT, wireT],
+          source: `library: ${board.id}`,
         });
       } else if (bp.kind === 'power' && bp.supplies !== undefined && c.partDef) {
         const max = partMaxVolt(c.partDef.voltage);
@@ -121,7 +140,7 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
             rule: 'voltage_mismatch',
             severity: 'error',
             message: t('{part} runs on {need} V but gets {got} V from {pin}.', { part: partName(c), need: c.partDef.voltage, got: bp.supplies, pin: label }),
-            hint: t('Move the power wire to 3V3. {got} V can damage the part and the ESP32 pins it talks to.', { got: bp.supplies }),
+            hint: t('Move the power wire to {pin}. {got} V can damage the part and the board pins it talks to.', { pin: powerLabel(c), got: bp.supplies }),
             targets: [pinT, wireT],
             source: `library: ${c.partDef.id}`,
           });
@@ -140,7 +159,7 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
           rule: 'wrong_pin_type',
           severity: 'warning',
           message: t('{part} is powered from {pin}, a signal pin.', { part: partName(c), pin: label }),
-          hint: t('A GPIO can only supply a few milliamps. Use 3V3 for power.'),
+          hint: t('A GPIO can only supply a few milliamps. Use {pin} for power.', { pin: powerLabel(c) }),
           targets: [pinT, wireT],
         });
       }
@@ -184,51 +203,106 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
           part: partName(c),
           partPin: c.partPin,
         }),
-        hint: t('GPIO 34 to 39 are input only. Move this wire to a pin such as D25, D26, D27 or D32.'),
+        hint: t('This pin is input only. Move this wire to a pin such as {pins}.', { pins: outputExamples }),
         targets: [pinT, wireT],
-        source: 'datasheet: ESP32 Technical Reference Manual, IO_MUX and GPIO Matrix (GPIO 34-39 input only)',
+        source: `${DATASHEET}, pin description (input-only pins)`,
       });
     }
 
     if (role === 'analog_out' && gpio !== null) {
-      if (!isAdcGpio(gpio)) {
+      const adc1 = board.rules.adcPins.filter((id) => pinById(board, id)?.flags.includes('adc1'));
+      if (!isAdcPin(bp)) {
         add({
           rule: 'not_adc',
           severity: 'error',
           message: t('{pin} cannot measure voltage, so the {part} value cannot be read here.', { pin: label, part: partName(c) }),
-          hint: t('Move the wire to an ADC1 pin: GPIO 32 to 39 (D32, D33, D34, D35, VP, VN).'),
+          hint: t('Move the wire to an analog input such as {pins}.', { pins: examples(board, board.rules.adcPins) }),
           targets: [pinT, wireT],
-          source: `${DATASHEET}, Pin Description (ADC channels)`,
+          source: `${DATASHEET}, pin description (ADC channels)`,
         });
-      } else if (ADC2_GPIOS.includes(gpio)) {
+      } else if (board.rules.adcWifiConflict && bp.flags.includes('adc2')) {
         add({
           rule: 'adc2_wifi',
           severity: 'info',
           message: t('{pin} is an ADC2 pin. It stops working while Wi-Fi is on.', { pin: label }),
-          hint: t('If your project uses Wi-Fi, move this wire to an ADC1 pin (GPIO 32 to 39).'),
+          hint: t('If your project uses Wi-Fi, move this wire to an ADC1 pin such as {pins}.', { pins: examples(board, adc1) }),
           targets: [pinT],
           source: 'datasheet: ESP-IDF Programming Guide, ADC limitations',
         });
       }
     }
 
-    if (bp.flags.includes('strapping')) {
-      const is12 = gpio === 12;
+    if (bp.flags.includes('strapping') || bp.flags.includes('strapping_critical')) {
+      const critical = bp.flags.includes('strapping_critical');
+      const esp12 = critical && isEspFamily(board) && board.family === 'esp32' && gpio === 12;
       add({
         rule: 'strapping_pin',
-        severity: is12 && (c.partDef?.pullupsOnBoard || role === 'i2c_sda' || role === 'i2c_scl') ? 'error' : 'warning',
-        message: is12
+        severity: critical && (c.partDef?.pullupsOnBoard || role === 'i2c_sda' || role === 'i2c_scl') ? 'error' : 'warning',
+        message: esp12
           ? t('{pin} (GPIO 12) is a strapping pin. If {part} holds it HIGH at reset, the board picks the wrong flash voltage and may not boot.', {
               pin: label,
               part: partName(c),
             })
-          : t('{pin} (GPIO {gpio}) is a strapping pin. Its level at reset changes how the board boots.', { pin: label, gpio: String(gpio) }),
-        hint: is12
-          ? t('Move this wire to a pin that is not a strapping pin, such as D25, D26 or D27.')
+          : critical
+            ? t('{pin} (GPIO {gpio}) is a strapping pin. If {part} holds it at the wrong level at reset, the board may not boot.', {
+                pin: label,
+                gpio: String(gpio),
+                part: partName(c),
+              })
+            : t('{pin} (GPIO {gpio}) is a strapping pin. Its level at reset changes how the board boots.', { pin: label, gpio: String(gpio) }),
+        hint: critical
+          ? t('Move this wire to a pin that is not a strapping pin, such as {pins}.', { pins: outputExamples })
           : t('It usually works, but if the board fails to boot or upload, move this wire first.'),
         targets: [pinT],
-        source: `${DATASHEET}, Strapping Pins`,
+        source: `${DATASHEET}, strapping pins`,
       });
+    }
+
+    if (bp.flags.includes('usb') || bp.flags.includes('swd')) {
+      add({
+        rule: 'reserved_pin',
+        severity: 'warning',
+        message: bp.flags.includes('usb')
+          ? t('{pin} carries the board’s USB data line. Using it breaks uploading and the serial monitor over USB.', { pin: label })
+          : t('{pin} is part of the debug port. Using it can stop the debugger from reaching the chip.', { pin: label }),
+        hint: t('Move this wire to a free pin such as {pins}.', { pins: outputExamples }),
+        targets: [pinT],
+        source: `${DATASHEET}, pin description`,
+      });
+    } else if (bp.flags.includes('reserved')) {
+      add({
+        rule: 'reserved_pin',
+        severity: 'warning',
+        message: t('{pin} is already used by something on the board. {note}', { pin: label, note: bp.notes ?? '' }).trim(),
+        hint: t('Move this wire to a free pin such as {pins}.', { pins: outputExamples }),
+        targets: [pinT],
+        source: `${DATASHEET}, pin description`,
+      });
+    }
+
+    // Signal levels: a 3.3 V part on a 5 V board, or a 5 V-only part on a 3.3 V pin.
+    if (c.partDef && role !== 'passive') {
+      const partMax = partMaxVolt(c.partDef.voltage);
+      const partMin = partMinVolt(c.partDef.voltage);
+      if (board.logicVolt >= 5 && partMax < 4.5) {
+        add({
+          rule: 'logic_level',
+          severity: 'warning',
+          message: t('{part} is a {need} V part, but {pin} uses 5 V signals. This can damage the part.', { part: partName(c), need: c.partDef.voltage, pin: label }),
+          hint: t('Use a level shifter between the board and the part, or a version of the part made for 5 V.'),
+          targets: [pinT, wireT],
+          source: `library: ${c.partDef.id}`,
+        });
+      } else if (board.logicVolt < 4 && partMin >= 4.5 && PART_DRIVES.includes(role) && bp.maxVolt < 5 && !bp.flags.includes('five_volt_tolerant')) {
+        add({
+          rule: 'logic_level',
+          severity: 'warning',
+          message: t('{part} works at 5 V and may send 5 V signals into {pin}, which only takes 3.3 V.', { part: partName(c), pin: label }),
+          hint: t('Use a level shifter, or a 3.3 V version of the part.'),
+          targets: [pinT, wireT],
+          source: `library: ${c.partDef.id}`,
+        });
+      }
     }
 
     if (bp.flags.includes('uart0')) {
@@ -279,12 +353,16 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
       add({
         rule: 'i2c_swapped',
         severity: 'warning',
-        message: t('{part}: SDA goes to {sda} and SCL to {scl}. That is the reverse of the ESP32 default (SDA = D21, SCL = D22).', {
+        message: t('{part}: SDA goes to {sda} and SCL to {scl}. That is the reverse of the board’s default (SDA = {dsda}, SCL = {dscl}).', {
           part: name,
           sda: sda.boardPin.label,
           scl: scl.boardPin.label,
+          dsda: pinById(board, board.rules.i2c.sda)?.label ?? board.rules.i2c.sda,
+          dscl: pinById(board, board.rules.i2c.scl)?.label ?? board.rules.i2c.scl,
         }),
-        hint: t('Swap the two wires at the sensor, or set Wire.begin(22, 21) in your code.'),
+        hint: board.rules.i2c.remappable
+          ? t('Swap the two wires at the sensor, or set Wire.begin({sda}, {scl}) in your code.', { sda: String(sda.boardPin.gpio), scl: String(scl.boardPin.gpio) })
+          : t('Swap the two wires at the sensor. On this board the I2C pins are fixed.'),
         targets: [`wire:${sda.wire.id}`, `wire:${scl.wire.id}`, `pin:${sda.boardPinId}`, `pin:${scl.boardPinId}`],
         source: `library: ${inst.partId}`,
       });
@@ -320,7 +398,7 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
             : t('{part} {partPin} is not connected to power.', { part: name, partPin: pp.name }),
           hint: ground
             ? t('Without a shared ground the signals have no reference. Add a wire to a GND pin.')
-            : t('Add a wire from 3V3 to this pin.'),
+            : t('Add a wire from {pin} to this pin.', { pin: powerPinFor(board, def.voltage)?.label ?? '3V3' }),
           targets: [`part:${inst.id}`],
           source: `library: ${def.id}`,
         });

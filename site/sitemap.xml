@@ -49,6 +49,214 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/esp32-pinout/"/>
   </url>
   <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/arduino-nano/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-nano/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-nano/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-nano/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/arduino-nano/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-nano/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-nano/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-nano/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/arduino-uno-r3/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-uno-r3/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-uno-r3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-uno-r3/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/arduino-uno-r3/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-uno-r3/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-uno-r3/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-uno-r3/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/esp32-c3-devkitm-1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/esp32-c3-devkitm-1/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/esp32-c3-devkitm-1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/esp32-c3-devkitm-1/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/esp32-s3-devkitc-1/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/esp32-s3-devkitc-1/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/esp32-s3-devkitc-1/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/esp32-s3-devkitc-1/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/esp32-s3-devkitc-1/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/nrf52840-dk/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/nrf52840-dk/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/nrf52840-dk/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/nrf52840-dk/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/nucleo-f401re/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/nucleo-f401re/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/nucleo-f401re/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/nucleo-f401re/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/nucleo-f401re/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/rpi-pico-2/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-2/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/rpi-pico-2/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-2/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/rpi-pico-2/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-2/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/rpi-pico-2/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-2/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/rpi-pico-w/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-w/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/rpi-pico-w/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-w/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/rpi-pico-w/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-w/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/rpi-pico-w/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/rpi-pico-w/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/rpi-pico/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/rpi-pico/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/rpi-pico/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/rpi-pico/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/rpi-pico/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/rpi-pico/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/rpi-pico/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/rpi-pico/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/boards/teensy-41/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/teensy-41/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/teensy-41/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/teensy-41/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/boards/teensy-41/</loc>
+    <lastmod>2026-09-28</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/teensy-41/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/teensy-41/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/teensy-41/"/>
+  </url>
+  <url>
     <loc>https://boardpilot.agentflowbind.com/parts/potentiometer/</loc>
     <lastmod>2026-09-28</lastmod>
     <priority>0.6</priority>
