@@ -2,6 +2,8 @@
 // pins, flashing), generated from boards/*.json, the same files the app uses. English and Italian.
 // The ESP32 DevKit keeps its hand-written page at /esp32-pinout/.
 
+import { allCompareLinks, boardFaq, compareLinks, guideLinks } from './guides.mjs';
+
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 export const ESP32_PAGE = 'esp32-devkitc-30';
@@ -55,6 +57,10 @@ const T = {
     all: 'All boards',
     pins: '{n} pins',
     view: 'Pinout',
+    faqH: 'Questions',
+    guidesH: 'Wiring guides for the {board}',
+    guidesLead: 'Step-by-step wiring, voltage checks and test code for the most used parts:',
+    compareH: 'Compare',
   },
   it: {
     indexTitle: 'Piedinature delle schede di sviluppo: ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52, Teensy',
@@ -96,6 +102,10 @@ const T = {
     all: 'Tutte le schede',
     pins: '{n} pin',
     view: 'Piedinatura',
+    faqH: 'Domande',
+    guidesH: 'Guide ai collegamenti per {board}',
+    guidesLead: 'Collegamenti passo per passo, controlli di tensione e codice di prova per i componenti più usati:',
+    compareH: 'Confronti',
   },
 };
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => String(v[k] ?? ''));
@@ -219,7 +229,7 @@ export function boardCards(lang, boards, IT = {}) {
     .join('\n');
 }
 
-export function buildBoards({ lang, boards, site, repo, head, header, footer, IT = {} }) {
+export function buildBoards({ lang, boards, parts = [], site, repo, head, header, footer, IT = {} }) {
   const t = T[lang];
   const tr = (s) => (lang === 'it' && s && IT[s]) || s;
   const pre = lang === 'it' ? '/it' : '';
@@ -251,6 +261,10 @@ export function buildBoards({ lang, boards, site, repo, head, header, footer, IT
       <div class="wrap"><div class="board-cards">
 ${boardCards(lang, boards, IT)}
       </div></div>
+      <div class="wrap narrow">
+        <h2>${esc(t.compareH)}</h2>
+        <p class="link-cloud">${allCompareLinks(lang, boards)}</p>
+      </div>
     </main>
 ${footer}`,
   });
@@ -283,6 +297,10 @@ ${footer}`,
       })
       .join('\n');
     const title = fill(t.title, { name: b.name });
+    const faq = boardFaq(lang, b, tr);
+    const guides = guideLinks(lang, b, parts);
+    const compares = compareLinks(lang, b.id, boards);
+    const bn = b.name.replace(/\s*\(.*\)$/, '').replace(/^ST /, '');
     const description = fill(t.desc, { name: b.name, chip: b.chip, n: b.pins.length, v: b.logicVolt });
     const sourcesHtml = b.sources
       .map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" rel="nofollow noopener">${esc(s.title)}</a>` : esc(s.title)}${s.section ? `, ${esc(s.section)}` : ''}</li>`)
@@ -315,6 +333,7 @@ ${footer}`,
               { '@type': 'ListItem', position: 3, name: b.name, item: url },
             ],
           },
+          { '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
         ],
       },
       body: `${header}
@@ -352,6 +371,10 @@ ${footer}`,
 ${rows}
           </tbody>
         </table></div>
+        <h2>${esc(t.faqH)}</h2>
+        ${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('\n        ')}
+        ${guides ? `<h2>${esc(fill(t.guidesH, { board: bn }))}</h2><p>${esc(t.guidesLead)}</p><p class="link-cloud">${guides}</p>` : ''}
+        ${compares ? `<h2>${esc(t.compareH)}</h2><p class="link-cloud">${compares}</p>` : ''}
         <div class="cta-box">
           <h2>${esc(t.ctaTitle)}</h2>
           <p>${esc(t.cta)}</p>

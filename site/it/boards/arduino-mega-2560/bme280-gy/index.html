@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BME280 con Arduino Mega 2560 R3: collegamenti e codice</title>
+    <meta name="description" content="Come collegare BME280 a Arduino Mega 2560 R3: quali pin usare (SCL → SCL 21, SDA → SDA 20), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/bme280-gy/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/bme280-gy/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/bme280-gy/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/bme280-gy/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/bme280-gy/" />
+    <meta property="og:title" content="BME280 con Arduino Mega 2560 R3: collegamenti e codice" />
+    <meta property="og:description" content="Come collegare BME280 a Arduino Mega 2560 R3: quali pin usare (SCL → SCL 21, SDA → SDA 20), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"BME280 con Arduino Mega 2560 R3","description":"Come collegare BME280 a Arduino Mega 2560 R3: quali pin usare (SCL → SCL 21, SDA → SDA 20), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/bme280-gy/","tool":[{"@type":"HowToTool","name":"Arduino Mega 2560 R3"},{"@type":"HowToTool","name":"GY-BME280 breakout"}],"step":[{"@type":"HowToStep","position":1,"name":"VIN → 3.3V","text":"VIN (Alimentazione) → 3.3V"},{"@type":"HowToStep","position":2,"name":"GND → GND","text":"GND (Massa) → GND"},{"@type":"HowToStep","position":3,"name":"SCL → SCL 21","text":"SCL (Clock I2C (SCL)) → SCL 21 (PD0)"},{"@type":"HowToStep","position":4,"name":"SDA → SDA 20","text":"SDA (Dati I2C (SDA)) → SDA 20 (PD1)"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di Arduino Mega 2560 R3 uso per BME280?","acceptedAnswer":{"@type":"Answer","text":"VIN → 3.3V, GND → GND, SCL → SCL 21 (PD0), SDA → SDA 20 (PD1)."}},{"@type":"Question","name":"BME280 funziona con Arduino Mega 2560 R3 a 5 V?","acceptedAnswer":{"@type":"Answer","text":"BME280 funziona a 3,3 V e Arduino Mega 2560 R3 usa segnali a 5 V. Alimentalo a 3,3 V e metti un traslatore di livello sui fili dei segnali, oppure compra la versione del modulo a 5 V."}},{"@type":"Question","name":"Qual è l’indirizzo I2C di BME280?","acceptedAnswer":{"@type":"Answer","text":"0x76 o 0x77. Una scansione I2C (BoardPilot la fa per te) mostra quale usa il tuo modulo."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"Arduino Mega 2560 R3","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/"},{"@type":"ListItem","position":4,"name":"GY-BME280 breakout","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/bme280-gy/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
+          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/boards/" hreflang="en" class="">EN</a><a href="/it/boards/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/boards/">Piedinature delle schede</a> / <a href="/it/boards/arduino-mega-2560/">Arduino Mega 2560 R3</a> / <span>GY-BME280 breakout</span></nav>
+        <h1>BME280 con Arduino Mega 2560 R3</h1>
+        <p class="lead">Collegamenti per GY-BME280 breakout su Arduino Mega 2560 R3 (ATmega2560, logica a 5 V), scelti con le stesse regole dei pin di BoardPilot: prima i bus predefiniti, e nessun pin usato per la flash, l’USB, il debugger o l’avvio.</p>
+        <h2>Collegamenti</h2>
+        <div class="table-wrap"><table class="pin-table">
+          <thead><tr><th>Pin di BME280</th><th>Ruolo</th><th>Pin di Arduino Mega 2560 R3</th><th>Note</th></tr></thead>
+          <tbody>
+<tr><td class="mono">VIN</td><td>Alimentazione</td><td class="mono">3.3V</td><td></td></tr>
+<tr><td class="mono">GND</td><td>Massa</td><td class="mono">GND</td><td></td></tr>
+<tr><td class="mono">SCL</td><td>Clock I2C (SCL)</td><td class="mono">SCL 21 (PD0)</td><td></td></tr>
+<tr><td class="mono">SDA</td><td>Dati I2C (SDA)</td><td class="mono">SDA 20 (PD1)</td><td></td></tr>
+          </tbody>
+        </table></div>
+        <h2>Controlla prima di alimentare</h2>
+        <ul class="checks"><li>Alimentazione: 3,3 V dal pin 3.3V.</li><li>BME280 funziona a 3,3 V e Arduino Mega 2560 R3 usa segnali a 5 V. Alimentalo a 3,3 V e metti un traslatore di livello sui fili dei segnali, oppure compra la versione del modulo a 5 V.</li><li>L’I2C usa i pin predefiniti della scheda SDA 20 (SDA) e SCL 21 (SCL). Quasi tutti i moduli hanno già le resistenze di pull-up; se il componente non viene trovato, controllale e prova a scambiare SDA e SCL.</li><li>Per essere sicuro che sia il chip originale, leggi il registro 0xD0: un componente originale risponde 0x60.</li></ul>
+        <h2>Codice di prova (Arduino)</h2>
+        <pre class="code"><code>#include &lt;Wire.h&gt;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();  // SDA = SDA 20, SCL = SCL 21 (the board's default I2C pins)
+  Wire.beginTransmission(0x76);
+  bool found = Wire.endTransmission() == 0;
+  Serial.println(found ? &quot;GY-BME280 breakout found at 0x76&quot; : &quot;Not found: check power, GND and SDA/SCL&quot;);
+}
+
+void loop() {}</code></pre>
+        <p class="fine">Scheda Arduino: arduino:avr:mega. </p>
+        <h2>Domande</h2>
+        <details><summary>Quali pin di Arduino Mega 2560 R3 uso per BME280?</summary><p>VIN → 3.3V, GND → GND, SCL → SCL 21 (PD0), SDA → SDA 20 (PD1).</p></details>
+        <details><summary>BME280 funziona con Arduino Mega 2560 R3 a 5 V?</summary><p>BME280 funziona a 3,3 V e Arduino Mega 2560 R3 usa segnali a 5 V. Alimentalo a 3,3 V e metti un traslatore di livello sui fili dei segnali, oppure compra la versione del modulo a 5 V.</p></details>
+        <details><summary>Qual è l’indirizzo I2C di BME280?</summary><p>0x76 o 0x77. Una scansione I2C (BoardPilot la fa per te) mostra quale usa il tuo modulo.</p></details>
+        <div class="cta-box">
+          <p>BoardPilot controlla questi collegamenti in 3D mentre li fai, e trova fili invertiti o mancanti sulla scheda reale.</p>
+          <a class="btn primary" href="/it/#download">Scarica BoardPilot</a>
+        </div>
+        <p><a href="/it/boards/arduino-mega-2560/">Piedinatura completa di Arduino Mega 2560 R3</a> · <a href="/it/parts/bme280-gy/">GY-BME280 breakout: tutti i pin e i dati</a></p>
+        <h2>BME280 su altre schede</h2>
+        <p class="link-cloud"><a href="/it/parts/bme280-gy/">ESP32 DevKit</a> <a href="/it/boards/arduino-nano/bme280-gy/">Arduino Nano</a> <a href="/it/boards/arduino-uno-r3/bme280-gy/">Arduino Uno R3</a> <a href="/it/boards/blackpill-f411ce/bme280-gy/">WeAct Black Pill STM32F411CE</a> <a href="/it/boards/esp32-c3-devkitm-1/bme280-gy/">ESP32-C3-DevKitM-1</a> <a href="/it/boards/esp32-s3-devkitc-1/bme280-gy/">ESP32-S3-DevKitC-1</a> <a href="/it/boards/nrf52840-dk/bme280-gy/">Nordic nRF52840 DK</a> <a href="/it/boards/nucleo-f401re/bme280-gy/">NUCLEO-F401RE</a> <a href="/it/boards/rpi-pico-2/bme280-gy/">Raspberry Pi Pico 2</a> <a href="/it/boards/rpi-pico-w/bme280-gy/">Raspberry Pi Pico W</a> <a href="/it/boards/rpi-pico/bme280-gy/">Raspberry Pi Pico</a> <a href="/it/boards/teensy-41/bme280-gy/">Teensy 4.1</a></p>
+        <h2>Altri componenti su Arduino Mega 2560 R3</h2>
+        <p class="link-cloud"><a href="/it/boards/arduino-mega-2560/bmp280-gy/">BMP280</a> <a href="/it/boards/arduino-mega-2560/dht22/">DHT22</a> <a href="/it/boards/arduino-mega-2560/dht11/">DHT11</a> <a href="/it/boards/arduino-mega-2560/hc-sr04/">HC-SR04</a> <a href="/it/boards/arduino-mega-2560/ssd1306-i2c/">SSD1306 OLED</a> <a href="/it/boards/arduino-mega-2560/mpu6050/">MPU6050</a> <a href="/it/boards/arduino-mega-2560/ds18b20-probe/">DS18B20</a> <a href="/it/boards/arduino-mega-2560/ws2812b-strip/">Striscia LED WS2812B</a> <a href="/it/boards/arduino-mega-2560/servo-sg90/">Servo SG90</a> <a href="/it/boards/arduino-mega-2560/relay-1ch/">Modulo relè</a> <a href="/it/boards/arduino-mega-2560/hc-sr501/">HC-SR501 PIR</a> <a href="/it/boards/arduino-mega-2560/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/it/boards/arduino-mega-2560/ina219/">INA219</a> <a href="/it/boards/arduino-mega-2560/vl53l0x/">VL53L0X</a> <a href="/it/boards/arduino-mega-2560/bh1750-gy302/">BH1750</a> <a href="/it/boards/arduino-mega-2560/max30102/">MAX30102</a> <a href="/it/boards/arduino-mega-2560/rc522-rfid/">RC522 RFID</a> <a href="/it/boards/arduino-mega-2560/neo-6m-gps/">NEO-6M GPS</a> <a href="/it/boards/arduino-mega-2560/soil-moisture-capacitive/">Sensore di umidità del terreno capacitivo</a> <a href="/it/boards/arduino-mega-2560/ads1115/">ADS1115</a> <a href="/it/boards/arduino-mega-2560/tm1637-4digit/">TM1637</a> <a href="/it/boards/arduino-mega-2560/stepper-28byj48-uln2003/">Motore passo-passo 28BYJ-48</a> <a href="/it/boards/arduino-mega-2560/l298n-driver/">L298N</a> <a href="/it/boards/arduino-mega-2560/potentiometer/">Potenziometro</a> <a href="/it/boards/arduino-mega-2560/push-button/">Pulsante</a> <a href="/it/boards/arduino-mega-2560/led-resistor/">LED</a> <a href="/it/boards/arduino-mega-2560/joystick-ky023/">Modulo joystick</a> <a href="/it/boards/arduino-mega-2560/sd-card-module/">Modulo scheda SD</a> <a href="/it/boards/arduino-mega-2560/aht20/">AHT20</a></p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

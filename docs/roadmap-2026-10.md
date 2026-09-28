@@ -99,15 +99,17 @@ yours to do; I draft everything.
 - Submit to curated lists where it fits their rules: awesome-esp32, awesome-embedded-systems,
   awesome-arduino, awesome-raspberry-pi, awesome-electronics.
 
-**The website (SEO)**
+**The website (SEO)** (started Sep 28, done ahead of week 3)
 
-- **Per-board pages:** these match high-volume searches like "esp32 pinout", "raspberry pi pico
-  pinout", "arduino uno pinout" and "stm32 black pill pinout". Add per-board FAQs (which pins for
-  I2C, which pins to avoid, 5 V tolerance), a social image per board, and HowTo structured data.
-- **Part-on-board wiring pages:** for example "BME280 with Raspberry Pi Pico" (the wiring, the
-  starter code and the common mistake). Limited to the top 30 parts × 13 boards, so every page
-  has real content, not thin copies.
-- **Comparison pages:** "ESP32 vs Raspberry Pi Pico pins", "Arduino Uno vs Nano" and similar.
+- [x] **Per-board pages:** questions and answers on every board page (which pins are I2C, which to
+      avoid, 5 V tolerance, analog pins, how to upload), with FAQ structured data.
+- [x] **Part-on-board wiring pages:** 30 parts × 12 boards per language (360 in English, 360 in
+      Italian), each with the wiring, the voltage checks that matter on that board, Arduino test
+      code (library examples where needed) and HowTo + FAQ structured data. The nRF52840 DK shows no
+      code on purpose: its core numbers pins differently from the chip names, and nothing is guessed.
+- [x] **Comparison pages:** 12 pairs ("ESP32 DevKit vs Raspberry Pi Pico", "Arduino Uno vs Nano"…).
+- [x] Links between parts, boards, guides and comparisons.
+- [ ] A social image per board.
 - **Free web tools, which earn links naturally:**
   - an online pinout explorer (click a pin, see what it can do)
   - an online wiring checker that runs the same rules as the app

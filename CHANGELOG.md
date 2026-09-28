@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Website SEO: 360 wiring guides per language (the 30 most searched parts on 12 boards, e.g. "BME280 with Raspberry Pi Pico": board-specific pins, voltage checks such as 5 V echo on 3.3 V boards, library-based Arduino test code, HowTo and FAQ structured data), 12 board comparison pages ("ESP32 DevKit vs Raspberry Pi Pico"), questions and answers with FAQ markup on every board page, and links between parts, boards, guides and comparisons. 1,542 URLs in the sitemap.
+
 ## 0.5.0 (2026-09-28)
 
 - 13 boards instead of one: ESP32 DevKit, ESP32-S3-DevKitC-1, ESP32-C3-DevKitM-1, Raspberry Pi Pico, Pico W and Pico 2, Arduino Uno R3, Nano and Mega 2560, STM32 NUCLEO-F401RE and Black Pill F411, Nordic nRF52840 DK and Teensy 4.1. Pin positions come from the vendors' mechanical files; every fact has a source (`boards/<id>.sources.md`).

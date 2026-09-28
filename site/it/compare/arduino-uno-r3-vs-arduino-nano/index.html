@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Arduino Uno R3 vs Arduino Nano: pin, tensione e caratteristiche a confronto</title>
+    <meta name="description" content="Arduino Uno R3 vs Arduino Nano: processore, tensione logica, pin GPIO e analogici, I2C e SPI predefiniti, tolleranza ai 5 V e programmazione, fianco a fianco." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/compare/arduino-uno-r3-vs-arduino-nano/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/compare/arduino-uno-r3-vs-arduino-nano/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/compare/arduino-uno-r3-vs-arduino-nano/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/compare/arduino-uno-r3-vs-arduino-nano/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/compare/arduino-uno-r3-vs-arduino-nano/" />
+    <meta property="og:title" content="Arduino Uno R3 vs Arduino Nano: pin, tensione e caratteristiche a confronto" />
+    <meta property="og:description" content="Arduino Uno R3 vs Arduino Nano: processore, tensione logica, pin GPIO e analogici, I2C e SPI predefiniti, tolleranza ai 5 V e programmazione, fianco a fianco." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=fb891a69db" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Arduino Uno R3 vs Arduino Nano","description":"Arduino Uno R3 vs Arduino Nano: processore, tensione logica, pin GPIO e analogici, I2C e SPI predefiniti, tolleranza ai 5 V e programmazione, fianco a fianco.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/compare/arduino-uno-r3-vs-arduino-nano/","about":[{"@type":"Product","name":"Arduino Uno R3","brand":"Arduino (and many clones)"},{"@type":"Product","name":"Arduino Nano","brand":"Arduino (and many clones)"}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
+          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/boards/" hreflang="en" class="">EN</a><a href="/it/boards/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/boards/">Piedinature delle schede</a> / <span>Arduino Uno R3 vs Arduino Nano</span></nav>
+        <h1>Arduino Uno R3 vs Arduino Nano</h1>
+        <p class="lead">Le due schede fianco a fianco, dagli stessi file che BoardPilot usa per controllare i collegamenti.</p>
+        <div class="table-wrap"><table class="pin-table compare-table">
+          <thead><tr><th></th><th><a href="/it/boards/arduino-uno-r3/">Arduino Uno R3</a></th><th><a href="/it/boards/arduino-nano/">Arduino Nano</a></th></tr></thead>
+          <tbody>
+<tr><th>Chip</th><td>ATmega328P</td><td>ATmega328P</td></tr>
+<tr><th>Processore</th><td>8-bit AVR ATmega328P at 16 MHz, 2 KB SRAM, 32 KB flash, 1 KB EEPROM</td><td>8-bit AVR ATmega328P at 16 MHz, 2 KB SRAM, 32 KB flash, 1 KB EEPROM</td></tr>
+<tr><th>Livello logico</th><td>5 V</td><td>5 V</td></tr>
+<tr><th>Pin del connettore</th><td>29</td><td>30</td></tr>
+<tr><th>Pin GPIO</th><td>20</td><td>22</td></tr>
+<tr><th>Ingressi analogici</th><td>6</td><td>8</td></tr>
+<tr><th>I2C predefinito</th><td>SDA A4, SCL A5</td><td>SDA A4, SCL A5</td></tr>
+<tr><th>SPI predefinito</th><td>MOSI ~11, MISO 12, SCK 13</td><td>MOSI D11, MISO D12, SCK D13</td></tr>
+<tr><th>Ingressi che tollerano 5 V</th><td>sì</td><td>sì</td></tr>
+<tr><th>Strumento di programmazione</th><td>avrdude</td><td>avrdude</td></tr>
+<tr><th>Scheda Arduino</th><td>arduino:avr:uno</td><td>arduino:avr:nano</td></tr>
+          </tbody>
+        </table></div>
+        <h2>Quale scegliere?</h2><ul class="checks"><li>Scegli Arduino Nano se ti serve più ingressi analogici (8).</li></ul>
+        <p><a href="/it/boards/arduino-uno-r3/">Piedinatura completa: Arduino Uno R3</a> · <a href="/it/boards/arduino-nano/">Piedinatura completa: Arduino Nano</a></p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>
