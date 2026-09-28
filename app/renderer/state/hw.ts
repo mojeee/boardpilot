@@ -5,6 +5,7 @@ import type { FlowHardware } from '@shared/flow';
 import type { AgentReplyMap, AgentRequest, Result, TargetRef } from '@shared/types';
 import { getBoard, pinByGpio, PARTS } from '@shared/board';
 import { useApp, useConfirm, useLive, useLog, useScene, log } from './store';
+import { t } from '@shared/i18n';
 
 const bp = () => window.bp;
 
@@ -34,15 +35,16 @@ export async function wireEvents() {
   api.on.progress((progress) => useApp.getState().set({ progress }));
   api.on.log((e) => useLog.getState().add(e.type, e.text, { target: e.target, source: e.source }));
   api.on.live((f) => useLive.getState().pushFrame(f));
-  api.on.trace((t) => {
-    useLive.getState().pushTrace(t);
+  api.on.trace((tr) => {
+    useLive.getState().pushTrace(tr);
     const board = getBoard();
-    const sda = pinByGpio(board, t.sda);
-    const scl = pinByGpio(board, t.scl);
-    const steps = t.trace
+    const sda = pinByGpio(board, tr.sda);
+    const scl = pinByGpio(board, tr.scl);
+    const steps = tr.trace
       .map((s) => (s.t === 'addr' ? `addr ${s.v}${s.rw === 'r' ? ' R' : ' W'} ${s.ack ? 'ACK' : 'NACK'}` : s.t === 'data' ? `${s.v} ${s.ack ? 'ACK' : 'NACK'}` : s.t.toUpperCase()))
       .join(' · ');
-    if (sda && scl) log('info', `I2C ${t.cmd === 'i2c_scan' ? 'scan' : 'read'} on ${sda.label}/${scl.label}: ${steps}`, { target: `pin:${sda.id}`, source: `measured: ${t.cmd} trace` });
+    if (sda && scl)
+      log('info', tr.cmd === 'i2c_scan' ? t('I2C scan on {sda}/{scl}: {steps}', { sda: sda.label, scl: scl.label, steps }) : t('I2C read on {sda}/{scl}: {steps}', { sda: sda.label, scl: scl.label, steps }), { target: `pin:${sda.id}`, source: `measured: ${tr.cmd} trace` });
   });
   api.on.serial((lines) => useLive.getState().pushSerial(lines));
   api.on.probe((p) => useLive.getState().pushProbe(p));
@@ -57,22 +59,22 @@ export async function wireEvents() {
 export async function confirmInstallAgent(reason?: string): Promise<boolean> {
   const token = await useConfirm.getState().ask({
     kind: 'flash_agent',
-    title: 'Install the diagnostic agent?',
-    body: reason ?? 'The app needs a small helper program on the board to see the pins. It replaces your program for now.',
+    title: t('Install the diagnostic agent?'),
+    body: reason ?? t('The app needs a small helper program on the board to see the pins. It replaces your program for now.'),
     details: [
-      'First, a full copy of the program on your board is saved on this Mac.',
-      'Then the diagnostic agent is written to the board.',
-      '“Restore my firmware” puts your program back with one click.',
+      t('First, a full copy of the program on your board is saved on this Mac.'),
+      t('Then the diagnostic agent is written to the board.'),
+      t('“Restore my firmware” puts your program back with one click.'),
     ],
-    confirmLabel: 'Back up and install',
+    confirmLabel: t('Back up and install'),
   });
   if (!token) {
-    log('action', 'You cancelled. Nothing was written.');
+    log('action', t('You cancelled. Nothing was written.'));
     return false;
   }
   const r = await bp().hw.installAgent(token);
   if (!r.ok) {
-    log('failed', `${r.error.humanMessage} ${r.error.hint}`);
+    log('failed', `${t(r.error.humanMessage)} ${t(r.error.hint)}`);
     return false;
   }
   return true;
@@ -83,21 +85,21 @@ export async function confirmGpioWrite(gpio: number, level: 0 | 1, reason?: stri
   const name = pin ? `${pin.label} (GPIO ${gpio})` : `GPIO ${gpio}`;
   const token = await useConfirm.getState().ask({
     kind: 'gpio_write',
-    title: `Drive ${name} ${level ? 'HIGH' : 'LOW'}?`,
-    body: reason ?? `The board will output ${level ? '3.3 V' : '0 V'} on ${name}.`,
+    title: level ? t('Drive {pin} HIGH?', { pin: name }) : t('Drive {pin} LOW?', { pin: name }),
+    body: reason ?? t('The board will output {volts} on {pin}.', { volts: level ? '3.3 V' : '0 V', pin: name }),
     details: [
-      'Only do this if nothing connected to this pin drives it too (that could short two outputs).',
-      'The agent refuses input-only and flash pins.',
+      t('Only do this if nothing connected to this pin drives it too (that could short two outputs).'),
+      t('The agent refuses input-only and flash pins.'),
     ],
-    confirmLabel: `Set ${level ? 'HIGH' : 'LOW'}`,
+    confirmLabel: level ? t('Set HIGH') : t('Set LOW'),
   });
   if (!token) return false;
   const r = await bp().hw.agentWrite({ cmd: 'gpio_write', pin: gpio, level }, token);
   if (!r.ok) {
-    log('failed', `${r.error.humanMessage} ${r.error.hint}`, { target: pin ? (`pin:${pin.id}` as TargetRef) : undefined });
+    log('failed', `${t(r.error.humanMessage)} ${t(r.error.hint)}`, { target: pin ? (`pin:${pin.id}` as TargetRef) : undefined });
     return false;
   }
-  log('action', `${name} set ${level ? 'HIGH' : 'LOW'}.`, { target: pin ? (`pin:${pin.id}` as TargetRef) : undefined, source: 'agent gpio_write' });
+  log('action', level ? t('{pin} set HIGH.', { pin: name }) : t('{pin} set LOW.', { pin: name }), { target: pin ? (`pin:${pin.id}` as TargetRef) : undefined, source: 'agent gpio_write' });
   return true;
 }
 
@@ -105,14 +107,14 @@ export async function confirmPwm(gpio: number, duty: number, hz = 5000): Promise
   const pin = pinByGpio(getBoard(), gpio);
   const token = await useConfirm.getState().ask({
     kind: 'gpio_write',
-    title: `Run PWM on ${pin?.label ?? `GPIO ${gpio}`}?`,
-    body: `The board will switch the pin on and off ${hz} times a second, on ${duty}% of the time. An LED looks ${duty}% bright.`,
-    details: ['Only do this if nothing else drives this pin.'],
-    confirmLabel: 'Start PWM',
+    title: t('Run PWM on {pin}?', { pin: pin?.label ?? `GPIO ${gpio}` }),
+    body: t('The board will switch the pin on and off {hz} times a second, on {duty}% of the time. An LED looks {duty}% bright.', { hz, duty }),
+    details: [t('Only do this if nothing else drives this pin.')],
+    confirmLabel: t('Start PWM'),
   });
   if (!token) return false;
   const r = await bp().hw.agentWrite({ cmd: 'pwm', pin: gpio, duty, hz }, token);
-  if (!r.ok) log('failed', `${r.error.humanMessage} ${r.error.hint}`);
+  if (!r.ok) log('failed', `${t(r.error.humanMessage)} ${t(r.error.hint)}`);
   return r.ok;
 }
 
@@ -120,19 +122,19 @@ export async function confirmRestore(): Promise<void> {
   const conn = useApp.getState().conn;
   const b = conn.backups[0];
   if (!b) {
-    log('warning', 'There is no backup for this board yet. A backup is made automatically before the first write.');
+    log('warning', t('There is no backup for this board yet. A backup is made automatically before the first write.'));
     return;
   }
   const token = await useConfirm.getState().ask({
     kind: 'restore',
-    title: 'Restore your firmware?',
-    body: `This writes the backup from ${new Date(b.createdAt).toLocaleString()} back to the board.`,
-    details: ['The diagnostic agent is removed.', 'Your program runs again after the board restarts.'],
-    confirmLabel: 'Restore',
+    title: t('Restore your firmware?'),
+    body: t('This writes the backup from {date} back to the board.', { date: new Date(b.createdAt).toLocaleString() }),
+    details: [t('The diagnostic agent is removed.'), t('Your program runs again after the board restarts.')],
+    confirmLabel: t('Restore'),
   });
   if (!token) return;
   const r = await bp().hw.restore(b.id, token);
-  if (!r.ok) log('failed', `${r.error.humanMessage} ${r.error.hint}`);
+  if (!r.ok) log('failed', `${t(r.error.humanMessage)} ${t(r.error.hint)}`);
 }
 
 /** Start streaming the pins used in the scene (plus ADC pins read once to put them in ADC mode). */

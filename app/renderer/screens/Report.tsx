@@ -7,6 +7,7 @@ import type { ResultData } from '@shared/flow';
 import { useAi, useApp, useLog, useScene, log } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { Viewport } from '../three/Viewport';
+import { t, getLanguage } from '@shared/i18n';
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
@@ -16,43 +17,49 @@ function buildMarkdown(snapshot: string | null, result: ResultData | undefined) 
   const board = getBoard(scene.board);
   const entries = useLog.getState().entries.filter((e) => e.type !== 'info');
   const ai = useAi.getState().items;
+  const locale = getLanguage() === 'it' ? 'it-IT' : undefined;
   const L: string[] = [];
-  L.push(`# BoardPilot session report`, '', `Date: ${new Date().toLocaleString()}`);
-  L.push(`Board: ${conn.chip ? `${conn.chip.chip}, ${conn.chip.flashSize} flash, MAC ${conn.chip.mac} on ${conn.port}` : 'not connected'}`);
-  if (conn.mode === 'sim') L.push('', '> **Simulated session.** No real hardware was used; all measurements come from the simulator scenario.');
+  L.push(`# ${t('BoardPilot session report')}`, '', t('Date: {date}', { date: new Date().toLocaleString(locale) }));
+  L.push(
+    conn.chip
+      ? t('Board: {chip}, {flash} flash, MAC {mac} on {port}', { chip: conn.chip.chip, flash: conn.chip.flashSize, mac: conn.chip.mac, port: conn.port ?? '' })
+      : t('Board: not connected'),
+  );
+  if (conn.mode === 'sim') L.push('', `> **${t('Simulated session.')}** ${t('No real hardware was used; all measurements come from the simulator scenario.')}`);
   if (result) {
-    L.push('', `## Result: ${result.title}`, '', `*Confidence: ${result.confidence}*`, '', result.cause, '');
+    L.push('', `## ${t('Result: {title}', { title: result.title })}`, '', `*${t('Confidence: {level}', { level: t(result.confidence) })}*`, '', result.cause, '');
     if (result.evidence.length) {
-      L.push('### Evidence', '');
+      L.push(`### ${t('Evidence')}`, '');
       for (const e of result.evidence) L.push(`- ${e.text} _(${e.source})_`);
     }
     if (result.nextSteps.length) {
-      L.push('', '### Fix / next steps', '');
+      L.push('', `### ${t('Fix / next steps')}`, '');
       result.nextSteps.forEach((s, i) => L.push(`${i + 1}. ${s}`));
     }
-    if (result.sources.length) L.push('', `Sources: ${result.sources.join('; ')}`);
+    if (result.sources.length) L.push('', t('Sources: {list}', { list: result.sources.join('; ') }));
   }
-  if (snapshot) L.push('', '## 3D snapshot', '', `![3D view](${snapshot})`);
-  L.push('', '## Wiring check', '');
-  if (!findings.length) L.push('No rule found a problem in the wiring drawing.');
-  for (const f of findings) L.push(`- **${f.severity}**: ${f.message} ${f.hint}${f.source ? ` _(${f.source})_` : ''}`);
-  L.push('', '## Project', '', '| Part | Model |', '|---|---|');
-  for (const p of scene.parts) L.push(`| ${p.label ?? p.id} | ${PARTS[p.partId]?.name ?? p.partId}${p.confirmed === false ? ' (unconfirmed suggestion)' : ''} |`);
-  L.push('', '| Wire | From | To |', '|---|---|---|');
+  if (snapshot) L.push('', `## ${t('3D snapshot')}`, '', `![${t('3D view')}](${snapshot})`);
+  L.push('', `## ${t('Wiring check')}`, '');
+  if (!findings.length) L.push(t('No rule found a problem in the wiring drawing.'));
+  for (const f of findings) L.push(`- **${t(f.severity)}**: ${f.message} ${f.hint}${f.source ? ` _(${f.source})_` : ''}`);
+  L.push('', `## ${t('Project')}`, '', `| ${t('Part')} | ${t('Model')} |`, '|---|---|');
+  for (const p of scene.parts)
+    L.push(`| ${p.label ?? p.id} | ${PARTS[p.partId]?.name ?? p.partId}${p.confirmed === false ? ` (${t('unconfirmed suggestion')})` : ''} |`);
+  L.push('', `| ${t('Wire')} | ${t('From')} | ${t('To')} |`, '|---|---|---|');
   for (const w of scene.wires) {
     const end = (e: { part: string; pin: string }) => (e.part === 'board' ? targetLabel(board, scene, `pin:${e.pin}`) : `${scene.parts.find((p) => p.id === e.part)?.label ?? e.part} ${e.pin}`);
     L.push(`| ${w.id} | ${end(w.from)} | ${end(w.to)} |`);
   }
-  L.push('', '## Session log', '');
-  for (const e of entries) L.push(`- \`${new Date(e.t).toLocaleTimeString([], { hour12: false })}\` **${e.type}** ${e.text}${e.source ? ` _(${e.source})_` : ''}`);
+  L.push('', `## ${t('Session log')}`, '');
+  for (const e of entries) L.push(`- \`${new Date(e.t).toLocaleTimeString(locale ? [locale] : [], { hour12: false })}\` **${t(e.type)}** ${e.text}${e.source ? ` _(${e.source})_` : ''}`);
   const qa = ai.filter((i) => i.role !== 'error');
   if (qa.length) {
-    L.push('', '## Assistant', '');
+    L.push('', `## ${t('Assistant')}`, '');
     for (const i of qa) {
-      if (i.role === 'user') L.push(`**Q:** ${i.text}`, '');
+      if (i.role === 'user') L.push(`**${t('Q:')}** ${i.text}`, '');
       else if (i.role === 'assistant') {
-        L.push(`**A** _(${i.reply.confidence})_: ${i.reply.message}`, '');
-        if (i.reply.sources.length) L.push(`Sources: ${i.reply.sources.map((s) => `${s.kind}: ${s.label}`).join('; ')}`, '');
+        L.push(`**${t('A')}** _(${t(i.reply.confidence)})_: ${i.reply.message}`, '');
+        if (i.reply.sources.length) L.push(t('Sources: {list}', { list: i.reply.sources.map((s) => `${s.kind}: ${s.label}`).join('; ') }), '');
       }
     }
   }
@@ -126,7 +133,7 @@ export function Report() {
     setBusy(true);
     const r = await window.bp.session.exportReport(md, mdToHtml(md), `boardpilot-report-${new Date().toISOString().slice(0, 10)}`);
     setBusy(false);
-    if (r.ok) log('info', `Report saved: ${r.value.markdownPath} and ${r.value.pdfPath}`);
+    if (r.ok) log('info', t('Report saved: {md} and {pdf}', { md: r.value.markdownPath, pdf: r.value.pdfPath }));
     else if (r.error.code !== 'cancelled') log('failed', `${r.error.humanMessage} ${r.error.hint}`);
   };
 
@@ -134,15 +141,15 @@ export function Report() {
     <div className="screen-scroll">
       <div className="screen-head row between">
         <div>
-          <h2>Report</h2>
-          <p className="dim">A summary of this session: what was checked, what was found, and the fix.</p>
+          <h2>{t('Report')}</h2>
+          <p className="dim">{t('A summary of this session: what was checked, what was found, and the fix.')}</p>
         </div>
         <div className="row gap">
           <button className="btn" onClick={capture}>
-            Capture 3D snapshot
+            {t('Capture 3D snapshot')}
           </button>
           <button className="btn primary" disabled={busy} onClick={exportIt}>
-            Export Markdown + PDF…
+            {t('Export Markdown + PDF…')}
           </button>
         </div>
       </div>
@@ -151,7 +158,7 @@ export function Report() {
           <Viewport compact />
         </div>
         <div className="card report-preview">
-          {snapshot && <img src={snapshot} alt="3D snapshot" className="snap" />}
+          {snapshot && <img src={snapshot} alt={t('3D snapshot')} className="snap" />}
           <pre className="md">{md.replace(/\(data:image[^)]+\)/, '(snapshot.png)')}</pre>
         </div>
       </div>

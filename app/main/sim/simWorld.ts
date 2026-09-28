@@ -4,6 +4,7 @@
 import type { AgentPinState, AgentReplyMap, AgentRequest, I2cTraceStep, StreamFrame } from '@shared/types';
 import { FLASH_GPIOS, INPUT_ONLY_GPIOS, isAdcGpio } from '@shared/board';
 import { DriverError } from '../hardware/errors';
+import { t } from '@shared/i18n';
 import { agentErrorText } from '@shared/protocol';
 import type { Scenario, SimPhysical, SimI2cDevice } from './scenario';
 
@@ -27,8 +28,8 @@ export const EXPOSED_GPIOS = [1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21,
 const VALID_GPIOS = [0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 37, 38, 39];
 
 function agentError(code: string): DriverError {
-  const t = agentErrorText(code);
-  return new DriverError(`agent_${code}`, t.humanMessage, t.hint);
+  const text = agentErrorText(code);
+  return new DriverError(`agent_${code}`, text.humanMessage, text.hint);
 }
 
 export class SimWorld {
@@ -141,7 +142,7 @@ export class SimWorld {
 
   handle<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>): AgentReplyMap[K] {
     if (this.firmware !== 'agent') {
-      throw new DriverError('agent_missing', 'The diagnostic agent is not on the board.', 'Install it first (the app asks before writing).');
+      throw new DriverError('agent_missing', t('The diagnostic agent is not on the board.'), t('Install it first (the app asks before writing).'));
     }
     const r = req as AgentRequest;
     switch (r.cmd) {
@@ -188,8 +189,8 @@ export class SimWorld {
         const trace: I2cTraceStep[] = [{ t: 'start' }, { t: 'addr', v: r.addr, rw: 'w', ack: !!dev }];
         if (!dev) {
           trace.push({ t: 'stop' });
-          const t = agentErrorText('nack');
-          throw Object.assign(new DriverError('agent_nack', t.humanMessage, t.hint), { trace });
+          const text = agentErrorText('nack');
+          throw Object.assign(new DriverError('agent_nack', text.humanMessage, text.hint), { trace });
         }
         const data: string[] = [];
         const regNum = parseInt(r.reg, 16);

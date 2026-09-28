@@ -9,6 +9,7 @@ import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
 import { addPart } from '../state/sceneActions';
 import { AssistantPanel } from '../components/AssistantPanel';
+import { t } from '@shared/i18n';
 
 export function NewProjectPanel() {
   const scene = useScene((s) => s.scene);
@@ -19,8 +20,8 @@ export function NewProjectPanel() {
   const assign = () => {
     const r = assignPins(scene, board, PARTS);
     useScene.getState().setScene(r.scene, true);
-    if (!r.notes.length) log('info', 'Every part pin is already wired.');
-    for (const n of r.notes) log('action', `Pin assigned: ${n}`, { source: 'pin rules (safe pins)' });
+    if (!r.notes.length) log('info', t('Every part pin is already wired.'));
+    for (const n of r.notes) log('action', t('Pin assigned: {note}', { note: n }), { source: 'pin rules (safe pins)' });
     useScene.getState().preset('home');
   };
 
@@ -30,33 +31,33 @@ export function NewProjectPanel() {
         <div className="wizard">
           <div className="wiz-head">
             <div>
-              <div className="panel-title">New project</div>
-              <div className="small dim">Add your parts. The app picks safe pins and writes starter code.</div>
+              <div className="panel-title">{t('New project')}</div>
+              <div className="small dim">{t('Add your parts. The app picks safe pins and writes starter code.')}</div>
             </div>
           </div>
-          <div className="label">1. Add parts</div>
+          <div className="label">{t('1. Add parts')}</div>
           <PartsLibrary />
           <PhotoInput compact onConfirm={(id) => addPart(id, { confirmed: true })} />
-          <div className="label">2. Wire them</div>
+          <div className="label">{t('2. Wire them')}</div>
           <div className="row gap wrap">
             <button className="btn primary small" disabled={!scene.parts.length} onClick={assign}>
-              Assign safe pins
+              {t('Assign safe pins')}
             </button>
             <button className="btn small" onClick={() => useScene.getState().set({ wireMode: true, wireFrom: null })}>
-              Draw wires myself
+              {t('Draw wires myself')}
             </button>
             <button
               className="btn small ghost"
               onClick={() => {
                 useScene.getState().setScene({ ...scene, wires: [] }, true);
-                log('action', 'Removed all wires.');
+                log('action', t('Removed all wires.'));
               }}
             >
-              Clear wires
+              {t('Clear wires')}
             </button>
           </div>
           <p className="small dim">
-            Safe pins avoid the flash pins (GPIO 6–11), input-only pins (34–39) for outputs, strapping pins (0, 2, 5, 12, 15) and the USB serial pins.
+            {t('Safe pins avoid the flash pins (GPIO 6–11), input-only pins (34–39) for outputs, strapping pins (0, 2, 5, 12, 15) and the USB serial pins.')}
           </p>
           {findings.length > 0 && (
             <div className="findings">
@@ -68,14 +69,14 @@ export function NewProjectPanel() {
               ))}
             </div>
           )}
-          <div className="label">3. Starter code</div>
+          <div className="label">{t('3. Starter code')}</div>
           <div className="row gap wrap">
             <button className="btn small" disabled={!scene.parts.length} onClick={() => setSketch(generateSketch(scene, board, PARTS))}>
-              Generate sketch
+              {t('Generate sketch')}
             </button>
             {sketch && (
               <button className="btn small ghost" onClick={() => window.bp.session.saveFile('BoardPilotProject.ino', sketch)}>
-                Save .ino…
+                {t('Save .ino…')}
               </button>
             )}
           </div>

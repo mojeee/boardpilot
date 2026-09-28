@@ -13,6 +13,7 @@ import type {
 } from '@shared/types';
 import type { AgentClient, HardwareDriver, SerialStream } from '../hardware/driver';
 import { DriverError } from '../hardware/errors';
+import { t } from '@shared/i18n';
 import { bridgeFromUsb } from '../hardware/ports';
 import { SimWorld, garble } from './simWorld';
 
@@ -37,7 +38,7 @@ export class SimDriver implements HardwareDriver {
 
   private checkPort(port: string) {
     if (!this.world.scenario.ports.some((p) => p.path === port)) {
-      throw new DriverError('port_gone', `The port ${port} is not there any more.`, 'Check the USB cable, then search for boards again.');
+      throw new DriverError('port_gone', t('The port {port} is not there any more.', { port }), t('Check the USB cable, then search for boards again.'));
     }
   }
 
@@ -48,15 +49,15 @@ export class SimDriver implements HardwareDriver {
     if (s.identify === 'busy' || this.openHolder === 'serial') {
       throw new DriverError(
         'port_busy',
-        'Another program is using this port, so the app cannot talk to the board.',
-        'Close any serial monitor (Arduino IDE, PlatformIO, screen) and try again.',
+        t('Another program is using this port, so the app cannot talk to the board.'),
+        t('Close any serial monitor (Arduino IDE, PlatformIO, screen) and try again.'),
       );
     }
     if (s.identify === 'no_sync') {
       throw new DriverError(
         'no_sync',
-        'The board did not answer when the app tried to wake it up.',
-        'Hold the BOOT button, press and release EN, then release BOOT and try again.',
+        t('The board did not answer when the app tried to wake it up.'),
+        t('Hold the BOOT button, press and release EN, then release BOOT and try again.'),
       );
     }
     return { ...s.chip, port, bridge: s.bridge, toolVersion: 'simulator' };
@@ -98,7 +99,7 @@ export class SimDriver implements HardwareDriver {
   async openAgent(port: string): Promise<AgentClient> {
     this.checkPort(port);
     if (this.world.firmware !== 'agent') {
-      throw new DriverError('agent_missing', 'The diagnostic agent is not on the board.', 'Install it first. The app backs up your program before writing.');
+      throw new DriverError('agent_missing', t('The diagnostic agent is not on the board.'), t('Install it first. The app backs up your program before writing.'));
     }
     this.openHolder = 'agent';
     return new SimAgentClient(this.world, () => (this.openHolder = null));
@@ -107,7 +108,7 @@ export class SimDriver implements HardwareDriver {
   async openSerial(port: string, baud: number): Promise<SerialStream> {
     this.checkPort(port);
     if (this.world.scenario.identify === 'busy') {
-      throw new DriverError('port_busy', 'Another program is using this port.', 'Close any other serial monitor and try again.');
+      throw new DriverError('port_busy', t('Another program is using this port.'), t('Close any other serial monitor and try again.'));
     }
     this.openHolder = 'serial';
     return new SimSerial(this.world, baud, () => (this.openHolder = null));

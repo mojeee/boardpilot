@@ -1,7 +1,7 @@
 {
   "name": "boardpilot",
   "productName": "BoardPilot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Guided embedded software work on a real ESP32 board, with a live 3D view.",
   "private": true,
   "main": "out/main/index.js",
@@ -16,7 +16,7 @@
     "dist:mac": "electron-vite build && electron-builder --mac"
   },
   "build": {
-    "appId": "com.boardpilot.app",
+    "appId": "com.agentflowbind.boardpilot",
     "productName": "BoardPilot",
     "files": [
       "out/**/*"
@@ -24,36 +24,40 @@
     "extraResources": [
       {
         "from": "resources/agent",
-        "to": "agent"
-      },
-      {
-        "from": "boards",
-        "to": "boards"
-      },
-      {
-        "from": "parts",
-        "to": "parts"
+        "to": "agent",
+        "filter": [
+          "*.bin",
+          "manifest.json"
+        ]
       }
     ],
     "mac": {
       "category": "public.app-category.developer-tools",
       "target": [
-        "dmg"
-      ]
-    }
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "BoardPilot-mac-${arch}.${ext}",
+      "identity": null
+    },
+    "dmg": {
+      "title": "BoardPilot ${version}"
+    },
+    "publish": null,
+    "npmRebuild": false
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
-    "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.1",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "serialport": "^13.0.0",
-    "three": "^0.186.1",
-    "uplot": "^1.6.32",
-    "zustand": "^5.0.15"
+    "serialport": "^13.0.0"
   },
   "devDependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
     "@types/node": "^26.6.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -62,8 +66,23 @@
     "electron": "^44.4.5",
     "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.186.1",
     "typescript": "^7.0.2",
+    "uplot": "^1.6.32",
     "vite": "^7.3.6",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.2",
+    "zustand": "^5.0.15"
+  },
+  "author": {
+    "name": "Mojtaba Amini",
+    "url": "https://github.com/mojeee"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://boardpilot.agentflowbind.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mojeee/boardpilot.git"
   }
 }

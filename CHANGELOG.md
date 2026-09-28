@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 (2026-09-28)
+
+- Parts library panel on every 3D screen: search, filter, add; your own parts saved in the app data folder.
+- Add a part from a web link: the page (or PDF datasheet, with AI) is read and a part with pins and a 3D model is drafted; you check and confirm it in the part editor with a live 3D preview.
+- 3D editing: drag to move, rotate (R), duplicate (⌘D), remove (Delete), nudge with arrow keys, rename, undo/redo (⌘Z / ⇧⌘Z), open and save projects (custom parts travel with the file), autosave.
+- New part shapes: chip, module, motor, relay.
+- English and Italian throughout the app, including main-process errors, wizard flows, wiring findings, reports and AI replies.
+- 30-day trial, then offline-verified license keys (Ed25519). Source-available BoardPilot License; firmware under MIT.
+- GitHub Actions: CI on every push, .dmg release on version tags. Landing page in `site/`.
+- Fixed: `NAME_MAX` clash in BoardPilotProbe with the ESP32 core; agent and probe now compile with esp32 core 3.3.12.
+
 ## 0.1.0 (2026-09-28): first working build, simulator first
 
 - Electron + Vite + React + TypeScript (strict) app shell: top bar, task rail with the 7 tasks, 3D viewport, wizard/assistant panel, session log. Secure preload with a typed API (`window.bp`); the renderer never touches serial, files or the API key.

@@ -6,6 +6,7 @@ import { SerialPort } from 'serialport';
 import type { BackupInfo, ChipInfo, FirmwareImage, PortInfo } from '@shared/types';
 import type { AgentClient, HardwareDriver, SerialStream } from './driver';
 import { DriverError } from './errors';
+import { t } from '@shared/i18n';
 import { bridgeFromUsb, isUsefulMacPort } from './ports';
 import { commandName, esptool, findEsptool, parseChipInfo } from './esptool';
 import { AGENT_BAUD, SerialAgentClient, SerialLineStream, openPort } from './agentClient';
@@ -58,7 +59,7 @@ export class RealDriver implements HardwareDriver {
     });
     const s = await stat(path);
     if (s.size !== size) {
-      throw new DriverError('backup_incomplete', 'The backup file is smaller than the flash. It is not safe to continue.', 'Try the backup again with a shorter or better USB cable.');
+      throw new DriverError('backup_incomplete', t('The backup file is smaller than the flash. It is not safe to continue.'), t('Try the backup again with a shorter or better USB cable.'));
     }
     return { id, port, chip: chip.chip, mac: chip.mac, sizeBytes: s.size, path, createdAt: new Date().toISOString() };
   }

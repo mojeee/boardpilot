@@ -1,15 +1,16 @@
 import type { Evidence, FlowDef } from '@shared/flow';
+import { t } from '@shared/i18n';
 import { ensureBoardStep, fmtErr } from './common';
 
-/** Reset reasons printed by the ESP32 ROM (ESP-IDF docs, "Reset reasons"). */
-const RESET_REASONS: Record<string, string> = {
-  POWERON_RESET: 'normal power-on',
-  SW_CPU_RESET: 'the program restarted the chip (software reset, often after a crash)',
-  TG0WDT_SYS_RESET: 'a watchdog timer reset the chip: some code blocked for too long',
-  TG1WDT_SYS_RESET: 'a watchdog timer reset the chip: some code blocked for too long',
-  RTCWDT_RTC_RESET: 'the RTC watchdog reset the chip',
-  DEEPSLEEP_RESET: 'waking from deep sleep (normal if you use deep sleep)',
-  RTCWDT_BROWN_OUT_RESET: 'the supply voltage dropped too low (brownout)',
+/** Reset reasons printed by the ESP32 ROM (ESP-IDF docs, "Reset reasons"). Functions, so the text follows the UI language. */
+const RESET_REASONS: Record<string, () => string> = {
+  POWERON_RESET: () => t('normal power-on'),
+  SW_CPU_RESET: () => t('the program restarted the chip (software reset, often after a crash)'),
+  TG0WDT_SYS_RESET: () => t('a watchdog timer reset the chip: some code blocked for too long'),
+  TG1WDT_SYS_RESET: () => t('a watchdog timer reset the chip: some code blocked for too long'),
+  RTCWDT_RTC_RESET: () => t('the RTC watchdog reset the chip'),
+  DEEPSLEEP_RESET: () => t('waking from deep sleep (normal if you use deep sleep)'),
+  RTCWDT_BROWN_OUT_RESET: () => t('the supply voltage dropped too low (brownout)'),
 };
 
 export const debugKeepsResetting: FlowDef = {
@@ -40,10 +41,15 @@ export const debugKeepsResetting: FlowDef = {
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         ctx.data.lines = r.value;
         const resets = r.value.filter((l) => /rst:0x/.test(l));
-        ctx.log(resets.length ? 'warning' : 'check', `${r.value.length} lines, ${resets.length} restart${resets.length === 1 ? '' : 's'} seen.`, {
-          source: 'measured: serial capture',
-        });
-        return { status: resets.length ? 'warning' : 'ok', summary: resets.length ? `The board restarted ${resets.length} time(s) in 6 s.` : 'No restart seen in 6 s.' };
+        const seen =
+          resets.length === 1
+            ? t('{lines} lines, 1 restart seen.', { lines: r.value.length })
+            : t('{lines} lines, {n} restarts seen.', { lines: r.value.length, n: resets.length });
+        ctx.log(resets.length ? 'warning' : 'check', seen, { source: 'measured: serial capture' });
+        return {
+          status: resets.length ? 'warning' : 'ok',
+          summary: resets.length ? t('The board restarted {n} time(s) in 6 s.', { n: resets.length }) : 'No restart seen in 6 s.',
+        };
       },
       fallbacks: [{ id: 'retry', label: 'Listen again', kind: 'retry' }],
     },
@@ -59,12 +65,15 @@ export const debugKeepsResetting: FlowDef = {
           const m = /rst:0x[0-9a-f]+ \(([A-Z0-9_]+)\)/i.exec(l);
           if (m) reasons.set(m[1], (reasons.get(m[1]) ?? 0) + 1);
         }
-        for (const [k, n] of reasons) ev.push({ text: `rst: ${k} × ${n}: ${RESET_REASONS[k] ?? 'see ESP-IDF reset reasons'}`, source: 'measured: serial capture', confidence: 'measured' });
+        for (const [k, n] of reasons) {
+          const why = RESET_REASONS[k]?.() ?? t('see ESP-IDF reset reasons');
+          ev.push({ text: t('rst: {reason} × {n}: {why}', { reason: k, n, why }), source: 'measured: serial capture', confidence: 'measured' });
+        }
         const brownout = lines.some((l) => /Brownout detector was triggered/i.test(l));
         const panic = lines.find((l) => /Guru Meditation|panic|abort\(\)|LoadProhibited|StoreProhibited/i.test(l));
         const wdt = lines.some((l) => /Task watchdog|task_wdt|Interrupt wdt/i.test(l));
-        if (brownout) ev.push({ text: '“Brownout detector was triggered” was printed', source: 'measured: serial capture', confidence: 'measured' });
-        if (panic) ev.push({ text: `Crash message: ${panic.trim().slice(0, 120)}`, source: 'measured: serial capture', confidence: 'measured' });
+        if (brownout) ev.push({ text: t('“Brownout detector was triggered” was printed'), source: 'measured: serial capture', confidence: 'measured' });
+        if (panic) ev.push({ text: t('Crash message: {msg}', { msg: panic.trim().slice(0, 120) }), source: 'measured: serial capture', confidence: 'measured' });
 
         if (brownout) {
           return {

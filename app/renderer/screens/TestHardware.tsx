@@ -6,30 +6,31 @@ import { PARTS, boardPinFor, getBoard, pinById, pinByGpio } from '@shared/board'
 import { useApp, useLive, useScene, log } from '../state/store';
 import { agent, confirmGpioWrite, confirmInstallAgent } from '../state/hw';
 import { openTask } from '../components/TaskRail';
+import { t } from '@shared/i18n';
 
 function Gate() {
   const conn = useApp((s) => s.conn);
   if (!conn.chip)
     return (
       <div className="gate">
-        <b>Connect the board first.</b>
-        <span className="dim">The tests talk to the board through USB.</span>
+        <b>{t('Connect the board first.')}</b>
+        <span className="dim">{t('The tests talk to the board through USB.')}</span>
         <button className="btn primary" onClick={() => openTask('connect')}>
-          Connect and identify
+          {t('Connect and identify')}
         </button>
       </div>
     );
   if (!conn.agent)
     return (
       <div className="gate">
-        <b>These tests need the diagnostic agent on the board.</b>
-        <span className="dim">The app backs up your program first, and asks before writing anything.</span>
+        <b>{t('These tests need the diagnostic agent on the board.')}</b>
+        <span className="dim">{t('The app backs up your program first, and asks before writing anything.')}</span>
         <div className="row gap">
           <button className="btn primary" onClick={() => confirmInstallAgent()}>
-            Install the agent…
+            {t('Install the agent…')}
           </button>
           <button className="btn" onClick={() => window.bp.hw.connectAgent()}>
-            The agent is already on it
+            {t('The agent is already on it')}
           </button>
         </div>
       </div>
@@ -81,30 +82,43 @@ function I2cCard({ onPullups }: { onPullups: (p: Record<string, boolean>) => voi
       const r = await agent({ cmd: 'i2c_scan', sda: bus.sda, scl: bus.scl, hz: 100000 });
       if (!r.ok) return void log('failed', `${r.error.humanMessage} ${r.error.hint}`);
       setFound(r.value.found);
-      log(r.value.found.length ? 'found' : 'warning', `I2C scan on ${bus.sdaPin}/${bus.sclPin}: ${r.value.found.join(', ') || 'no device'}`, { source: 'measured: i2c_scan', target: targets[0] });
+      log(
+        r.value.found.length ? 'found' : 'warning',
+        r.value.found.length
+          ? t('I2C scan on {sda}/{scl}: {list}', { sda: bus.sdaPin, scl: bus.sclPin, list: r.value.found.join(', ') })
+          : t('I2C scan on {sda}/{scl}: no device', { sda: bus.sdaPin, scl: bus.sclPin }),
+        { source: 'measured: i2c_scan', target: targets[0] },
+      );
     });
   const swap = () =>
     run(async () => {
       const r = await agent({ cmd: 'i2c_scan', sda: bus.scl, scl: bus.sda, hz: 100000 });
       if (!r.ok) return void log('failed', `${r.error.humanMessage} ${r.error.hint}`);
       setSwapped(r.value.found);
-      log(r.value.found.length ? 'warning' : 'check', `Swap test (SDA ${bus.sclPin}, SCL ${bus.sdaPin}): ${r.value.found.join(', ') || 'no device'}${r.value.found.length ? ': the lines are crossed' : ''}`, {
-        source: 'measured: i2c_scan (swapped)',
-        target: targets[0],
-      });
+      log(
+        r.value.found.length ? 'warning' : 'check',
+        r.value.found.length
+          ? t('Swap test (SDA {sda}, SCL {scl}): {list}: the lines are crossed', { sda: bus.sclPin, scl: bus.sdaPin, list: r.value.found.join(', ') })
+          : t('Swap test (SDA {sda}, SCL {scl}): no device', { sda: bus.sclPin, scl: bus.sdaPin }),
+        {
+          source: 'measured: i2c_scan (swapped)',
+          target: targets[0],
+        },
+      );
     });
   const readId = () =>
     run(async () => {
       const addr = found?.[0];
       const part = bus.parts.find((p) => PARTS[p.partId].addresses?.map((a) => a.toLowerCase()).includes(addr?.toLowerCase() ?? ''));
       const check = part && PARTS[part.partId].idCheck;
-      if (!addr || !check) return void log('info', 'Scan first; the ID check needs a device that answered and has a known ID register.');
+      if (!addr || !check) return void log('info', t('Scan first; the ID check needs a device that answered and has a known ID register.'));
       const r = await agent({ cmd: 'i2c_read', sda: bus.sda, scl: bus.scl, addr, reg: check.register, len: 1 });
       if (!r.ok) return void log('failed', `${r.error.humanMessage} ${r.error.hint}`);
       const v = r.value.data[0];
       setId(v);
       const other = check.otherValues?.[v];
-      log(v?.toLowerCase() === check.expect.toLowerCase() ? 'found' : 'warning', `ID register ${check.register} at ${addr} = ${v} (expected ${check.expect})${other ? `. ${other}` : ''}`, {
+      const idText = t('ID register {reg} at {addr} = {value} (expected {expect})', { reg: check.register, addr, value: v ?? '—', expect: check.expect });
+      log(v?.toLowerCase() === check.expect.toLowerCase() ? 'found' : 'warning', other ? `${idText}. ${t(other)}` : idText, {
         source: `measured: i2c_read ${check.register}`,
         target: `part:${part.id}`,
       });
@@ -127,29 +141,29 @@ function I2cCard({ onPullups }: { onPullups: (p: Record<string, boolean>) => voi
   return (
     <div className="card">
       <div className="card-title">
-        I2C bus <span className="mono dim">SDA {bus.sdaPin} · SCL {bus.sclPin}</span>
+        {t('I2C bus')} <span className="mono dim">SDA {bus.sdaPin} · SCL {bus.sclPin}</span>
       </div>
       <div className="addr-grid">{Array.from({ length: 128 }, (_, a) => cell(a))}</div>
       <div className="grid-legend small">
         <span>
-          <i className="hit" /> answered
+          <i className="hit" /> {t('answered')}
         </span>
         <span>
-          <i className="swap" /> answered only when swapped
+          <i className="swap" /> {t('answered only when swapped')}
         </span>
         <span>
-          <i className="exp" /> expected from your parts
+          <i className="exp" /> {t('expected from your parts')}
         </span>
       </div>
       <div className="row gap wrap">
         <button className="btn primary small" disabled={!agentOn || busy} onClick={scan}>
-          Scan
+          {t('Scan')}
         </button>
         <button className="btn small" disabled={!agentOn || busy} onClick={swap}>
-          Swap test
+          {t('Swap test')}
         </button>
         <button className="btn small" disabled={!agentOn || busy || !found?.length} onClick={readId}>
-          Read chip ID
+          {t('Read chip ID')}
         </button>
         {id && <span className="mono">ID = {id}</span>}
       </div>
@@ -164,7 +178,7 @@ function BusDiagram({ pullups }: { pullups: Record<string, boolean> | null }) {
   const partW = 120;
   return (
     <div className="card">
-      <div className="card-title">Bus wiring (from your project)</div>
+      <div className="card-title">{t('Bus wiring (from your project)')}</div>
       <svg viewBox={`0 0 ${W} ${H}`} className="bus-svg">
         <rect x={10} y={30} width={90} height={80} rx={6} fill="var(--pcb)" />
         <text x={55} y={24} textAnchor="middle" className="svg-small">
@@ -181,13 +195,13 @@ function BusDiagram({ pullups }: { pullups: Record<string, boolean> | null }) {
             <line x1={100} y1={l.y} x2={W - 10} y2={l.y} stroke={l.color} strokeWidth={3} />
             <text x={108} y={l.y - 6} className="svg-small" fill={l.color}>
               {l.name}
-              {pullups ? (pullups[String(l.g)] ? ' · pulled up ✓ (measured)' : ' · no pull-up ✗ (measured)') : ''}
+              {pullups ? ` · ${pullups[String(l.g)] ? t('pulled up ✓ (measured)') : t('no pull-up ✗ (measured)')}` : ''}
             </text>
           </g>
         ))}
         {bus.parts.length === 0 && (
           <text x={260} y={150} textAnchor="middle" className="svg-small">
-            No I2C parts in your project. Add them in New project.
+            {t('No I2C parts in your project. Add them in New project.')}
           </text>
         )}
         {bus.parts.map((p, i) => {
@@ -238,7 +252,7 @@ export function DecodedBus() {
       x += BIT * 1.5;
     } else {
       const byte = s.t === 'addr' ? ((parseInt(s.v ?? '0', 16) << 1) | (s.rw === 'r' ? 1 : 0)).toString(16) : s.v?.replace(/^0x/i, '');
-      const label = s.t === 'addr' ? `${s.v} ${s.rw === 'r' ? 'Read' : 'Write'}` : `${s.v}`;
+      const label = s.t === 'addr' ? `${s.v} ${s.rw === 'r' ? t('Read') : t('Write')}` : `${s.v}`;
       segs.push({ kind: 'byte', label, bits: bitsOf('0x' + byte), ack: s.ack, x, w: BIT * 9 });
       x += BIT * 9 + 4;
     }
@@ -273,10 +287,15 @@ export function DecodedBus() {
   return (
     <div className="card wide">
       <div className="card-title">
-        Decoded bus {trace && <span className="mono dim">last {trace.cmd === 'i2c_scan' ? 'scan' : 'read'} · SDA {sdaPin} · SCL {sclPin}</span>}
+        {t('Decoded bus')}{' '}
+        {trace && (
+          <span className="mono dim">
+            {trace.cmd === 'i2c_scan' ? t('last scan') : t('last read')} · SDA {sdaPin} · SCL {sclPin}
+          </span>
+        )}
       </div>
       {!trace ? (
-        <div className="empty">Run a scan or an ID read to see the bus transaction, bit by bit.</div>
+        <div className="empty">{t('Run a scan or an ID read to see the bus transaction, bit by bit.')}</div>
       ) : (
         <div className="decode-scroll">
           <svg viewBox={`0 0 ${W} 190`} width={W} height={190} className="decode-svg">
@@ -319,7 +338,9 @@ export function DecodedBus() {
           </svg>
         </div>
       )}
-      <div className="small dim">S = start, Sr = repeated start, P = stop. A = the receiver acknowledged the byte, N = no acknowledge. The last byte of a read is not acknowledged by design.</div>
+      <div className="small dim">
+        {t('S = start, Sr = repeated start, P = stop. A = the receiver acknowledged the byte, N = no acknowledge. The last byte of a read is not acknowledged by design.')}
+      </div>
     </div>
   );
 }
@@ -359,7 +380,7 @@ function PinChecks({ onPullups }: { onPullups: (p: Record<string, boolean>) => v
         onPullups(pu.value.external);
         for (const [g, v] of Object.entries(pu.value.external)) {
           const p = pinByGpio(board, Number(g));
-          out[g] = v ? 'HIGH with nothing driving it: external pull-up' : 'LOW: no pull-up';
+          out[g] = v ? t('HIGH with nothing driving it: external pull-up') : t('LOW: no pull-up');
           log('check', `${p?.label ?? g}: ${out[g]}`, { target: p ? (`pin:${p.id}` as TargetRef) : undefined, source: 'measured: pullup_check' });
         }
       }
@@ -376,10 +397,11 @@ function PinChecks({ onPullups }: { onPullups: (p: Record<string, boolean>) => v
       for (const [g, v] of Object.entries(s.value.strapping)) {
         const p = pinByGpio(board, Number(g));
         if (rows.some((r) => r.pin.gpio === Number(g))) {
-          out[g] = `${out[g] ? out[g] + '; ' : ''}level at reset: ${v}`;
+          const atReset = t('level at reset: {level}', { level: v });
+          out[g] = out[g] ? `${out[g]}; ${atReset}` : atReset;
           if (Number(g) === 12 && v === 1)
-            log('warning', 'D12 (GPIO 12) was HIGH at reset. That selects 1.8 V flash and can stop the board from booting.', { target: 'pin:D12', source: 'measured: agent boot report' });
-          else if (p) log('check', `${p.label} level at reset: ${v}`, { target: `pin:${p.id}`, source: 'measured: agent boot report' });
+            log('warning', t('D12 (GPIO 12) was HIGH at reset. That selects 1.8 V flash and can stop the board from booting.'), { target: 'pin:D12', source: 'measured: agent boot report' });
+          else if (p) log('check', t('{pin} level at reset: {level}', { pin: p.label, level: v }), { target: `pin:${p.id}`, source: 'measured: agent boot report' });
         }
       }
     }
@@ -389,9 +411,9 @@ function PinChecks({ onPullups }: { onPullups: (p: Record<string, boolean>) => v
 
   return (
     <div className="card">
-      <div className="card-title">Pin checks</div>
+      <div className="card-title">{t('Pin checks')}</div>
       {rows.length === 0 ? (
-        <div className="empty">No wired pins in your project yet.</div>
+        <div className="empty">{t('No wired pins in your project yet.')}</div>
       ) : (
         <table className="pin-table">
           <tbody>
@@ -406,7 +428,7 @@ function PinChecks({ onPullups }: { onPullups: (p: Record<string, boolean>) => v
         </table>
       )}
       <button className="btn small primary" disabled={!agentOn || busy || !rows.length} onClick={runAll}>
-        Run pin checks
+        {t('Run pin checks')}
       </button>
     </div>
   );
@@ -426,19 +448,29 @@ function OutputTests() {
   const blink = async (pinId: string) => {
     const g = pinById(board, pinId)?.gpio;
     if (g === null || g === undefined) return;
-    if (await confirmGpioWrite(g, 1, `Turns ${pinId} on so you can check the LED lights up.`)) setAsk({ q: `Is the LED on ${pinId} on now?`, pin: pinId, step: 'on' });
+    if (await confirmGpioWrite(g, 1, t('Turns {pin} on so you can check the LED lights up.', { pin: pinId })))
+      setAsk({ q: t('Is the LED on {pin} on now?', { pin: pinId }), pin: pinId, step: 'on' });
   };
   const answer = async (yes: boolean) => {
     if (!ask) return;
-    const t: TargetRef = `pin:${ask.pin}`;
+    const target: TargetRef = `pin:${ask.pin}`;
     if (ask.step === 'on') {
-      log(yes ? 'found' : 'failed', `LED on ${ask.pin} ${yes ? 'lights up' : 'does not light up'} when the pin is HIGH.`, { target: t, source: 'user: confirmed by looking' });
-      if (!yes) log('info', 'Check the LED direction (long leg to the pin side) and the resistor.', { target: t });
+      log(
+        yes ? 'found' : 'failed',
+        yes ? t('LED on {pin} lights up when the pin is HIGH.', { pin: ask.pin }) : t('LED on {pin} does not light up when the pin is HIGH.', { pin: ask.pin }),
+        { target, source: 'user: confirmed by looking' },
+      );
+      if (!yes) log('info', t('Check the LED direction (long leg to the pin side) and the resistor.'), { target });
       const g = pinById(board, ask.pin)?.gpio;
-      if (g !== null && g !== undefined && (await confirmGpioWrite(g, 0, `Turns ${ask.pin} off again.`))) setAsk({ q: 'Is it off now?', pin: ask.pin, step: 'off' });
+      if (g !== null && g !== undefined && (await confirmGpioWrite(g, 0, t('Turns {pin} off again.', { pin: ask.pin }))))
+        setAsk({ q: t('Is it off now?'), pin: ask.pin, step: 'off' });
       else setAsk(null);
     } else {
-      log(yes ? 'found' : 'warning', `LED on ${ask.pin} ${yes ? 'turns off' : 'stays on'} when the pin is LOW.`, { target: t, source: 'user: confirmed by looking' });
+      log(
+        yes ? 'found' : 'warning',
+        yes ? t('LED on {pin} turns off when the pin is LOW.', { pin: ask.pin }) : t('LED on {pin} stays on when the pin is LOW.', { pin: ask.pin }),
+        { target, source: 'user: confirmed by looking' },
+      );
       setAsk(null);
     }
   };
@@ -449,7 +481,7 @@ function OutputTests() {
     let min = 4000;
     let max = -1;
     setSweep({ min: 0, max: 0, running: true, pin: pinId });
-    log('action', `ADC sweep on ${pinId}: turn the knob slowly from one end to the other (8 s).`, { target: `pin:${pinId}` });
+    log('action', t('ADC sweep on {pin}: turn the knob slowly from one end to the other (8 s).', { pin: pinId }), { target: `pin:${pinId}` });
     if (mode === 'sim') await window.bp.sim.control('turnKnob');
     const end = Date.now() + 8500;
     while (Date.now() < end) {
@@ -463,7 +495,10 @@ function OutputTests() {
     }
     setSweep({ min, max, running: false, pin: pinId });
     const full = min < 150 && max > 3100;
-    log(full ? 'found' : 'warning', `ADC sweep on ${pinId}: ${min} to ${max} mV. ${full ? 'The full range works.' : 'The full range was not reached: turn it all the way both ways, or check the outer pins go to 3V3 and GND.'}`, {
+    const sweepText = full
+      ? t('ADC sweep on {pin}: {min} to {max} mV. The full range works.', { pin: pinId, min, max })
+      : t('ADC sweep on {pin}: {min} to {max} mV. The full range was not reached: turn it all the way both ways, or check the outer pins go to 3V3 and GND.', { pin: pinId, min, max });
+    log(full ? 'found' : 'warning', sweepText, {
       target: `pin:${pinId}`,
       source: 'measured: adc (repeated)',
     });
@@ -471,17 +506,17 @@ function OutputTests() {
 
   return (
     <div className="card">
-      <div className="card-title">Output and input tests</div>
-      {leds.length === 0 && pots.length === 0 && <div className="empty">Add an LED or a potentiometer to your project to test them here.</div>}
+      <div className="card-title">{t('Output and input tests')}</div>
+      {leds.length === 0 && pots.length === 0 && <div className="empty">{t('Add an LED or a potentiometer to your project to test them here.')}</div>}
       {leds.map((l) => {
         const pinId = boardPinFor(scene, l.id, 'A');
         return pinId ? (
           <div key={l.id} className="test-row">
             <span>
-              {l.label ?? 'LED'} on <b className="mono">{pinId}</b>
+              {t('{name} on', { name: l.label ?? 'LED' })} <b className="mono">{pinId}</b>
             </span>
             <button className="btn small" disabled={!agentOn} onClick={() => blink(pinId)}>
-              Turn on and check…
+              {t('Turn on and check…')}
             </button>
           </div>
         ) : null;
@@ -491,10 +526,10 @@ function OutputTests() {
           <b>{ask.q}</b>
           <div className="row gap">
             <button className="btn small primary" onClick={() => answer(true)}>
-              Yes
+              {t('Yes')}
             </button>
             <button className="btn small" onClick={() => answer(false)}>
-              No
+              {t('No')}
             </button>
           </div>
         </div>
@@ -504,10 +539,10 @@ function OutputTests() {
         return pinId ? (
           <div key={p.id} className="test-row">
             <span>
-              {p.label ?? 'Knob'} on <b className="mono">{pinId}</b>
+              {t('{name} on', { name: p.label ?? t('Knob') })} <b className="mono">{pinId}</b>
             </span>
             <button className="btn small" disabled={!agentOn || sweep?.running} onClick={() => runSweep(pinId)}>
-              Sweep test
+              {t('Sweep test')}
             </button>
           </div>
         ) : null;
@@ -518,7 +553,7 @@ function OutputTests() {
             <i style={{ left: `${(sweep.min / 3300) * 100}%`, width: `${(Math.max(0, sweep.max - sweep.min) / 3300) * 100}%` }} />
           </div>
           <div className="mono small">
-            {sweep.min} – {sweep.max} mV {sweep.running ? '(turn the knob…)' : ''}
+            {sweep.min} – {sweep.max} mV {sweep.running ? t('(turn the knob…)') : ''}
           </div>
         </div>
       )}
@@ -532,8 +567,8 @@ export function TestHardware() {
   return (
     <div className="screen-scroll">
       <div className="screen-head">
-        <h2>Test hardware</h2>
-        <p className="dim">Measure the real wires. Every result below comes from the board.</p>
+        <h2>{t('Test hardware')}</h2>
+        <p className="dim">{t('Measure the real wires. Every result below comes from the board.')}</p>
       </div>
       <Gate />
       <div className="test-grid">

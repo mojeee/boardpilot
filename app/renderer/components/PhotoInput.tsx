@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import type { PhotoRecognition } from '@shared/types';
 import { PARTS } from '@shared/board';
 import { Icon } from './Icon';
+import { t } from '@shared/i18n';
 
 type Media = 'image/jpeg' | 'image/png' | 'image/webp';
 
@@ -27,7 +28,7 @@ export function PhotoInput({ onConfirm, compact }: { onConfirm: (partId: string,
       const r = await window.bp.ai.recognize(url.split(',')[1] ?? '', mt);
       setBusy(false);
       if (r.ok) setResult(r.value);
-      else setError(`${r.error.humanMessage} ${r.error.hint}`);
+      else setError(`${t(r.error.humanMessage)} ${t(r.error.hint)}`);
     };
     reader.readAsDataURL(f);
   };
@@ -37,31 +38,31 @@ export function PhotoInput({ onConfirm, compact }: { onConfirm: (partId: string,
       <input ref={input} type="file" accept="image/*" hidden onChange={(e) => onFile(e.target.files?.[0])} />
       {!preview && (
         <button className={`btn ${compact ? 'small' : ''}`} onClick={() => input.current?.click()}>
-          <Icon name="camera" size={16} /> Photo of the part
+          <Icon name="camera" size={16} /> {t('Photo of the part')}
         </button>
       )}
       {preview && (
         <div className="photo-card">
-          <img src={preview} alt="Your part" />
+          <img src={preview} alt={t('Your part')} />
           <div className="photo-body">
-            {busy && <div className="dim">Looking at the photo…</div>}
+            {busy && <div className="dim">{t('Looking at the photo…')}</div>}
             {error && <div className="err-text">{error}</div>}
             {result && (
               <>
                 <div className="row gap">
-                  <span className="conf conf-suggestion">suggestion</span>
+                  <span className="conf conf-suggestion">{t('suggestion')}</span>
                   <b>{result.partId ? PARTS[result.partId].name : result.name}</b>
                 </div>
                 <p className="small">{result.reasoning}</p>
-                {result.alternatives.length > 0 && <p className="small dim">Could also be: {result.alternatives.join(', ')}</p>}
+                {result.alternatives.length > 0 && <p className="small dim">{t('Could also be: {list}', { list: result.alternatives.join(', ') })}</p>}
                 <div className="row gap">
                   {result.partId && (
                     <button className="btn small primary" onClick={() => onConfirm(result.partId!, PARTS[result.partId!].name)}>
-                      Yes, that’s it
+                      {t('Yes, that’s it')}
                     </button>
                   )}
                   <button className="btn small ghost" onClick={() => { setPreview(null); setResult(null); }}>
-                    No, try again
+                    {t('No, try again')}
                   </button>
                 </div>
               </>

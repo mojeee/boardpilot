@@ -26,16 +26,16 @@ export function TopBar() {
           <>
             <span className="mono">{conn.chip.chip}</span>
             <span className="dim mono">{conn.port}</span>
-            {conn.agent ? <span className="chip ok-chip">agent {conn.agent.ver}</span> : <span className="chip">your firmware</span>}
+            {conn.agent ? <span className="chip ok-chip">{t('agent {ver}', { ver: conn.agent.ver })}</span> : <span className="chip">{t('your firmware')}</span>}
           </>
         ) : (
-          <span className="dim">No board connected</span>
+          <span className="dim">{t('No board connected')}</span>
         )}
-        {conn.mode === 'sim' && <span className="chip sim-chip">Simulator</span>}
+        {conn.mode === 'sim' && <span className="chip sim-chip">{t('Simulator')}</span>}
       </div>
       {progress && (
-        <div className="progress" title={progress.task}>
-          <span className="small">{progress.task}</span>
+        <div className="progress" title={t(progress.task)}>
+          <span className="small">{t(progress.task)}</span>
           <div className="bar">
             <i style={{ width: `${progress.pct}%` }} />
           </div>
@@ -45,7 +45,7 @@ export function TopBar() {
       <div className="top-actions">
         {conn.backups.length > 0 && conn.agent && (
           <button className="btn small" onClick={() => confirmRestore()}>
-            <Icon name="restore" size={15} /> Restore my firmware
+            <Icon name="restore" size={15} /> {t('Restore my firmware')}
           </button>
         )}
         <LicenseChip />
@@ -56,10 +56,10 @@ export function TopBar() {
             </option>
           ))}
         </select>
-        <span className={`chip ${ai.enabled ? 'ai-chip' : ''}`} title={ai.enabled ? `AI model ${ai.model}` : 'Add ANTHROPIC_API_KEY to .env.local'}>
-          AI {ai.enabled ? 'on' : 'off'}
+        <span className={`chip ${ai.enabled ? 'ai-chip' : ''}`} title={ai.enabled ? t('AI model {model}', { model: ai.model }) : t('Add ANTHROPIC_API_KEY to .env.local')}>
+          {ai.enabled ? t('AI on') : t('AI off')}
         </span>
-        <button className={`btn icon ${devOpen ? 'on' : ''}`} aria-label="Developer menu" title="Developer menu (simulator)" onClick={() => useApp.getState().set({ devOpen: !devOpen })}>
+        <button className={`btn icon ${devOpen ? 'on' : ''}`} aria-label={t('Developer menu')} title={t('Developer menu (simulator)')} onClick={() => useApp.getState().set({ devOpen: !devOpen })}>
           <Icon name="gear" size={17} />
         </button>
       </div>

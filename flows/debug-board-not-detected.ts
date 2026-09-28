@@ -1,4 +1,5 @@
 import type { FlowDef } from '@shared/flow';
+import { t } from '@shared/i18n';
 import { fmtErr, pickPort } from './common';
 
 export const debugBoardNotDetected: FlowDef = {
@@ -17,10 +18,10 @@ export const debugBoardNotDetected: FlowDef = {
         ctx.data.ports = r.value;
         if (p) {
           ctx.data.port = p.path;
-          ctx.log('found', `A board is visible on ${p.path} (USB chip ${p.bridge}).`, { source: 'measured: USB port list' });
-          return { status: 'ok', summary: `The Mac sees a board on ${p.path}.`, goto: 'identify' };
+          ctx.log('found', t('A board is visible on {port} (USB chip {chip}).', { port: p.path, chip: p.bridge }), { source: 'measured: USB port list' });
+          return { status: 'ok', summary: t('The Mac sees a board on {port}.', { port: p.path }), goto: 'identify' };
         }
-        ctx.log('warning', 'No USB serial port that looks like an ESP32.', { source: 'measured: USB port list' });
+        ctx.log('warning', t('No USB serial port that looks like an ESP32.'), { source: 'measured: USB port list' });
         return { status: 'warning', summary: 'No board on USB.' };
       },
     },
@@ -50,7 +51,7 @@ export const debugBoardNotDetected: FlowDef = {
         if (p) {
           ctx.data.port = p.path;
           ctx.data.fixedBy = 'cable';
-          ctx.log('found', `The board appeared on ${p.path} after changing the cable.`, { source: 'measured: USB port list' });
+          ctx.log('found', t('The board appeared on {port} after changing the cable.', { port: p.path }), { source: 'measured: USB port list' });
           return { status: 'ok', summary: 'The board appeared.', goto: 'identify' };
         }
         return { status: 'warning', summary: 'Still nothing.' };
@@ -87,8 +88,10 @@ export const debugBoardNotDetected: FlowDef = {
           ctx.data.identifyError = r.error;
           return { status: 'failed', summary: fmtErr(r.error) };
         }
-        ctx.log('found', `Chip ${r.value.chip}, flash ${r.value.flashSize}, MAC ${r.value.mac}.`, { source: 'measured: esptool' });
-        return { status: 'ok', summary: `${r.value.chip} answers.` };
+        ctx.log('found', t('Chip {chip}, flash {flash}, MAC {mac}.', { chip: r.value.chip, flash: r.value.flashSize, mac: r.value.mac }), {
+          source: 'measured: esptool',
+        });
+        return { status: 'ok', summary: t('{chip} answers.', { chip: r.value.chip }) };
       },
       aiHelp: (ctx) => `The port is visible but identifying the ESP32 failed: ${JSON.stringify(ctx.data.identifyError)}. What should I do?`,
       fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],
@@ -113,8 +116,10 @@ export const debugBoardNotDetected: FlowDef = {
                       ? 'The board appeared after installing the driver.'
                       : 'The Mac sees the board and the chip answers.',
                 confidence: 'measured',
-                evidence: [{ text: `${chip.chip} on ${chip.port}, MAC ${chip.mac}`, source: 'measured: esptool', confidence: 'measured' }],
-                sources: ['esptool flash-id', 'USB port list'],
+                evidence: [
+                  { text: t('{chip} on {port}, MAC {mac}', { chip: chip.chip, port: chip.port, mac: chip.mac }), source: 'measured: esptool', confidence: 'measured' },
+                ],
+                sources: ['esptool flash-id', t('USB port list')],
                 nextSteps: fixedBy === 'cable' ? ['Label or throw away the charge-only cable.'] : ['Continue with the task you wanted to do.'],
                 highlight: [],
               }

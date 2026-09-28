@@ -21,6 +21,7 @@ import { PartEditor } from './components/PartEditor';
 import { LicenseDialog, LockScreen, useLicense } from './components/License';
 import { usePartsLib } from './state/partsLib';
 import { useScene } from './state/store';
+import { t } from '@shared/i18n';
 
 let booted = false;
 /** One-time start-up: events, license, user parts, project autosave. */
@@ -47,16 +48,16 @@ async function boot() {
 }
 
 function FlowStarter({ screen }: { screen: string }) {
-  const t = TASKS.find((x) => x.screen === screen);
+  const task = TASKS.find((x) => x.screen === screen);
   return (
     <div className="right-split">
       <div className="right-top">
         <div className="wizard">
-          <div className="panel-title">{t?.label}</div>
-          <p className="dim">{t?.hint}</p>
-          {t?.flow && (
-            <button className="btn primary" onClick={() => useWizard.getState().start(t.flow!)}>
-              Start
+          <div className="panel-title">{task ? t(task.label) : ''}</div>
+          <p className="dim">{task ? t(task.hint) : ''}</p>
+          {task?.flow && (
+            <button className="btn primary" onClick={() => useWizard.getState().start(task.flow!)}>
+              {t('Start')}
             </button>
           )}
         </div>
@@ -74,7 +75,7 @@ function RightPanel() {
   if (screen === 'newProject') return <NewProjectPanel />;
   if (screen === 'debug') return flowId?.startsWith('debug-') ? <WizardWithAssistant /> : <DebugPicker />;
   if (screen === 'connect' || screen === 'flash') {
-    const want = TASKS.find((t) => t.screen === screen)?.flow;
+    const want = TASKS.find((x) => x.screen === screen)?.flow;
     return flowId === want ? <WizardWithAssistant /> : <FlowStarter screen={screen} />;
   }
   return <AssistantPanel />;
@@ -102,7 +103,7 @@ export function App() {
   }, []);
 
   if (!window.bp) {
-    return <div className="fatal">BoardPilot must run inside its desktop app (the preload bridge is missing).</div>;
+    return <div className="fatal">{t('BoardPilot must run inside its desktop app (the preload bridge is missing).')}</div>;
   }
 
   return (

@@ -18,6 +18,7 @@ import type {
   TargetRef,
   WriteRequest,
 } from './types';
+import { t } from './i18n';
 
 export type StepType = 'auto' | 'question' | 'input' | 'confirm' | 'action' | 'result';
 export type StepStatus = 'pending' | 'running' | 'waiting' | 'ok' | 'warning' | 'failed' | 'skipped';
@@ -181,7 +182,7 @@ export class FlowRunner {
   }
 
   async start(): Promise<void> {
-    this.ctx.log('info', `Started: ${this.flow.title}`);
+    this.ctx.log('info', t('Started: {title}', { title: t(this.flow.title) }));
     await this.advance();
   }
 
@@ -195,11 +196,11 @@ export class FlowRunner {
     const step = this.currentStep;
     if (!step || this.state.status !== 'waiting' || this.busy) return;
     this.ctx.answers[step.id] = answer;
-    if (answer.kind === 'option') this.ctx.log('action', `You chose: ${answer.label}`);
-    if (answer.kind === 'text') this.ctx.log('action', `You wrote: “${answer.text}”`);
-    if (answer.kind === 'confirm') this.ctx.log('action', answer.confirmed ? 'You confirmed.' : 'You cancelled.');
-    if (answer.kind === 'input') this.ctx.log('action', `You entered: ${answer.value}`);
-    if (answer.kind === 'done') this.ctx.log('action', 'You said it is done. Checking…');
+    if (answer.kind === 'option') this.ctx.log('action', t('You chose: {label}', { label: t(answer.label) }));
+    if (answer.kind === 'text') this.ctx.log('action', t('You wrote: “{text}”', { text: answer.text }));
+    if (answer.kind === 'confirm') this.ctx.log('action', answer.confirmed ? t('You confirmed.') : t('You cancelled.'));
+    if (answer.kind === 'input') this.ctx.log('action', t('You entered: {value}', { value: answer.value }));
+    if (answer.kind === 'done') this.ctx.log('action', t('You said it is done. Checking…'));
     await this.runStep(step, answer);
   }
 
@@ -207,7 +208,7 @@ export class FlowRunner {
     if (this.busy) return;
     const step = this.currentStep;
     if (!step) return;
-    this.ctx.log('action', `Fallback: ${fb.label}`);
+    this.ctx.log('action', t('Fallback: {label}', { label: t(fb.label) }));
     if (fb.kind === 'retry') {
       await this.enterStep();
     } else if (fb.kind === 'skip') {
@@ -277,7 +278,7 @@ export class FlowRunner {
     } catch (e) {
       outcome = {
         status: 'failed',
-        summary: `Something went wrong in this step: ${e instanceof Error ? e.message : String(e)}`,
+        summary: t('Something went wrong in this step: {error}', { error: e instanceof Error ? e.message : String(e) }),
       };
     }
     this.busy = false;
@@ -285,7 +286,7 @@ export class FlowRunner {
 
     const logType: LogType =
       outcome.status === 'failed' ? 'failed' : outcome.status === 'warning' ? 'warning' : 'check';
-    if (step.type !== 'result') this.ctx.log(logType, `${step.title}: ${outcome.summary}`);
+    if (step.type !== 'result') this.ctx.log(logType, t('{step}: {summary}', { step: t(step.title), summary: t(outcome.summary) }));
 
     this.set({ lastOutcome: outcome }, { status: outcome.status, summary: outcome.summary });
 

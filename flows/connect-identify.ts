@@ -1,5 +1,6 @@
 import type { FlowDef } from '@shared/flow';
 import type { PortInfo } from '@shared/types';
+import { t } from '@shared/i18n';
 import { fmtErr, pickPort } from './common';
 
 const NO_PORT_BODY = [
@@ -24,17 +25,20 @@ export const connectIdentify: FlowDef = {
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         ctx.data.ports = r.value;
         for (const p of r.value) {
-          ctx.log(p.likelyEsp32 ? 'found' : 'info', `Port ${p.path}${p.bridge !== 'unknown' ? ` (USB chip: ${p.bridge})` : ''}`, {
-            source: 'measured: USB port list',
-          });
+          const msg = p.bridge !== 'unknown' ? t('Port {port} (USB chip: {chip})', { port: p.path, chip: p.bridge }) : t('Port {port}', { port: p.path });
+          ctx.log(p.likelyEsp32 ? 'found' : 'info', msg, { source: 'measured: USB port list' });
         }
         if (!r.value.length) return { status: 'warning', summary: 'No board found on USB.', goto: 'no-port' };
         const auto = pickPort(r.value);
         if (auto) {
           ctx.data.port = auto.path;
-          return { status: 'ok', summary: `Found ${auto.path}${auto.bridge !== 'unknown' ? ` with a ${auto.bridge} USB chip` : ''}.`, goto: 'identify' };
+          const summary =
+            auto.bridge !== 'unknown'
+              ? t('Found {port} with a {chip} USB chip.', { port: auto.path, chip: auto.bridge })
+              : t('Found {port}.', { port: auto.path });
+          return { status: 'ok', summary, goto: 'identify' };
         }
-        return { status: 'ok', summary: `${r.value.length} ports found. Pick yours.`, goto: 'pick-port' };
+        return { status: 'ok', summary: t('{n} ports found. Pick yours.', { n: r.value.length }), goto: 'pick-port' };
       },
       fallbacks: [{ id: 'retry', label: 'Search again', kind: 'retry' }],
     },
@@ -55,8 +59,8 @@ export const connectIdentify: FlowDef = {
             : { status: 'failed', summary: 'Still no board. Try the next item on the list, or ask the assistant.' };
         }
         ctx.data.port = p.path;
-        ctx.log('found', `Board appeared on ${p.path}.`, { source: 'measured: USB port list' });
-        return { status: 'ok', summary: `Found ${p.path}.`, goto: 'identify' };
+        ctx.log('found', t('Board appeared on {port}.', { port: p.path }), { source: 'measured: USB port list' });
+        return { status: 'ok', summary: t('Found {port}.', { port: p.path }), goto: 'identify' };
       },
       aiHelp: () => 'The Mac shows no serial port for my ESP32 board. What should I check, in order?',
       fallbacks: [
@@ -74,12 +78,12 @@ export const connectIdentify: FlowDef = {
         ((ctx.data.ports as PortInfo[] | undefined) ?? []).map((p) => ({
           id: p.path,
           label: p.path,
-          hint: p.bridge !== 'unknown' ? `USB chip: ${p.bridge}` : p.manufacturer,
+          hint: p.bridge !== 'unknown' ? t('USB chip: {chip}', { chip: p.bridge }) : p.manufacturer,
         })),
       async run(ctx, answer) {
         if (answer?.kind === 'option') ctx.data.port = answer.optionId;
         if (answer?.kind === 'input') ctx.data.port = answer.value;
-        return { status: 'ok', summary: `Using ${String(ctx.data.port)}.`, goto: 'identify' };
+        return { status: 'ok', summary: t('Using {port}.', { port: String(ctx.data.port) }), goto: 'identify' };
       },
     },
     {
@@ -97,9 +101,11 @@ export const connectIdentify: FlowDef = {
         }
         const c = r.value;
         ctx.data.chip = c;
-        ctx.log('found', `Chip ${c.chip}${c.revision ? ` (revision ${c.revision})` : ''}`, { source: 'measured: esptool' });
-        ctx.log('found', `Flash ${c.flashSize}, MAC ${c.mac}, USB chip ${c.bridge}`, { source: 'measured: esptool' });
-        return { status: 'ok', summary: `${c.chip}, ${c.flashSize} flash.`, goto: 'result' };
+        ctx.log('found', c.revision ? t('Chip {chip} (revision {rev})', { chip: c.chip, rev: c.revision }) : t('Chip {chip}', { chip: c.chip }), {
+          source: 'measured: esptool',
+        });
+        ctx.log('found', t('Flash {flash}, MAC {mac}, USB chip {chip}', { flash: c.flashSize, mac: c.mac, chip: c.bridge }), { source: 'measured: esptool' });
+        return { status: 'ok', summary: t('{chip}, {flash} flash.', { chip: c.chip, flash: c.flashSize }), goto: 'result' };
       },
       aiHelp: (ctx) => `Identifying my ESP32 failed with error code ${String(ctx.data.identifyError)}. What does it mean and what should I do?`,
       fallbacks: [
@@ -120,8 +126,10 @@ export const connectIdentify: FlowDef = {
         const r = await ctx.hw.identify(port);
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         ctx.data.chip = r.value;
-        ctx.log('found', `Chip ${r.value.chip}, flash ${r.value.flashSize}, MAC ${r.value.mac}`, { source: 'measured: esptool' });
-        return { status: 'ok', summary: `${r.value.chip}, ${r.value.flashSize} flash.`, goto: 'result' };
+        ctx.log('found', t('Chip {chip}, flash {flash}, MAC {mac}', { chip: r.value.chip, flash: r.value.flashSize, mac: r.value.mac }), {
+          source: 'measured: esptool',
+        });
+        return { status: 'ok', summary: t('{chip}, {flash} flash.', { chip: r.value.chip, flash: r.value.flashSize }), goto: 'result' };
       },
       fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],
     },
@@ -136,15 +144,21 @@ export const connectIdentify: FlowDef = {
           status: 'ok',
           summary: 'Identified',
           result: {
-            title: `${c.chip} is connected`,
-            cause: `Your board answers on ${c.port}. Nothing was written to it.`,
+            title: t('{chip} is connected', { chip: c.chip }),
+            cause: t('Your board answers on {port}. Nothing was written to it.', { port: c.port }),
             confidence: 'measured',
             evidence: [
-              { text: `Chip: ${c.chip}${c.revision ? `, revision ${c.revision}` : ''}`, source: 'measured: esptool', confidence: 'measured' },
-              { text: `Flash size: ${c.flashSize}`, source: 'measured: esptool', confidence: 'measured' },
-              { text: `MAC address: ${c.mac}`, source: 'measured: esptool', confidence: 'measured' },
-              { text: `USB chip: ${c.bridge}`, source: 'measured: USB vendor id', confidence: 'measured' },
-              ...(c.features.length ? [{ text: `Features: ${c.features.join(', ')}`, source: 'measured: esptool', confidence: 'measured' as const }] : []),
+              {
+                text: c.revision ? t('Chip: {chip}, revision {rev}', { chip: c.chip, rev: c.revision }) : t('Chip: {chip}', { chip: c.chip }),
+                source: 'measured: esptool',
+                confidence: 'measured',
+              },
+              { text: t('Flash size: {flash}', { flash: c.flashSize }), source: 'measured: esptool', confidence: 'measured' },
+              { text: t('MAC address: {mac}', { mac: c.mac }), source: 'measured: esptool', confidence: 'measured' },
+              { text: t('USB chip: {chip}', { chip: c.bridge }), source: 'measured: USB vendor id', confidence: 'measured' },
+              ...(c.features.length
+                ? [{ text: t('Features: {list}', { list: c.features.join(', ') }), source: 'measured: esptool', confidence: 'measured' as const }]
+                : []),
             ],
             sources: ['esptool flash-id'],
             nextSteps: ['Test hardware to check your wiring', 'Monitor to see what your program prints', 'Debug a problem if something does not work'],

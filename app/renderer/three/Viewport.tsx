@@ -33,8 +33,8 @@ async function saveProject() {
 
 function Legend() {
   const items: [string, string][] = [
-    ['--pin-power', 'Power'],
-    ['--pin-ground', 'Ground'],
+    ['--pin-power', t('Power')],
+    ['--pin-ground', t('Ground')],
     ['--pin-sda', 'SDA'],
     ['--pin-scl', 'SCL'],
     ['--pin-gpio', 'GPIO'],
@@ -64,15 +64,15 @@ function StatusBadges() {
   return (
     <div className="badges">
       {conn.mode === 'sim' && <span className="badge sim">{t('Simulated board')}</span>}
-      {liveOn && <span className="badge live">● Live</span>}
+      {liveOn && <span className="badge live">● {t('Live')}</span>}
       {errors > 0 && (
         <button className="badge err" onClick={() => useScene.getState().focusOn(findings.filter((f) => f.severity === 'error').flatMap((f) => f.targets))}>
-          {errors} wiring error{errors > 1 ? 's' : ''}
+          {errors > 1 ? t('{n} wiring errors', { n: errors }) : t('1 wiring error')}
         </button>
       )}
       {warns > 0 && (
         <button className="badge warn" onClick={() => useScene.getState().focusOn(findings.filter((f) => f.severity === 'warning').flatMap((f) => f.targets))}>
-          {warns} warning{warns > 1 ? 's' : ''}
+          {warns > 1 ? t('{n} warnings', { n: warns }) : t('1 warning')}
         </button>
       )}
     </div>
@@ -145,14 +145,14 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
         </div>
         {view === '3d' && (
           <div className="seg">
-            <button onClick={() => useScene.getState().preset('home')}>Overview</button>
-            <button onClick={() => useScene.getState().preset('top')}>Top</button>
-            <button onClick={() => useScene.getState().preset('side')}>Pin side</button>
-            <button onClick={() => useScene.getState().preset('module')}>Module</button>
+            <button onClick={() => useScene.getState().preset('home')}>{t('Overview')}</button>
+            <button onClick={() => useScene.getState().preset('top')}>{t('Top')}</button>
+            <button onClick={() => useScene.getState().preset('side')}>{t('Pin side')}</button>
+            <button onClick={() => useScene.getState().preset('module')}>{t('Module')}</button>
           </div>
         )}
         <button className={`tb ${labels ? 'on' : ''}`} onClick={() => useScene.getState().set({ labels: !labels })}>
-          Labels
+          {t('Labels')}
         </button>
         {view === '3d' && (
           <button className={`tb ${wireMode ? 'on ai' : ''}`} title="W" onClick={() => useScene.getState().set({ wireMode: !wireMode, wireFrom: null })}>

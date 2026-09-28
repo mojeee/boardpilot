@@ -3,6 +3,7 @@
 import type { StepDef, FlowContext, StepOutcome } from '@shared/flow';
 import type { PartDef, ScenePart, TargetRef, PortInfo } from '@shared/types';
 import { boardPinFor, pinById, wireFor } from '@shared/board';
+import { t } from '@shared/i18n';
 
 export const fmtErr = (e: { humanMessage: string; hint: string }) => `${e.humanMessage} ${e.hint}`.trim();
 
@@ -15,7 +16,7 @@ export function ensureBoardStep(): StepDef {
     async run(ctx) {
       const st = ctx.hw.state();
       if (st.chip && st.port) {
-        return { status: 'ok', summary: `Using ${st.chip.chip} on ${st.port}.` };
+        return { status: 'ok', summary: t('Using {chip} on {port}.', { chip: st.chip.chip, port: st.port }) };
       }
       const ports = await ctx.hw.listPorts();
       if (!ports.ok) return { status: 'failed', summary: fmtErr(ports.error) };
@@ -28,8 +29,10 @@ export function ensureBoardStep(): StepDef {
       }
       const id = await ctx.hw.identify(port.path);
       if (!id.ok) return { status: 'failed', summary: fmtErr(id.error) };
-      ctx.log('found', `Board: ${id.value.chip}, MAC ${id.value.mac}, flash ${id.value.flashSize}.`, { source: 'measured: esptool' });
-      return { status: 'ok', summary: `${id.value.chip} on ${port.path}.` };
+      ctx.log('found', t('Board: {chip}, MAC {mac}, flash {flash}.', { chip: id.value.chip, mac: id.value.mac, flash: id.value.flashSize }), {
+        source: 'measured: esptool',
+      });
+      return { status: 'ok', summary: t('{chip} on {port}.', { chip: id.value.chip, port: port.path }) };
     },
     fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],
   };
@@ -62,7 +65,7 @@ export function installAgentStep(): StepDef {
       }
       const r = await ctx.hw.installAgent(answer.token);
       if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
-      return { status: 'ok', summary: `Agent ${r.value.ver} is running.` };
+      return { status: 'ok', summary: t('Agent {ver} is running.', { ver: r.value.ver }) };
     },
     fallbacks: [
       { id: 'retry', label: 'Show the confirmation again', kind: 'retry' },
@@ -98,12 +101,12 @@ export function i2cTarget(ctx: FlowContext): I2cTarget | null {
 }
 
 export function i2cTargets(ctx: FlowContext): TargetRef[] {
-  const t = i2cTarget(ctx);
-  if (!t) return ['pin:D21', 'pin:D22'];
+  const tg = i2cTarget(ctx);
+  if (!tg) return ['pin:D21', 'pin:D22'];
   const scene = ctx.scene();
-  const out: TargetRef[] = [`pin:${t.sdaPin}`, `pin:${t.sclPin}`];
-  const sdaW = wireFor(scene, t.inst.id, 'SDA');
-  const sclW = wireFor(scene, t.inst.id, 'SCL');
+  const out: TargetRef[] = [`pin:${tg.sdaPin}`, `pin:${tg.sclPin}`];
+  const sdaW = wireFor(scene, tg.inst.id, 'SDA');
+  const sclW = wireFor(scene, tg.inst.id, 'SCL');
   if (sdaW) out.push(`wire:${sdaW.id}`);
   if (sclW) out.push(`wire:${sclW.id}`);
   return out;

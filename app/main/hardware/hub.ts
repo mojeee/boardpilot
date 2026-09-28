@@ -21,6 +21,7 @@ import type {
   ScenarioInfo,
 } from '@shared/types';
 import { parseProbeLine } from '@shared/probe';
+import { t } from '@shared/i18n';
 import type { AgentClient, HardwareDriver, SerialStream } from './driver';
 import { DriverError, guard, toAppError } from './errors';
 import { RealDriver } from './realDriver';
@@ -105,12 +106,12 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     await this.closeLinks();
     this.driver = this.makeDriver(mode);
     this.patch({ mode, port: null, chip: null, agent: null, streaming: false, serialOpen: false, backups: [], scenario: mode === 'sim' ? this.world.scenario.id : null });
-    this.log('info', mode === 'sim' ? 'Switched to simulator mode. No real board is used.' : 'Switched to real hardware mode.');
+    this.log('info', mode === 'sim' ? t('Switched to simulator mode. No real board is used.') : t('Switched to real hardware mode.'));
     return { ok: true, value: this.st };
   }
 
   scenarios(): ScenarioInfo[] {
-    return SCENARIOS.map((s) => ({ id: s.id, name: s.name, description: s.description }));
+    return SCENARIOS.map((s) => ({ id: s.id, name: t(s.name), description: t(s.description) }));
   }
 
   scenarioScene() {
@@ -121,18 +122,18 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     await this.closeLinks();
     this.world.load(id);
     this.patch({ scenario: id, port: null, chip: null, agent: null, streaming: false, serialOpen: false, backups: [] });
-    this.log('info', `Simulator scenario: ${this.world.scenario.name}`);
+    this.log('info', t('Simulator scenario: {name}', { name: t(this.world.scenario.name) }));
     return { ok: true, value: this.st };
   }
 
   simControl(action: 'fixWiring' | 'turnKnob'): Result<true> {
-    if (this.st.mode !== 'sim') return { ok: false, error: { code: 'not_sim', humanMessage: 'This only works in simulator mode.', hint: 'Switch to the simulator in the developer menu.' } };
+    if (this.st.mode !== 'sim') return { ok: false, error: { code: 'not_sim', humanMessage: t('This only works in simulator mode.'), hint: t('Switch to the simulator in the developer menu.') } };
     if (action === 'fixWiring') {
       this.world.fixWiring();
-      this.log('action', 'Simulator: the wiring on the bench was fixed.');
+      this.log('action', t('Simulator: the wiring on the bench was fixed.'));
     } else {
       this.world.turnKnob();
-      this.log('action', 'Simulator: turning the knob from one end to the other.');
+      this.log('action', t('Simulator: turning the knob from one end to the other.'));
     }
     return { ok: true, value: true };
   }
@@ -140,7 +141,7 @@ export class HardwareHub extends EventEmitter<HubEvents> {
   /* ---------- discovery ---------- */
 
   listPorts(): Promise<Result<PortInfo[]>> {
-    return guard(() => this.driver.listPorts(), 10000, 'Looking for boards');
+    return guard(() => this.driver.listPorts(), 10000, t('Looking for boards'));
   }
 
   async identify(port: string): Promise<Result<ChipInfo>> {
@@ -148,7 +149,7 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     const hadAgent = !!this.st.agent && this.st.port === port;
     if (this.agentClient || this.serial) await this.closeLinks();
     this.patch({ agent: null, streaming: false, serialOpen: false });
-    const r = await guard(() => this.driver.identify(port), 45000, 'Identifying the board');
+    const r = await guard(() => this.driver.identify(port), 45000, t('Identifying the board'));
     if (r.ok) {
       const backups = await this.backups.forMac(r.value.mac);
       this.patch({ port, chip: r.value, backups });
@@ -161,14 +162,14 @@ export class HardwareHub extends EventEmitter<HubEvents> {
 
   private async ensureBackup(): Promise<BackupInfo> {
     const { port, chip } = this.st;
-    if (!port || !chip) throw new DriverError('not_identified', 'The board has not been identified yet.', 'Run “Connect and identify” first.');
+    if (!port || !chip) throw new DriverError('not_identified', t('The board has not been identified yet.'), t('Run “Connect and identify” first.'));
     const existing = await this.backups.forMac(chip.mac);
     if (existing.length) return existing[0];
-    this.log('action', 'Backing up the program currently on the board, so it can be restored with one click.');
-    const b = await this.driver.backupFlash(port, chip, (pct) => this.emit('progress', { task: 'Backing up your firmware', pct }));
+    this.log('action', t('Backing up the program currently on the board, so it can be restored with one click.'));
+    const b = await this.driver.backupFlash(port, chip, (pct) => this.emit('progress', { task: t('Backing up your firmware'), pct }));
     await this.backups.add(b);
     this.patch({ backups: await this.backups.forMac(chip.mac) });
-    this.log('found', `Backup saved (${(b.sizeBytes / 1024 / 1024).toFixed(1)} MB).`, `backup: ${b.path}`);
+    this.log('found', t('Backup saved ({mb} MB).', { mb: (b.sizeBytes / 1024 / 1024).toFixed(1) }), `backup: ${b.path}`);
     return b;
   }
 
@@ -178,8 +179,8 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     if (!existsSync(manifestPath)) {
       throw new DriverError(
         'agent_not_built',
-        'The diagnostic agent firmware is not included in this copy of the app yet.',
-        'Build it once with “npm run build:agent” (needs arduino-cli and the esp32 core), then try again.',
+        t('The diagnostic agent firmware is not included in this copy of the app yet.'),
+        t('Build it once with “npm run build:agent” (needs arduino-cli and the esp32 core), then try again.'),
       );
     }
     const m = JSON.parse(readFileSync(manifestPath, 'utf8')) as { parts: { offset: string; file: string }[] };
@@ -192,7 +193,7 @@ export class HardwareHub extends EventEmitter<HubEvents> {
   }
 
   private async exclusive<T>(fn: () => Promise<T>, ms: number, what: string): Promise<Result<T>> {
-    if (this.busy) return { ok: false, error: { code: 'busy', humanMessage: 'The app is still busy with the board.', hint: 'Wait for the current task to finish.' } };
+    if (this.busy) return { ok: false, error: { code: 'busy', humanMessage: t('The app is still busy with the board.'), hint: t('Wait for the current task to finish.') } };
     this.busy = true;
     try {
       return await guard(fn, ms, what);
@@ -207,27 +208,27 @@ export class HardwareHub extends EventEmitter<HubEvents> {
       async () => {
         consume(token, 'flash_agent');
         const port = this.st.port;
-        if (!port) throw new DriverError('not_identified', 'No board selected.', 'Run “Connect and identify” first.');
+        if (!port) throw new DriverError('not_identified', t('No board selected.'), t('Run “Connect and identify” first.'));
         await this.closeLinks();
         await this.ensureBackup();
         const image = this.agentImage(token);
-        this.log('action', 'Writing the diagnostic agent to the board.');
-        await this.driver.flash(port, image, (pct) => this.emit('progress', { task: 'Installing the diagnostic agent', pct }));
+        this.log('action', t('Writing the diagnostic agent to the board.'));
+        await this.driver.flash(port, image, (pct) => this.emit('progress', { task: t('Installing the diagnostic agent'), pct }));
         return this.connectAgentInner();
       },
       8 * 60 * 1000,
-      'Installing the diagnostic agent',
+      t('Installing the diagnostic agent'),
     );
   }
 
   /** Connect to an agent that is already on the board (no writing). */
   connectAgent(): Promise<Result<HelloReply>> {
-    return this.exclusive(() => this.connectAgentInner(), 15000, 'Connecting to the agent');
+    return this.exclusive(() => this.connectAgentInner(), 15000, t('Connecting to the agent'));
   }
 
   private async connectAgentInner(): Promise<HelloReply> {
     const port = this.st.port;
-    if (!port) throw new DriverError('not_identified', 'No board selected.', 'Run “Connect and identify” first.');
+    if (!port) throw new DriverError('not_identified', t('No board selected.'), t('Run “Connect and identify” first.'));
     await this.closeLinks();
     const client = await this.driver.openAgent(port);
     this.agentClient = client;
@@ -237,8 +238,8 @@ export class HardwareHub extends EventEmitter<HubEvents> {
         const high12 = s['12'] === 1;
         this.log(
           high12 ? 'warning' : 'info',
-          `Strapping pins at reset: ${Object.entries(s).map(([g, v]) => `GPIO ${g}=${v}`).join(', ')}.` +
-            (high12 ? ' GPIO 12 was HIGH at reset: this can select the wrong flash voltage.' : ''),
+          t('Strapping pins at reset: {pins}.', { pins: Object.entries(s).map(([g, v]) => `GPIO ${g}=${v}`).join(', ') }) +
+            (high12 ? ' ' + t('GPIO 12 was HIGH at reset: this can select the wrong flash voltage.') : ''),
           'measured: agent boot report',
           high12 ? 'pin:D12' : undefined,
         );
@@ -260,17 +261,17 @@ export class HardwareHub extends EventEmitter<HubEvents> {
       this.agentClient = null;
       throw lastErr instanceof DriverError
         ? lastErr
-        : new DriverError('agent_no_hello', 'The board did not answer as the diagnostic agent.', 'Install the agent (the app asks first), or press EN to restart the board.');
+        : new DriverError('agent_no_hello', t('The board did not answer as the diagnostic agent.'), t('Install the agent (the app asks first), or press EN to restart the board.'));
     }
     this.patch({ agent: hello });
-    this.log('found', `Diagnostic agent ${hello.ver} running on ${hello.chip}. Free memory: ${Math.round(hello.heapFree / 1024)} KB.`, 'measured: agent hello');
+    this.log('found', t('Diagnostic agent {ver} running on {chip}. Free memory: {kb} KB.', { ver: hello.ver, chip: hello.chip, kb: Math.round(hello.heapFree / 1024) }), 'measured: agent hello');
     return hello;
   }
 
   /** Read-only agent commands. Writes go through agentWrite with a token. */
   async agent<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>): Promise<Result<AgentReplyMap[K]>> {
     if (WRITE_CMDS.has(req.cmd)) {
-      return { ok: false, error: { code: 'not_confirmed', humanMessage: 'Driving a pin needs your confirmation.', hint: 'Use the button in the app, which asks first.' } };
+      return { ok: false, error: { code: 'not_confirmed', humanMessage: t('Driving a pin needs your confirmation.'), hint: t('Use the button in the app, which asks first.') } };
     }
     return this.agentInner(req);
   }
@@ -287,10 +288,10 @@ export class HardwareHub extends EventEmitter<HubEvents> {
   private async agentInner<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>): Promise<Result<AgentReplyMap[K]>> {
     const client = this.agentClient;
     if (!client) {
-      return { ok: false, error: { code: 'agent_missing', humanMessage: 'The diagnostic agent is not connected.', hint: 'Start a check that installs it. The app asks before writing anything.' } };
+      return { ok: false, error: { code: 'agent_missing', humanMessage: t('The diagnostic agent is not connected.'), hint: t('Start a check that installs it. The app asks before writing anything.') } };
     }
     const timeout = req.cmd === 'i2c_scan' ? 8000 : 3000;
-    const r = await guard(() => client.request(req, timeout), timeout + 500, `Agent command “${req.cmd}”`);
+    const r = await guard(() => client.request(req, timeout), timeout + 500, t('Agent command “{cmd}”', { cmd: req.cmd }));
     const any = req as AgentRequest;
     if (r.ok && (any.cmd === 'i2c_scan' || any.cmd === 'i2c_read')) {
       const trace = (r.value as AgentReplyMap['i2c_scan']).trace;
@@ -307,18 +308,18 @@ export class HardwareHub extends EventEmitter<HubEvents> {
         consume(token, 'restore');
         const port = this.st.port;
         const chip = this.st.chip;
-        if (!port || !chip) throw new DriverError('not_identified', 'No board selected.', 'Run “Connect and identify” first.');
+        if (!port || !chip) throw new DriverError('not_identified', t('No board selected.'), t('Run “Connect and identify” first.'));
         const b = (await this.backups.forMac(chip.mac)).find((x) => x.id === backupId);
-        if (!b) throw new DriverError('backup_missing', 'That backup belongs to another board or was deleted.', 'Pick a backup made from this board.');
+        if (!b) throw new DriverError('backup_missing', t('That backup belongs to another board or was deleted.'), t('Pick a backup made from this board.'));
         await this.closeLinks();
         this.patch({ agent: null, streaming: false });
-        this.log('action', 'Restoring your firmware from the backup.');
-        await this.driver.restoreFlash(port, b, (pct) => this.emit('progress', { task: 'Restoring your firmware', pct }));
-        this.log('found', 'Your firmware is back on the board.', `backup: ${b.id}`);
+        this.log('action', t('Restoring your firmware from the backup.'));
+        await this.driver.restoreFlash(port, b, (pct) => this.emit('progress', { task: t('Restoring your firmware'), pct }));
+        this.log('found', t('Your firmware is back on the board.'), `backup: ${b.id}`);
         return true as const;
       },
       8 * 60 * 1000,
-      'Restoring your firmware',
+      t('Restoring your firmware'),
     );
   }
 
@@ -327,21 +328,21 @@ export class HardwareHub extends EventEmitter<HubEvents> {
       async () => {
         consume(token, 'flash_user');
         const port = this.st.port;
-        if (!port) throw new DriverError('not_identified', 'No board selected.', 'Run “Connect and identify” first.');
+        if (!port) throw new DriverError('not_identified', t('No board selected.'), t('Run “Connect and identify” first.'));
         await this.closeLinks();
         this.patch({ agent: null, streaming: false });
         await this.ensureBackup();
         const size = this.st.mode === 'sim' ? 262144 : readFileSync(filePath).length;
         // A single app .bin goes at 0x10000 (after bootloader and partition table). Merged images start at 0x0.
         const offset = /merged|factory/i.test(filePath) ? 0 : 0x10000;
-        this.log('action', `Writing ${filePath.split('/').pop()} at 0x${offset.toString(16)}.`);
+        this.log('action', t('Writing {file} at {offset}.', { file: filePath.split('/').pop() ?? filePath, offset: `0x${offset.toString(16)}` }));
         await this.driver.flash(port, { name: filePath, kind: 'user', parts: [{ offset, path: filePath }], confirmToken: token }, (pct) =>
-          this.emit('progress', { task: 'Flashing your firmware', pct }),
+          this.emit('progress', { task: t('Flashing your firmware'), pct }),
         );
         return { bytes: size };
       },
       6 * 60 * 1000,
-      'Flashing firmware',
+      t('Flashing firmware'),
     );
   }
 
@@ -349,10 +350,10 @@ export class HardwareHub extends EventEmitter<HubEvents> {
 
   async openSerial(baud: number): Promise<Result<true>> {
     const port = this.st.port;
-    if (!port) return { ok: false, error: { code: 'not_identified', humanMessage: 'No board selected.', hint: 'Run “Connect and identify” first.' } };
+    if (!port) return { ok: false, error: { code: 'not_identified', humanMessage: t('No board selected.'), hint: t('Run “Connect and identify” first.') } };
     await this.closeLinks();
     this.patch({ agent: null, streaming: false });
-    const r = await guard(() => this.driver.openSerial(port, baud), 8000, 'Opening the serial monitor');
+    const r = await guard(() => this.driver.openSerial(port, baud), 8000, t('Opening the serial monitor'));
     if (!r.ok) return r;
     this.serial = r.value;
     r.value.onLine((l) => {
@@ -381,17 +382,17 @@ export class HardwareHub extends EventEmitter<HubEvents> {
   }
 
   async writeSerial(text: string): Promise<Result<true>> {
-    if (!this.serial) return { ok: false, error: { code: 'serial_closed', humanMessage: 'The serial monitor is not open.', hint: 'Open it first.' } };
+    if (!this.serial) return { ok: false, error: { code: 'serial_closed', humanMessage: t('The serial monitor is not open.'), hint: t('Open it first.') } };
     return guard(async () => {
       await this.serial?.write(text);
       return true as const;
-    }, 3000, 'Sending to the board');
+    }, 3000, t('Sending to the board'));
   }
 
   /** Open serial briefly, collect lines, close. Used by the debug flows. */
   async captureSerial(baud: number, ms: number): Promise<Result<string[]>> {
     const port = this.st.port;
-    if (!port) return { ok: false, error: { code: 'not_identified', humanMessage: 'No board selected.', hint: 'Run “Connect and identify” first.' } };
+    if (!port) return { ok: false, error: { code: 'not_identified', humanMessage: t('No board selected.'), hint: t('Run “Connect and identify” first.') } };
     await this.closeLinks();
     this.patch({ agent: null, streaming: false, serialOpen: false });
     return guard(
@@ -404,7 +405,7 @@ export class HardwareHub extends EventEmitter<HubEvents> {
         return lines;
       },
       ms + 8000,
-      'Reading serial output',
+      t('Reading serial output'),
     );
   }
 

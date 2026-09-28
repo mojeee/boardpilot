@@ -6,6 +6,7 @@ import { FLOWS } from '@flows/index';
 import { getBoard, PARTS } from '@shared/board';
 import { flowHardware } from '../state/hw';
 import { log, useScene } from '../state/store';
+import { t } from '@shared/i18n';
 
 interface WizardStore {
   runner: FlowRunner | null;
@@ -26,7 +27,8 @@ function makeCtx(): FlowContext {
     updateScene: (fn) => useScene.getState().updateScene(fn),
     answers: {},
     data: {},
-    log: (type, text, opts) => log(type, text, opts),
+    // flow texts are English keys; show them in the current language when a translation exists
+    log: (type, text, opts) => log(type, t(text), opts),
     highlight: (targets) => {
       if (targets.length) useScene.getState().focusOn(targets);
       else useScene.getState().setHighlight([]);

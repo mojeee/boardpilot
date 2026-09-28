@@ -2,6 +2,7 @@
 
 import { useConfirm } from '../state/store';
 import { Icon } from './Icon';
+import { t } from '@shared/i18n';
 
 export function ConfirmDialog() {
   const req = useConfirm((s) => s.req);
@@ -25,7 +26,7 @@ export function ConfirmDialog() {
         </ul>
         <div className="modal-actions">
           <button className="btn ghost" onClick={() => close(null)}>
-            Cancel
+            {t('Cancel')}
           </button>
           <button
             className="btn primary"
@@ -38,7 +39,7 @@ export function ConfirmDialog() {
             {req.confirmLabel}
           </button>
         </div>
-        <p className="modal-foot">Nothing is written to the board unless you confirm.</p>
+        <p className="modal-foot">{t('Nothing is written to the board unless you confirm.')}</p>
       </div>
     </div>
   );

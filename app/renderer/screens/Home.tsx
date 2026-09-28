@@ -4,6 +4,7 @@ import { useApp, useLog, useScene, log } from '../state/store';
 import { TASKS, openTask } from '../components/TaskRail';
 import { Icon } from '../components/Icon';
 import { useWizard } from '../wizard/session';
+import { t } from '@shared/i18n';
 
 /** "Describe it in your own words" on Home: the fast model picks a task or debug flow. */
 function DescribeBox() {
@@ -12,18 +13,20 @@ function DescribeBox() {
   const [note, setNote] = useState<string | null>(null);
   const aiOn = useApp((s) => s.ai.enabled);
   const submit = async () => {
-    const t = text.trim();
-    if (!t) return;
+    const said = text.trim();
+    if (!said) return;
     setBusy(true);
     const options = [
-      ...TASKS.filter((x) => x.screen !== 'debug').map((x) => ({ id: `task:${x.screen}`, label: `${x.label}: ${x.hint}` })),
-      ...DEBUG_SYMPTOMS.map((d) => ({ id: `flow:${d.id}`, label: `Debug: ${d.label} (${d.hint})` })),
+      ...TASKS.filter((x) => x.screen !== 'debug').map((x) => ({ id: `task:${x.screen}`, label: `${t(x.label)}: ${t(x.hint)}` })),
+      ...DEBUG_SYMPTOMS.map((d) => ({ id: `flow:${d.id}`, label: t('Debug: {label} ({hint})', { label: t(d.label), hint: t(d.hint) }) })),
     ];
-    const r = await window.bp.ai.classify(t, options);
+    const r = await window.bp.ai.classify(said, options);
     setBusy(false);
     if (!r.ok) return setNote(`${r.error.humanMessage} ${r.error.hint}`);
-    if (!r.value.optionId) return setNote(`${r.value.reason} Pick a task on the left, or ask the assistant.`);
-    log('action', `You wrote: “${t}”. Suggested: ${options.find((o) => o.id === r.value.optionId)?.label}.`, { source: 'assistant classification (suggestion)' });
+    if (!r.value.optionId) return setNote(t('{reason} Pick a task on the left, or ask the assistant.', { reason: r.value.reason }));
+    log('action', t('You wrote: “{text}”. Suggested: {option}.', { text: said, option: options.find((o) => o.id === r.value.optionId)?.label ?? '' }), {
+      source: 'assistant classification (suggestion)',
+    });
     const [kind, id] = r.value.optionId.split(/:(.+)/);
     if (kind === 'flow') {
       useApp.getState().setScreen('debug');
@@ -32,7 +35,7 @@ function DescribeBox() {
   };
   return (
     <div className="describe">
-      <div className="label">Not sure where to start? Describe it in your own words</div>
+      <div className="label">{t('Not sure where to start? Describe it in your own words')}</div>
       <div className="ask-box big">
         <textarea
           rows={2}
@@ -44,10 +47,10 @@ function DescribeBox() {
               void submit();
             }
           }}
-          placeholder={aiOn ? 'e.g. “my temperature sensor only shows zeros”' : 'The assistant is off (no API key). Pick a task instead.'}
+          placeholder={aiOn ? t('e.g. “my temperature sensor only shows zeros”') : t('The assistant is off (no API key). Pick a task instead.')}
           disabled={!aiOn}
         />
-        <button className="btn icon ai" onClick={submit} disabled={busy || !text.trim()} aria-label="Go">
+        <button className="btn icon ai" onClick={submit} disabled={busy || !text.trim()} aria-label={t('Go')}>
           <Icon name="send" size={16} />
         </button>
       </div>
@@ -64,24 +67,24 @@ export function Home() {
   return (
     <div className="home">
       <div className="home-inner">
-        <h1>What do you want to do?</h1>
-        <p className="lead">Pick a task. The app checks what it can by itself and asks you only for what it cannot see.</p>
+        <h1>{t('What do you want to do?')}</h1>
+        <p className="lead">{t('Pick a task. The app checks what it can by itself and asks you only for what it cannot see.')}</p>
         <div className="task-grid">
-          {TASKS.map((t, i) => (
-            <button key={t.screen} className="task-card" onClick={() => openTask(t.screen)}>
+          {TASKS.map((task, i) => (
+            <button key={task.screen} className="task-card" onClick={() => openTask(task.screen)}>
               <span className="task-icon">
-                <Icon name={t.icon} size={22} />
+                <Icon name={task.icon} size={22} />
               </span>
               <span className="task-num mono">{i + 1}</span>
-              <b>{t.label}</b>
-              <span>{t.hint}</span>
+              <b>{t(task.label)}</b>
+              <span>{t(task.hint)}</span>
             </button>
           ))}
         </div>
         <DescribeBox />
         <div className="home-status">
           <div className="status-card">
-            <div className="label">Board</div>
+            <div className="label">{t('Board')}</div>
             {conn.chip ? (
               <>
                 <b className="mono">{conn.chip.chip}</b>
@@ -91,31 +94,42 @@ export function Home() {
               </>
             ) : (
               <>
-                <b>Not connected</b>
+                <b>{t('Not connected')}</b>
                 <button className="link small" onClick={() => openTask('connect')}>
-                  Connect and identify →
+                  {t('Connect and identify →')}
                 </button>
               </>
             )}
           </div>
           <div className="status-card">
-            <div className="label">Project</div>
+            <div className="label">{t('Project')}</div>
             <b>
-              {scene.parts.length} part{scene.parts.length === 1 ? '' : 's'}, {scene.wires.length} wire{scene.wires.length === 1 ? '' : 's'}
+              {scene.parts.length === 1 ? t('1 part') : t('{n} parts', { n: scene.parts.length })},{' '}
+              {scene.wires.length === 1 ? t('1 wire') : t('{n} wires', { n: scene.wires.length })}
             </b>
             <span className={`small ${findings.length ? 'warn-text' : 'dim'}`}>
-              {findings.length ? `${findings.length} wiring finding${findings.length > 1 ? 's' : ''}` : 'No wiring problems found'}
+              {findings.length === 1
+                ? t('1 wiring finding')
+                : findings.length
+                  ? t('{n} wiring findings', { n: findings.length })
+                  : t('No wiring problems found')}
             </span>
           </div>
           <div className="status-card">
-            <div className="label">Mode</div>
-            <b>{conn.mode === 'sim' ? 'Simulator' : 'Real board'}</b>
-            <span className="small dim">{conn.mode === 'sim' ? 'No hardware needed. Change it in the ⚙ menu.' : 'Talks to the board on USB.'}</span>
+            <div className="label">{t('Mode')}</div>
+            <b>{conn.mode === 'sim' ? t('Simulator') : t('Real board')}</b>
+            <span className="small dim">{conn.mode === 'sim' ? t('No hardware needed. Change it in the ⚙ menu.') : t('Talks to the board on USB.')}</span>
           </div>
           <div className="status-card">
-            <div className="label">This session</div>
-            <b>{entries.length} log entries</b>
-            <span className="small dim">{conn.backups.length ? `${conn.backups.length} flash backup(s) for this board` : 'No backups yet'}</span>
+            <div className="label">{t('This session')}</div>
+            <b>{entries.length === 1 ? t('1 log entry') : t('{n} log entries', { n: entries.length })}</b>
+            <span className="small dim">
+              {conn.backups.length === 1
+                ? t('1 flash backup for this board')
+                : conn.backups.length
+                  ? t('{n} flash backups for this board', { n: conn.backups.length })
+                  : t('No backups yet')}
+            </span>
           </div>
         </div>
       </div>

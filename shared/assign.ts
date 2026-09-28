@@ -3,6 +3,7 @@
 
 import type { BoardDef, PartDef, Scene, SceneWire } from './types';
 import { ROLE_HEX, partRoleColor } from './board';
+import { t } from './i18n';
 
 /** Output-capable, not strapping, not UART0, in order of preference. */
 const SAFE_IO = ['D25', 'D26', 'D27', 'D32', 'D33', 'D23', 'D19', 'D18', 'D4', 'D13', 'D14', 'RX2', 'TX2'];
@@ -69,7 +70,7 @@ export function assignPins(scene: Scene, board: BoardDef, parts: Record<string, 
           boardPin = take(SAFE_IO);
       }
       if (!boardPin) {
-        if (pp.role !== 'passive') notes.push(`No free pin left for ${inst.label ?? def.name} ${pp.name}.`);
+        if (pp.role !== 'passive') notes.push(t('No free pin left for {part} {pin}.', { part: inst.label ?? def.name, pin: pp.name }));
         continue;
       }
       wires.push({
