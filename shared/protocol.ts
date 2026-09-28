@@ -2,6 +2,7 @@
 // Pure functions only, so the parser can be tested with recorded lines.
 
 import type { AgentPinState, AgentRequest, I2cTraceStep, StreamFrame } from './types';
+import { t } from './i18n';
 
 export type ParsedLine =
   | { kind: 'reply'; id: number; ok: true; body: Record<string, unknown> }
@@ -78,7 +79,7 @@ export function parseAgentLine(line: string): ParsedLine {
       kind: 'error',
       id,
       code: typeof obj.error === 'string' ? obj.error : 'agent_error',
-      message: typeof obj.msg === 'string' ? obj.msg : 'The agent reported an error.',
+      message: typeof obj.msg === 'string' ? obj.msg : t('The agent reported an error.'),
       body: obj,
     };
   }
@@ -104,32 +105,32 @@ export function agentErrorText(code: string): { humanMessage: string; hint: stri
   switch (code) {
     case 'flash_pin':
       return {
-        humanMessage: 'GPIO 6 to 11 are wired to the board’s internal flash memory.',
-        hint: 'Pick another pin. Using these crashes the board.',
+        humanMessage: t('GPIO 6 to 11 are wired to the board’s internal flash memory.'),
+        hint: t('Pick another pin. Using these crashes the board.'),
       };
     case 'input_only':
       return {
-        humanMessage: 'GPIO 34 to 39 can only read signals. They cannot drive an output.',
-        hint: 'Move this wire to an output-capable pin such as D25, D26 or D27.',
+        humanMessage: t('GPIO 34 to 39 can only read signals. They cannot drive an output.'),
+        hint: t('Move this wire to an output-capable pin such as D25, D26 or D27.'),
       };
     case 'uart_pin':
       return {
-        humanMessage: 'GPIO 1 and 3 carry the USB serial link the app uses to talk to the board.',
-        hint: 'Leave TX0 and RX0 free while the app is connected.',
+        humanMessage: t('GPIO 1 and 3 carry the USB serial link the app uses to talk to the board.'),
+        hint: t('Leave TX0 and RX0 free while the app is connected.'),
       };
     case 'not_adc':
       return {
-        humanMessage: 'This pin cannot measure voltage.',
-        hint: 'Use an ADC pin. GPIO 32 to 39 work even with Wi-Fi on.',
+        humanMessage: t('This pin cannot measure voltage.'),
+        hint: t('Use an ADC pin. GPIO 32 to 39 work even with Wi-Fi on.'),
       };
     case 'nack':
       return {
-        humanMessage: 'No device answered at that address.',
-        hint: 'Check power, ground and that SDA and SCL are not swapped.',
+        humanMessage: t('No device answered at that address.'),
+        hint: t('Check power, ground and that SDA and SCL are not swapped.'),
       };
     case 'bad_pin':
-      return { humanMessage: 'That pin number does not exist on the ESP32.', hint: 'Pick a pin from the board view.' };
+      return { humanMessage: t('That pin number does not exist on the ESP32.'), hint: t('Pick a pin from the board view.') };
     default:
-      return { humanMessage: `The board agent reported “${code}”.`, hint: 'Try again. If it repeats, reconnect the board.' };
+      return { humanMessage: t('The board agent reported “{code}”.', { code }), hint: t('Try again. If it repeats, reconnect the board.') };
   }
 }

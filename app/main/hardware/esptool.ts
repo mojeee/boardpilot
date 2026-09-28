@@ -7,6 +7,7 @@ import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ChipInfo, UsbBridge } from '@shared/types';
 import { DriverError } from './errors';
+import { t } from '@shared/i18n';
 
 export interface EsptoolCommand {
   cmd: string;
@@ -35,13 +36,13 @@ function run(cmd: string, args: string[], timeoutMs: number, onLine?: (l: string
     let out = '';
     let tail = '';
     const child = spawn(cmd, args, { env: { ...process.env, PATH: toolPath() } });
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       child.kill('SIGKILL');
       reject(
         new DriverError(
           'timeout',
-          'esptool did not finish in time.',
-          'Unplug the board, plug it back in and try again. If it keeps happening, hold BOOT while it connects.',
+          t('esptool did not finish in time.'),
+          t('Unplug the board, plug it back in and try again. If it keeps happening, hold BOOT while it connects.'),
         ),
       );
     }, timeoutMs);
@@ -56,12 +57,12 @@ function run(cmd: string, args: string[], timeoutMs: number, onLine?: (l: string
     child.stdout.on('data', onData);
     child.stderr.on('data', onData);
     child.on('error', (e: NodeJS.ErrnoException) => {
-      clearTimeout(t);
-      if (e.code === 'ENOENT') reject(new DriverError('esptool_missing', 'esptool is not installed.', 'Open Terminal and run: pip3 install esptool'));
+      clearTimeout(timer);
+      if (e.code === 'ENOENT') reject(new DriverError('esptool_missing', t('esptool is not installed.'), t('Open Terminal and run: pip3 install esptool')));
       else reject(e);
     });
     child.on('close', (code) => {
-      clearTimeout(t);
+      clearTimeout(timer);
       resolve({ code, out });
     });
   });
@@ -90,8 +91,8 @@ export async function findEsptool(): Promise<EsptoolCommand> {
   }
   throw new DriverError(
     'esptool_missing',
-    'The app could not find esptool, the tool that talks to the ESP32 chip.',
-    'Open Terminal and run: pip3 install esptool. Then restart BoardPilot.',
+    t('The app could not find esptool, the tool that talks to the ESP32 chip.'),
+    t('Open Terminal and run: pip3 install esptool. Then restart BoardPilot.'),
   );
 }
 
@@ -105,25 +106,25 @@ export function classifyEsptoolError(out: string): DriverError {
   if (/Resource busy|exclusively lock|Errno 16|port is busy/i.test(out)) {
     return new DriverError(
       'port_busy',
-      'Another program is using this port, so the app cannot talk to the board.',
-      'Close any serial monitor (Arduino IDE, PlatformIO, screen, another BoardPilot window) and try again.',
+      t('Another program is using this port, so the app cannot talk to the board.'),
+      t('Close any serial monitor (Arduino IDE, PlatformIO, screen, another BoardPilot window) and try again.'),
     );
   }
   if (/No serial data received|Wrong boot mode|Timed out waiting for packet header|Failed to connect/i.test(out)) {
     return new DriverError(
       'no_sync',
-      'The board did not answer when the app tried to wake it up.',
-      'Hold the BOOT button, press and release EN, then release BOOT and try again. Some boards need this every time.',
+      t('The board did not answer when the app tried to wake it up.'),
+      t('Hold the BOOT button, press and release EN, then release BOOT and try again. Some boards need this every time.'),
     );
   }
   if (/could not open port|No such file or directory|device not configured/i.test(out)) {
-    return new DriverError('port_gone', 'The board disappeared while the app was talking to it.', 'Check the USB cable is firmly plugged in, then search for boards again.');
+    return new DriverError('port_gone', t('The board disappeared while the app was talking to it.'), t('Check the USB cable is firmly plugged in, then search for boards again.'));
   }
   if (/Permission denied/i.test(out)) {
-    return new DriverError('permission', 'macOS did not allow the app to open the port.', 'Unplug and replug the board. If you installed a driver, allow it in System Settings → Privacy & Security.');
+    return new DriverError('permission', t('macOS did not allow the app to open the port.'), t('Unplug and replug the board. If you installed a driver, allow it in System Settings → Privacy & Security.'));
   }
   const last = out.trim().split('\n').slice(-2).join(' ').slice(0, 300);
-  return new DriverError('esptool_failed', `esptool reported a problem: ${last}`, 'Unplug the board, plug it back in and try again.');
+  return new DriverError('esptool_failed', t('esptool reported a problem: {detail}', { detail: last }), t('Unplug the board, plug it back in and try again.'));
 }
 
 /** Parses both v4 and v5 output of flash_id / flash-id. */
@@ -135,7 +136,7 @@ export function parseChipInfo(out: string, port: string, bridge: UsbBridge): Chi
   const flashM = /Detected flash size:\s*(\d+)\s*(MB|KB)/i.exec(out);
   const verM = /esptool(?:\.py)?\s+v?(\d+\.\d+(?:\.\d+)?)/i.exec(out);
   if (!chipM || !macM) {
-    throw new DriverError('parse_failed', 'The board answered, but the app could not read its details.', 'Try again. If it repeats, update esptool: pip3 install -U esptool');
+    throw new DriverError('parse_failed', t('The board answered, but the app could not read its details.'), t('Try again. If it repeats, update esptool: pip3 install -U esptool'));
   }
   const flashBytes = flashM ? Number(flashM[1]) * (flashM[2].toUpperCase() === 'MB' ? 1024 * 1024 : 1024) : undefined;
   return {

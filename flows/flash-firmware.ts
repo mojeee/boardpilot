@@ -1,4 +1,5 @@
 import type { FlowDef } from '@shared/flow';
+import { t } from '@shared/i18n';
 import { ensureBoardStep, fmtErr } from './common';
 
 export const flashFirmware: FlowDef = {
@@ -24,7 +25,10 @@ export const flashFirmware: FlowDef = {
       id: 'confirm',
       type: 'confirm',
       title: 'Write to the board?',
-      body: (ctx) => `This writes ${String(ctx.data.file ?? 'the file').split('/').pop()} to your board.`,
+      body: (ctx) =>
+        ctx.data.file
+          ? t('This writes {file} to your board.', { file: String(ctx.data.file).split('/').pop() ?? '' })
+          : t('This writes the file to your board.'),
       confirm: {
         write: 'flash_user',
         details: [
@@ -37,8 +41,9 @@ export const flashFirmware: FlowDef = {
         if (answer?.kind !== 'confirm' || !answer.confirmed || !answer.token) return { status: 'failed', summary: 'Cancelled. Nothing was written.' };
         const r = await ctx.hw.flashUser(answer.token, String(ctx.data.file));
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
-        ctx.log('found', `Wrote ${Math.round(r.value.bytes / 1024)} KB.`, { source: 'measured: esptool write-flash' });
-        return { status: 'ok', summary: `Written (${Math.round(r.value.bytes / 1024)} KB).` };
+        const kb = Math.round(r.value.bytes / 1024);
+        ctx.log('found', t('Wrote {kb} KB.', { kb }), { source: 'measured: esptool write-flash' });
+        return { status: 'ok', summary: t('Written ({kb} KB).', { kb }) };
       },
       fallbacks: [{ id: 'retry', label: 'Show the confirmation again', kind: 'retry' }],
     },
@@ -52,9 +57,9 @@ export const flashFirmware: FlowDef = {
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         ctx.data.lines = r.value;
         const crash = r.value.find((l) => /Guru Meditation|Brownout|invalid header|flash read err/i.test(l));
-        if (crash) return { status: 'warning', summary: `The board printed: “${crash.trim().slice(0, 80)}”` };
+        if (crash) return { status: 'warning', summary: t('The board printed: “{text}”', { text: crash.trim().slice(0, 80) }) };
         return r.value.length
-          ? { status: 'ok', summary: `It runs and prints (${r.value.length} lines).` }
+          ? { status: 'ok', summary: t('It runs and prints ({n} lines).', { n: r.value.length }) }
           : { status: 'warning', summary: 'It printed nothing at 115200. That is fine if your program does not use Serial.' };
       },
     },
@@ -69,11 +74,13 @@ export const flashFirmware: FlowDef = {
           summary: 'Done',
           result: {
             title: 'Firmware written',
-            cause: `The file was written${lines.length ? ' and the board prints output' : ''}.`,
+            cause: lines.length ? t('The file was written and the board prints output.') : 'The file was written.',
             confidence: 'measured',
             evidence: [
-              { text: `File: ${String(ctx.data.file)}`, source: 'user', confidence: 'measured' },
-              ...lines.slice(0, 3).map((l) => ({ text: `Board printed: ${l.slice(0, 100)}`, source: 'measured: serial capture', confidence: 'measured' as const })),
+              { text: t('File: {file}', { file: String(ctx.data.file) }), source: 'user', confidence: 'measured' },
+              ...lines
+                .slice(0, 3)
+                .map((l) => ({ text: t('Board printed: {text}', { text: l.slice(0, 100) }), source: 'measured: serial capture', confidence: 'measured' as const })),
             ],
             sources: ['esptool write-flash'],
             nextSteps: ['Open Monitor to watch it run.'],

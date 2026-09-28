@@ -5,6 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { LicenseStatus, Result } from '@shared/types';
 import { LICENSE_PUBLIC_KEY_PEM, TRIAL_DAYS } from '@shared/brand';
+import { t } from '@shared/i18n';
 import { verifyLicenseKey } from './keys';
 
 interface Stored {
@@ -57,7 +58,7 @@ export class License {
     if (!p) {
       return {
         ok: false,
-        error: { code: 'bad_key', humanMessage: 'This license key is not valid.', hint: 'Copy the whole key, starting with BP1-. If it still fails, contact us from the website.' },
+        error: { code: 'bad_key', humanMessage: t('This license key is not valid.'), hint: t('Copy the whole key, starting with BP1-. If it still fails, contact us from the website.') },
       };
     }
     const s = await this.read();

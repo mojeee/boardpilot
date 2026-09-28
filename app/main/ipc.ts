@@ -5,7 +5,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import { BUY_URL } from '@shared/brand';
-import { setLanguage } from '@shared/i18n';
+import { setLanguage, t } from '@shared/i18n';
 import type { UserParts } from './parts/userParts';
 import { importPartFromUrl } from './parts/importer';
 import type { License } from './license/license';
@@ -64,7 +64,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       const win = BrowserWindow.getFocusedWindow();
       const opts: Electron.SaveDialogOptions = { defaultPath: name };
       const r = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
-      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: 'Not saved.', hint: '' } };
+      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Not saved.'), hint: '' } };
       await writeFile(r.filePath, content);
       return { ok: true, value: r.filePath };
     } catch (e) {
@@ -76,7 +76,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       const win = BrowserWindow.getFocusedWindow();
       const opts: Electron.SaveDialogOptions = { defaultPath: `${name}.md`, filters: [{ name: 'Markdown', extensions: ['md'] }] };
       const r = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
-      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: 'Export cancelled.', hint: '' } };
+      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Export cancelled.'), hint: '' } };
       const markdownPath = r.filePath;
       await writeFile(markdownPath, markdown);
       const pdfPath = markdownPath.replace(/\.md$/i, '') + '.pdf';
@@ -114,7 +114,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
     const win = BrowserWindow.getFocusedWindow();
     const opts: Electron.SaveDialogOptions = { defaultPath: 'my-project.boardpilot.json', filters: [{ name: 'BoardPilot project', extensions: ['json'] }] };
     const r = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
-    if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: 'Not saved.', hint: '' } };
+    if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Not saved.'), hint: '' } };
     const used = [...new Set(scene.parts.map((p) => p.partId))];
     // user parts travel with the project so it opens on another Mac
     const { PARTS, BUILTIN_PART_IDS } = await import('@shared/board');
@@ -126,7 +126,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
     const win = BrowserWindow.getFocusedWindow();
     const opts: Electron.OpenDialogOptions = { properties: ['openFile'], filters: [{ name: 'BoardPilot project', extensions: ['json'] }] };
     const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
-    if (r.canceled || !r.filePaths[0]) return { ok: false, error: { code: 'cancelled', humanMessage: 'Nothing opened.', hint: '' } };
+    if (r.canceled || !r.filePaths[0]) return { ok: false, error: { code: 'cancelled', humanMessage: t('Nothing opened.'), hint: '' } };
     try {
       const f = JSON.parse(await readFile(r.filePaths[0], 'utf8')) as { scene?: unknown; customParts?: unknown[] };
       const scene = f.scene ?? f;
@@ -134,7 +134,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       for (const cp of f.customParts ?? []) await parts.save(cp, (cp as PartDef).id);
       return { ok: true, value: scene };
     } catch {
-      return { ok: false, error: { code: 'bad_project', humanMessage: 'That file is not a BoardPilot project.', hint: 'Pick a .boardpilot.json file saved from the app.' } };
+      return { ok: false, error: { code: 'bad_project', humanMessage: t('That file is not a BoardPilot project.'), hint: t('Pick a .boardpilot.json file saved from the app.') } };
     }
   });
 

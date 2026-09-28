@@ -7,6 +7,8 @@ import { useScene } from './store';
 const KEY = 'bp.lang';
 
 function initial(): Lang {
+  const fromHash = /[#&]lang=(en|it)\b/.exec(location.hash)?.[1];
+  if (fromHash === 'en' || fromHash === 'it') return fromHash;
   try {
     const v = localStorage.getItem(KEY);
     if (v === 'it' || v === 'en') return v;

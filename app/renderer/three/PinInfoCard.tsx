@@ -40,26 +40,26 @@ function PinCard({ board, pinId }: { board: BoardDef; pinId: string }) {
       <div className="chips">
         {p.functions.map((f) => (
           <span key={f} className="chip mono">
-            {f.replace(/_default$/, ' (default)')}
+            {f.endsWith('_default') ? t('{name} (default)', { name: f.replace(/_default$/, '') }) : f}
           </span>
         ))}
       </div>
-      {p.notes && <p className="card-note">{p.notes}</p>}
+      {p.notes && <p className="card-note">{t(p.notes)}</p>}
       {p.flags.map((f) =>
         FLAG_TEXT[f] ? (
           <p key={f} className={`card-flag ${FLAG_TEXT[f]!.sev}`}>
-            {FLAG_TEXT[f]!.text}
+            {t(FLAG_TEXT[f]!.text)}
           </p>
         ) : null,
       )}
       {findings.map((f) => (
         <p key={f.id} className={`card-flag ${f.severity === 'error' ? 'err' : 'warn'}`}>
-          {f.message} <span className="dim">{f.hint}</span>
+          {t(f.message)} <span className="dim">{t(f.hint)}</span>
         </p>
       ))}
       {wires.length > 0 && (
         <div className="card-section">
-          <div className="label">Wired to</div>
+          <div className="label">{t('Wired to')}</div>
           {wires.map((w) => {
             const other = w.from.part === 'board' ? w.to : w.from;
             const sp = scene.parts.find((x) => x.id === other.part);
@@ -72,33 +72,33 @@ function PinCard({ board, pinId }: { board: BoardDef; pinId: string }) {
         </div>
       )}
       <div className="card-section">
-        <div className="label">Live</div>
+        <div className="label">{t('Live')}</div>
         {live ? (
           <div className="mono">
             {live.mode}
-            {live.level !== undefined && ` · level ${live.level}`}
+            {live.level !== undefined && ` · ${t('level {n}', { n: live.level })}`}
             {live.mv !== undefined && ` · ${live.mv} mV`}
-            {live.duty !== undefined && ` · ${live.duty}% duty`}
-            <span className="src"> measured</span>
+            {live.duty !== undefined && ` · ${t('{n}% duty', { n: live.duty })}`}
+            <span className="src"> {t('measured')}</span>
           </div>
         ) : (
-          <div className="dim">No live data. {agentOn ? 'Start live view in Monitor.' : 'Needs the diagnostic agent.'}</div>
+          <div className="dim">{agentOn ? t('No live data. Start live view in Monitor.') : t('No live data. Needs the diagnostic agent.')}</div>
         )}
         {p.kind === 'gpio' && p.gpio !== null && (
           <p className="dim small">
             {p.flags.includes('adc1') || p.flags.includes('adc2')
-              ? 'Voltage is measured only on ADC pins, and only when the app asks the ADC.'
-              : 'This pin reports a digital level only (0 or 1), never a voltage.'}
+              ? t('Voltage is measured only on ADC pins, and only when the app asks the ADC.')
+              : t('This pin reports a digital level only (0 or 1), never a voltage.')}
           </p>
         )}
       </div>
       {agentOn && p.gpio !== null && canOutput(p) && p.gpio !== 1 && p.gpio !== 3 && (
         <div className="row gap">
           <button className="btn small" onClick={() => confirmGpioWrite(p.gpio!, 1)}>
-            Set HIGH…
+            {t('Set HIGH…')}
           </button>
           <button className="btn small" onClick={() => confirmGpioWrite(p.gpio!, 0)}>
-            Set LOW…
+            {t('Set LOW…')}
           </button>
         </div>
       )}
@@ -137,11 +137,11 @@ function PartCard({ id }: { id: string }) {
         <button className="btn small" title="⌘D" onClick={() => duplicateSelected()}>
           <Icon name="copy" size={14} /> {t('Duplicate')}
         </button>
-        <button className="btn small danger" title="Delete" onClick={() => removeTarget(`part:${id}`)}>
+        <button className="btn small danger" title={t('Delete')} onClick={() => removeTarget(`part:${id}`)}>
           <Icon name="trash" size={14} /> {t('Remove')}
         </button>
       </div>
-      {def.measures && <p className="card-note">{t('Measures {what}.', { what: def.measures.join(', ') })}</p>}
+      {def.measures && <p className="card-note">{t('Measures {what}.', { what: def.measures.map((m) => t(m)).join(', ') })}</p>}
       {findings.map((f) => (
         <p key={f.id} className={`card-flag ${f.severity === 'error' ? 'err' : 'warn'}`}>
           {t(f.message)} <span className="dim">{t(f.hint)}</span>
@@ -191,14 +191,14 @@ function WireCard({ board, id }: { board: BoardDef; id: string }) {
     <>
       <div className="card-head">
         <span className="swatch" style={{ background: w.color }} />
-        <span className="big">Wire</span>
+        <span className="big">{t('Wire')}</span>
       </div>
       <div className="mono">
         {end(w.from)} → {end(w.to)}
       </div>
       {findings.map((f) => (
         <p key={f.id} className={`card-flag ${f.severity === 'error' ? 'err' : 'warn'}`}>
-          {f.message} <span className="dim">{f.hint}</span>
+          {t(f.message)} <span className="dim">{t(f.hint)}</span>
         </p>
       ))}
       <div className="row gap">
@@ -206,7 +206,7 @@ function WireCard({ board, id }: { board: BoardDef; id: string }) {
           className="btn small danger"
           onClick={() => removeTarget(`wire:${id}`)}
         >
-          Remove wire
+          {t('Remove wire')}
         </button>
       </div>
     </>
@@ -220,7 +220,7 @@ export function PinInfoCard({ board }: { board: BoardDef }) {
   if (id === 'board') return null;
   return (
     <div className="info-card">
-      <button className="close" aria-label="Close" onClick={() => useScene.getState().select(null)}>
+      <button className="close" aria-label={t('Close')} onClick={() => useScene.getState().select(null)}>
         ×
       </button>
       {kind === 'pin' && <PinCard board={board} pinId={id} />}

@@ -1,6 +1,7 @@
 // Developer menu: hardware mode and simulator scenarios.
 
 import { useApp, useScene, log } from '../state/store';
+import { t } from '@shared/i18n';
 
 export function DevMenu() {
   const open = useApp((s) => s.devOpen);
@@ -14,57 +15,57 @@ export function DevMenu() {
   return (
     <div className="devmenu">
       <div className="dev-head">
-        <b>Developer</b>
-        <button className="close" onClick={() => useApp.getState().set({ devOpen: false })}>
+        <b>{t('Developer')}</b>
+        <button className="close" onClick={() => useApp.getState().set({ devOpen: false })} aria-label={t('Close')}>
           ×
         </button>
       </div>
-      <div className="label">Hardware</div>
+      <div className="label">{t('Hardware')}</div>
       <div className="seg">
         <button className={conn.mode === 'sim' ? 'on' : ''} onClick={() => window.bp.hw.setMode('sim')}>
-          Simulator
+          {t('Simulator')}
         </button>
         <button className={conn.mode === 'real' ? 'on' : ''} onClick={() => window.bp.hw.setMode('real')}>
-          Real board
+          {t('Real board')}
         </button>
       </div>
       {conn.mode === 'sim' && (
         <>
-          <div className="label">Scenario</div>
+          <div className="label">{t('Scenario')}</div>
           <div className="scenarios">
             {scenarios.map((s) => (
               <button key={s.id} className={`scenario ${conn.scenario === s.id ? 'on' : ''}`} onClick={() => load(s.id)}>
-                <b>{s.name}</b>
-                <span>{s.description}</span>
+                <b>{t(s.name)}</b>
+                <span>{t(s.description)}</span>
               </button>
             ))}
           </div>
-          <div className="label">Bench actions</div>
+          <div className="label">{t('Bench actions')}</div>
           <div className="row gap wrap">
             <button className="btn small" onClick={() => window.bp.sim.control('fixWiring')}>
-              Fix the wiring
+              {t('Fix the wiring')}
             </button>
             <button className="btn small" onClick={() => window.bp.sim.control('turnKnob')}>
-              Turn the knob
+              {t('Turn the knob')}
             </button>
           </div>
         </>
       )}
       {conn.mode === 'real' && (
         <p className="small dim">
-          Real mode uses esptool (pip3 install esptool) and the prebuilt agent in resources/agent (npm run build:agent).
+          {t('Real mode uses esptool (pip3 install esptool) and the prebuilt agent in resources/agent (npm run build:agent).')}
         </p>
       )}
-      <div className="label">Project</div>
+      <div className="label">{t('Project')}</div>
       <div className="row gap wrap">
         <button
           className="btn small"
           onClick={() => {
             useScene.getState().setScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
-            log('info', 'Started an empty project.');
+            log('info', t('Started an empty project.'));
           }}
         >
-          Empty project
+          {t('Empty project')}
         </button>
       </div>
     </div>

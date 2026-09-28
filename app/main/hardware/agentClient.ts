@@ -5,6 +5,7 @@ import type { AgentReplyMap, AgentRequest, StreamFrame } from '@shared/types';
 import { LineSplitter, agentErrorText, encodeRequest, parseAgentLine } from '@shared/protocol';
 import type { AgentClient, SerialStream } from './driver';
 import { DriverError } from './errors';
+import { t } from '@shared/i18n';
 
 export const AGENT_BAUD = 115200;
 
@@ -15,11 +16,11 @@ export function openPort(path: string, baudRate: number): Promise<SerialPort> {
       if (!err) return resolve(sp);
       const msg = err.message;
       if (/busy|lock/i.test(msg)) {
-        reject(new DriverError('port_busy', 'Another program is using this port.', 'Close any other serial monitor and try again.'));
+        reject(new DriverError('port_busy', t('Another program is using this port.'), t('Close any other serial monitor and try again.')));
       } else if (/No such file|not found|cannot open/i.test(msg)) {
-        reject(new DriverError('port_gone', 'The port is not there any more.', 'Check the USB cable, then search for boards again.'));
+        reject(new DriverError('port_gone', t('The port is not there any more.'), t('Check the USB cable, then search for boards again.')));
       } else {
-        reject(new DriverError('port_open_failed', `The port could not be opened: ${msg}`, 'Unplug the board, plug it back in and try again.'));
+        reject(new DriverError('port_open_failed', t('The port could not be opened: {msg}', { msg }), t('Unplug the board, plug it back in and try again.')));
       }
     });
   });
@@ -46,7 +47,7 @@ export class SerialAgentClient implements AgentClient {
     port.on('close', () => {
       for (const [, p] of this.pending) {
         clearTimeout(p.timer);
-        p.reject(new DriverError('port_closed', 'The connection to the board was lost.', 'Check the USB cable and reconnect.'));
+        p.reject(new DriverError('port_closed', t('The connection to the board was lost.'), t('Check the USB cable and reconnect.')));
       }
       this.pending.clear();
     });
@@ -69,8 +70,8 @@ export class SerialAgentClient implements AgentClient {
         if (p && parsed.id !== null) {
           clearTimeout(p.timer);
           this.pending.delete(parsed.id);
-          const t = agentErrorText(parsed.code);
-          p.reject(new DriverError(`agent_${parsed.code}`, t.humanMessage, t.hint));
+          const text = agentErrorText(parsed.code);
+          p.reject(new DriverError(`agent_${parsed.code}`, text.humanMessage, text.hint));
         }
         break;
       }
@@ -91,7 +92,7 @@ export class SerialAgentClient implements AgentClient {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(new DriverError('agent_timeout', 'The board agent did not answer.', 'Press EN on the board to restart it, then try again.'));
+        reject(new DriverError('agent_timeout', t('The board agent did not answer.'), t('Press EN on the board to restart it, then try again.')));
       }, timeoutMs);
       this.pending.set(id, { resolve: (b) => resolve(b as unknown as AgentReplyMap[K]), reject, timer });
       this.port.write(encodeRequest(id, req as AgentRequest));

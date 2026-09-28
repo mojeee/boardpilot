@@ -1,4 +1,5 @@
 import type { AppError, Result } from '@shared/types';
+import { t } from '@shared/i18n';
 
 /** Thrown inside the main process; converted to a Result before it reaches the UI. */
 export class DriverError extends Error implements AppError {
@@ -16,31 +17,31 @@ export function toAppError(e: unknown): AppError {
   const msg = e instanceof Error ? e.message : String(e);
   return {
     code: 'unexpected',
-    humanMessage: `Something unexpected happened: ${msg}`,
-    hint: 'Try again. If it keeps happening, unplug the board, plug it back in and reconnect.',
+    humanMessage: t('Something unexpected happened: {msg}', { msg }),
+    hint: t('Try again. If it keeps happening, unplug the board, plug it back in and reconnect.'),
   };
 }
 
 export function withTimeout<T>(p: Promise<T>, ms: number, what: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const t = setTimeout(
+    const timer = setTimeout(
       () =>
         reject(
           new DriverError(
             'timeout',
-            `${what} took too long (more than ${Math.round(ms / 1000)} s).`,
-            'Check the USB cable and try again. If the board is stuck, press EN to restart it.',
+            t('{what} took too long (more than {s} s).', { what, s: Math.round(ms / 1000) }),
+            t('Check the USB cable and try again. If the board is stuck, press EN to restart it.'),
           ),
         ),
       ms,
     );
     p.then(
       (v) => {
-        clearTimeout(t);
+        clearTimeout(timer);
         resolve(v);
       },
       (e: unknown) => {
-        clearTimeout(t);
+        clearTimeout(timer);
         reject(e);
       },
     );

@@ -508,3 +508,7 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .lib-overlay, .info-card, .vp-toolbar, .badges, .wire-hint { z-index: 20; }
 .pe-row { flex-wrap: wrap; }
 .pe-form label.narrow { flex: 0 0 64px; }
+
+/* status badges live bottom-right so long (Italian) toolbar labels never collide */
+.badges { top: auto; bottom: 40px; }
+.vp-toolbar { right: 12px; }

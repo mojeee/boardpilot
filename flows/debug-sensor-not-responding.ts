@@ -2,6 +2,7 @@ import type { Evidence, FlowDef, FlowContext, ResultData } from '@shared/flow';
 import type { TargetRef } from '@shared/types';
 import { PARTS, wireFor } from '@shared/board';
 import { checkWiring } from '@shared/wiring';
+import { t } from '@shared/i18n';
 import { ensureBoardStep, fmtErr, i2cTarget, i2cTargets, installAgentStep } from './common';
 
 interface Facts {
@@ -45,14 +46,14 @@ export const debugSensorNotResponding: FlowDef = {
       type: 'auto',
       title: 'Which sensor?',
       async run(ctx) {
-        const t = i2cTarget(ctx);
-        if (!t) return { status: 'warning', summary: 'No I2C sensor in your project yet. Tell the app which one.' };
-        ctx.data.partInstance = t.inst.id;
-        ctx.log('found', `From your project: ${t.def.name} with SDA on ${t.sdaPin} and SCL on ${t.sclPin}.`, {
-          target: `part:${t.inst.id}`,
+        const tg = i2cTarget(ctx);
+        if (!tg) return { status: 'warning', summary: 'No I2C sensor in your project yet. Tell the app which one.' };
+        ctx.data.partInstance = tg.inst.id;
+        ctx.log('found', t('From your project: {part} with SDA on {sda} and SCL on {scl}.', { part: tg.def.name, sda: tg.sdaPin, scl: tg.sclPin }), {
+          target: `part:${tg.inst.id}`,
           source: 'project scene',
         });
-        return { status: 'ok', summary: `${t.def.name}, SDA ${t.sdaPin}, SCL ${t.sclPin}.` };
+        return { status: 'ok', summary: t('{part}, SDA {sda}, SCL {scl}.', { part: tg.def.name, sda: tg.sdaPin, scl: tg.sclPin }) };
       },
       highlight: (ctx) => i2cTargets(ctx),
     },
@@ -69,7 +70,10 @@ export const debugSensorNotResponding: FlowDef = {
           answer.partId ??
           Object.values(PARTS).find((p) => p.keywords.some((k) => answer.value.toLowerCase().includes(k)))?.id;
         if (!partId || PARTS[partId]?.bus !== 'i2c') {
-          return { status: 'failed', summary: `“${answer.value}” is not an I2C sensor in the parts library yet. Pick one from the list, or ask the assistant.` };
+          return {
+            status: 'failed',
+            summary: t('“{name}” is not an I2C sensor in the parts library yet. Pick one from the list, or ask the assistant.', { name: answer.value }),
+          };
         }
         const id = `${partId.split('-')[0]}1`;
         ctx.updateScene((s) => ({
@@ -82,10 +86,10 @@ export const debugSensorNotResponding: FlowDef = {
           ],
         }));
         ctx.data.partInstance = id;
-        ctx.log('info', `Assuming the default pins: SDA on D21, SCL on D22. Change the wires in the 3D view if yours differ.`, {
+        ctx.log('info', t('Assuming the default pins: SDA on D21, SCL on D22. Change the wires in the 3D view if yours differ.'), {
           source: 'suggestion (default Arduino pins)',
         });
-        return { status: 'ok', summary: `${PARTS[partId].name}, on the default pins D21 and D22.` };
+        return { status: 'ok', summary: t('{part}, on the default pins D21 and D22.', { part: PARTS[partId].name }) };
       },
       fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],
     },
@@ -97,25 +101,27 @@ export const debugSensorNotResponding: FlowDef = {
       body: 'I2C lines need pull-up resistors. Most breakouts have them, powered by the sensor’s VIN. No pull-up usually means no power.',
       highlight: (ctx) => i2cTargets(ctx),
       async run(ctx) {
-        const t = i2cTarget(ctx);
-        if (!t) return { status: 'failed', summary: 'No sensor selected.' };
-        const r = await ctx.hw.agent({ cmd: 'pullup_check', pins: [t.sda, t.scl] });
+        const tg = i2cTarget(ctx);
+        if (!tg) return { status: 'failed', summary: 'No sensor selected.' };
+        const r = await ctx.hw.agent({ cmd: 'pullup_check', pins: [tg.sda, tg.scl] });
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
-        const sda = !!r.value.external[String(t.sda)];
-        const scl = !!r.value.external[String(t.scl)];
+        const sda = !!r.value.external[String(tg.sda)];
+        const scl = !!r.value.external[String(tg.scl)];
         facts(ctx).pullups = { sda, scl };
-        ctx.log(sda ? 'check' : 'warning', `${t.sdaPin}: ${sda ? 'pulled up (HIGH with nothing driving it)' : 'no pull-up (LOW)'}`, {
-          target: `pin:${t.sdaPin}`,
+        const pullText = (pin: string, up: boolean) =>
+          up ? t('{pin}: pulled up (HIGH with nothing driving it)', { pin }) : t('{pin}: no pull-up (LOW)', { pin });
+        ctx.log(sda ? 'check' : 'warning', pullText(tg.sdaPin, sda), {
+          target: `pin:${tg.sdaPin}`,
           source: 'measured: pullup_check',
         });
-        ctx.log(scl ? 'check' : 'warning', `${t.sclPin}: ${scl ? 'pulled up (HIGH with nothing driving it)' : 'no pull-up (LOW)'}`, {
-          target: `pin:${t.sclPin}`,
+        ctx.log(scl ? 'check' : 'warning', pullText(tg.sclPin, scl), {
+          target: `pin:${tg.sclPin}`,
           source: 'measured: pullup_check',
         });
         if (sda && scl) return { status: 'ok', summary: 'Both lines are pulled up, so the sensor very likely has power.' };
         if (!sda && !scl)
           return { status: 'warning', summary: 'Neither line is pulled up. The sensor may have no power or no ground, or the wires are loose.' };
-        return { status: 'warning', summary: `Only ${sda ? t.sdaPin : t.sclPin} is pulled up. One of the two wires may be loose.` };
+        return { status: 'warning', summary: t('Only {pin} is pulled up. One of the two wires may be loose.', { pin: sda ? tg.sdaPin : tg.sclPin }) };
       },
       aiHelp: () => 'The pull-up check on my I2C lines did not pass. What does that mean for a GY-BME280 breakout?',
       fallbacks: [{ id: 'retry', label: 'Check again', kind: 'retry' }, { id: 'skip', label: 'Skip this check', kind: 'skip' }],
@@ -126,25 +132,37 @@ export const debugSensorNotResponding: FlowDef = {
       title: 'Scan the I2C bus as wired',
       highlight: (ctx) => i2cTargets(ctx),
       async run(ctx) {
-        const t = i2cTarget(ctx);
-        if (!t) return { status: 'failed', summary: 'No sensor selected.' };
-        const r = await ctx.hw.agent({ cmd: 'i2c_scan', sda: t.sda, scl: t.scl, hz: 100000 });
+        const tg = i2cTarget(ctx);
+        if (!tg) return { status: 'failed', summary: 'No sensor selected.' };
+        const r = await ctx.hw.agent({ cmd: 'i2c_scan', sda: tg.sda, scl: tg.scl, hz: 100000 });
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         const f = facts(ctx);
         f.scanWired = r.value.found;
-        const expected = t.def.addresses ?? [];
+        const expected = tg.def.addresses ?? [];
         const hit = r.value.found.find((a) => expected.some((e) => e.toLowerCase() === a.toLowerCase()));
-        ctx.log(r.value.found.length ? 'found' : 'warning', r.value.found.length ? `Devices answering: ${r.value.found.join(', ')}` : `No device answered with SDA = ${t.sdaPin}, SCL = ${t.sclPin}.`, {
-          target: `part:${t.inst.id}`,
+        const scanMsg = r.value.found.length
+          ? t('Devices answering: {list}', { list: r.value.found.join(', ') })
+          : t('No device answered with SDA = {sda}, SCL = {scl}.', { sda: tg.sdaPin, scl: tg.sclPin });
+        ctx.log(r.value.found.length ? 'found' : 'warning', scanMsg, {
+          target: `part:${tg.inst.id}`,
           source: 'measured: i2c_scan',
         });
         if (hit) {
           f.addr = hit;
-          f.workSda = t.sda;
-          f.workScl = t.scl;
-          return { status: 'ok', summary: `${t.def.name} answers at ${hit}.` };
+          f.workSda = tg.sda;
+          f.workScl = tg.scl;
+          return { status: 'ok', summary: t('{part} answers at {addr}.', { part: tg.def.name, addr: hit }) };
         }
-        if (r.value.found.length) return { status: 'warning', summary: `Something answers at ${r.value.found.join(', ')}, but not at the ${t.def.name} addresses ${expected.join(' / ')}.` };
+        if (r.value.found.length) {
+          return {
+            status: 'warning',
+            summary: t('Something answers at {found}, but not at the {part} addresses {expected}.', {
+              found: r.value.found.join(', '),
+              part: tg.def.name,
+              expected: expected.join(' / '),
+            }),
+          };
+        }
         return { status: 'warning', summary: 'Nothing answered. Next: try with SDA and SCL exchanged.' };
       },
       fallbacks: [{ id: 'retry', label: 'Scan again', kind: 'retry' }],
@@ -157,28 +175,28 @@ export const debugSensorNotResponding: FlowDef = {
       when: (ctx) => !facts(ctx).addr,
       highlight: (ctx) => i2cTargets(ctx),
       async run(ctx) {
-        const t = i2cTarget(ctx);
-        if (!t) return { status: 'failed', summary: 'No sensor selected.' };
-        const r = await ctx.hw.agent({ cmd: 'i2c_scan', sda: t.scl, scl: t.sda, hz: 100000 });
+        const tg = i2cTarget(ctx);
+        if (!tg) return { status: 'failed', summary: 'No sensor selected.' };
+        const r = await ctx.hw.agent({ cmd: 'i2c_scan', sda: tg.scl, scl: tg.sda, hz: 100000 });
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         const f = facts(ctx);
         f.scanSwapped = r.value.found;
-        const expected = t.def.addresses ?? [];
+        const expected = tg.def.addresses ?? [];
         const hit = r.value.found.find((a) => expected.some((e) => e.toLowerCase() === a.toLowerCase()));
         if (hit) {
           f.crossed = true;
           f.addr = hit;
-          f.workSda = t.scl;
-          f.workScl = t.sda;
+          f.workSda = tg.scl;
+          f.workScl = tg.sda;
           const scene = ctx.scene();
-          const sdaW = wireFor(scene, t.inst.id, 'SDA');
-          ctx.log('found', `${t.def.name} answers at ${hit} only with SDA and SCL exchanged: the wires are crossed.`, {
-            target: sdaW ? `wire:${sdaW.id}` : `pin:${t.sdaPin}`,
+          const sdaW = wireFor(scene, tg.inst.id, 'SDA');
+          ctx.log('found', t('{part} answers at {addr} only with SDA and SCL exchanged: the wires are crossed.', { part: tg.def.name, addr: hit }), {
+            target: sdaW ? `wire:${sdaW.id}` : `pin:${tg.sdaPin}`,
             source: 'measured: i2c_scan (swapped)',
           });
-          return { status: 'warning', summary: `Found at ${hit} with the lines exchanged. SDA and SCL are crossed.` };
+          return { status: 'warning', summary: t('Found at {addr} with the lines exchanged. SDA and SCL are crossed.', { addr: hit }) };
         }
-        ctx.log('warning', 'No answer with the lines exchanged either.', { source: 'measured: i2c_scan (swapped)' });
+        ctx.log('warning', t('No answer with the lines exchanged either.'), { source: 'measured: i2c_scan (swapped)' });
         return { status: 'warning', summary: 'No answer either way.' };
       },
     },
@@ -189,22 +207,26 @@ export const debugSensorNotResponding: FlowDef = {
       body: 'Every Bosch sensor has an ID register. It tells the BME280 (0x60) from the look-alike BMP280 (0x58).',
       when: (ctx) => !!facts(ctx).addr && !!i2cTarget(ctx)?.def.idCheck,
       async run(ctx) {
-        const t = i2cTarget(ctx);
+        const tg = i2cTarget(ctx);
         const f = facts(ctx);
-        const check = t?.def.idCheck;
-        if (!t || !check || !f.addr || f.workSda === undefined || f.workScl === undefined) return { status: 'skipped', summary: 'Nothing to read.' };
+        const check = tg?.def.idCheck;
+        if (!tg || !check || !f.addr || f.workSda === undefined || f.workScl === undefined) return { status: 'skipped', summary: 'Nothing to read.' };
         const r = await ctx.hw.agent({ cmd: 'i2c_read', sda: f.workSda, scl: f.workScl, addr: f.addr, reg: check.register, len: 1 });
         if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
         const v = (r.value.data[0] ?? '').toLowerCase();
         f.idValue = v;
         const src = `measured: i2c_read ${check.register}`;
         if (v === check.expect.toLowerCase()) {
-          ctx.log('found', `ID register ${check.register} = ${v}: this is a genuine ${t.def.name.replace(/ breakout$/, '')}.`, { target: `part:${t.inst.id}`, source: src });
-          return { status: 'ok', summary: `ID ${v}, as expected.` };
+          ctx.log('found', t('ID register {reg} = {value}: this is a genuine {part}.', { reg: check.register, value: v, part: tg.def.name.replace(/ breakout$/, '') }), {
+            target: `part:${tg.inst.id}`,
+            source: src,
+          });
+          return { status: 'ok', summary: t('ID {value}, as expected.', { value: v }) };
         }
         const known = Object.entries(check.otherValues ?? {}).find(([k]) => k.toLowerCase() === v);
-        ctx.log('warning', `ID register ${check.register} = ${v}, expected ${check.expect}.${known ? ' ' + known[1] : ''}`, { target: `part:${t.inst.id}`, source: src });
-        return { status: 'warning', summary: known ? known[1] : `Unexpected ID ${v}.` };
+        const idMsg = t('ID register {reg} = {value}, expected {expect}.', { reg: check.register, value: v, expect: check.expect });
+        ctx.log('warning', known ? `${idMsg} ${known[1]}` : idMsg, { target: `part:${tg.inst.id}`, source: src });
+        return { status: 'warning', summary: known ? known[1] : t('Unexpected ID {value}.', { value: v }) };
       },
       fallbacks: [{ id: 'retry', label: 'Read again', kind: 'retry' }, { id: 'skip', label: 'Skip', kind: 'skip' }],
     },
@@ -227,13 +249,18 @@ export const debugSensorNotResponding: FlowDef = {
           status: 'ok',
           summary: 'Done',
           result: {
-            title: findings.length ? `${findings.length} problem${findings.length > 1 ? 's' : ''} in your wiring drawing` : 'Your wiring drawing looks fine',
+            title:
+              findings.length === 1
+                ? t('1 problem in your wiring drawing')
+                : findings.length
+                  ? t('{n} problems in your wiring drawing', { n: findings.length })
+                  : 'Your wiring drawing looks fine',
             cause: findings.length
               ? 'These come from the rules for your board and parts, not from measurements. The real wires may differ from the drawing.'
               : 'No rule found a problem in the drawing. To check the real wires, the app needs the diagnostic agent.',
             confidence: 'documented',
             evidence: findings.map((f) => ({ text: `${f.message} ${f.hint}`, source: f.source ?? 'wiring rules', target: f.targets[0], confidence: 'documented' as const })),
-            sources: ['ESP32 Series Datasheet', 'Parts library'],
+            sources: ['ESP32 Series Datasheet', t('Parts library')],
             nextSteps: ['Install the agent to measure the real wires'],
             highlight: findings.flatMap((f) => f.targets),
           },
@@ -244,84 +271,116 @@ export const debugSensorNotResponding: FlowDef = {
 };
 
 function buildResult(ctx: FlowContext): ResultData {
-  const t = i2cTarget(ctx);
+  const tg = i2cTarget(ctx);
   const f = facts(ctx);
-  const name = t?.def.name ?? 'The sensor';
+  const name = tg?.def.name ?? t('The sensor');
   const scene = ctx.scene();
-  const sdaW = t ? wireFor(scene, t.inst.id, 'SDA') : undefined;
-  const sclW = t ? wireFor(scene, t.inst.id, 'SCL') : undefined;
+  const sdaW = tg ? wireFor(scene, tg.inst.id, 'SDA') : undefined;
+  const sclW = tg ? wireFor(scene, tg.inst.id, 'SCL') : undefined;
   const busTargets: TargetRef[] = [
     ...(sdaW ? [`wire:${sdaW.id}` as TargetRef] : []),
     ...(sclW ? [`wire:${sclW.id}` as TargetRef] : []),
-    ...(t ? [`pin:${t.sdaPin}` as TargetRef, `pin:${t.sclPin}` as TargetRef] : []),
+    ...(tg ? [`pin:${tg.sdaPin}` as TargetRef, `pin:${tg.sclPin}` as TargetRef] : []),
   ];
   const ev: Evidence[] = [];
-  if (f.pullups && t) {
+  if (f.pullups && tg) {
     ev.push({
-      text: `Pull-ups: ${t.sdaPin} ${f.pullups.sda ? 'yes' : 'no'}, ${t.sclPin} ${f.pullups.scl ? 'yes' : 'no'}`,
+      text: t('Pull-ups: {sda} {sdaOk}, {scl} {sclOk}', {
+        sda: tg.sdaPin,
+        sdaOk: f.pullups.sda ? t('yes') : t('no'),
+        scl: tg.sclPin,
+        sclOk: f.pullups.scl ? t('yes') : t('no'),
+      }),
       source: 'measured: pullup_check',
       confidence: 'measured',
-      target: `pin:${t.sdaPin}`,
+      target: `pin:${tg.sdaPin}`,
     });
   }
-  if (f.scanWired && t) {
+  if (f.scanWired && tg) {
     ev.push({
-      text: `Scan with SDA = ${t.sdaPin}, SCL = ${t.sclPin}: ${f.scanWired.length ? f.scanWired.join(', ') : 'no answer'}`,
+      text: t('Scan with SDA = {sda}, SCL = {scl}: {found}', {
+        sda: tg.sdaPin,
+        scl: tg.sclPin,
+        found: f.scanWired.length ? f.scanWired.join(', ') : t('no answer'),
+      }),
       source: 'measured: i2c_scan',
       confidence: 'measured',
     });
   }
-  if (f.scanSwapped && t) {
+  if (f.scanSwapped && tg) {
     ev.push({
-      text: `Scan with SDA = ${t.sclPin}, SCL = ${t.sdaPin} (exchanged): ${f.scanSwapped.length ? f.scanSwapped.join(', ') : 'no answer'}`,
+      text: t('Scan with SDA = {sda}, SCL = {scl} (exchanged): {found}', {
+        sda: tg.sclPin,
+        scl: tg.sdaPin,
+        found: f.scanSwapped.length ? f.scanSwapped.join(', ') : t('no answer'),
+      }),
       source: 'measured: i2c_scan',
       confidence: 'measured',
     });
   }
-  if (f.idValue && t?.def.idCheck) {
-    ev.push({ text: `ID register ${t.def.idCheck.register} = ${f.idValue} (expected ${t.def.idCheck.expect})`, source: 'measured: i2c_read', confidence: 'measured' });
+  if (f.idValue && tg?.def.idCheck) {
+    ev.push({
+      text: t('ID register {reg} = {value} (expected {expect})', { reg: tg.def.idCheck.register, value: f.idValue, expect: tg.def.idCheck.expect }),
+      source: 'measured: i2c_read',
+      confidence: 'measured',
+    });
   }
-  const libSources = t ? t.def.sources.map((s) => `${s.title}, ${s.section ?? ''}`.trim()) : [];
+  const libSources = tg ? tg.def.sources.map((s) => `${s.title}, ${s.section ?? ''}`.trim()) : [];
 
-  if (f.crossed && t) {
+  if (f.crossed && tg) {
     return {
       title: 'SDA and SCL are crossed',
-      cause: `${name} answers only when SDA and SCL are exchanged. The wire from ${t.sdaPin} goes to the sensor’s SCL pin and the wire from ${t.sclPin} goes to its SDA pin.`,
+      cause: t(
+        '{part} answers only when SDA and SCL are exchanged. The wire from {sda} goes to the sensor’s SCL pin and the wire from {scl} goes to its SDA pin.',
+        { part: name, sda: tg.sdaPin, scl: tg.sclPin },
+      ),
       confidence: 'measured',
       evidence: ev,
-      sources: ['Swap test (this session)', ...libSources],
+      sources: [t('Swap test (this session)'), ...libSources],
       nextSteps: [
-        `Swap the two wires at the sensor: ${t.sdaPin} → SDA, ${t.sclPin} → SCL.`,
-        `Or keep the wires and change your code to Wire.begin(${f.workSda}, ${f.workScl}).`,
+        t('Swap the two wires at the sensor: {sda} → SDA, {scl} → SCL.', { sda: tg.sdaPin, scl: tg.sclPin }),
+        t('Or keep the wires and change your code to Wire.begin({a}, {b}).', { a: String(f.workSda), b: String(f.workScl) }),
         'Then run the checks again to confirm.',
       ],
       highlight: busTargets,
     };
   }
-  if (f.idValue && t?.def.idCheck && f.idValue !== t.def.idCheck.expect.toLowerCase()) {
-    const known = Object.entries(t.def.idCheck.otherValues ?? {}).find(([k]) => k.toLowerCase() === f.idValue);
+  if (f.idValue && tg?.def.idCheck && f.idValue !== tg.def.idCheck.expect.toLowerCase()) {
+    const known = Object.entries(tg.def.idCheck.otherValues ?? {}).find(([k]) => k.toLowerCase() === f.idValue);
     return {
       title: known ? 'This is a different chip' : 'Unexpected chip ID',
-      cause: known ? known[1] : `The sensor answers, but its ID ${f.idValue} is not the expected ${t.def.idCheck.expect}.`,
+      cause: known ? known[1] : t('The sensor answers, but its ID {value} is not the expected {expect}.', { value: f.idValue, expect: tg.def.idCheck.expect }),
       confidence: 'measured',
       evidence: ev,
       sources: libSources,
       nextSteps: known
         ? ['Use a BMP280 library (for example Adafruit BMP280), which reads temperature and pressure.', 'For humidity, buy a genuine BME280 (ID 0x60).']
         : ['Check the model printed on the chip and pick the matching part.'],
-      highlight: t ? [`part:${t.inst.id}`] : [],
+      highlight: tg ? [`part:${tg.inst.id}`] : [],
     };
   }
-  if (f.addr && t) {
+  if (f.addr && tg) {
     return {
       title: 'The sensor answers correctly',
-      cause: `${name} answers at ${f.addr} on ${t.sdaPin}/${t.sclPin}${f.idValue ? ` and its ID is correct` : ''}. The wiring works, so the problem is most likely in the code.`,
+      cause: f.idValue
+        ? t('{part} answers at {addr} on {sda}/{scl} and its ID is correct. The wiring works, so the problem is most likely in the code.', {
+            part: name,
+            addr: f.addr,
+            sda: tg.sdaPin,
+            scl: tg.sclPin,
+          })
+        : t('{part} answers at {addr} on {sda}/{scl}. The wiring works, so the problem is most likely in the code.', {
+            part: name,
+            addr: f.addr,
+            sda: tg.sdaPin,
+            scl: tg.sclPin,
+          }),
       confidence: 'measured',
       evidence: ev,
       sources: libSources,
       nextSteps: [
-        `Make sure the code uses address ${f.addr} (many libraries default to 0x77).`,
-        `Make sure the code calls Wire.begin(${f.workSda}, ${f.workScl}) or uses the defaults.`,
+        t('Make sure the code uses address {addr} (many libraries default to 0x77).', { addr: f.addr }),
+        t('Make sure the code calls Wire.begin({a}, {b}) or uses the defaults.', { a: String(f.workSda), b: String(f.workScl) }),
         'Open Monitor to see what your program prints.',
       ],
       highlight: busTargets,
@@ -337,6 +396,6 @@ function buildResult(ctx: FlowContext): ResultData {
     evidence: ev,
     sources: libSources,
     nextSteps: ['Check that VIN goes to 3V3 and GND goes to GND.', 'Press each wire firmly into the breadboard.', 'Run the checks again.'],
-    highlight: t ? [`part:${t.inst.id}`, ...busTargets] : busTargets,
+    highlight: tg ? [`part:${tg.inst.id}`, ...busTargets] : busTargets,
   };
 }

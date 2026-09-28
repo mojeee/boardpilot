@@ -5,6 +5,7 @@
 import { randomUUID } from 'node:crypto';
 import type { WriteRequest } from '@shared/types';
 import { DriverError } from '../hardware/errors';
+import { t } from '@shared/i18n';
 
 type Kind = WriteRequest['kind'] | 'restore';
 const TTL_MS = 5 * 60 * 1000;
@@ -17,13 +18,13 @@ export function grant(kind: Kind): string {
 }
 
 export function consume(token: string | undefined, kind: Kind): void {
-  const t = token ? tokens.get(token) : undefined;
+  const entry = token ? tokens.get(token) : undefined;
   if (token) tokens.delete(token);
-  if (!t || t.kind !== kind || t.expires < Date.now()) {
+  if (!entry || entry.kind !== kind || entry.expires < Date.now()) {
     throw new DriverError(
       'not_confirmed',
-      'This would write to the board, and it was not confirmed.',
-      'Use the Confirm button in the dialog to allow it.',
+      t('This would write to the board, and it was not confirmed.'),
+      t('Use the Confirm button in the dialog to allow it.'),
     );
   }
 }

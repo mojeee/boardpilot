@@ -4,6 +4,7 @@ import type { AiContext, AiReply } from '@shared/types';
 import { useAi, useApp, useLive, useLog, useScene, log } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { confirmGpioWrite, confirmInstallAgent } from '../state/hw';
+import { t } from '@shared/i18n';
 
 export function aiContext(): AiContext {
   const w = useWizard.getState();
@@ -36,14 +37,14 @@ export async function askAi(question: string): Promise<AiReply | null> {
   useAi.getState().push({ role: 'assistant', reply });
   for (const c of reply.toolCalls ?? []) {
     if (['read_pins', 'pullup_check', 'i2c_scan', 'i2c_read', 'adc_read'].includes(c.name)) {
-      log(c.ok ? 'check' : 'failed', `Assistant ran ${c.name} ${JSON.stringify(c.input)}`, { source: 'assistant tool call' });
+      log(c.ok ? 'check' : 'failed', t('Assistant ran {tool} {input}', { tool: c.name, input: JSON.stringify(c.input) }), { source: 'assistant tool call' });
     }
   }
   if (reply.highlight.length) useScene.getState().focusOn(reply.highlight);
   if (reply.pendingWrite) {
     const pw = reply.pendingWrite;
-    if (pw.kind === 'flash_agent') await confirmInstallAgent(`The assistant asks to install the diagnostic agent: ${pw.reason}`);
-    else if (pw.kind === 'gpio_write' && pw.pin !== undefined) await confirmGpioWrite(pw.pin, pw.level ?? 1, `The assistant asks: ${pw.reason}`);
+    if (pw.kind === 'flash_agent') await confirmInstallAgent(t('The assistant asks to install the diagnostic agent: {reason}', { reason: pw.reason }));
+    else if (pw.kind === 'gpio_write' && pw.pin !== undefined) await confirmGpioWrite(pw.pin, pw.level ?? 1, t('The assistant asks: {reason}', { reason: pw.reason }));
   }
   return reply;
 }

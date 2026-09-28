@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import type { PartDef, Result } from '@shared/types';
 import { BUILTIN_PART_IDS, PARTS, registerPart, unregisterPart } from '@shared/board';
 import { validatePartDef } from '@shared/partSchema';
+import { t } from '@shared/i18n';
 
 export class UserParts {
   constructor(private readonly dir: string) {}
@@ -46,7 +47,7 @@ export class UserParts {
 
   async remove(id: string): Promise<Result<true>> {
     if (BUILTIN_PART_IDS.has(id)) {
-      return { ok: false, error: { code: 'builtin', humanMessage: 'Built-in parts cannot be deleted.', hint: 'You can remove it from your project instead.' } };
+      return { ok: false, error: { code: 'builtin', humanMessage: t('Built-in parts cannot be deleted.'), hint: t('You can remove it from your project instead.') } };
     }
     await unlink(join(this.dir, `${id}.json`)).catch(() => undefined);
     unregisterPart(id);

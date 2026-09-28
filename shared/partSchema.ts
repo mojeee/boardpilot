@@ -2,6 +2,7 @@
 // so every field is checked before the part enters the library.
 
 import type { PartDef, PartPinRole, PartShape, Result } from './types';
+import { t } from './i18n';
 
 export const PIN_ROLES: PartPinRole[] = [
   'power', 'ground', 'i2c_sda', 'i2c_scl', 'spi_mosi', 'spi_miso', 'spi_sck', 'spi_cs',
@@ -46,7 +47,7 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
     const po = (typeof p === 'object' && p !== null ? p : {}) as Record<string, unknown>;
     const pname = str(po.name, 12).toUpperCase();
     if (!pname) return bad('Every pin needs a name, like VCC or SDA.');
-    if (seen.has(pname)) return bad(`Two pins are called ${pname}. Pin names must be different.`);
+    if (seen.has(pname)) return bad(t('Two pins are called {name}. Pin names must be different.', { name: pname }));
     seen.add(pname);
     const role = PIN_ROLES.includes(po.role as PartPinRole) ? (po.role as PartPinRole) : 'passive';
     const pin: PartDef['pins'][number] = { name: pname, role };

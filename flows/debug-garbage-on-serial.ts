@@ -1,5 +1,6 @@
 import type { Evidence, FlowDef } from '@shared/flow';
 import { printableRatio } from '@shared/probe';
+import { t } from '@shared/i18n';
 import { ensureBoardStep, fmtErr } from './common';
 
 const BAUDS = [115200, 9600, 57600, 74880, 230400, 38400, 19200];
@@ -32,14 +33,19 @@ export const debugGarbageOnSerial: FlowDef = {
           if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
           const ratio = printableRatio(r.value);
           results.push({ baud, ratio, lines: r.value.length, sample: r.value.find((l) => l.trim())?.slice(0, 60) ?? '' });
-          ctx.log('check', `${baud} baud: ${r.value.length} lines, ${Math.round(ratio * 100)}% readable.`, { source: 'measured: serial capture' });
+          ctx.log('check', t('{baud} baud: {lines} lines, {pct}% readable.', { baud, lines: r.value.length, pct: Math.round(ratio * 100) }), {
+            source: 'measured: serial capture',
+          });
           if (ratio > 0.97 && r.value.length > 0) break;
         }
         ctx.data.bauds = results;
         const best = [...results].filter((x) => x.lines > 0).sort((a, b) => b.ratio - a.ratio)[0];
         if (!best) return { status: 'warning', summary: 'The board printed nothing at any speed.' };
         ctx.data.best = best;
-        return { status: best.ratio > 0.9 ? 'ok' : 'warning', summary: `Clearest at ${best.baud} baud (${Math.round(best.ratio * 100)}% readable).` };
+        return {
+          status: best.ratio > 0.9 ? 'ok' : 'warning',
+          summary: t('Clearest at {baud} baud ({pct}% readable).', { baud: best.baud, pct: Math.round(best.ratio * 100) }),
+        };
       },
       fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],
     },
@@ -51,7 +57,10 @@ export const debugGarbageOnSerial: FlowDef = {
         const results = (ctx.data.bauds as { baud: number; ratio: number; lines: number; sample: string }[] | undefined) ?? [];
         const best = ctx.data.best as { baud: number; ratio: number; sample: string } | undefined;
         const ev: Evidence[] = results.map((r) => ({
-          text: `${r.baud} baud: ${r.lines} lines, ${Math.round(r.ratio * 100)}% readable${r.sample && r.ratio > 0.9 ? ` (“${r.sample}”)` : ''}`,
+          text:
+            r.sample && r.ratio > 0.9
+              ? t('{baud} baud: {lines} lines, {pct}% readable (“{sample}”)', { baud: r.baud, lines: r.lines, pct: Math.round(r.ratio * 100), sample: r.sample })
+              : t('{baud} baud: {lines} lines, {pct}% readable', { baud: r.baud, lines: r.lines, pct: Math.round(r.ratio * 100) }),
           source: 'measured: serial capture',
           confidence: 'measured',
         }));
@@ -75,16 +84,21 @@ export const debugGarbageOnSerial: FlowDef = {
           status: 'ok',
           summary: 'Done',
           result: {
-            title: ok115 ? 'Serial output is clean at 115200' : `Your program talks at ${best.baud} baud`,
+            title: ok115 ? 'Serial output is clean at 115200' : t('Your program talks at {baud} baud', { baud: best.baud }),
             cause: ok115
               ? 'At 115200 baud the output is readable. If your terminal shows garbage, set it to 115200.'
-              : `The output is readable at ${best.baud} baud but garbage at 115200. The monitor and your program must use the same speed.`,
+              : t('The output is readable at {baud} baud but garbage at 115200. The monitor and your program must use the same speed.', { baud: best.baud }),
             confidence: 'measured',
             evidence: ev,
-            sources: ['Serial capture at several speeds (this session)'],
+            sources: [t('Serial capture at several speeds (this session)')],
             nextSteps: ok115
               ? ['Set your serial monitor to 115200 baud.']
-              : [`Either set the monitor to ${best.baud}, or change Serial.begin(${best.baud}) to Serial.begin(115200) in your code (recommended: the ESP32 boot messages also use 115200).`],
+              : [
+                  t(
+                    'Either set the monitor to {baud}, or change Serial.begin({baud}) to Serial.begin(115200) in your code (recommended: the ESP32 boot messages also use 115200).',
+                    { baud: best.baud },
+                  ),
+                ],
             highlight: ['pin:TX0'],
           },
         };

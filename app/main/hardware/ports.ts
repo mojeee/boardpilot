@@ -1,6 +1,7 @@
 // USB-serial bridge detection by USB vendor/product id. Pure, tested.
 
 import type { UsbBridge } from '@shared/types';
+import { t } from '@shared/i18n';
 
 /**
  * Vendor ids: Silicon Labs 0x10C4 (CP210x), WCH 0x1A86 (CH340 = 0x7523, CH9102 = 0x55D4),
@@ -25,11 +26,11 @@ export function isUsefulMacPort(path: string): boolean {
 export function driverHint(bridge: UsbBridge): string {
   switch (bridge) {
     case 'CP210x':
-      return 'This board uses a Silicon Labs CP210x chip. On recent macOS it works without a driver; if not, install the “CP210x VCP driver” from silabs.com.';
+      return t('This board uses a Silicon Labs CP210x chip. On recent macOS it works without a driver; if not, install the “CP210x VCP driver” from silabs.com.');
     case 'CH340':
     case 'CH9102':
-      return 'This board uses a WCH CH34x chip. Install the “CH34x macOS driver” from wch-ic.com, then allow it in System Settings → Privacy & Security.';
+      return t('This board uses a WCH CH34x chip. Install the “CH34x macOS driver” from wch-ic.com, then allow it in System Settings → Privacy & Security.');
     default:
-      return 'Look at the small chip next to the USB port: “CP2102” needs the Silicon Labs driver, “CH340” needs the WCH driver.';
+      return t('Look at the small chip next to the USB port: “CP2102” needs the Silicon Labs driver, “CH340” needs the WCH driver.');
   }
 }

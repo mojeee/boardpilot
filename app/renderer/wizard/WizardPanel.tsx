@@ -11,6 +11,7 @@ import { AskBox, AssistantPanel } from '../components/AssistantPanel';
 import { PhotoInput } from '../components/PhotoInput';
 import { Icon } from '../components/Icon';
 import { confirmRestore } from '../state/hw';
+import { t } from '@shared/i18n';
 
 const STATUS_ICON: Record<StepState['status'], string> = {
   pending: '',
@@ -31,27 +32,27 @@ function FreeText({ step }: { step: StepDef }) {
   const submit = async () => {
     if (!text.trim()) return;
     setBusy(true);
-    const opts = stepOptions(step, runner.ctx).map((o) => ({ id: o.id, label: o.label }));
+    const opts = stepOptions(step, runner.ctx).map((o) => ({ id: o.id, label: t(o.label) }));
     const r = await window.bp.ai.classify(text, opts);
     setBusy(false);
     if (!r.ok) {
-      setNote(`${r.error.humanMessage} Pick the closest button instead.`);
+      setNote(t('{message} Pick the closest button instead.', { message: t(r.error.humanMessage) }));
       return;
     }
     const opt = opts.find((o) => o.id === r.value.optionId);
     if (!opt) {
-      setNote(`${r.value.reason} Pick the closest button, or ask the assistant below.`);
+      setNote(t('{reason} Pick the closest button, or ask the assistant below.', { reason: r.value.reason }));
       return;
     }
-    log('action', `You wrote: “${text.trim()}”. The assistant matched it to: ${opt.label} (suggestion; change it by running the flow again).`, { source: 'assistant classification' });
+    log('action', t('You wrote: “{text}”. The assistant matched it to: {option} (suggestion; change it by running the flow again).', { text: text.trim(), option: opt.label }), { source: 'assistant classification' });
     useWizard.getState().answer({ kind: 'option', optionId: opt.id, label: opt.label });
   };
   return (
     <div className="free-text">
-      <div className="label">Or describe it in your own words</div>
+      <div className="label">{t('Or describe it in your own words')}</div>
       <div className="ask-box">
-        <textarea rows={2} value={text} onChange={(e) => setText(e.target.value)} placeholder="e.g. the sensor always shows 0 degrees" />
-        <button className="btn icon ai" disabled={busy || !text.trim()} onClick={submit} aria-label="Send">
+        <textarea rows={2} value={text} onChange={(e) => setText(e.target.value)} placeholder={t('e.g. the sensor always shows 0 degrees')} />
+        <button className="btn icon ai" disabled={busy || !text.trim()} onClick={submit} aria-label={t('Send')}>
           <Icon name="send" size={16} />
         </button>
       </div>
@@ -68,14 +69,14 @@ function InputPicker({ kinds, stepId }: { kinds: string[]; stepId: string }) {
     <div className="input-picker">
       {kinds.includes('library') && (
         <div className="picker-block">
-          <div className="label">Pick from the library</div>
+          <div className="label">{t('Pick from the library')}</div>
           <div className="lib-grid">
             {i2cParts
               .filter((p) => stepId !== 'sensor-input' || p.bus === 'i2c')
               .map((p) => (
                 <button key={p.id} className="lib-item" onClick={() => answer({ kind: 'input', input: 'library', value: p.name, partId: p.id })}>
                   <b>{p.name}</b>
-                  <span>{p.measures?.join(', ') ?? p.category}</span>
+                  <span>{p.measures?.map((m) => t(m)).join(', ') ?? t(p.category)}</span>
                 </button>
               ))}
           </div>
@@ -83,24 +84,24 @@ function InputPicker({ kinds, stepId }: { kinds: string[]; stepId: string }) {
       )}
       {kinds.includes('model') && (
         <div className="picker-block">
-          <div className="label">Type the model printed on it</div>
+          <div className="label">{t('Type the model printed on it')}</div>
           <div className="row gap">
-            <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="e.g. GY-BME280" className="text-in" />
+            <input value={model} onChange={(e) => setModel(e.target.value)} placeholder={t('e.g. GY-BME280')} className="text-in" />
             <button className="btn small" disabled={!model.trim()} onClick={() => answer({ kind: 'input', input: 'model', value: model.trim() })}>
-              Use
+              {t('Use')}
             </button>
           </div>
         </div>
       )}
       {kinds.includes('photo') && (
         <div className="picker-block">
-          <div className="label">Take a photo</div>
+          <div className="label">{t('Take a photo')}</div>
           <PhotoInput compact onConfirm={(partId, name) => answer({ kind: 'input', input: 'photo', value: name, partId, confirmed: true })} />
         </div>
       )}
       {kinds.includes('datasheet') && (
         <div className="picker-block">
-          <div className="label">Upload the datasheet</div>
+          <div className="label">{t('Upload the datasheet')}</div>
           <button
             className="btn small"
             onClick={async () => {
@@ -108,7 +109,7 @@ function InputPicker({ kinds, stepId }: { kinds: string[]; stepId: string }) {
               if (p) answer({ kind: 'input', input: 'datasheet', value: p.split('/').pop()?.replace(/\.pdf$/i, '') ?? p });
             }}
           >
-            Choose PDF…
+            {t('Choose PDF…')}
           </button>
         </div>
       )}
@@ -120,14 +121,14 @@ function InputPicker({ kinds, stepId }: { kinds: string[]; stepId: string }) {
             if (p) answer({ kind: 'input', input: 'firmware', value: p });
           }}
         >
-          Choose .bin file…
+          {t('Choose .bin file…')}
         </button>
       )}
       {kinds.includes('port') && (
         <div className="row gap">
           <input value={model} onChange={(e) => setModel(e.target.value)} placeholder="/dev/cu.usbserial-0001" className="text-in mono" />
           <button className="btn small" disabled={!model.trim()} onClick={() => answer({ kind: 'input', input: 'port', value: model.trim() })}>
-            Use
+            {t('Use')}
           </button>
         </div>
       )}
@@ -142,17 +143,17 @@ function ResultCard({ r }: { r: ResultData }) {
   return (
     <div className="result-card">
       <div className="row gap">
-        <span className={`conf conf-${r.confidence}`}>{r.confidence === 'measured' ? 'Measured' : r.confidence === 'documented' ? 'From documentation' : 'Suggestion'}</span>
+        <span className={`conf conf-${r.confidence}`}>{r.confidence === 'measured' ? t('Measured') : r.confidence === 'documented' ? t('From documentation') : t('Suggestion')}</span>
       </div>
-      <h3>{r.title}</h3>
-      <p>{r.cause}</p>
+      <h3>{t(r.title)}</h3>
+      <p>{t(r.cause)}</p>
       {r.evidence.length > 0 && (
         <>
-          <div className="label">Evidence</div>
+          <div className="label">{t('Evidence')}</div>
           <ul className="evidence">
             {r.evidence.map((e, i) => (
               <li key={i} className={e.target ? 'clickable' : ''} onClick={() => e.target && useScene.getState().focusOn([e.target])}>
-                {e.text}
+                {t(e.text)}
                 <span className={`log-src ${e.source.startsWith('measured') ? 'measured' : ''}`}>{e.source}</span>
               </li>
             ))}
@@ -161,36 +162,36 @@ function ResultCard({ r }: { r: ResultData }) {
       )}
       {r.highlight.length > 0 && (
         <div className="chips">
-          {r.highlight.map((t) => (
-            <button key={t} className="chip link mono" onClick={() => useScene.getState().focusOn([t])}>
-              {targetLabel(getBoard(), scene, t)}
+          {r.highlight.map((h) => (
+            <button key={h} className="chip link mono" onClick={() => useScene.getState().focusOn([h])}>
+              {targetLabel(getBoard(), scene, h)}
             </button>
           ))}
         </div>
       )}
       {r.nextSteps.length > 0 && (
         <>
-          <div className="label">What to do next</div>
+          <div className="label">{t('What to do next')}</div>
           <ol className="next-steps">
             {r.nextSteps.map((s, i) => (
-              <li key={i}>{s}</li>
+              <li key={i}>{t(s)}</li>
             ))}
           </ol>
         </>
       )}
-      {r.sources.length > 0 && <div className="small dim">Sources: {r.sources.join(' · ')}</div>}
+      {r.sources.length > 0 && <div className="small dim">{t('Sources: {list}', { list: r.sources.map((x) => t(x)).join(' · ') })}</div>}
       <div className="row gap wrap">
         {flowId && (
           <button className="btn small" onClick={() => useWizard.getState().start(flowId)}>
-            Run the checks again
+            {t('Run the checks again')}
           </button>
         )}
         <button className="btn small" onClick={() => useApp.getState().setScreen('report')}>
-          Create report
+          {t('Create report')}
         </button>
         {agentOn && (
           <button className="btn small ghost" onClick={() => confirmRestore()}>
-            Restore my firmware
+            {t('Restore my firmware')}
           </button>
         )}
       </div>
@@ -215,16 +216,16 @@ function CurrentStep() {
         {state.status === 'running' ? <span className="spinner" /> : null}
         <span className="mono dim small">{step.type.toUpperCase()}</span>
       </div>
-      <h3>{step.title}</h3>
-      {body && <p className="pre">{body}</p>}
+      <h3>{t(step.title)}</h3>
+      {body && <p className="pre">{t(body)}</p>}
 
       {state.status === 'waiting' && step.type === 'question' && (
         <>
           <div className="options">
             {stepOptions(step, runner.ctx).map((o) => (
               <button key={o.id} className="option" onClick={() => useWizard.getState().answer({ kind: 'option', optionId: o.id, label: o.label })}>
-                <b>{o.label}</b>
-                {o.hint && <span>{o.hint}</span>}
+                <b>{t(o.label)}</b>
+                {o.hint && <span>{t(o.hint)}</span>}
               </button>
             ))}
           </div>
@@ -240,7 +241,7 @@ function CurrentStep() {
         <>
           <ul className="confirm-details">
             {step.confirm.details.map((d, i) => (
-              <li key={i}>{d}</li>
+              <li key={i}>{t(d)}</li>
             ))}
           </ul>
           <div className="row gap">
@@ -249,18 +250,18 @@ function CurrentStep() {
               onClick={async () => {
                 const token = await useConfirm.getState().ask({
                   kind: step.confirm!.write,
-                  title: step.title + '?',
-                  body: body ?? '',
-                  details: step.confirm!.details,
-                  confirmLabel: 'Confirm',
+                  title: t('{title}?', { title: t(step.title) }),
+                  body: body ? t(body) : '',
+                  details: step.confirm!.details.map((d) => t(d)),
+                  confirmLabel: t('Confirm'),
                 });
                 useWizard.getState().answer({ kind: 'confirm', confirmed: !!token, token: token ?? undefined });
               }}
             >
-              Review and confirm…
+              {t('Review and confirm…')}
             </button>
             <button className="btn ghost" onClick={() => useWizard.getState().answer({ kind: 'confirm', confirmed: false })}>
-              Not now
+              {t('Not now')}
             </button>
           </div>
         </>
@@ -269,30 +270,30 @@ function CurrentStep() {
       {state.status === 'waiting' && step.type === 'action' && (
         <div className="row gap">
           <button className="btn primary" onClick={() => useWizard.getState().answer({ kind: 'done' })}>
-            Done, check it
+            {t('Done, check it')}
           </button>
         </div>
       )}
 
       {state.status === 'failed' && (
         <div className="failed-box">
-          <p className="err-text">{state.lastOutcome?.summary}</p>
+          <p className="err-text">{state.lastOutcome?.summary ? t(state.lastOutcome.summary) : null}</p>
           <div className="row gap wrap">
             <button
               className="btn small ai"
               disabled={helpBusy}
               onClick={async () => {
                 setHelpBusy(true);
-                const q = step.aiHelp?.(runner.ctx, state.lastOutcome) ?? `The step “${step.title}” failed: ${state.lastOutcome?.summary ?? ''}. Explain in plain words what went wrong and what I should do.`;
+                const q = step.aiHelp?.(runner.ctx, state.lastOutcome) ?? t('The step “{step}” failed: {summary}. Explain in plain words what went wrong and what I should do.', { step: t(step.title), summary: state.lastOutcome?.summary ? t(state.lastOutcome.summary) : '' });
                 await askAi(q);
                 setHelpBusy(false);
               }}
             >
-              <Icon name="ai" size={15} /> Explain what went wrong
+              <Icon name="ai" size={15} /> {t('Explain what went wrong')}
             </button>
             {(step.fallbacks ?? [{ id: 'retry', label: 'Try again', kind: 'retry' as const }]).map((f) => (
               <button key={f.id} className="btn small" onClick={() => useWizard.getState().fallback(f)}>
-                {f.label}
+                {t(f.label)}
               </button>
             ))}
           </div>
@@ -319,11 +320,11 @@ export function WizardPanel() {
     <div className="wizard">
       <div className="wiz-head">
         <div>
-          <div className="panel-title">{flow?.title}</div>
-          <div className="small dim">{flow?.description}</div>
+          <div className="panel-title">{flow ? t(flow.title) : null}</div>
+          <div className="small dim">{flow?.description ? t(flow.description) : null}</div>
         </div>
         <button className="btn small ghost" onClick={() => useWizard.getState().cancel()}>
-          Stop
+          {t('Stop')}
         </button>
       </div>
       <div className="wiz-progress">
@@ -336,8 +337,8 @@ export function WizardPanel() {
           return (
             <li key={s.id} className={`ws ws-${s.status} ${state.steps[state.current]?.id === s.id ? 'cur' : ''}`}>
               <span className="ws-icon">{STATUS_ICON[s.status] ? <Icon name={STATUS_ICON[s.status]} size={13} /> : s.status === 'running' ? <span className="spinner sm" /> : null}</span>
-              <span className="ws-title">{def.title}</span>
-              {s.summary && s.status !== 'waiting' && s.status !== 'running' && <span className="ws-sum">{s.summary}</span>}
+              <span className="ws-title">{t(def.title)}</span>
+              {s.summary && s.status !== 'waiting' && s.status !== 'running' && <span className="ws-sum">{t(s.summary)}</span>}
             </li>
           );
         })}
@@ -345,7 +346,7 @@ export function WizardPanel() {
       <div ref={cur}>
         <CurrentStep />
       </div>
-      <AskBox placeholder="Ask about this step…" />
+      <AskBox placeholder={t('Ask about this step…')} />
     </div>
   );
 }

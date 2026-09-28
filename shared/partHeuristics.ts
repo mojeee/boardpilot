@@ -2,6 +2,7 @@
 // rules. Everything it produces is a suggestion the user checks in the part editor.
 
 import type { PartDef, PartPinRole } from './types';
+import { t } from './i18n';
 
 const PIN_WORDS: [RegExp, string, PartPinRole][] = [
   [/\bVIN\b/, 'VIN', 'power'],
@@ -38,14 +39,16 @@ export function guessPartFromText(title: string, text: string, url: string): { d
     if (!pins.some((p) => p.role === 'i2c_sda')) pins.push({ name: 'SDA', role: 'i2c_sda' });
     if (!pins.some((p) => p.role === 'i2c_scl')) pins.push({ name: 'SCL', role: 'i2c_scl' });
     for (const p of pins) if (p.role.startsWith('spi')) p.role = 'passive';
-    if (hasSpi) notes.push('The page mentions both I2C and SPI. I chose I2C; change it if you wire it as SPI.');
+    if (hasSpi) notes.push(t('The page mentions both I2C and SPI. I chose I2C; change it if you wire it as SPI.'));
   } else if (!hasSpi) {
     for (const p of pins) if (p.role.startsWith('spi')) p.role = 'passive';
   }
   const addresses = [...new Set((hay.match(/\b0x[0-7][0-9A-Fa-f]\b/g) ?? []).map((a) => '0x' + a.slice(2).toUpperCase()))]
     .filter((a) => parseInt(a, 16) >= 0x08 && parseInt(a, 16) <= 0x77)
     .slice(0, 4);
-  if (bus === 'i2c' && addresses.length) notes.push(`Possible I2C addresses found in the text: ${addresses.join(', ')}. Check them in the datasheet.`);
+  if (bus === 'i2c' && addresses.length) {
+    notes.push(t('Possible I2C addresses found in the text: {list}. Check them in the datasheet.', { list: addresses.join(', ') }));
+  }
   const v5 = /\b5\s?V\b/.test(hay);
   const v33 = /\b3\.3\s?V\b|\b3V3\b/.test(hay);
   const voltage = v33 && v5 ? '3.3-5' : v5 ? '5' : '3.3';
@@ -59,7 +62,7 @@ export function guessPartFromText(title: string, text: string, url: string): { d
         : 'output';
   const shape = category === 'display' ? 'oled' : /relay/.test(lower) ? 'relay' : /motor|servo/.test(lower) ? 'motor' : 'breakout';
   if (bus === 'gpio' && pins.length <= 2) bus = undefined;
-  notes.push('Made without the AI assistant, from keywords on the page. Check every pin and its role before saving.');
+  notes.push(t('Made without the AI assistant, from keywords on the page. Check every pin and its role before saving.'));
   return {
     draft: {
       name,

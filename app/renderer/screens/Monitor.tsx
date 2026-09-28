@@ -7,6 +7,7 @@ import { useApp, useLive, log, type Series } from '../state/store';
 import { startStream, agent } from '../state/hw';
 import { ROLE_HEX, getBoard, pinByGpio } from '@shared/board';
 import { openTask } from '../components/TaskRail';
+import { t } from '@shared/i18n';
 
 const WINDOWS = [
   { label: '30 s', s: 30 },
@@ -81,7 +82,7 @@ function Plot({ skey, windowS }: { skey: string; windowS: number }) {
         <span className="mono plot-val">
           {latest !== undefined ? `${Number.isInteger(latest) ? latest : latest.toFixed(2)} ${s?.unit === 'level' ? '' : s?.unit}` : '—'}
         </span>
-        <span className="src">measured</span>
+        <span className="src">{t('measured')}</span>
       </div>
       <div ref={el} />
     </div>
@@ -95,8 +96,8 @@ function MemoryPanel() {
   if (!last && !agentHello) {
     return (
       <div className="card">
-        <div className="card-title">Memory</div>
-        <div className="empty">Your firmware reports memory when it uses the BoardPilotProbe library (firmware/probe).</div>
+        <div className="card-title">{t('Memory')}</div>
+        <div className="empty">{t('Your firmware reports memory when it uses the BoardPilotProbe library (firmware/probe).')}</div>
       </div>
     );
   }
@@ -109,22 +110,22 @@ function MemoryPanel() {
   return (
     <div className="card">
       <div className="card-title">
-        Memory <span className="src">{last ? 'measured: BoardPilotProbe' : 'measured: agent hello'}</span>
+        {t('Memory')} <span className="src">{last ? 'measured: BoardPilotProbe' : 'measured: agent hello'}</span>
       </div>
       <div className="mem-row">
         <div>
-          <div className="label">Free heap</div>
+          <div className="label">{t('Free heap')}</div>
           <div className="mono big">{Math.round(heapFree / 1024)} KB</div>
         </div>
         {last?.heapMin !== undefined && (
           <div>
-            <div className="label">Lowest since start</div>
+            <div className="label">{t('Lowest since start')}</div>
             <div className="mono big">{Math.round(last.heapMin / 1024)} KB</div>
           </div>
         )}
         {last?.stackFree !== undefined && (
           <div>
-            <div className="label">Stack left (loop)</div>
+            <div className="label">{t('Stack left (loop)')}</div>
             <div className="mono big">{(last.stackFree / 1024).toFixed(1)} KB</div>
           </div>
         )}
@@ -133,7 +134,7 @@ function MemoryPanel() {
         <i style={{ width: `${Math.min(100, ((size - heapFree) / size) * 100)}%` }} />
       </div>
       <div className="small dim">
-        {Math.round(((size - heapFree) / size) * 100)}% of {Math.round(size / 1024)} KB heap in use
+        {t('{pct}% of {total} KB heap in use', { pct: Math.round(((size - heapFree) / size) * 100), total: Math.round(size / 1024) })}
       </div>
       {pts.length > 2 && (
         <svg viewBox="0 0 200 42" className="spark">
@@ -157,16 +158,16 @@ function Console() {
   return (
     <div className="card console-card">
       <div className="card-title">
-        Serial console
+        {t('Serial console')}
         <label className="small dim check">
-          <input type="checkbox" checked={hideProbe} onChange={(e) => setHideProbe(e.target.checked)} /> hide probe lines
+          <input type="checkbox" checked={hideProbe} onChange={(e) => setHideProbe(e.target.checked)} /> {t('hide probe lines')}
         </label>
         <button className="link small" onClick={() => useLive.getState().set({ serial: [] })}>
-          Clear
+          {t('Clear')}
         </button>
       </div>
       <div className="console" ref={box}>
-        {lines.length === 0 && <div className="dim">Nothing yet. Open the serial port above.</div>}
+        {lines.length === 0 && <div className="dim">{t('Nothing yet. Open the serial port above.')}</div>}
         {lines.map((l, i) => (
           <div key={i} className={/error|fail|could not|brownout|guru/i.test(l) ? 'err-text' : ''}>
             {l}
@@ -174,7 +175,7 @@ function Console() {
         ))}
       </div>
       <div className="row gap">
-        <input className="text-in mono" value={send} onChange={(e) => setSend(e.target.value)} placeholder="Send text to the board…" />
+        <input className="text-in mono" value={send} onChange={(e) => setSend(e.target.value)} placeholder={t('Send text to the board…')} />
         <button
           className="btn small"
           disabled={!send}
@@ -183,7 +184,7 @@ function Console() {
             setSend('');
           }}
         >
-          Send
+          {t('Send')}
         </button>
       </div>
     </div>
@@ -210,7 +211,7 @@ export function Monitor() {
   const openSerial = async () => {
     const r = await window.bp.hw.openSerial(baud);
     if (!r.ok) log('failed', `${r.error.humanMessage} ${r.error.hint}`);
-    else log('info', `Serial monitor open at ${baud} baud.`);
+    else log('info', t('Serial monitor open at {baud} baud.', { baud }));
   };
   const toggleRecord = async () => {
     if (!recording) {
@@ -219,16 +220,16 @@ export function Monitor() {
     }
     useLive.getState().set({ recording: null });
     const r = await window.bp.session.saveFile(`boardpilot-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`, recording.rows.join('\n'));
-    if (r.ok) log('info', `Recording saved to ${r.value}.`);
+    if (r.ok) log('info', t('Recording saved to {path}.', { path: r.value }));
   };
 
   if (!conn.chip) {
     return (
       <div className="screen-scroll">
         <div className="gate">
-          <b>Connect the board first.</b>
+          <b>{t('Connect the board first.')}</b>
           <button className="btn primary" onClick={() => openTask('connect')}>
-            Connect and identify
+            {t('Connect and identify')}
           </button>
         </div>
       </div>
@@ -239,7 +240,7 @@ export function Monitor() {
     <div className="screen-scroll">
       <div className="monitor-bar">
         <div className="seg-group">
-          <span className="label">Your firmware</span>
+          <span className="label">{t('Your firmware')}</span>
           <select value={baud} onChange={(e) => setBaud(Number(e.target.value))} className="select mono">
             {BAUDS.map((b) => (
               <option key={b} value={b}>
@@ -249,56 +250,56 @@ export function Monitor() {
           </select>
           {conn.serialOpen ? (
             <button className="btn small" onClick={() => window.bp.hw.closeSerial()}>
-              Close serial
+              {t('Close serial')}
             </button>
           ) : (
             <button className="btn small primary" onClick={openSerial}>
-              Open serial
+              {t('Open serial')}
             </button>
           )}
         </div>
         <div className="seg-group">
-          <span className="label">Agent pins</span>
+          <span className="label">{t('Agent pins')}</span>
           {conn.agent ? (
             conn.streaming ? (
               <button className="btn small" onClick={() => agent({ cmd: 'stream_stop' })}>
-                Stop live pins
+                {t('Stop live pins')}
               </button>
             ) : (
               <button className="btn small primary" onClick={() => startStream(20)}>
-                Stream live pins
+                {t('Stream live pins')}
               </button>
             )
           ) : conn.serialOpen ? (
-            <span className="small dim">serial is open</span>
+            <span className="small dim">{t('serial is open')}</span>
           ) : (
             <button className="btn small" onClick={() => window.bp.hw.connectAgent()}>
-              Connect to agent
+              {t('Connect to agent')}
             </button>
           )}
         </div>
         <div className="seg">
           {WINDOWS.map((w) => (
             <button key={w.s} className={windowS === w.s ? 'on' : ''} onClick={() => setWindowS(w.s)}>
-              {w.label}
+              {t(w.label)}
             </button>
           ))}
         </div>
         <button className={`btn small ${paused ? 'on' : ''}`} onClick={() => useLive.getState().set({ paused: !paused })}>
-          {paused ? 'Resume' : 'Pause'}
+          {paused ? t('Resume') : t('Pause')}
         </button>
         <button className={`btn small ${recording ? 'rec' : ''}`} onClick={toggleRecord}>
-          {recording ? `■ Stop and save CSV (${recording.rows.length - 1})` : '● Record CSV'}
+          {recording ? t('■ Stop and save CSV ({n})', { n: recording.rows.length - 1 }) : t('● Record CSV')}
         </button>
         <button className="link small" onClick={() => useLive.getState().resetSeries()}>
-          Reset plots
+          {t('Reset plots')}
         </button>
       </div>
       <div className="monitor-grid">
         <div className="plots">
           {keys.length === 0 && (
             <div className="card empty">
-              No live values yet. Open serial (for a sketch using BoardPilotProbe), or stream the pins through the agent.
+              {t('No live values yet. Open serial (for a sketch using BoardPilotProbe), or stream the pins through the agent.')}
             </div>
           )}
           {keys.map((k) => (

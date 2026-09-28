@@ -12,6 +12,7 @@ import type {
   TargetRef,
 } from '@shared/types';
 import { PARTS, getBoard } from '@shared/board';
+import { t } from '@shared/i18n';
 import type { HardwareHub } from '../hardware/hub';
 import { MEASUREMENT_TOOLS, TOOLS, runTool, type ToolTurnState } from './tools';
 import { buildContextBlock, SYSTEM_PROMPT } from './prompt';
@@ -49,26 +50,26 @@ function aiOff<T>(): Result<T> {
     ok: false,
     error: {
       code: 'ai_off',
-      humanMessage: 'The AI assistant is off because no API key is set.',
-      hint: 'Add ANTHROPIC_API_KEY=... to a file named .env.local in the project folder, then restart the app. Everything else works without it.',
+      humanMessage: t('The AI assistant is off because no API key is set.'),
+      hint: t('Add ANTHROPIC_API_KEY=... to a file named .env.local in the project folder, then restart the app. Everything else works without it.'),
     },
   };
 }
 
 function apiError<T>(e: unknown): Result<T> {
   if (e instanceof Anthropic.AuthenticationError) {
-    return { ok: false, error: { code: 'ai_auth', humanMessage: 'The API key was not accepted.', hint: 'Check ANTHROPIC_API_KEY in .env.local and restart the app.' } };
+    return { ok: false, error: { code: 'ai_auth', humanMessage: t('The API key was not accepted.'), hint: t('Check ANTHROPIC_API_KEY in .env.local and restart the app.') } };
   }
   if (e instanceof Anthropic.RateLimitError) {
-    return { ok: false, error: { code: 'ai_rate', humanMessage: 'The AI service is busy right now.', hint: 'Wait a minute and ask again.' } };
+    return { ok: false, error: { code: 'ai_rate', humanMessage: t('The AI service is busy right now.'), hint: t('Wait a minute and ask again.') } };
   }
   if (e instanceof Anthropic.APIConnectionError) {
-    return { ok: false, error: { code: 'ai_offline', humanMessage: 'The app could not reach the AI service.', hint: 'Check your internet connection. Measurements and checks still work offline.' } };
+    return { ok: false, error: { code: 'ai_offline', humanMessage: t('The app could not reach the AI service.'), hint: t('Check your internet connection. Measurements and checks still work offline.') } };
   }
   if (e instanceof Anthropic.APIError) {
-    return { ok: false, error: { code: 'ai_error', humanMessage: `The AI service returned an error (${e.status ?? '?'}).`, hint: 'Try again in a moment.' } };
+    return { ok: false, error: { code: 'ai_error', humanMessage: t('The AI service returned an error ({status}).', { status: e.status ?? '?' }), hint: t('Try again in a moment.') } };
   }
-  return { ok: false, error: { code: 'ai_error', humanMessage: `The assistant failed: ${e instanceof Error ? e.message : String(e)}`, hint: 'Try again.' } };
+  return { ok: false, error: { code: 'ai_error', humanMessage: t('The assistant failed: {msg}', { msg: e instanceof Error ? e.message : String(e) }), hint: t('Try again.') } };
 }
 
 function parseJson<T>(text: string): T | null {
@@ -142,7 +143,7 @@ export class Assistant {
           output_config: { format: { type: 'json_schema', schema: REPLY_SCHEMA } },
         });
         if (response.stop_reason === 'refusal') {
-          return { ok: false, error: { code: 'ai_refused', humanMessage: 'The assistant could not answer that request.', hint: 'Rephrase the question about your board or wiring.' } };
+          return { ok: false, error: { code: 'ai_refused', humanMessage: t('The assistant could not answer that request.'), hint: t('Rephrase the question about your board or wiring.') } };
         }
         messages.push({ role: 'assistant', content: response.content });
         if (response.stop_reason !== 'tool_use') {
@@ -163,7 +164,7 @@ export class Assistant {
         }
       }
       if (!final) {
-        return { ok: false, error: { code: 'ai_loop', humanMessage: 'The assistant needed too many steps.', hint: 'Ask a more specific question.' } };
+        return { ok: false, error: { code: 'ai_loop', humanMessage: t('The assistant needed too many steps.'), hint: t('Ask a more specific question.') } };
       }
       const text = final.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
       const parsed = parseJson<AiReply>(text);
@@ -171,13 +172,13 @@ export class Assistant {
       if (!parsed || typeof parsed.message !== 'string') {
         return {
           ok: true,
-          value: { message: text || 'No answer.', confidence: 'suggestion', sources: [], highlight: turn.highlight, nextOptions: [], toolCalls: turn.calls },
+          value: { message: text || t('No answer.'), confidence: 'suggestion', sources: [], highlight: turn.highlight, nextOptions: [], toolCalls: turn.calls },
         };
       }
       const measuredThisTurn = turn.calls.some((c) => c.ok && MEASUREMENT_TOOLS.has(c.name));
       const logHasMeasurements = ctx.log.some((e) => e.source?.startsWith('measured'));
-      const highlight = [...new Set([...turn.highlight, ...parsed.highlight])].filter((t): t is TargetRef =>
-        /^(pin|wire|part):.+/.test(t),
+      const highlight = [...new Set([...turn.highlight, ...parsed.highlight])].filter((h): h is TargetRef =>
+        /^(pin|wire|part):.+/.test(h),
       );
       const reply = enforceHonesty(
         {
@@ -236,7 +237,7 @@ export class Assistant {
       });
       const text = response.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
       const parsed = parseJson<Omit<PhotoRecognition, 'confidence'>>(text);
-      if (!parsed) return { ok: false, error: { code: 'ai_parse', humanMessage: 'The assistant could not read the photo.', hint: 'Try a sharper photo with the printed text visible, or pick the part from the list.' } };
+      if (!parsed) return { ok: false, error: { code: 'ai_parse', humanMessage: t('The assistant could not read the photo.'), hint: t('Try a sharper photo with the printed text visible, or pick the part from the list.') } };
       const partId = parsed.partId && PARTS[parsed.partId] ? parsed.partId : null;
       return { ok: true, value: { ...parsed, partId, confidence: 'suggestion' } };
     } catch (e) {
@@ -309,10 +310,10 @@ export class Assistant {
         messages: [{ role: 'user', content }],
         output_config: { format: { type: 'json_schema', schema } },
       });
-      if (response.stop_reason === 'refusal') return { ok: false, error: { code: 'ai_refused', humanMessage: 'The assistant could not read that page.', hint: 'Add the part by hand.' } };
+      if (response.stop_reason === 'refusal') return { ok: false, error: { code: 'ai_refused', humanMessage: t('The assistant could not read that page.'), hint: t('Add the part by hand.') } };
       const text = response.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
       const parsed = parseJson<Record<string, unknown> & { notes?: string[] }>(text);
-      if (!parsed) return { ok: false, error: { code: 'ai_parse', humanMessage: 'The assistant answer could not be read.', hint: 'Try again or add the part by hand.' } };
+      if (!parsed) return { ok: false, error: { code: 'ai_parse', humanMessage: t('The assistant answer could not be read.'), hint: t('Try again or add the part by hand.') } };
       const notes = Array.isArray(parsed.notes) ? parsed.notes.filter((n): n is string => typeof n === 'string') : [];
       return { ok: true, value: { part: parsed, notes } };
     } catch (e) {
@@ -349,7 +350,7 @@ export class Assistant {
       });
       const out = response.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
       const parsed = parseJson<{ optionId: string | null; reason: string }>(out);
-      if (!parsed) return { ok: true, value: { optionId: null, reason: 'I could not match that to an option.' } };
+      if (!parsed) return { ok: true, value: { optionId: null, reason: t('I could not match that to an option.') } };
       if (parsed.optionId && !options.some((o) => o.id === parsed.optionId)) parsed.optionId = null;
       return { ok: true, value: parsed };
     } catch (e) {

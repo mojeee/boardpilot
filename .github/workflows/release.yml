@@ -1,0 +1,36 @@
+name: Release Mac app
+
+# Push a tag like v0.2.0 to build the .dmg files and publish them as a GitHub Release.
+# The website download buttons point to releases/latest/download/BoardPilot-mac-<arch>.dmg.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx electron-vite build
+      - name: Package (unsigned)
+        run: npx electron-builder --mac --arm64 --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/BoardPilot-mac-arm64.dmg
+            dist/BoardPilot-mac-x64.dmg
+          generate_release_notes: true
+          fail_on_unmatched_files: true

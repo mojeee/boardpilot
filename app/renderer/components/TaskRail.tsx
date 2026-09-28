@@ -1,6 +1,7 @@
 import { useApp, type Screen } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { Icon } from './Icon';
+import { t } from '@shared/i18n';
 
 export const TASKS: { screen: Screen; label: string; icon: string; flow?: string; hint: string }[] = [
   { screen: 'connect', label: 'Connect and identify', icon: 'connect', flow: 'connect-identify', hint: 'Find the board and read its chip' },
@@ -13,10 +14,10 @@ export const TASKS: { screen: Screen; label: string; icon: string; flow?: string
 ];
 
 export function openTask(screen: Screen) {
-  const t = TASKS.find((x) => x.screen === screen);
+  const task = TASKS.find((x) => x.screen === screen);
   useApp.getState().setScreen(screen);
   const w = useWizard.getState();
-  if (t?.flow && w.state?.flowId !== t.flow) w.start(t.flow);
+  if (task?.flow && w.state?.flowId !== task.flow) w.start(task.flow);
   if (screen === 'debug' && w.state && !w.state.flowId.startsWith('debug-')) w.cancel();
 }
 
@@ -25,14 +26,14 @@ export function TaskRail() {
   return (
     <nav className="rail">
       <button className={`rail-item ${screen === 'home' ? 'on' : ''}`} onClick={() => useApp.getState().setScreen('home')}>
-        <Icon name="home" /> Home
+        <Icon name="home" /> {t('Home')}
       </button>
-      <div className="rail-sep">Tasks</div>
-      {TASKS.map((t, i) => (
-        <button key={t.screen} className={`rail-item ${screen === t.screen ? 'on' : ''}`} onClick={() => openTask(t.screen)} title={t.hint}>
-          <Icon name={t.icon} />
+      <div className="rail-sep">{t('Tasks')}</div>
+      {TASKS.map((task, i) => (
+        <button key={task.screen} className={`rail-item ${screen === task.screen ? 'on' : ''}`} onClick={() => openTask(task.screen)} title={t(task.hint)}>
+          <Icon name={task.icon} />
           <span className="rail-num mono">{i + 1}</span>
-          {t.label}
+          {t(task.label)}
         </button>
       ))}
     </nav>

@@ -45,6 +45,13 @@ const ROLE_LABEL: Record<PartPinRole, string> = {
   passive: 'Other / not wired',
 };
 
+/** Size fields of the 3D box: short label plus a tooltip with the full word. */
+const SIZE_FIELDS = [
+  { key: 'W', label: 'W (mm)', title: 'Width' },
+  { key: 'D', label: 'D (mm)', title: 'Depth' },
+  { key: 'H', label: 'H (mm)', title: 'Height' },
+] as const;
+
 const EMPTY: PartDef = {
   id: '',
   name: '',
@@ -153,7 +160,7 @@ export function PartEditor() {
           <div className="pe-form">
             <label>
               {t('Name')}
-              <input className="text-in" value={d.name} onChange={(e) => patch({ name: e.target.value })} placeholder="HC-SR04 ultrasonic sensor" />
+              <input className="text-in" value={d.name} onChange={(e) => patch({ name: e.target.value })} placeholder={t('HC-SR04 ultrasonic sensor')} />
             </label>
             <div className="pe-row">
               <label>
@@ -232,9 +239,9 @@ export function PartEditor() {
                   ))}
                 </select>
               </label>
-              {(['W', 'D', 'H'] as const).map((k, i) => (
-                <label key={k} className="narrow">
-                  {k} (mm)
+              {SIZE_FIELDS.map((f, i) => (
+                <label key={f.key} className="narrow" title={t(f.title)}>
+                  {t(f.label)}
                   <input
                     className="text-in mono"
                     type="number"
@@ -254,7 +261,7 @@ export function PartEditor() {
             </div>
             {d.origin?.url && (
               <p className="small dim">
-                {t('Source')}: {d.origin.url}
+                {t('Source: {url}', { url: d.origin.url })}
               </p>
             )}
           </div>
