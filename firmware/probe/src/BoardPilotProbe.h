@@ -18,8 +18,8 @@
 
 class BoardPilotProbe {
  public:
-  static const uint8_t MAX_VALUES = 16;  // values per batch
-  static const uint8_t NAME_MAX = 24;    // longest name, including the ending NUL
+  static const uint8_t kMaxValues = 16;  // values per batch
+  static const uint8_t kNameMax = 24;    // longest name, including the ending NUL
 
   explicit BoardPilotProbe(Print& out);
 
@@ -46,7 +46,7 @@ class BoardPilotProbe {
 
  private:
   struct Entry {
-    char name[NAME_MAX];
+    char name[kNameMax];
     float v;
     int16_t pin;
   };
@@ -55,7 +55,7 @@ class BoardPilotProbe {
   void printNumber(float v);
 
   Print& _out;
-  Entry _e[MAX_VALUES];
+  Entry _e[kMaxValues];
   uint8_t _n;
   uint32_t _interval;
   uint32_t _last;

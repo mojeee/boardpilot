@@ -18,7 +18,7 @@ void BoardPilotProbe::setInterval(uint32_t intervalMs) { _interval = intervalMs 
 void BoardPilotProbe::setMemoryEnabled(bool on) { _memEnabled = on; }
 
 bool BoardPilotProbe::value(const char* name, float v, int pin) {
-  if (!name || !name[0] || strlen(name) >= NAME_MAX) return false;
+  if (!name || !name[0] || strlen(name) >= kNameMax) return false;
   for (uint8_t i = 0; i < _n; i++) {
     if (strcmp(_e[i].name, name) == 0) {
       _e[i].v = v;  // latest value wins
@@ -26,10 +26,10 @@ bool BoardPilotProbe::value(const char* name, float v, int pin) {
       return true;
     }
   }
-  if (_n >= MAX_VALUES) return false;
+  if (_n >= kMaxValues) return false;
   Entry& e = _e[_n++];
-  strncpy(e.name, name, NAME_MAX - 1);
-  e.name[NAME_MAX - 1] = '\0';
+  strncpy(e.name, name, kNameMax - 1);
+  e.name[kNameMax - 1] = '\0';
   e.v = v;
   e.pin = (int16_t)(pin >= 0 ? pin : -1);
   return true;
