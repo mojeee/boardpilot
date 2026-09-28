@@ -1,0 +1,75 @@
+{
+  "id": "max485",
+  "name": "MAX485 RS-485 module",
+  "category": "sensor",
+  "pins": [
+    {
+      "name": "RO",
+      "role": "digital_out",
+      "notes": "Receiver out, 5 V when powered from 5 V: use a divider before the ESP32 RX pin"
+    },
+    {
+      "name": "RE",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Receiver enable, active LOW. Usually tied to DE and driven by one GPIO"
+    },
+    {
+      "name": "DE",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Driver enable, HIGH to transmit"
+    },
+    {
+      "name": "DI",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Driver in. Connect to an ESP32 TX pin (3.3 V is a valid HIGH)"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Needs 5 V: use VIN"
+    },
+    {
+      "name": "B",
+      "role": "passive",
+      "notes": "RS-485 line B. To the bus, never to the ESP32"
+    },
+    {
+      "name": "A",
+      "role": "passive",
+      "notes": "RS-485 line A. To the bus, never to the ESP32"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      44,
+      14,
+      8
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "max485",
+    "rs485",
+    "rs-485",
+    "modbus",
+    "industrial",
+    "transceiver",
+    "industriale"
+  ],
+  "sources": [
+    {
+      "title": "Maxim MAX481/MAX483/MAX485 datasheet",
+      "section": "Supply 4.75 to 5.25 V; RO, RE, DE, DI, A, B pin functions; input HIGH threshold 2.0 V"
+    }
+  ]
+}

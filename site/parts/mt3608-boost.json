@@ -1,0 +1,52 @@
+{
+  "id": "mt3608-boost",
+  "name": "MT3608 boost converter",
+  "category": "output",
+  "pins": [
+    {
+      "name": "VIN+",
+      "role": "passive",
+      "notes": "Input 2 to 24 V"
+    },
+    {
+      "name": "VIN-",
+      "role": "ground",
+      "notes": "Input ground, same as VOUT-"
+    },
+    {
+      "name": "VOUT+",
+      "role": "passive",
+      "notes": "Adjustable up to 28 V, always above the input. Set it with the trimmer BEFORE wiring"
+    },
+    {
+      "name": "VOUT-",
+      "role": "ground",
+      "notes": "To the ESP32 GND"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "2-24",
+  "model": {
+    "shape": "module",
+    "size": [
+      37,
+      17,
+      6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "mt3608",
+    "boost",
+    "step up",
+    "dc-dc",
+    "battery",
+    "elevatore di tensione"
+  ],
+  "sources": [
+    {
+      "title": "Aerosemi MT3608 datasheet",
+      "section": "Input 2 to 24 V; output up to 28 V; 4 A switch current limit"
+    }
+  ]
+}

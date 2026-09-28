@@ -1,0 +1,43 @@
+{
+  "id": "buzzer-passive",
+  "name": "Passive buzzer",
+  "category": "output",
+  "pins": [
+    {
+      "name": "+",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "To a PWM-capable GPIO: use tone() or ledc to make a sound"
+    },
+    {
+      "name": "-",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "led",
+    "size": [
+      12,
+      12,
+      8.5
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "passive buzzer",
+    "buzzer",
+    "piezo",
+    "tone",
+    "melody",
+    "cicalino",
+    "melodia"
+  ],
+  "sources": [
+    {
+      "title": "Espressif ESP-IDF Programming Guide",
+      "section": "LEDC (LED PWM controller)"
+    }
+  ]
+}

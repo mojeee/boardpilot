@@ -1,0 +1,18 @@
+{
+  "id": "ssr-40da",
+  "name": "Solid state relay SSR-40DA (AC load)",
+  "category": "output",
+  "pins": [
+    { "name": "3(+)", "role": "digital_in", "needsOutput": true, "notes": "Control + (3 to 32 V DC). Takes about 10 mA: HIGH = load on" },
+    { "name": "4(-)", "role": "ground", "notes": "Control -" },
+    { "name": "1", "role": "passive", "notes": "AC load terminal. Mains voltage is dangerous. Does not switch DC loads" },
+    { "name": "2", "role": "passive", "notes": "AC load terminal" }
+  ],
+  "bus": "gpio",
+  "voltage": "3-32",
+  "model": { "shape": "relay", "size": [60, 45, 23], "color": "#1A1A1A" },
+  "keywords": ["ssr", "ssr-40da", "solid state relay", "fotek", "ac", "relè statico"],
+  "sources": [
+    { "title": "Fotek SSR series datasheet", "section": "Input 3 to 32 VDC; output 24 to 380 VAC; zero-cross" }
+  ]
+}

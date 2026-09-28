@@ -1,0 +1,17 @@
+{
+  "id": "servo-ds3218",
+  "name": "DS3218 20 kg metal gear servo",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground", "notes": "Black or brown wire. Also connect to the ESP32 GND" },
+    { "name": "VCC", "role": "power", "notes": "Red wire. 5 to 6.8 V from a separate supply rated 3 A or more, not the ESP32" },
+    { "name": "SIG", "role": "digital_in", "needsOutput": true, "notes": "White or orange wire. 50 Hz PWM, 0.5 to 2.5 ms" }
+  ],
+  "bus": "gpio",
+  "voltage": "5-6.8",
+  "model": { "shape": "motor", "size": [40, 20, 40], "color": "#1A1A1A" },
+  "keywords": ["ds3218", "servo", "20kg", "high torque", "metal gear", "servomotore"],
+  "sources": [
+    { "title": "DSServo DS3218 datasheet", "section": "Supply 4.8 to 6.8 V; pulse 500 to 2500 µs" }
+  ]
+}

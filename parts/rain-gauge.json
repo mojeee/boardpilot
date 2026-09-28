@@ -1,0 +1,17 @@
+{
+  "id": "rain-gauge",
+  "name": "Rain gauge (tipping bucket)",
+  "category": "sensor",
+  "measures": ["rain"],
+  "pins": [
+    { "name": "1", "role": "digital_out", "notes": "To a GPIO with INPUT_PULLUP. One short closure per bucket tip (0.2794 mm of rain). Debounce it" },
+    { "name": "2", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [60, 60, 40], "color": "#F2F2F2" },
+  "keywords": ["rain gauge", "tipping bucket", "weather station", "pluviometro", "pioggia", "meteo"],
+  "sources": [
+    { "title": "SparkFun Weather Meter Kit datasheet (SEN-15901)", "section": "Rain gauge: reed switch closes once per tip, 0.2794 mm (0.011 in) of rain" }
+  ]
+}

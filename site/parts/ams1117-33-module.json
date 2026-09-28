@@ -1,0 +1,46 @@
+{
+  "id": "ams1117-33-module",
+  "name": "AMS1117-3.3 regulator module",
+  "category": "output",
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "passive",
+      "notes": "Pin order varies between boards: match by the printed label. Input 4.5 to 12 V (about 1.1 V more than 3.3 V is needed)"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VOUT",
+      "role": "passive",
+      "notes": "3.3 V out, up to about 800 mA. Gets hot at high input voltage"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "4.5-12",
+  "model": {
+    "shape": "module",
+    "size": [
+      25,
+      11,
+      5
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "ams1117",
+    "3.3v",
+    "regulator",
+    "ldo",
+    "linear regulator",
+    "regolatore"
+  ],
+  "sources": [
+    {
+      "title": "Advanced Monolithic Systems AMS1117 datasheet",
+      "section": "Dropout 1.1 V at 800 mA; max input 15 V"
+    }
+  ]
+}

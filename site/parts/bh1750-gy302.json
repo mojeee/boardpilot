@@ -1,0 +1,62 @@
+{
+  "id": "bh1750-gy302",
+  "name": "GY-302 BH1750 light sensor",
+  "category": "sensor",
+  "measures": [
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "ADDR",
+      "role": "passive",
+      "notes": "Address select: LOW or open = 0x23, HIGH = 0x5C"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x23",
+    "0x5C"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      18.5,
+      13.9,
+      1.6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "bh1750",
+    "gy-302",
+    "lux",
+    "light",
+    "ambient light",
+    "luce",
+    "luminosità"
+  ],
+  "sources": [
+    {
+      "title": "ROHM BH1750FVI datasheet",
+      "section": "I2C slave address: ADDR = L gives 0x23, ADDR = H gives 0x5C"
+    }
+  ]
+}

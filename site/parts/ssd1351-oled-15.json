@@ -1,0 +1,72 @@
+{
+  "id": "ssd1351-oled-15",
+  "name": "SSD1351 1.5\" RGB OLED 128x128 (SPI)",
+  "category": "display",
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Pin order varies between boards: match by the printed label. 3.3 V or 5 V"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DIN",
+      "role": "spi_mosi",
+      "notes": "SPI data (MOSI)"
+    },
+    {
+      "name": "CLK",
+      "role": "spi_sck",
+      "notes": "SPI clock"
+    },
+    {
+      "name": "CS",
+      "role": "spi_cs"
+    },
+    {
+      "name": "DC",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Data / command select"
+    },
+    {
+      "name": "RST",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Reset"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "oled",
+    "size": [
+      44.5,
+      37,
+      5
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ssd1351",
+    "oled",
+    "rgb oled",
+    "1.5",
+    "128x128",
+    "color display",
+    "schermo a colori"
+  ],
+  "sources": [
+    {
+      "title": "Solomon Systech SSD1351 datasheet",
+      "section": "4-wire SPI interface"
+    },
+    {
+      "title": "Waveshare 1.5inch RGB OLED Module wiki",
+      "section": "Pins VCC, GND, DIN, CLK, CS, DC, RST"
+    }
+  ]
+}

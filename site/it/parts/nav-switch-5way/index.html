@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>5-way navigation button module con ESP32: piedinatura e collegamenti</title>
+    <meta name="description" content="Come collegare 5-way navigation button module a un ESP32: pin, GPIO consigliati, alimentazione 3.3 V. Dati gratuiti di BoardPilot." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/parts/nav-switch-5way/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/parts/nav-switch-5way/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/parts/nav-switch-5way/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/parts/nav-switch-5way/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/parts/nav-switch-5way/" />
+    <meta property="og:title" content="5-way navigation button module con ESP32: piedinatura e collegamenti" />
+    <meta property="og:description" content="Come collegare 5-way navigation button module a un ESP32: pin, GPIO consigliati, alimentazione 3.3 V. Dati gratuiti di BoardPilot." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"5-way navigation button module con ESP32","description":"Come collegare 5-way navigation button module a un ESP32: pin, GPIO consigliati, alimentazione 3.3 V. Dati gratuiti di BoardPilot.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/parts/nav-switch-5way/","about":"5-way navigation button module","keywords":"5-way switch, navigation switch, joystick button, directional, menu, pulsante a 5 vie","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/it/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Libreria componenti","item":"https://boardpilot.agentflowbind.com/it/parts/"},{"@type":"ListItem","position":3,"name":"5-way navigation button module","item":"https://boardpilot.agentflowbind.com/it/parts/nav-switch-5way/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
+          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/esp32-pinout/" data-i18n="nav.pinout">Piedinatura ESP32</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/parts/nav-switch-5way/" hreflang="en" class="">EN</a><a href="/it/parts/nav-switch-5way/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs"><a href="/it/">BoardPilot</a> / <a href="/it/parts/">Libreria componenti</a> / <span>5-way navigation button module</span></nav>
+        <h1>5-way navigation button module con ESP32</h1>
+        <div class="facts-row">
+          <span><b>Alimentazione</b> 3.3 V</span>
+          <span><b>Bus</b> GPIO</span>
+          
+          
+        </div>
+        <svg viewBox="0 0 268 170" class="part-svg" style="max-width:335px" role="img" aria-label="5-way navigation button module pins"><rect x="20" y="16" width="228" height="112" rx="10" fill="#1F4FA8" stroke="rgba(255,255,255,.18)"/><rect x="114" y="36" width="40" height="30" rx="4" fill="#15181c" opacity=".85"/><g><rect x="39" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="43" cy="118" r="7" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><text x="43" y="100" transform="rotate(-60 43 100)" class="pp">COM</text></g><g><rect x="65" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="69" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="69" y="100" transform="rotate(-60 69 100)" class="pp">UP</text></g><g><rect x="91" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="95" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="95" y="100" transform="rotate(-60 95 100)" class="pp">DWN</text></g><g><rect x="117" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="121" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="121" y="100" transform="rotate(-60 121 100)" class="pp">LFT</text></g><g><rect x="143" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="147" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="147" y="100" transform="rotate(-60 147 100)" class="pp">RHT</text></g><g><rect x="169" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="173" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="173" y="100" transform="rotate(-60 173 100)" class="pp">MID</text></g><g><rect x="195" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="199" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="199" y="100" transform="rotate(-60 199 100)" class="pp">SET</text></g><g><rect x="221" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="225" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="225" y="100" transform="rotate(-60 225 100)" class="pp">RST</text></g></svg>
+        <h2>Pin e collegamento all’ESP32</h2>
+        <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Ruolo</th><th>Pin ESP32</th><th>Note</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>COM</td><td>Massa</td><td class="mono">GND</td><td>Common: to GND. Keys read LOW with INPUT_PULLUP</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>UP</td><td>Uscita (la pilota il componente)</td><td class="mono">D25</td><td>Up</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>DWN</td><td>Uscita (la pilota il componente)</td><td class="mono">D26</td><td>Down</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>LFT</td><td>Uscita (la pilota il componente)</td><td class="mono">D27</td><td>Left</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>RHT</td><td>Uscita (la pilota il componente)</td><td class="mono">D32</td><td>Right</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>MID</td><td>Uscita (la pilota il componente)</td><td class="mono">D33</td><td>Centre press</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>SET</td><td>Uscita (la pilota il componente)</td><td class="mono">D23</td><td>Extra SET button</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>RST</td><td>Uscita (la pilota il componente)</td><td class="mono">D19</td><td>Extra RST button (not the ESP32 reset)</td></tr></tbody></table></div>
+        <p class="fine">Collegamento consigliato per l’ESP32 DevKit a 30 pin, evitando i pin della flash, di sola lettura e di strapping. BoardPilot lo controlla mentre colleghi.</p>
+        
+        
+        <h2>Codice di partenza (Arduino)</h2><pre class="code"><code>void setup() {
+  Serial.begin(115200);
+  pinMode(25, INPUT);  // UP
+}
+
+void loop() {
+  Serial.println(digitalRead(25));
+  delay(100);
+}</code></pre>
+        <h2>Fonti</h2><ul class="sources"><li>ALPS Alpine SKRH multi-directional switch datasheet, Common terminal and five direction contacts</li><li>Common 5-way navigation module, Header COM, UP, DWN, LFT, RHT, MID, SET, RST. Check the silkscreen</li></ul>
+        <div class="cta-box"><h2>Provalo in 3D in BoardPilot</h2><p><a class="btn primary" href="/it/#download">BoardPilot</a> <a class="btn" href="/parts/nav-switch-5way.json">Dati del componente (JSON)</a></p></div>
+        <h2>Componenti simili</h2><div class="part-grid"><a class="part-card" href="/it/parts/keypad-1x4/"><span class="sw" style="background:#1A1A1A"></span><b>1x4 membrane keypad (4 keys)</b></a><a class="part-card" href="/it/parts/xy-mk-5v-433-rx/"><span class="sw" style="background:#1E7B3A"></span><b>433 MHz receiver (XY-MK-5V)</b></a><a class="part-card" href="/it/parts/keypad-4x3/"><span class="sw" style="background:#1A1A1A"></span><b>4x3 membrane keypad (12 keys)</b></a><a class="part-card" href="/it/parts/keypad-4x4/"><span class="sw" style="background:#1A1A1A"></span><b>4x4 membrane keypad</b></a><a class="part-card" href="/it/parts/shift-register-74hc165/"><span class="sw" style="background:#1A1A1A"></span><b>74HC165 input shift register</b></a><a class="part-card" href="/it/parts/arcade-button-led/"><span class="sw" style="background:#D0312D"></span><b>Arcade button 30 mm with LED</b></a></div>
+        <p class="fine">Dati dei componenti: CC BY 4.0, riutilizzabili citando BoardPilot.</p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/esp32-pinout/" data-i18n="nav.pinout">Piedinatura ESP32</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

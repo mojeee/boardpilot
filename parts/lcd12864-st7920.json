@@ -1,0 +1,34 @@
+{
+  "id": "lcd12864-st7920",
+  "name": "LCD 128x64 ST7920 (serial mode)",
+  "category": "display",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power", "notes": "5 V: use VIN" },
+    { "name": "V0", "role": "passive", "notes": "Contrast. Many boards have a trimmer on the back instead" },
+    { "name": "RS", "role": "spi_cs", "notes": "Serial mode: chip select (CS), active HIGH" },
+    { "name": "R/W", "role": "spi_mosi", "notes": "Serial mode: data in (SID). A level shifter to 5 V makes it reliable" },
+    { "name": "E", "role": "spi_sck", "notes": "Serial mode: clock (SCLK)" },
+    { "name": "DB0", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "DB1", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "DB2", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "DB3", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "DB4", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "DB5", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "DB6", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "DB7", "role": "passive", "notes": "Parallel mode only" },
+    { "name": "PSB", "role": "ground", "notes": "LOW selects serial mode: connect to GND" },
+    { "name": "NC", "role": "passive", "notes": "Not connected" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true, "notes": "Reset, active LOW. Can also be tied HIGH" },
+    { "name": "VOUT", "role": "passive", "notes": "Contrast voltage output. Leave unconnected" },
+    { "name": "BLA", "role": "passive", "notes": "Backlight anode: to 5 V" },
+    { "name": "BLK", "role": "passive", "notes": "Backlight cathode: to GND" }
+  ],
+  "bus": "spi",
+  "voltage": "5",
+  "model": { "shape": "oled", "size": [80, 70, 12], "color": "#2E6FD8" },
+  "keywords": ["st7920", "12864", "128x64", "lcd", "graphic lcd", "display grafico", "reprap"],
+  "sources": [
+    { "title": "Sitronix ST7920 datasheet", "section": "Serial interface: CS (RS), SID (R/W), SCLK (E); PSB LOW selects serial" }
+  ]
+}

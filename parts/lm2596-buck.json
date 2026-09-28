@@ -1,0 +1,18 @@
+{
+  "id": "lm2596-buck",
+  "name": "LM2596 buck converter (adjustable)",
+  "category": "output",
+  "pins": [
+    { "name": "IN+", "role": "passive", "notes": "Input 4.5 to 40 V" },
+    { "name": "IN-", "role": "ground", "notes": "Input ground, same as OUT-" },
+    { "name": "OUT+", "role": "passive", "notes": "Adjustable 1.25 to 35 V. Set 5 V with the screw BEFORE wiring it to VIN" },
+    { "name": "OUT-", "role": "ground", "notes": "To the ESP32 GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "4.5-40",
+  "model": { "shape": "module", "size": [43, 21, 14], "color": "#1F4FA8" },
+  "keywords": ["lm2596", "buck", "step down", "dc-dc", "regulator", "alimentatore", "riduttore di tensione"],
+  "sources": [
+    { "title": "Texas Instruments LM2596 datasheet", "section": "Input up to 40 V; 3 A output; adjustable 1.23 V reference" }
+  ]
+}

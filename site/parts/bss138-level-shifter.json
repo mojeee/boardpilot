@@ -1,0 +1,95 @@
+{
+  "id": "bss138-level-shifter",
+  "name": "Logic level converter 4 channels (BSS138)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "LV1",
+      "role": "passive",
+      "notes": "Low-voltage (3.3 V) side, channel 1. Bidirectional: to an ESP32 GPIO"
+    },
+    {
+      "name": "LV2",
+      "role": "passive",
+      "notes": "Low-voltage side, channel 2"
+    },
+    {
+      "name": "LV",
+      "role": "power",
+      "notes": "3V3"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "LV3",
+      "role": "passive",
+      "notes": "Low-voltage side, channel 3"
+    },
+    {
+      "name": "LV4",
+      "role": "passive",
+      "notes": "Low-voltage side, channel 4"
+    },
+    {
+      "name": "HV1",
+      "role": "passive",
+      "notes": "High-voltage (5 V) side, channel 1"
+    },
+    {
+      "name": "HV2",
+      "role": "passive",
+      "notes": "High-voltage side, channel 2"
+    },
+    {
+      "name": "HV",
+      "role": "passive",
+      "notes": "5 V: to VIN or the 5 V supply"
+    },
+    {
+      "name": "GND2",
+      "role": "ground",
+      "notes": "Second GND pad on the high-voltage side"
+    },
+    {
+      "name": "HV3",
+      "role": "passive",
+      "notes": "High-voltage side, channel 3"
+    },
+    {
+      "name": "HV4",
+      "role": "passive",
+      "notes": "High-voltage side, channel 4. Slow edges: fine for I2C, too slow for WS2812"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "breakout",
+    "size": [
+      31.5,
+      13,
+      3
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "level shifter",
+    "level converter",
+    "bss138",
+    "3.3v 5v",
+    "bidirectional",
+    "traslatore di livello"
+  ],
+  "sources": [
+    {
+      "title": "SparkFun Logic Level Converter (BOB-12009) hookup guide",
+      "section": "LV and HV sides, BSS138 with 10 kΩ pull-ups"
+    },
+    {
+      "title": "NXP AN10441 level shifting in I2C-bus systems",
+      "section": "MOSFET bidirectional level shifter"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "solenoid-valve-12v",
+  "name": "Solenoid water valve 12 V (normally closed)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "+",
+      "role": "passive",
+      "notes": "12 V supply +. Switch it with a MOSFET or relay, never from an ESP32 pin"
+    },
+    {
+      "name": "-",
+      "role": "passive",
+      "notes": "To the MOSFET drain. Add a flyback diode across the coil"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "12",
+  "model": {
+    "shape": "relay",
+    "size": [
+      60,
+      45,
+      40
+    ],
+    "color": "#C9CED4"
+  },
+  "keywords": [
+    "solenoid valve",
+    "water valve",
+    "irrigation",
+    "12v",
+    "elettrovalvola",
+    "irrigazione"
+  ],
+  "sources": [
+    {
+      "title": "Adafruit Plastic Water Solenoid Valve 12V product page",
+      "section": "Normally closed; needs about 3 psi pressure to seal"
+    }
+  ]
+}

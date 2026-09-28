@@ -1,0 +1,50 @@
+{
+  "id": "hc-sr505",
+  "name": "HC-SR505 mini PIR motion sensor",
+  "category": "sensor",
+  "measures": [
+    "motion"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Marked +. Needs 4.5 to 20 V: use VIN"
+    },
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "HIGH (3.3 V) for about 8 s after motion"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Marked -"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "4.5-20",
+  "model": {
+    "shape": "module",
+    "size": [
+      10,
+      10,
+      24
+    ],
+    "color": "#F2F2F2"
+  },
+  "keywords": [
+    "hc-sr505",
+    "pir",
+    "mini pir",
+    "motion",
+    "movimento",
+    "presenza"
+  ],
+  "sources": [
+    {
+      "title": "HC-SR505 seller datasheet",
+      "section": "Supply 4.5 to 20 V; output HIGH 3.3 V, LOW 0 V; delay about 8 s; range up to 3 m"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "drv8871-driver",
+  "name": "DRV8871 single motor driver (3.6 A)",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground", "notes": "Pin order varies between boards: match by the printed label. Share it with the motor supply and the ESP32 GND" },
+    { "name": "IN2", "role": "digital_in", "needsOutput": true, "notes": "Direction / PWM" },
+    { "name": "IN1", "role": "digital_in", "needsOutput": true, "notes": "Direction / PWM" },
+    { "name": "VM", "role": "passive", "notes": "Motor supply 6.5 to 45 V from a separate supply (screw terminal)" },
+    { "name": "OUT1", "role": "passive", "notes": "Motor" },
+    { "name": "OUT2", "role": "passive", "notes": "Motor" }
+  ],
+  "bus": "gpio",
+  "voltage": "6.5-45",
+  "model": { "shape": "module", "size": [25, 20, 10], "color": "#1A1A1A" },
+  "keywords": ["drv8871", "motor driver", "h-bridge", "dc motor", "adafruit", "driver motore"],
+  "sources": [
+    { "title": "Texas Instruments DRV8871 datasheet", "section": "VM 6.5 to 45 V; 3.6 A peak; current limit set by ILIM resistor" }
+  ]
+}

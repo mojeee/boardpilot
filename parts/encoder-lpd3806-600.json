@@ -1,0 +1,20 @@
+{
+  "id": "encoder-lpd3806-600",
+  "name": "LPD3806 incremental encoder 600 P/R (A/B)",
+  "category": "input",
+  "measures": ["rotation", "position", "speed"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Red wire. Needs 5 to 24 V: use VIN (5 V)" },
+    { "name": "GND", "role": "ground", "notes": "Black wire" },
+    { "name": "A", "role": "digital_out", "notes": "Green wire. NPN open collector: use INPUT_PULLUP or 4.7 kΩ to 3V3, never to VCC" },
+    { "name": "B", "role": "digital_out", "notes": "White wire. NPN open collector: use INPUT_PULLUP or 4.7 kΩ to 3V3, never to VCC" },
+    { "name": "SHIELD", "role": "passive", "notes": "Bare wire. Leave unconnected or tie to GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "5-24",
+  "model": { "shape": "motor", "size": [38,38,36], "color": "#1A1A1A" },
+  "keywords": ["lpd3806", "encoder", "incremental encoder", "600 p/r", "quadrature", "encoder incrementale", "giri"],
+  "sources": [
+    { "title": "LPD3806-600BM-G5-24C seller datasheet", "section": "Supply 5 to 24 V DC; NPN open-collector A/B outputs; 600 pulses per revolution" }
+  ]
+}

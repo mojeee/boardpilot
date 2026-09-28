@@ -1,0 +1,17 @@
+{
+  "id": "wind-vane",
+  "name": "Wind vane (resistor network)",
+  "category": "sensor",
+  "measures": ["wind direction"],
+  "pins": [
+    { "name": "1", "role": "analog_out", "notes": "Add a 10 kΩ resistor from this pin to 3V3. To an ADC1 pin (GPIO 32 to 39)" },
+    { "name": "2", "role": "ground" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [80, 30, 40], "color": "#F2F2F2" },
+  "keywords": ["wind vane", "wind direction", "weather station", "banderuola", "direzione vento", "meteo"],
+  "sources": [
+    { "title": "SparkFun Weather Meter Kit datasheet (SEN-15901)", "section": "Wind vane: 8 reed switches and resistors give 16 directions; read with a 10 kΩ pull-up" }
+  ]
+}

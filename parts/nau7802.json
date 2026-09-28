@@ -1,0 +1,28 @@
+{
+  "id": "nau7802",
+  "name": "NAU7802 24-bit load cell ADC (I2C)",
+  "category": "sensor",
+  "measures": ["weight"],
+  "pins": [
+    { "name": "3V3", "role": "power", "notes": "SparkFun Qwiic Scale-style order" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "INT", "role": "int", "notes": "Data ready, optional" },
+    { "name": "AVDD", "role": "passive", "notes": "Analog supply output. Leave unconnected" },
+    { "name": "RED", "role": "passive", "notes": "Load cell E+" },
+    { "name": "BLK", "role": "passive", "notes": "Load cell E-" },
+    { "name": "WHT", "role": "passive", "notes": "Load cell A-" },
+    { "name": "GRN", "role": "passive", "notes": "Load cell A+" },
+    { "name": "YLW", "role": "passive", "notes": "Load cell shield, optional" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x2A"],
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [30,25.4,1.6], "color": "#C8102E" },
+  "keywords": ["nau7802", "qwiic scale", "load cell", "scale", "weight", "bilancia", "peso"],
+  "sources": [
+    { "title": "Nuvoton NAU7802 datasheet", "section": "Fixed I2C address 0x2A; 24-bit ADC with PGA for bridge sensors" }
+  ]
+}

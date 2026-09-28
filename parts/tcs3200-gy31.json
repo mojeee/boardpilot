@@ -1,0 +1,24 @@
+{
+  "id": "tcs3200-gy31",
+  "name": "TCS3200 colour sensor (GY-31)",
+  "category": "sensor",
+  "measures": ["color"],
+  "pins": [
+    { "name": "S0", "role": "digital_in", "needsOutput": true, "notes": "Output frequency scaling bit 0" },
+    { "name": "S1", "role": "digital_in", "needsOutput": true, "notes": "Output frequency scaling bit 1 (S0 HIGH, S1 LOW = 20 %)" },
+    { "name": "S2", "role": "digital_in", "needsOutput": true, "notes": "Colour filter select bit 0" },
+    { "name": "S3", "role": "digital_in", "needsOutput": true, "notes": "Colour filter select bit 1" },
+    { "name": "OUT", "role": "digital_out", "notes": "Square wave: its frequency follows the light level. Level = VCC: power from 3V3" },
+    { "name": "OE", "role": "digital_in", "needsOutput": true, "notes": "Output enable, active LOW. Can be tied to GND" },
+    { "name": "VCC", "role": "power", "notes": "Use 3V3 so OUT stays at 3.3 V" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [33, 33, 12], "color": "#1A1A1A" },
+  "keywords": ["tcs3200", "tcs230", "gy-31", "color", "colour sensor", "colore", "sensore colore"],
+  "sources": [
+    { "title": "TAOS TCS3200 datasheet", "section": "S0/S1 frequency scaling, S2/S3 photodiode type, OE active LOW; supply 2.7 to 5.5 V" },
+    { "title": "TAOS TCS3200 datasheet", "section": "Output is a frequency, not I2C; header order varies between boards" }
+  ]
+}

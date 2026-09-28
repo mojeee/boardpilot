@@ -1,0 +1,17 @@
+{
+  "id": "flex-sensor",
+  "name": "Flex sensor 2.2\" (bend resistor)",
+  "category": "sensor",
+  "measures": ["bend"],
+  "pins": [
+    { "name": "1", "role": "power", "notes": "One leg to 3V3" },
+    { "name": "2", "role": "analog_out", "notes": "Other leg to an ADC pin and through about 47 kΩ to GND. To an ADC pin (prefer ADC1: GPIO 32 to 39)" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": { "shape": "led", "size": [7,73,0.5], "color": "#C8A04A" },
+  "keywords": ["flex sensor", "bend sensor", "spectra symbol", "glove", "flessione", "piegamento"],
+  "sources": [
+    { "title": "Spectra Symbol Flex Sensor datasheet", "section": "Flat resistance about 25 kΩ ±30%; resistance rises when bent" }
+  ]
+}

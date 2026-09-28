@@ -1,0 +1,57 @@
+{
+  "id": "speed-sensor-fc03",
+  "name": "LM393 slotted optical speed sensor (FC-03)",
+  "category": "sensor",
+  "measures": [
+    "rotation",
+    "speed"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Use 3V3 so DO stays at 3.3 V"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "Pulse each time the slot is blocked. Count with an interrupt"
+    },
+    {
+      "name": "AO",
+      "role": "analog_out",
+      "notes": "Raw light level. Optional. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      32,
+      14,
+      12
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "fc-03",
+    "lm393",
+    "speed sensor",
+    "optical encoder",
+    "slot",
+    "tachometer",
+    "velocità",
+    "encoder"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments LM393 datasheet",
+      "section": "Comparator output (open collector with pull-up on the module)"
+    }
+  ]
+}

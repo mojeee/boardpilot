@@ -60,16 +60,27 @@ export interface ChatRequest {
   maxTokens: number;
   /** Mark the system prompt for caching where the provider needs it explicitly (Anthropic). */
   cacheSystem?: boolean;
+  /** Let the model search the web (Gemini "Grounding with Google Search"). Providers without it
+   *  ignore the flag. Not combined with tools: see GeminiProvider. */
+  webSearch?: boolean;
   timeoutMs?: number;
 }
 
 export type StopReason = 'end' | 'tool_use' | 'max_tokens' | 'refusal';
+
+/** A web page the model's answer was grounded on (web search). */
+export interface WebCitation {
+  url: string;
+  title: string;
+}
 
 export interface ChatResponse {
   text: string;
   toolCalls: ToolCall[];
   stop: StopReason;
   raw: RawTurn;
+  /** Pages found by web search for this answer; empty or missing when no search ran. */
+  citations?: WebCitation[];
 }
 
 export interface CompleteRequest {
@@ -77,6 +88,7 @@ export interface CompleteRequest {
   parts: InputPart[];
   jsonSchema?: StructuredOutput;
   maxTokens: number;
+  webSearch?: boolean;
   timeoutMs?: number;
 }
 
@@ -87,7 +99,7 @@ export interface AiProvider {
   listModels(timeoutMs?: number): Promise<AiModelInfo[]>;
 }
 
-export type ProviderErrorKind = 'auth' | 'quota' | 'rate' | 'offline' | 'timeout' | 'model' | 'bad_request' | 'server' | 'refused';
+export type ProviderErrorKind = 'auth' | 'quota' | 'rate' | 'offline' | 'timeout' | 'model' | 'bad_request' | 'server' | 'refused' | 'too_large' | 'not_configured';
 
 /** Typed error thrown by providers; mapped to plain language in errors.ts. */
 export class ProviderError extends Error {
@@ -111,6 +123,7 @@ export function completeAsChat(req: CompleteRequest): ChatRequest {
     messages: [{ role: 'user', content: req.parts }],
     jsonSchema: req.jsonSchema,
     maxTokens: req.maxTokens,
+    webSearch: req.webSearch,
     timeoutMs: req.timeoutMs,
   };
 }

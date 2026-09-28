@@ -2,12 +2,15 @@
 // userData/settings.json. Keys are encrypted with Electron safeStorage (Keychain on macOS);
 // if encryption is unavailable, keys are not saved at all. .env.local keys still work as fallback.
 // Only view() leaves the main process, and it never contains a key.
+// The free demo ('demo') needs no key: it is used whenever the picked provider has no key, so the
+// assistant works on first launch, unless BOARDPILOT_DEMO_AI_URL=off.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type { Result } from '@shared/types';
 import {
   AI_PROVIDERS,
+  KEYED_PROVIDERS,
   isProviderId,
   PROVIDER_INFO,
   type AiProviderId,
@@ -16,6 +19,7 @@ import {
   type AiSettingsView,
 } from '@shared/ai';
 import { t } from '@shared/i18n';
+import { demoOptions } from '../ai/providers/demo';
 
 /** The part of Electron's safeStorage we use (injected so tests can run without Electron). */
 export interface SecretBox {
@@ -64,7 +68,7 @@ export class AiSettingsStore {
       const raw = JSON.parse(readFileSync(this.file, 'utf8')) as Partial<SettingsFile>;
       const models: SettingsFile['models'] = {};
       const keys: SettingsFile['keys'] = {};
-      for (const p of AI_PROVIDERS) {
+      for (const p of KEYED_PROVIDERS) {
         const m = raw.models?.[p];
         if (typeof m === 'string' && m.trim()) models[p] = m.trim();
         const k = raw.keys?.[p];
@@ -82,10 +86,21 @@ export class AiSettingsStore {
   }
 
   private firstEnvProvider(): AiProviderId {
-    return AI_PROVIDERS.find((p) => this.env[PROVIDER_INFO[p].envVar]?.trim()) ?? 'anthropic';
+    return KEYED_PROVIDERS.find((p) => this.envKey(p)) ?? (this.demoEnabled ? 'demo' : 'anthropic');
+  }
+
+  private envKey(p: AiProviderId): string | null {
+    const name = PROVIDER_INFO[p].envVar;
+    return (name && this.env[name]?.trim()) || null;
+  }
+
+  /** False when the free demo is switched off with BOARDPILOT_DEMO_AI_URL=off. */
+  get demoEnabled(): boolean {
+    return demoOptions(this.env) !== null;
   }
 
   private savedKey(p: AiProviderId): string | null {
+    if (!PROVIDER_INFO[p].needsKey) return null;
     if (this.cache.has(p)) return this.cache.get(p) ?? null;
     const enc = this.data.keys[p];
     if (!enc || !this.box.isEncryptionAvailable()) return null;
@@ -100,14 +115,31 @@ export class AiSettingsStore {
 
   /** The key to use for a provider: saved (encrypted) first, then .env.local. Main process only. */
   getKey(p: AiProviderId): string | null {
-    return this.savedKey(p) ?? (this.env[PROVIDER_INFO[p].envVar]?.trim() || null);
+    if (!PROVIDER_INFO[p].needsKey) return null;
+    return this.savedKey(p) ?? this.envKey(p);
   }
 
+  /** The provider the user picked. */
   get provider(): AiProviderId {
     return this.data.provider;
   }
 
-  model(p: AiProviderId = this.data.provider): string {
+  /** The provider to use: the picked one when it has a key (or is the demo), else the free demo.
+   *  Returns the picked provider when neither works; callers then report "AI is off". */
+  active(): AiProviderId {
+    const p = this.data.provider;
+    if (PROVIDER_INFO[p].needsKey && this.getKey(p)) return p;
+    return this.demoEnabled ? 'demo' : p;
+  }
+
+  /** True when the active provider can answer (it has a key, or it is the enabled demo). */
+  get usable(): boolean {
+    const a = this.active();
+    return a === 'demo' ? this.demoEnabled : this.getKey(a) !== null;
+  }
+
+  model(p: AiProviderId = this.active()): string {
+    if (!PROVIDER_INFO[p].needsKey) return PROVIDER_INFO[p].defaultModel;
     return this.data.models[p] ?? PROVIDER_INFO[p].defaultModel;
   }
 
@@ -116,18 +148,26 @@ export class AiSettingsStore {
     const providers = {} as Record<AiProviderId, AiProviderState>;
     for (const p of AI_PROVIDERS) {
       const saved = this.savedKey(p);
-      const env = this.env[PROVIDER_INFO[p].envVar]?.trim() || null;
+      const env = PROVIDER_INFO[p].needsKey ? this.envKey(p) : null;
       const key = saved ?? env;
       providers[p] = { hasKey: Boolean(key), keyHint: key ? keyHint(key) : '', keySource: saved ? 'saved' : env ? 'env' : null, model: this.model(p) };
     }
-    return { provider: this.data.provider, model: this.model(), providers, canSaveKeys: this.box.isEncryptionAvailable() };
+    return {
+      provider: this.data.provider,
+      active: this.active(),
+      demoEnabled: this.demoEnabled,
+      model: this.model(this.data.provider),
+      providers,
+      canSaveKeys: this.box.isEncryptionAvailable(),
+    };
   }
 
   save(input: AiSettingsInput): Result<AiSettingsView> {
     if (!isProviderId(input.provider)) return fail('bad_provider', t('Unknown AI provider.'), t('Pick Claude, GPT or Gemini.'));
     const model = (input.model ?? '').trim();
     if (model.length > 200 || /\s/.test(model)) return fail('bad_model', t('That model name is not valid.'), t('Pick a model from the list, or press Load models.'));
-    const key = (input.apiKey ?? '').trim();
+    // The free demo has no key and its model is chosen by the relay.
+    const key = PROVIDER_INFO[input.provider].needsKey ? (input.apiKey ?? '').trim() : '';
     if (key) {
       const bad = checkKeyFormat(key);
       if (bad) return fail('bad_key', bad, t('Paste the key again.'));
@@ -142,7 +182,7 @@ export class AiSettingsStore {
       this.cache.set(input.provider, key);
     }
     this.data.provider = input.provider;
-    if (model && model !== PROVIDER_INFO[input.provider].defaultModel) this.data.models[input.provider] = model;
+    if (model && model !== PROVIDER_INFO[input.provider].defaultModel && PROVIDER_INFO[input.provider].needsKey) this.data.models[input.provider] = model;
     else delete this.data.models[input.provider];
     try {
       this.write();

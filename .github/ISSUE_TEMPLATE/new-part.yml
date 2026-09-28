@@ -1,0 +1,27 @@
+name: Request a part
+description: Ask for a sensor, display or module to be added to the parts library
+title: "Part: "
+labels: ["parts"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Part name and chip
+      placeholder: e.g. GY-SHT31-D, SHT31 temperature + humidity
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Product page or datasheet link
+    validations:
+      required: true
+  - type: textarea
+    id: pins
+    attributes:
+      label: Pins as printed on your board (in order)
+      placeholder: VIN GND SCL SDA ADR ALR
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else (I2C address, supply voltage, board color)

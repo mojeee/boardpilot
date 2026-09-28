@@ -4,11 +4,14 @@ Copyright (c) 2026 Mojtaba Amini ("Licensor"). All rights reserved except as gra
 
 BoardPilot is **source-available**: the source code is public so you can read it, learn from it, check what it does with your hardware, build it yourself and contribute. It is **not** "open source" in the OSI sense, because continued use after the evaluation period requires a paid license.
 
-This license covers everything in this repository **except** the folder `firmware/`, which is licensed separately under the MIT License (see `firmware/LICENSE`), so the diagnostic agent and the BoardPilotProbe library can be used freely in your own firmware.
+This license covers everything in this repository **except**:
+
+- the folder `firmware/`, licensed under the MIT License (see `firmware/LICENSE`), so the diagnostic agent and the BoardPilotProbe library can be used freely in your own firmware;
+- the parts library in `parts/` (and the published `parts.json`), licensed under Creative Commons Attribution 4.0 (see `parts/LICENSE`), so anyone can reuse the part data with credit.
 
 ## 1. Definitions
 
-- **Software**: the BoardPilot desktop application in this repository, its source code, builds made from it, and its documentation, excluding `firmware/`.
+- **Software**: the BoardPilot desktop application in this repository, its source code, builds made from it, and its documentation, excluding `firmware/` and `parts/`.
 - **You**: the person or organisation using the Software.
 - **License Key**: a key issued by the Licensor (format `BP1-…`) that unlocks the Software after the evaluation period.
 

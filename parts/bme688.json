@@ -1,0 +1,27 @@
+{
+  "id": "bme688",
+  "name": "BME688 gas + temperature + humidity + pressure",
+  "category": "sensor",
+  "measures": ["temperature", "humidity", "pressure", "gas"],
+  "pins": [
+    { "name": "VIN", "role": "power" },
+    { "name": "3VO", "role": "passive", "notes": "3.3 V output of the on-board regulator. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCK", "role": "i2c_scl", "notes": "I2C SCL (SPI SCK)" },
+    { "name": "SDO", "role": "passive", "notes": "I2C address select: LOW = 0x76, HIGH or open = 0x77" },
+    { "name": "SDI", "role": "i2c_sda", "notes": "I2C SDA (SPI SDI)" },
+    { "name": "CS", "role": "passive", "notes": "Leave HIGH or unconnected for I2C" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x77", "0x76"],
+  "idCheck": { "register": "0xD0", "expect": "0x61" },
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [25.4, 17.8, 1.6], "color": "#1F4FA8" },
+  "keywords": ["bme688", "bme680", "bosch", "gas", "voc", "air quality", "qualità aria", "pressione"],
+  "sources": [
+    { "title": "Bosch BME688 datasheet", "section": "Register 0xD0 chip_id reads 0x61, same as BME680; register 0xF0 variant_id = 0x01 tells them apart" },
+    { "title": "Bosch BME688 datasheet", "section": "I2C address 0x76 (SDO = GND) or 0x77 (SDO = VDDIO)" },
+    { "title": "Adafruit BME688 guide", "section": "Pinout VIN, 3Vo, GND, SCK, SDO, SDI, CS" }
+  ]
+}

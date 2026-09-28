@@ -1,0 +1,21 @@
+{
+  "id": "pc817-opto-2ch",
+  "name": "PC817 optocoupler module 2 channels",
+  "category": "output",
+  "pins": [
+    { "name": "IN1", "role": "digital_in", "needsOutput": true, "notes": "Pin order varies between boards: match by the printed label. Channel 1 input (LED side, series resistor on board)" },
+    { "name": "IN2", "role": "digital_in", "needsOutput": true, "notes": "Channel 2 input" },
+    { "name": "G", "role": "ground", "notes": "Input side ground" },
+    { "name": "V1", "role": "passive", "notes": "Channel 1 output, isolated side" },
+    { "name": "G1", "role": "passive", "notes": "Channel 1 output ground, isolated side" },
+    { "name": "V2", "role": "passive", "notes": "Channel 2 output, isolated side" },
+    { "name": "G2", "role": "passive", "notes": "Channel 2 output ground, isolated side" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [30, 22, 10], "color": "#1F4FA8" },
+  "keywords": ["pc817", "optocoupler", "isolation", "opto", "fotoaccoppiatore", "isolamento"],
+  "sources": [
+    { "title": "Sharp PC817 datasheet", "section": "Forward voltage about 1.2 V; current transfer ratio 50 to 600 %" }
+  ]
+}

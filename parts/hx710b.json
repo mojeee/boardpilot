@@ -1,0 +1,20 @@
+{
+  "id": "hx710b",
+  "name": "HX710B air pressure module (0-40 kPa)",
+  "category": "sensor",
+  "measures": ["pressure"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Pin order differs between sellers: check the silkscreen" },
+    { "name": "OUT", "role": "digital_out", "notes": "Data out of the HX710B" },
+    { "name": "SCK", "role": "digital_in", "needsOutput": true, "notes": "Clock driven by the ESP32 (not SPI)" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [20,18,12], "color": "#1F4FA8" },
+  "keywords": ["hx710b", "mps20n0040d", "air pressure", "blood pressure", "water level", "pressione", "pressione aria"],
+  "sources": [
+    { "title": "Avia Semiconductor HX710 datasheet", "section": "Serial interface PD_SCK and DOUT, like HX711" },
+    { "title": "MPS20N0040D-S datasheet", "section": "Pressure range 0 to 40 kPa" }
+  ]
+}

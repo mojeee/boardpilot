@@ -1,0 +1,18 @@
+{
+  "id": "ljc18a3-h-z-bx",
+  "name": "LJC18A3-H-Z/BX capacitive proximity switch (NPN)",
+  "category": "sensor",
+  "measures": ["proximity", "presence"],
+  "pins": [
+    { "name": "BROWN", "role": "passive", "notes": "Supply + from an external 6 to 36 V supply (e.g. 12 V). Never to the ESP32" },
+    { "name": "BLUE", "role": "ground", "notes": "Supply 0 V. Connect to ESP32 GND too (common ground)" },
+    { "name": "BLACK", "role": "digital_out", "notes": "NPN output, LOW when an object is near. Some units pull it up to the supply: measure first, use an optocoupler or divider" }
+  ],
+  "bus": "gpio",
+  "voltage": "6-36",
+  "model": { "shape": "module", "size": [18,18,70], "color": "#C9CED4" },
+  "keywords": ["ljc18a3", "capacitive", "proximity switch", "level", "npn", "capacitivo", "livello"],
+  "sources": [
+    { "title": "LJC18A3-H-Z/BX seller datasheet", "section": "Supply 6 to 36 V DC; NPN NO output; range 1 to 10 mm (adjustable); brown +, blue 0 V, black signal" }
+  ]
+}

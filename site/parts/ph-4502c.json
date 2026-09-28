@@ -1,0 +1,70 @@
+{
+  "id": "ph-4502c",
+  "name": "PH-4502C pH sensor module",
+  "category": "sensor",
+  "measures": [
+    "ph"
+  ],
+  "pins": [
+    {
+      "name": "TO",
+      "role": "analog_out",
+      "notes": "Board temperature (not the liquid), optional"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "Threshold output, set by a trimmer. Its HIGH level is 5 V: use a voltage divider"
+    },
+    {
+      "name": "PO",
+      "role": "analog_out",
+      "notes": "pH voltage, about 2.5 V at pH 7 after calibration, up to 5 V: use a voltage divider"
+    },
+    {
+      "name": "GND1",
+      "role": "ground",
+      "notes": "First G pin"
+    },
+    {
+      "name": "GND2",
+      "role": "ground",
+      "notes": "Second G pin"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Marked V+. Needs 5 V: use VIN"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      43,
+      32,
+      15
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ph-4502c",
+    "ph meter",
+    "ph probe",
+    "bnc",
+    "water quality",
+    "sonda ph",
+    "qualità acqua"
+  ],
+  "sources": [
+    {
+      "title": "PH-4502C module seller sheet",
+      "section": "Header To, Do, Po, G, G, V+; 5 V supply; BNC probe input"
+    },
+    {
+      "title": "PH-4502C module seller sheet",
+      "section": "Needs calibration with pH 4 and pH 7 buffer solutions"
+    }
+  ]
+}

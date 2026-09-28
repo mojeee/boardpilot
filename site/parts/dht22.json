@@ -1,0 +1,50 @@
+{
+  "id": "dht22",
+  "name": "DHT22 (AM2302) temperature + humidity",
+  "category": "sensor",
+  "measures": [
+    "temperature",
+    "humidity"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "DATA",
+      "role": "onewire",
+      "needsOutput": true,
+      "notes": "Needs a 10 kΩ pull-up (included on 3-pin modules)"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "onewire",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "dht",
+    "size": [
+      15,
+      25,
+      7.7
+    ],
+    "color": "#F2F2F2"
+  },
+  "keywords": [
+    "dht22",
+    "am2302",
+    "dht",
+    "humidity",
+    "temperature"
+  ],
+  "sources": [
+    {
+      "title": "Aosong AM2302 datasheet",
+      "section": "Single-bus communication; pull-up resistor on DATA"
+    }
+  ],
+  "starterSketch": "dht22"
+}

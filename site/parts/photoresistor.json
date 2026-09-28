@@ -1,0 +1,45 @@
+{
+  "id": "photoresistor",
+  "name": "Photoresistor (LDR) with 10 kΩ divider",
+  "category": "sensor",
+  "measures": [
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "1",
+      "role": "power",
+      "notes": "One LDR leg to 3V3"
+    },
+    {
+      "name": "2",
+      "role": "analog_out",
+      "notes": "Other leg to an ADC pin and through 10 kΩ to GND. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3",
+  "model": {
+    "shape": "led",
+    "size": [
+      6.1,
+      5,
+      4
+    ],
+    "color": "#C8A04A"
+  },
+  "keywords": [
+    "ldr",
+    "photoresistor",
+    "photocell",
+    "light",
+    "fotoresistenza",
+    "luce"
+  ],
+  "sources": [
+    {
+      "title": "Espressif ESP32 Technical Reference Manual",
+      "section": "ADC: input range and attenuation"
+    }
+  ]
+}

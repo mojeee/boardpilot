@@ -1,0 +1,20 @@
+{
+  "id": "acs758",
+  "name": "ACS758 high-current sensor module (50-200 A)",
+  "category": "sensor",
+  "measures": ["current"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "OUT", "role": "analog_out", "notes": "Bidirectional: VCC/2 at zero current, up to 5 V: use a voltage divider before the ADC" },
+    { "name": "IP+", "role": "passive", "notes": "Current path in (bolt/terminal). Never wire to the ESP32" },
+    { "name": "IP-", "role": "passive", "notes": "Current path out" }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [35,25,10], "color": "#B22222" },
+  "keywords": ["acs758", "current", "hall", "high current", "battery", "corrente", "sensore corrente"],
+  "sources": [
+    { "title": "Allegro ACS758 datasheet", "section": "Sensitivity at 5 V: 050B 40 mV/A, 100B 20 mV/A; bidirectional output VCC/2 at 0 A" }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "am312",
+  "name": "AM312 mini PIR motion sensor",
+  "category": "sensor",
+  "measures": [
+    "motion"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power"
+    },
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "HIGH when motion is detected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      10,
+      10,
+      23
+    ],
+    "color": "#EDEDED"
+  },
+  "keywords": [
+    "am312",
+    "mini pir",
+    "pir",
+    "motion",
+    "movimento",
+    "presenza"
+  ],
+  "sources": [
+    {
+      "title": "Nanyang Senba AM312 datasheet",
+      "section": "Supply 2.7 to 12 V; digital output"
+    }
+  ]
+}

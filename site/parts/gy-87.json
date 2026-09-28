@@ -1,0 +1,93 @@
+{
+  "id": "gy-87",
+  "name": "GY-87 10-DOF module (MPU6050 + compass + BMP180)",
+  "category": "sensor",
+  "measures": [
+    "acceleration",
+    "rotation",
+    "magnetic field",
+    "pressure",
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "VCC_IN",
+      "role": "power",
+      "notes": "Goes through the on-board regulator"
+    },
+    {
+      "name": "3.3V",
+      "role": "passive",
+      "notes": "Regulator output. Leave unconnected when you power VCC_IN"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "FSYNC",
+      "role": "passive",
+      "notes": "MPU6050 frame sync. Leave unconnected"
+    },
+    {
+      "name": "INTA",
+      "role": "int",
+      "notes": "MPU6050 interrupt, optional"
+    },
+    {
+      "name": "DRDY",
+      "role": "int",
+      "notes": "Compass data ready, optional"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x68",
+    "0x77",
+    "0x1E",
+    "0x0D"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      22,
+      17,
+      1.6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "gy-87",
+    "10dof",
+    "mpu6050",
+    "hmc5883l",
+    "bmp180",
+    "imu",
+    "barometer",
+    "bussola"
+  ],
+  "sources": [
+    {
+      "title": "InvenSense MPU-6050 Register Map",
+      "section": "I2C 0x68; WHO_AM_I 0x75 reads 0x68"
+    },
+    {
+      "title": "Bosch BMP180 datasheet",
+      "section": "I2C address 0x77"
+    },
+    {
+      "title": "Honeywell HMC5883L datasheet",
+      "section": "I2C 0x1E, visible only after MPU6050 bypass is enabled. Newer boards carry a QMC5883L (0x0D)"
+    }
+  ]
+}

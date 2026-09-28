@@ -1,0 +1,77 @@
+{
+  "id": "esp01-esp8266",
+  "name": "ESP-01 Wi-Fi module (ESP8266)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "GPIO2",
+      "role": "passive",
+      "notes": "Must be HIGH at boot. Leave unconnected"
+    },
+    {
+      "name": "GPIO0",
+      "role": "passive",
+      "notes": "LOW at boot = flash mode. Leave HIGH for normal use"
+    },
+    {
+      "name": "RXD",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "UART: the part receives data here. Connect to an ESP32 TX pin"
+    },
+    {
+      "name": "TXD",
+      "role": "digital_out",
+      "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (AT firmware: 115200 baud)"
+    },
+    {
+      "name": "CH_PD",
+      "role": "passive",
+      "notes": "Enable: must be HIGH. Tie to 3.3 V"
+    },
+    {
+      "name": "RST",
+      "role": "passive",
+      "notes": "Reset, active LOW. Leave unconnected or tie HIGH"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3.3 V only. Draws up to about 170 mA when sending"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      24.8,
+      14.3,
+      10
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "esp-01",
+    "esp01",
+    "esp8266",
+    "wifi",
+    "at commands",
+    "wi-fi",
+    "modulo wifi"
+  ],
+  "sources": [
+    {
+      "title": "Espressif ESP8266EX datasheet",
+      "section": "Strapping pins GPIO0, GPIO2, GPIO15; supply 3.0 to 3.6 V; TX current up to 170 mA"
+    },
+    {
+      "title": "Espressif ESP8266 AT instruction set",
+      "section": "Default UART 115200 baud"
+    }
+  ]
+}

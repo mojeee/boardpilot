@@ -1,0 +1,20 @@
+{
+  "id": "keypad-1x4",
+  "name": "1x4 membrane keypad (4 keys)",
+  "category": "input",
+  "pins": [
+    { "name": "COM", "role": "ground", "notes": "Common line to GND. On some keypads the common is pin 2: check with a multimeter" },
+    { "name": "K1", "role": "digital_out", "notes": "Key 1: to a GPIO with INPUT_PULLUP, reads LOW when pressed" },
+    { "name": "K2", "role": "digital_out", "notes": "Key 2" },
+    { "name": "K3", "role": "digital_out", "notes": "Key 3" },
+    { "name": "K4", "role": "digital_out", "notes": "Key 4" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [69, 20, 1], "color": "#1A1A1A" },
+  "keywords": ["keypad", "1x4", "membrane", "4 keys", "buttons", "tastierino", "pulsanti"],
+  "sources": [
+    { "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" },
+    { "title": "Common 1x4 membrane keypad", "section": "5-pin ribbon: one common line and one line per key. Pin order varies" }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "id": "xkc-y25",
+  "name": "XKC-Y25 non-contact liquid level sensor",
+  "category": "sensor",
+  "measures": [
+    "water level"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Brown wire. Accepts 5 to 24 V: use VIN"
+    },
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "Yellow wire. On the -V version its HIGH level is the supply (5 V): use a voltage divider"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Blue wire"
+    },
+    {
+      "name": "MODE",
+      "role": "passive",
+      "notes": "Black wire. Selects whether OUT is HIGH or LOW with liquid; see the seller sheet"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      28,
+      28,
+      16
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "xkc-y25",
+    "liquid level",
+    "non-contact",
+    "capacitive",
+    "livello liquido",
+    "serbatoio"
+  ],
+  "sources": [
+    {
+      "title": "XKC-Y25 seller datasheet",
+      "section": "Supply 5 to 24 V; brown +V, yellow OUT, blue GND, black mode; senses through a non-metal wall up to 20 mm"
+    },
+    {
+      "title": "XKC-Y25 seller datasheet",
+      "section": "Versions: -V (voltage out), -NPN, -PNP; check which one you have"
+    }
+  ]
+}

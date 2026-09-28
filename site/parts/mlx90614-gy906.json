@@ -1,0 +1,56 @@
+{
+  "id": "mlx90614-gy906",
+  "name": "GY-906 MLX90614 infrared thermometer",
+  "category": "sensor",
+  "measures": [
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x5A"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      17,
+      11,
+      8
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "mlx90614",
+    "gy-906",
+    "infrared",
+    "contactless",
+    "thermometer",
+    "termometro",
+    "infrarossi"
+  ],
+  "sources": [
+    {
+      "title": "Melexis MLX90614 datasheet",
+      "section": "SMBus: factory default address 0x5A"
+    }
+  ]
+}

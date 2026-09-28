@@ -1,0 +1,48 @@
+{
+  "id": "servo-sg90",
+  "name": "SG90 micro servo",
+  "category": "output",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Brown wire"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Red wire, 5 V: use VIN. Can reset the ESP32 if powered from USB alone under load"
+    },
+    {
+      "name": "SIG",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Orange wire. 50 Hz PWM, 0.5 to 2.4 ms pulses"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "motor",
+    "size": [
+      23,
+      12.2,
+      29
+    ],
+    "color": "#2E6FD8"
+  },
+  "keywords": [
+    "sg90",
+    "servo",
+    "micro servo",
+    "motor",
+    "servomotore",
+    "motore"
+  ],
+  "sources": [
+    {
+      "title": "Tower Pro SG90 datasheet",
+      "section": "Wires: brown GND, red +5 V, orange PWM; 50 Hz, 1 to 2 ms"
+    }
+  ]
+}

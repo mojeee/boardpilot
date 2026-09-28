@@ -1,0 +1,20 @@
+{
+  "id": "tea5767-fm",
+  "name": "TEA5767 FM radio module",
+  "category": "output",
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x60"],
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [30, 30, 12], "color": "#1F4FA8" },
+  "keywords": ["tea5767", "fm radio", "fm", "radio fm", "ricevitore", "philips"],
+  "sources": [
+    { "title": "NXP TEA5767HN datasheet", "section": "I2C address 1100000 (0x60); 5 data bytes written and read in one block; supply 2.5 to 5 V" },
+    { "title": "Common TEA5767 module", "section": "Header VCC, SDA, SCL, GND. Order varies between boards: check the silkscreen" }
+  ]
+}

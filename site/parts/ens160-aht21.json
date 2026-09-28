@@ -1,0 +1,76 @@
+{
+  "id": "ens160-aht21",
+  "name": "ENS160 + AHT21 air quality combo",
+  "category": "sensor",
+  "measures": [
+    "air quality",
+    "tvoc",
+    "eco2",
+    "temperature",
+    "humidity"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "3V3",
+      "role": "passive",
+      "notes": "3.3 V output of the on-board regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x53",
+    "0x52",
+    "0x38"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      20,
+      16,
+      1.6
+    ],
+    "color": "#5B2A86"
+  },
+  "keywords": [
+    "ens160",
+    "aht21",
+    "sciosense",
+    "tvoc",
+    "eco2",
+    "aqi",
+    "air quality",
+    "qualità aria"
+  ],
+  "sources": [
+    {
+      "title": "ScioSense ENS160 datasheet",
+      "section": "I2C address 0x53 (ADDR HIGH) or 0x52 (ADDR LOW); PART_ID register 0x00 = 0x0160, little endian"
+    },
+    {
+      "title": "Aosong AHT21 datasheet",
+      "section": "I2C address 0x38"
+    },
+    {
+      "title": "ScioSense ENS160 datasheet",
+      "section": "Outputs AQI-UBA 1 to 5, TVOC ppb and eCO2 ppm; eCO2 is estimated, not measured"
+    }
+  ]
+}

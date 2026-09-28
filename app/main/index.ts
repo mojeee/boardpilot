@@ -27,6 +27,8 @@ function loadEnvLocal() {
 }
 
 loadEnvLocal();
+// Sent to the free demo relay as "X-BoardPilot-Client: BoardPilot/<version>" (see ai/providers/demo.ts).
+process.env.BOARDPILOT_VERSION ||= app.getVersion();
 
 const dataDir = app.getPath('userData');
 const agentDir = app.isPackaged ? join(process.resourcesPath, 'agent') : join(app.getAppPath(), 'resources/agent');

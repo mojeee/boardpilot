@@ -1,0 +1,48 @@
+{
+  "id": "ir-receiver-vs1838b",
+  "name": "VS1838B IR remote receiver",
+  "category": "input",
+  "pins": [
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "Left leg, dome towards you. LOW while an IR burst is received"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Middle leg"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Right leg. Use 3V3"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      8.6,
+      5.5,
+      9
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "vs1838b",
+    "ir receiver",
+    "remote",
+    "infrared",
+    "38 khz",
+    "telecomando",
+    "ricevitore ir"
+  ],
+  "sources": [
+    {
+      "title": "VS1838B datasheet",
+      "section": "Pin 1 OUT, 2 GND, 3 VCC; 38 kHz carrier; supply 2.7 to 5.5 V"
+    }
+  ]
+}

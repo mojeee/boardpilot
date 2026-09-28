@@ -93,6 +93,19 @@ export function AskBox({ placeholder, autoFocus }: { placeholder?: string; autoF
   );
 }
 
+/** Shown while the free demo answers: what it is, and the way to a full provider. */
+export function DemoBanner() {
+  return (
+    <div className="ai-demo-banner" role="note">
+      <b>{t('Free demo AI')}</b>
+      <span>{t('Older model, a few requests per minute, for testing only: don’t send private data.')}</span>
+      <button className="link" onClick={openAiSettings}>
+        {t('Use my own key')}
+      </button>
+    </div>
+  );
+}
+
 export function AssistantPanel({ title, hideInput }: { title?: string; hideInput?: boolean }) {
   const items = useAi((s) => s.items);
   const busy = useAi((s) => s.busy);
@@ -109,9 +122,10 @@ export function AssistantPanel({ title, hideInput }: { title?: string; hideInput
           <Icon name="ai" size={16} /> {title ?? t('Assistant')}
         </span>
         <button className="link dim small mono" onClick={openAiSettings} title={t('AI settings')}>
-          {ai.enabled ? ai.model : t('off')}
+          {ai.enabled ? (ai.provider === 'demo' ? t('demo') : ai.model) : t('off')}
         </button>
       </header>
+      {ai.enabled && ai.provider === 'demo' && <DemoBanner />}
       <div className="ai-list" ref={list}>
         {items.length === 0 && (
           <div className="ai-empty">

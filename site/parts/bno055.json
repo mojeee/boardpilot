@@ -1,0 +1,98 @@
+{
+  "id": "bno055",
+  "name": "BNO055 absolute orientation sensor",
+  "category": "sensor",
+  "measures": [
+    "orientation",
+    "acceleration",
+    "rotation",
+    "magnetic field"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "3VO",
+      "role": "passive",
+      "notes": "Output of the on-board regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "RST",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Reset, active LOW. Optional"
+    },
+    {
+      "name": "INT",
+      "role": "int"
+    },
+    {
+      "name": "ADR",
+      "role": "passive",
+      "notes": "Address select: LOW = 0x28, HIGH = 0x29"
+    },
+    {
+      "name": "PS0",
+      "role": "passive",
+      "notes": "Protocol select. Leave LOW for I2C"
+    },
+    {
+      "name": "PS1",
+      "role": "passive",
+      "notes": "Protocol select. Leave LOW for I2C"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x28",
+    "0x29"
+  ],
+  "idCheck": {
+    "register": "0x00",
+    "expect": "0xA0"
+  },
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      26.7,
+      20.3,
+      1.6
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "bno055",
+    "bosch",
+    "imu",
+    "orientation",
+    "euler",
+    "fusion",
+    "orientamento"
+  ],
+  "sources": [
+    {
+      "title": "Bosch BNO055 datasheet",
+      "section": "Register 0x00 CHIP_ID (reads 0xA0)"
+    },
+    {
+      "title": "Bosch BNO055 datasheet",
+      "section": "I2C address 0x28 (COM3 LOW) / 0x29 (COM3 HIGH)"
+    }
+  ]
+}

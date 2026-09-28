@@ -1,0 +1,20 @@
+{
+  "id": "mq6",
+  "name": "MQ-6 LPG sensor",
+  "category": "sensor",
+  "measures": ["lpg", "gas"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V for the heater (about 150 mA): use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DO", "role": "digital_out", "notes": "Threshold output. Its HIGH level is 5 V: use a voltage divider" },
+    { "name": "AO", "role": "analog_out", "notes": "Can reach 5 V: use a voltage divider before the ADC" }
+  ],
+  "bus": "analog",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "keywords": ["mq-6", "mq6", "lpg", "propane", "butane", "gpl", "gas"],
+  "sources": [
+    { "title": "Hanwei MQ-6 datasheet", "section": "Most sensitive to LPG, isobutane and propane" },
+    { "title": "Hanwei MQ-6 datasheet", "section": "Heater 5 V; needs a burn-in / warm-up time before readings are stable" }
+  ]
+}

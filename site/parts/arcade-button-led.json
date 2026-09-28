@@ -1,0 +1,61 @@
+{
+  "id": "arcade-button-led",
+  "name": "Arcade button 30 mm with LED",
+  "category": "input",
+  "pins": [
+    {
+      "name": "COM",
+      "role": "ground",
+      "notes": "Switch common"
+    },
+    {
+      "name": "NO",
+      "role": "digital_out",
+      "notes": "Normally open: to a GPIO with INPUT_PULLUP, reads LOW when pressed"
+    },
+    {
+      "name": "NC",
+      "role": "passive",
+      "notes": "Normally closed, not needed"
+    },
+    {
+      "name": "LED+",
+      "role": "passive",
+      "notes": "LED anode. Built-in resistor for 5 V or 12 V: drive it through a transistor"
+    },
+    {
+      "name": "LED-",
+      "role": "ground",
+      "notes": "LED cathode"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "button",
+    "size": [
+      33,
+      33,
+      35
+    ],
+    "color": "#D0312D"
+  },
+  "keywords": [
+    "arcade button",
+    "push button",
+    "led button",
+    "microswitch",
+    "pulsante",
+    "pulsante arcade"
+  ],
+  "sources": [
+    {
+      "title": "Omron V-series basic switch datasheet",
+      "section": "Terminals COM, NO, NC"
+    },
+    {
+      "title": "Arduino reference",
+      "section": "pinMode INPUT_PULLUP"
+    }
+  ]
+}

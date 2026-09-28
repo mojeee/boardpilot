@@ -1,0 +1,49 @@
+{
+  "id": "servo-fs90r",
+  "name": "FS90R continuous rotation servo",
+  "category": "output",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Brown wire"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Red wire, 4.8 to 6 V: use VIN"
+    },
+    {
+      "name": "SIG",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Orange wire. 50 Hz PWM: 1.5 ms = stop, shorter or longer = speed and direction"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "motor",
+    "size": [
+      23.2,
+      12.5,
+      22
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "fs90r",
+    "servo",
+    "continuous rotation",
+    "360",
+    "wheel",
+    "servomotore",
+    "rotazione continua"
+  ],
+  "sources": [
+    {
+      "title": "Feetech FS90R datasheet",
+      "section": "Supply 4.8 to 6 V; 1500 µs neutral (stop)"
+    }
+  ]
+}

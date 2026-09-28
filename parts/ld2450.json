@@ -1,0 +1,19 @@
+{
+  "id": "ld2450",
+  "name": "HLK-LD2450 mmWave multi-target tracking radar",
+  "category": "sensor",
+  "measures": ["presence", "position", "distance"],
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "TX", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (256000 baud)" },
+    { "name": "RX", "role": "digital_in", "needsOutput": true, "notes": "UART: the part receives data here. Connect to an ESP32 TX pin" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [44,15,3], "color": "#1A1A1A" },
+  "keywords": ["ld2450", "hlk-ld2450", "hi-link", "mmwave", "radar", "tracking", "presenza", "human presence"],
+  "sources": [
+    { "title": "Hi-Link HLK-LD2450 user manual", "section": "Supply 5 V, I/O 3.3 V; UART 256000 baud; tracks up to 3 targets, about 6 m" }
+  ]
+}

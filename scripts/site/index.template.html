@@ -37,13 +37,14 @@
   <body>
     <header class="nav">
       <div class="wrap nav-in">
-        <a class="brand" href="{{HOME}}"><span class="logo"><span></span></span>BoardPilot</a>
+        <a class="brand" href="{{HOME}}"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="#features" data-i18n="nav.features">Features</a>
           <a href="#how" data-i18n="nav.how">How it works</a>
           <a href="#safety" data-i18n="nav.safety">Safety</a>
           <a href="#pricing" data-i18n="nav.pricing">Pricing</a>
           <a href="#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="{{PARTS}}" data-i18n="nav.parts">Parts library</a>
           <a href="{{PINOUT}}" data-i18n="nav.pinout">ESP32 pinout</a>
         </nav>
         <div class="nav-right">
@@ -132,7 +133,7 @@
             <article class="card">
               <div class="icon i-ai"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/></svg></div>
               <h3 data-i18n="f6.t">An honest assistant</h3>
-              <p data-i18n="f6.d">Optional AI that only states what it measured, labels guesses as suggestions and cites the datasheet section for everything else.</p>
+              <p data-i18n="f6.d">Optional AI (free demo, or your own Claude, GPT or Gemini key) that only states what it measured, labels guesses as suggestions and cites the datasheet section for everything else.</p>
             </article>
           </div>
         </div>
@@ -153,6 +154,21 @@
             <img id="shot" src="/img/debug.jpg" srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1109" data-i18n-alt="img.shot" alt="BoardPilot screenshot: debug wizard result on a 3D ESP32 board" loading="lazy" />
           </div>
           <p class="caption" id="shot-caption" data-i18n="cap.debug">The debug wizard found SDA and SCL crossed at the sensor, and shows which wires to swap.</p>
+        </div>
+      </section>
+
+      <section class="section parts-promo">
+        <div class="wrap two">
+          <div>
+            <span class="eyebrow" data-i18n="lib.eyebrow">Open parts library</span>
+            <h2><span class="big-num">{{PARTS_COUNT}}</span> <span data-i18n="lib.title">parts, ready to wire to an ESP32.</span></h2>
+            <p class="lead" data-i18n="lib.lead">Sensors, displays, motor drivers, radios and more: pins, supply voltage, I2C addresses, chip ID checks, a 3D model and a safe ESP32 wiring for each. Free to reuse under CC BY 4.0.</p>
+            <div class="cta">
+              <a class="btn primary" href="{{PARTS}}" data-i18n="lib.browse">Browse the parts library</a>
+              <a class="btn" href="/parts.json" data-i18n="lib.json">Download JSON</a>
+            </div>
+          </div>
+          <div class="part-cloud">{{PARTS_CLOUD}}</div>
         </div>
       </section>
 
@@ -233,7 +249,7 @@
           <details><summary data-i18n="q2">Which boards does it support?</summary><p data-i18n="a2">Today: the ESP32 DevKit with 30 pins (ESP32-WROOM-32). Boards are data files, so ESP32-S3 and STM32 with ST-Link are next.</p></details>
           <details><summary data-i18n="q3">My computer warns that the app is from an unknown developer.</summary><p data-i18n="a3">The early builds are not signed yet. On Mac, right-click BoardPilot in Applications and choose Open (or System Settings → Privacy &amp; Security → Open Anyway). On Windows, click More info → Run anyway in the SmartScreen window.</p></details>
           <details><summary data-i18n="q4">Do I need a board to try it?</summary><p data-i18n="a4">No. Simulator mode runs the whole app with a virtual board and realistic faults: crossed wires, a fake BME280, brownouts, wrong baud rate.</p></details>
-          <details><summary data-i18n="q5">Does it need the internet or an AI account?</summary><p data-i18n="a5">No. Checks, measurements and the simulator work offline. The AI assistant is optional and works with your own API key from Anthropic (Claude), OpenAI (GPT) or Google (Gemini).</p></details>
+          <details><summary data-i18n="q5">Does it need the internet or an AI account?</summary><p data-i18n="a5">No. Checks, measurements and the simulator work offline. The AI assistant is optional: try it with the free demo (a limited, older Gemini model, for testing only) or use your own key for Claude, GPT or Gemini.</p></details>
           <details><summary data-i18n="q6">What does it install on my board?</summary><p data-i18n="a6">Only when you confirm: a small diagnostic agent that lets the app read pins and run bus tests. Your program is backed up first and comes back with one click.</p></details>
         </div>
       </section>
@@ -241,11 +257,12 @@
 
     <footer class="footer">
       <div class="wrap foot-in">
-        <div class="brand"><span class="logo"><span></span></span>BoardPilot</div>
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</div>
         <div class="foot-links">
           <a href="https://github.com/mojeee/boardpilot">GitHub</a>
           <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
           <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="{{PARTS}}" data-i18n="nav.parts">Parts library</a>
           <a href="{{PINOUT}}" data-i18n="nav.pinout">ESP32 pinout</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
         </div>

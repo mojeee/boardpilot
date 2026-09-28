@@ -1,0 +1,74 @@
+{
+  "id": "cc1101",
+  "name": "CC1101 sub-GHz radio module",
+  "category": "output",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3.3 V only. Never 5 V"
+    },
+    {
+      "name": "GDO0",
+      "role": "int",
+      "notes": "Configurable output (packet received / sent)"
+    },
+    {
+      "name": "CSN",
+      "role": "spi_cs",
+      "notes": "SPI chip select"
+    },
+    {
+      "name": "SCK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "MOSI",
+      "role": "spi_mosi"
+    },
+    {
+      "name": "MISO",
+      "role": "spi_miso",
+      "notes": "Also GDO1"
+    },
+    {
+      "name": "GDO2",
+      "role": "int",
+      "notes": "Configurable output, optional"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      34,
+      15,
+      3
+    ],
+    "color": "#1E7B3A"
+  },
+  "keywords": [
+    "cc1101",
+    "sub-ghz",
+    "433 mhz",
+    "868 mhz",
+    "radio",
+    "transceiver",
+    "ricetrasmettitore"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments CC1101 datasheet",
+      "section": "4-wire SPI interface; GDO0 and GDO2 configurable outputs; supply 1.8 to 3.6 V"
+    },
+    {
+      "title": "Common 8-pin CC1101 module pinout",
+      "section": "GND, VCC, GDO0, CSN, SCK, MOSI, MISO/GDO1, GDO2. Order differs between boards: check the silkscreen"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "mosfet-irf520",
+  "name": "MOSFET switch module (IRF520)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "SIG",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "IRF520 only half-opens at 3.3 V: fine for LEDs, weak for motors. A logic-level MOSFET is better"
+    },
+    {
+      "name": "VCC",
+      "role": "passive",
+      "notes": "Not needed on most versions"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "VIN",
+      "role": "passive",
+      "notes": "Load supply + (up to 24 V)"
+    },
+    {
+      "name": "V+",
+      "role": "passive",
+      "notes": "To the load +"
+    },
+    {
+      "name": "V-",
+      "role": "passive",
+      "notes": "To the load -"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      34,
+      20,
+      12
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "mosfet",
+    "irf520",
+    "switch",
+    "pwm",
+    "transistor",
+    "interruttore"
+  ],
+  "sources": [
+    {
+      "title": "Vishay IRF520 datasheet",
+      "section": "Gate threshold 2 to 4 V: not fully on at 3.3 V"
+    }
+  ]
+}

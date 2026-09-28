@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ILI9341 2.8&quot; TFT + ESP32: pinout and wiring</title>
+    <meta name="description" content="How to wire the ILI9341 2.8&quot; TFT 240x320 with touch (SPI) to an ESP32: pins, suggested GPIO, 3.3-5 V supply. Free part data from BoardPilot." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/parts/ili9341-tft-28/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/parts/ili9341-tft-28/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/parts/ili9341-tft-28/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/parts/ili9341-tft-28/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/parts/ili9341-tft-28/" />
+    <meta property="og:title" content="ILI9341 2.8&quot; TFT + ESP32: pinout and wiring" />
+    <meta property="og:description" content="How to wire the ILI9341 2.8&quot; TFT 240x320 with touch (SPI) to an ESP32: pins, suggested GPIO, 3.3-5 V supply. Free part data from BoardPilot." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ILI9341 2.8\" TFT 240x320 with touch (SPI) with ESP32","description":"How to wire the ILI9341 2.8\" TFT 240x320 with touch (SPI) to an ESP32: pins, suggested GPIO, 3.3-5 V supply. Free part data from BoardPilot.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/parts/ili9341-tft-28/","about":"ILI9341 2.8\" TFT 240x320 with touch (SPI)","keywords":"ili9341, tft, 2.8, 240x320, touch, xpt2046, display, touchscreen","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Parts library","item":"https://boardpilot.agentflowbind.com/parts/"},{"@type":"ListItem","position":3,"name":"ILI9341 2.8\" TFT 240x320 with touch (SPI)","item":"https://boardpilot.agentflowbind.com/parts/ili9341-tft-28/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/#how" data-i18n="nav.how">How it works</a>
+          <a href="/#safety" data-i18n="nav.safety">Safety</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/esp32-pinout/" data-i18n="nav.pinout">ESP32 pinout</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/parts/ili9341-tft-28/" hreflang="en" class="on">EN</a><a href="/it/parts/ili9341-tft-28/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs"><a href="/">BoardPilot</a> / <a href="/parts/">Parts library</a> / <span>ILI9341 2.8&quot; TFT 240x320 with touch (SPI)</span></nav>
+        <h1>ILI9341 2.8&quot; TFT 240x320 with touch (SPI) with ESP32</h1>
+        <div class="facts-row">
+          <span><b>Supply</b> 3.3-5 V</span>
+          <span><b>Bus</b> SPI</span>
+          
+          
+        </div>
+        <svg viewBox="0 0 424 170" class="part-svg" style="max-width:530px" role="img" aria-label="ILI9341 2.8&quot; TFT 240x320 with touch (SPI) pins"><rect x="20" y="16" width="384" height="112" rx="10" fill="#B22222" stroke="rgba(255,255,255,.18)"/><rect x="192" y="36" width="40" height="30" rx="4" fill="#15181c" opacity=".85"/><g><rect x="39" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="43" cy="118" r="7" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><text x="43" y="100" transform="rotate(-60 43 100)" class="pp">VCC</text></g><g><rect x="65" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="69" cy="118" r="7" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><text x="69" y="100" transform="rotate(-60 69 100)" class="pp">GND</text></g><g><rect x="91" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="95" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="95" y="100" transform="rotate(-60 95 100)" class="pp">CS</text></g><g><rect x="117" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="121" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="121" y="100" transform="rotate(-60 121 100)" class="pp">RESET</text></g><g><rect x="143" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="147" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="147" y="100" transform="rotate(-60 147 100)" class="pp">DC</text></g><g><rect x="169" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="173" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="173" y="100" transform="rotate(-60 173 100)" class="pp">SDI(MOSI)</text></g><g><rect x="195" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="199" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="199" y="100" transform="rotate(-60 199 100)" class="pp">SCK</text></g><g><rect x="221" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="225" cy="118" r="7" fill="#12171C" stroke="#7D8997" stroke-width="3"/><text x="225" y="100" transform="rotate(-60 225 100)" class="pp">LED</text></g><g><rect x="247" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="251" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="251" y="100" transform="rotate(-60 251 100)" class="pp">SDO(MISO)</text></g><g><rect x="273" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="277" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="277" y="100" transform="rotate(-60 277 100)" class="pp">T_CLK</text></g><g><rect x="299" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="303" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="303" y="100" transform="rotate(-60 303 100)" class="pp">T_CS</text></g><g><rect x="325" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="329" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="329" y="100" transform="rotate(-60 329 100)" class="pp">T_DIN</text></g><g><rect x="351" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="355" cy="118" r="7" fill="#12171C" stroke="#E07BD4" stroke-width="3"/><text x="355" y="100" transform="rotate(-60 355 100)" class="pp">T_DO</text></g><g><rect x="377" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="381" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="381" y="100" transform="rotate(-60 381 100)" class="pp">T_IRQ</text></g></svg>
+        <h2>Pins and ESP32 wiring</h2>
+        <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Role</th><th>ESP32 pin</th><th>Notes</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>VCC</td><td>Power</td><td class="mono">3V3</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td>Ground</td><td class="mono">GND</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>CS</td><td>SPI chip select</td><td class="mono">D5</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>RESET</td><td>Input (the ESP32 drives it)</td><td class="mono">D25</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>DC</td><td>Input (the ESP32 drives it)</td><td class="mono">D26</td><td>Data / command select</td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>SDI(MOSI)</td><td>SPI MOSI</td><td class="mono">D23</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>SCK</td><td>SPI clock</td><td class="mono">D18</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>LED</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Backlight: to 3V3</td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>SDO(MISO)</td><td>SPI MISO</td><td class="mono">D19</td><td>Optional: only needed to read from the display</td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>T_CLK</td><td>SPI clock</td><td class="mono">D27</td><td>Touch controller clock (XPT2046), shares the SPI bus</td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>T_CS</td><td>SPI chip select</td><td class="mono">D32</td><td>Touch controller chip select</td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>T_DIN</td><td>SPI MOSI</td><td class="mono">D33</td><td>Touch controller data in</td></tr><tr><td class="mono"><span class="dot" style="background:#E07BD4"></span>T_DO</td><td>SPI MISO</td><td class="mono">D4</td><td>Touch controller data out</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>T_IRQ</td><td>Interrupt</td><td class="mono">D35</td><td>LOW while the screen is touched</td></tr></tbody></table></div>
+        <p class="fine">Suggested wiring for the 30-pin ESP32 DevKit, avoiding flash, input-only and strapping pins. BoardPilot checks it for you as you wire.</p>
+        
+        
+        
+        <h2>Sources</h2><ul class="sources"><li>ILITEK ILI9341 datasheet, 4-line serial interface</li><li>XPT2046 touch controller datasheet, SPI interface and PENIRQ</li></ul>
+        <div class="cta-box"><h2>Try it in 3D in BoardPilot</h2><p><a class="btn primary" href="/#download">BoardPilot</a> <a class="btn" href="/parts/ili9341-tft-28.json">Part data (JSON)</a></p></div>
+        <h2>Related parts</h2><div class="part-grid"><a class="part-card" href="/parts/apa102-strip/"><span class="sw" style="background:#EDEDED"></span><b>APA102 / SK9822 LED strip (clock + data)</b></a><a class="part-card" href="/parts/epaper-154/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 1.54&quot; 200x200 (SPI)</b></a><a class="part-card" href="/parts/epaper-213/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 2.13&quot; 250x122 (SPI)</b></a><a class="part-card" href="/parts/epaper-29/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 2.9&quot; 296x128 (SPI)</b></a><a class="part-card" href="/parts/epaper-42/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 4.2&quot; 400x300 (SPI)</b></a><a class="part-card" href="/parts/gc9a01-round/"><span class="sw" style="background:#1F4FA8"></span><b>GC9A01 1.28&quot; round IPS 240x240 (SPI)</b></a></div>
+        <p class="fine">Part data: CC BY 4.0, free to reuse with credit to BoardPilot.</p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/esp32-pinout/" data-i18n="nav.pinout">ESP32 pinout</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

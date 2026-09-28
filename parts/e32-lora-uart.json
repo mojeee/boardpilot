@@ -1,0 +1,22 @@
+{
+  "id": "e32-lora-uart",
+  "name": "Ebyte E32 / E22 LoRa UART module",
+  "category": "output",
+  "pins": [
+    { "name": "M0", "role": "digital_in", "needsOutput": true, "notes": "Mode select with M1. Both LOW = normal mode. Never leave floating" },
+    { "name": "M1", "role": "digital_in", "needsOutput": true, "notes": "Mode select. Both HIGH = configuration mode" },
+    { "name": "RXD", "role": "digital_in", "needsOutput": true, "notes": "UART: the part receives data here. Connect to an ESP32 TX pin (9600 baud by default)" },
+    { "name": "TXD", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin" },
+    { "name": "AUX", "role": "digital_out", "notes": "LOW while the module is busy. Wait for HIGH before sending" },
+    { "name": "VCC", "role": "power", "notes": "Draws over 100 mA when sending at full power" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [21, 36, 4], "color": "#2B5F9E" },
+  "keywords": ["e32", "e22", "ebyte", "lora", "uart", "433 mhz", "868 mhz", "sx1278", "radio", "seriale"],
+  "sources": [
+    { "title": "Ebyte E32-433T20D user manual", "section": "Pin definition (M0, M1, RXD, TXD, AUX, VCC, GND); operating modes" },
+    { "title": "Ebyte E22-900T22D user manual", "section": "Pin definition; same 7-pin order as E32" }
+  ]
+}

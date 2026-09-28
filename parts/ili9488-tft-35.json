@@ -1,0 +1,29 @@
+{
+  "id": "ili9488-tft-35",
+  "name": "ILI9488 3.5\" TFT 320x480 with touch (SPI)",
+  "category": "display",
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "On-board 3.3 V regulator: 3V3 or 5 V both work on most boards" },
+    { "name": "GND", "role": "ground" },
+    { "name": "CS", "role": "spi_cs" },
+    { "name": "RESET", "role": "digital_in", "needsOutput": true, "notes": "Reset" },
+    { "name": "DC/RS", "role": "digital_in", "needsOutput": true, "notes": "Data / command select" },
+    { "name": "SDI(MOSI)", "role": "spi_mosi" },
+    { "name": "SCK", "role": "spi_sck" },
+    { "name": "LED", "role": "passive", "notes": "Backlight: to 3V3 (always on) or through a transistor for dimming" },
+    { "name": "SDO(MISO)", "role": "spi_miso", "notes": "Leave unconnected if touch or SD misbehave: some ILI9488 boards never release this line" },
+    { "name": "T_CLK", "role": "spi_sck", "notes": "Touch controller clock (XPT2046), shares the SPI bus" },
+    { "name": "T_CS", "role": "spi_cs", "notes": "Touch controller chip select" },
+    { "name": "T_DIN", "role": "spi_mosi", "notes": "Touch controller data in" },
+    { "name": "T_DO", "role": "spi_miso", "notes": "Touch controller data out" },
+    { "name": "T_IRQ", "role": "int", "notes": "LOW while the screen is touched" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": { "shape": "oled", "size": [56, 80, 6], "color": "#B22222" },
+  "keywords": ["ili9488", "tft", "3.5", "320x480", "touch", "xpt2046", "display", "schermo"],
+  "sources": [
+    { "title": "ILITEK ILI9488 datasheet", "section": "4-line serial interface: 18-bit color only (3 bytes per pixel)" },
+    { "title": "LCDwiki 3.5inch SPI Module ILI9488 (MSP3520) user manual", "section": "Pin description" }
+  ]
+}

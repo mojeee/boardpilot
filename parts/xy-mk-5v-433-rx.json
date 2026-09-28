@@ -1,0 +1,18 @@
+{
+  "id": "xy-mk-5v-433-rx",
+  "name": "433 MHz receiver (XY-MK-5V)",
+  "category": "input",
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "5 V only (4.5 to 5.5 V)" },
+    { "name": "DATA", "role": "digital_out", "notes": "Data output at 5 V level: use a voltage divider before the ESP32" },
+    { "name": "DATA2", "role": "passive", "notes": "Same signal as DATA (joined on the board)" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [30, 14, 7], "color": "#1E7B3A" },
+  "keywords": ["xy-mk-5v", "mx-rm-5v", "433 mhz", "rf receiver", "ricevitore", "radio", "rc-switch"],
+  "sources": [
+    { "title": "XY-MK-5V 433 MHz receiver module datasheet", "section": "Pins VCC, DATA, DATA, GND; supply 5 V DC" }
+  ]
+}

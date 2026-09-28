@@ -1,0 +1,21 @@
+{
+  "id": "zmpt101b",
+  "name": "ZMPT101B AC voltage sensor module",
+  "category": "sensor",
+  "measures": ["voltage"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Use 3V3 so OUT stays under 3.3 V. Some boards have a second GND pin" },
+    { "name": "OUT", "role": "analog_out", "notes": "AC wave centred on VCC/2; set the amplitude with the trimmer. To an ADC pin (prefer ADC1: GPIO 32 to 39)" },
+    { "name": "GND", "role": "ground" },
+    { "name": "L", "role": "passive", "notes": "MAINS input! Only a qualified person connects this. Never to the ESP32" },
+    { "name": "N", "role": "passive", "notes": "MAINS input! Only a qualified person connects this. Never to the ESP32" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [49,19,20], "color": "#1F4FA8" },
+  "keywords": ["zmpt101b", "ac voltage", "mains", "voltage transformer", "tensione alternata", "rete elettrica"],
+  "sources": [
+    { "title": "ZMPT101B voltage transformer datasheet", "section": "2 mA:2 mA current transformer for voltage sensing" },
+    { "title": "Espressif ESP32 Technical Reference Manual", "section": "ADC: input range and attenuation" }
+  ]
+}

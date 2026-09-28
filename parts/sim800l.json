@@ -1,0 +1,26 @@
+{
+  "id": "sim800l",
+  "name": "SIM800L GSM/GPRS module (2G)",
+  "category": "output",
+  "pins": [
+    { "name": "NET", "role": "passive", "notes": "Antenna connection" },
+    { "name": "VCC", "role": "power", "notes": "3.4 to 4.4 V with peaks up to 2 A. Use a Li-ion cell or a buck converter, not the ESP32 pins" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true, "notes": "Reset, active LOW" },
+    { "name": "RXD", "role": "digital_in", "needsOutput": true, "notes": "UART: the module receives here (2.8 V logic). Connect to an ESP32 TX pin through a divider" },
+    { "name": "TXD", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin. Auto-baud: try 9600 or 115200" },
+    { "name": "GND", "role": "ground", "notes": "Connect to ESP32 GND too" },
+    { "name": "RING", "role": "digital_out", "notes": "LOW on an incoming call or SMS, optional" },
+    { "name": "DTR", "role": "passive", "notes": "Sleep control, optional" },
+    { "name": "MIC+", "role": "passive", "notes": "Microphone, optional" },
+    { "name": "MIC-", "role": "passive" },
+    { "name": "SPK+", "role": "passive", "notes": "Speaker, optional" },
+    { "name": "SPK-", "role": "passive" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.4-4.4",
+  "model": { "shape": "module", "size": [31.5, 23, 4], "color": "#B22222" },
+  "keywords": ["sim800l", "gsm", "gprs", "sms", "2g", "modem", "cellulare", "scheda sim"],
+  "sources": [
+    { "title": "SIMCom SIM800 series hardware design", "section": "Power supply 3.4 to 4.4 V, burst current up to 2 A; UART at 2.8 V levels" }
+  ]
+}

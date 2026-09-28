@@ -1,0 +1,41 @@
+{
+  "id": "tca9548a-mux",
+  "name": "TCA9548A I2C multiplexer (8 channels)",
+  "category": "output",
+  "pins": [
+    { "name": "VIN", "role": "power", "notes": "3 to 5 V" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "RST", "role": "passive", "notes": "Reset, active LOW, pulled up. Leave unconnected" },
+    { "name": "A0", "role": "passive", "notes": "Address select. All unconnected = 0x70" },
+    { "name": "A1", "role": "passive" },
+    { "name": "A2", "role": "passive" },
+    { "name": "SD0", "role": "passive", "notes": "Channel SDA: to a sensor, not to the ESP32" },
+    { "name": "SC0", "role": "passive", "notes": "Channel SCL: to a sensor, not to the ESP32" },
+    { "name": "SD1", "role": "passive" },
+    { "name": "SC1", "role": "passive" },
+    { "name": "SD2", "role": "passive" },
+    { "name": "SC2", "role": "passive" },
+    { "name": "SD3", "role": "passive" },
+    { "name": "SC3", "role": "passive" },
+    { "name": "SD4", "role": "passive" },
+    { "name": "SC4", "role": "passive" },
+    { "name": "SD5", "role": "passive" },
+    { "name": "SC5", "role": "passive" },
+    { "name": "SD6", "role": "passive" },
+    { "name": "SC6", "role": "passive" },
+    { "name": "SD7", "role": "passive" },
+    { "name": "SC7", "role": "passive" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x70", "0x71", "0x72", "0x73", "0x74", "0x75", "0x76", "0x77"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [62, 21, 1.6], "color": "#1F4FA8" },
+  "keywords": ["tca9548a", "pca9548a", "i2c multiplexer", "i2c mux", "same address", "multiplexer", "multiplatore i2c"],
+  "sources": [
+    { "title": "Texas Instruments TCA9548A datasheet", "section": "Slave address 1110 A2 A1 A0 (0x70 to 0x77); control register selects channels" },
+    { "title": "Adafruit TCA9548A 1-to-8 I2C multiplexer breakout guide", "section": "Pinouts; channel pull-ups must be on the sensor boards" }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "flame-sensor",
+  "name": "Flame sensor module (KY-026 style)",
+  "category": "sensor",
+  "measures": [
+    "flame"
+  ],
+  "pins": [
+    {
+      "name": "AO",
+      "role": "analog_out",
+      "notes": "To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Marked G on the board"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Marked + on the board. Use 3V3"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "Changes level when a flame is seen (threshold set with the trimmer)"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      36,
+      15,
+      8
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "flame",
+    "fire",
+    "ky-026",
+    "infrared",
+    "fiamma",
+    "fuoco",
+    "incendio"
+  ],
+  "sources": [
+    {
+      "title": "Joy-IT KY-026 datasheet",
+      "section": "Pins A0, G, +, D0; IR photodiode 760 to 1100 nm"
+    }
+  ]
+}

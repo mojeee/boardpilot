@@ -1,0 +1,60 @@
+{
+  "id": "voltage-sensor-25v",
+  "name": "Voltage sensor module (0-25 V divider)",
+  "category": "sensor",
+  "measures": [
+    "voltage"
+  ],
+  "pins": [
+    {
+      "name": "S",
+      "role": "analog_out",
+      "notes": "Input voltage divided by 5. Keep the measured voltage under about 16 V so S stays below 3.3 V"
+    },
+    {
+      "name": "+",
+      "role": "passive",
+      "notes": "Not connected inside the module"
+    },
+    {
+      "name": "-",
+      "role": "ground"
+    },
+    {
+      "name": "VCC_IN",
+      "role": "passive",
+      "notes": "Screw terminal: voltage to measure"
+    },
+    {
+      "name": "GND_IN",
+      "role": "passive",
+      "notes": "Screw terminal: ground of the measured circuit"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      27,
+      14,
+      12
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "voltage sensor",
+    "divider",
+    "battery",
+    "voltmeter",
+    "tensione",
+    "batteria",
+    "partitore"
+  ],
+  "sources": [
+    {
+      "title": "Generic 0-25 V voltage sensor module",
+      "section": "30 kΩ / 7.5 kΩ resistor divider (ratio 1:5)"
+    }
+  ]
+}

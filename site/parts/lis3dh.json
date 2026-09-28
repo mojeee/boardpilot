@@ -1,0 +1,81 @@
+{
+  "id": "lis3dh",
+  "name": "LIS3DH accelerometer",
+  "category": "sensor",
+  "measures": [
+    "acceleration"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "SDO",
+      "role": "passive",
+      "notes": "Address select: LOW = 0x18, HIGH = 0x19"
+    },
+    {
+      "name": "CS",
+      "role": "passive",
+      "notes": "HIGH (or unconnected on most boards) selects I2C"
+    },
+    {
+      "name": "INT1",
+      "role": "int"
+    },
+    {
+      "name": "INT2",
+      "role": "int"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x18",
+    "0x19"
+  ],
+  "idCheck": {
+    "register": "0x0F",
+    "expect": "0x33"
+  },
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      21.3,
+      15,
+      1.6
+    ],
+    "color": "#5B2A86"
+  },
+  "keywords": [
+    "lis3dh",
+    "st",
+    "accelerometer",
+    "acceleration",
+    "accelerometro"
+  ],
+  "sources": [
+    {
+      "title": "ST LIS3DH datasheet",
+      "section": "Register 0x0F WHO_AM_I (reads 0x33)"
+    },
+    {
+      "title": "ST LIS3DH datasheet",
+      "section": "I2C: SA0 (SDO) LOW 0x18, HIGH 0x19"
+    }
+  ]
+}

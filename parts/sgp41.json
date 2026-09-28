@@ -1,0 +1,22 @@
+{
+  "id": "sgp41",
+  "name": "SGP41 VOC + NOx sensor",
+  "category": "sensor",
+  "measures": ["voc", "nox"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Chip supply 1.7 to 3.6 V: use 3V3" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x59"],
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [15, 12, 1.6], "color": "#1A1A1A" },
+  "keywords": ["sgp41", "sensirion", "voc", "nox", "air quality", "qualità aria"],
+  "sources": [
+    { "title": "Sensirion SGP41 datasheet", "section": "I2C address 0x59; supply 1.7 to 3.6 V" },
+    { "title": "Sensirion SGP41 datasheet", "section": "Raw signals; VOC and NOx indexes need Sensirion’s gas index algorithm" }
+  ]
+}

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: ESP32 parts library
+    url: https://boardpilot.agentflowbind.com/parts/
+    about: Browse the 380+ parts before requesting a new one.

@@ -1,0 +1,57 @@
+{
+  "id": "ky-038",
+  "name": "KY-038 sound sensor",
+  "category": "sensor",
+  "measures": [
+    "sound"
+  ],
+  "pins": [
+    {
+      "name": "AO",
+      "role": "analog_out",
+      "notes": "To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Marked G on the board"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Marked + on the board. Use 3V3"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "Changes level when sound is louder than the trimmer threshold"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      42,
+      15,
+      8
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "ky-038",
+    "sound",
+    "microphone",
+    "noise",
+    "clap",
+    "suono",
+    "microfono",
+    "rumore"
+  ],
+  "sources": [
+    {
+      "title": "Joy-IT KY-038 datasheet",
+      "section": "Pins A0, G, +, D0"
+    }
+  ]
+}

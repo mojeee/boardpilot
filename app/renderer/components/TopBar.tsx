@@ -1,6 +1,7 @@
 import { useApp } from '../state/store';
 import { confirmRestore } from '../state/hw';
 import { Icon } from './Icon';
+import { LogoMark } from './Logo';
 import { LicenseChip } from './License';
 import { LANGS, getLanguage, type Lang } from '@shared/i18n';
 import { changeLanguage } from '../state/lang';
@@ -17,9 +18,7 @@ export function TopBar() {
   return (
     <header className="topbar">
       <div className="brand">
-        <span className="logo">
-          <span />
-        </span>
+        <LogoMark size={24} />
         BoardPilot
       </div>
       <div className="conn">
@@ -61,9 +60,15 @@ export function TopBar() {
         <button
           className={`chip ai-set-chip ${ai.enabled ? 'ai-chip' : ''}`}
           onClick={openAiSettings}
-          title={ai.enabled ? t('{provider}, model {model}. Click to change.', { provider: PROVIDER_INFO[ai.provider].name, model: ai.model }) : t('Set up the AI assistant')}
+          title={
+            !ai.enabled
+              ? t('Set up the AI assistant')
+              : ai.provider === 'demo'
+                ? t('Free demo AI through BoardPilot’s test relay, for testing only. Click to add your own key.')
+                : t('{provider}, model {model}. Click to change.', { provider: PROVIDER_INFO[ai.provider].name, model: ai.model })
+          }
         >
-          <Icon name="ai" size={13} /> {ai.enabled ? PROVIDER_INFO[ai.provider].short : t('AI off')}
+          <Icon name="ai" size={13} /> {!ai.enabled ? t('AI off') : ai.provider === 'demo' ? t('AI demo') : PROVIDER_INFO[ai.provider].short}
         </button>
         <button className={`btn icon ${devOpen ? 'on' : ''}`} aria-label={t('Developer menu')} title={t('Developer menu (simulator)')} onClick={() => useApp.getState().set({ devOpen: !devOpen })}>
           <Icon name="gear" size={17} />

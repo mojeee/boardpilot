@@ -1,0 +1,18 @@
+{
+  "id": "ky-031",
+  "name": "KY-031 knock sensor",
+  "category": "sensor",
+  "measures": ["vibration"],
+  "pins": [
+    { "name": "S", "role": "digital_out", "notes": "Short pulse on a knock: use an interrupt" },
+    { "name": "VCC", "role": "power", "notes": "Middle pin, marked +. Use 3V3" },
+    { "name": "GND", "role": "ground", "notes": "Marked -" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [24,15,10], "color": "#1A1A1A" },
+  "keywords": ["ky-031", "knock", "shock", "tap", "bussare", "urto", "vibrazione"],
+  "sources": [
+    { "title": "Joy-IT KY-031 datasheet", "section": "Pins S (signal), + (middle), -; spring contact with 10 kΩ resistor" }
+  ]
+}

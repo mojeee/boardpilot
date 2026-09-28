@@ -1,0 +1,26 @@
+{
+  "id": "pcf8591-adc",
+  "name": "PCF8591 ADC/DAC module (YL-40)",
+  "category": "sensor",
+  "measures": ["voltage"],
+  "pins": [
+    { "name": "AOUT", "role": "passive", "notes": "DAC output (8-bit), optional" },
+    { "name": "AIN0", "role": "passive", "notes": "Analog input 0. On-board jumpers join a light sensor, thermistor and pot to some inputs" },
+    { "name": "AIN1", "role": "passive" },
+    { "name": "AIN2", "role": "passive" },
+    { "name": "AIN3", "role": "passive" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x48", "0x49", "0x4A", "0x4B", "0x4C", "0x4D", "0x4E", "0x4F"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "module", "size": [36, 26, 10], "color": "#1F4FA8" },
+  "keywords": ["pcf8591", "yl-40", "adc", "dac", "8 bit", "convertitore", "analogico"],
+  "sources": [
+    { "title": "NXP PCF8591 datasheet", "section": "Address 1001 A2 A1 A0 (0x48 to 0x4F, module uses 0x48); supply 2.5 to 6 V" }
+  ]
+}

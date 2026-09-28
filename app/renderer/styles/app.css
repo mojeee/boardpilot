@@ -522,7 +522,7 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .modal.ai-settings { width: min(620px, 94vw); max-height: 92vh; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
 .modal.ai-settings h2 { margin: 0; }
 .modal.ai-settings p { margin: 0; }
-.ai-prov-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ai-prov-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .ai-prov { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; padding: 10px 12px; border-radius: 10px; background: var(--chrome); border: 1px solid var(--line); min-width: 0; }
 .ai-prov:hover { border-color: #3a4552; }
 .ai-prov.on { border-color: var(--ai-line); background: var(--ai-bg); }
@@ -539,6 +539,13 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .modal.ai-settings .modal-actions { margin-top: 4px; align-items: center; }
 .modal.ai-settings .grow { flex: 1; }
 .ok-text { color: var(--ok); }
+.ai-demo-info { display: flex; flex-direction: column; gap: 6px; background: var(--ai-bg); border: 1px solid var(--ai-line); border-radius: var(--radius); padding: 10px 12px; }
+.ai-demo-info p:first-child { color: var(--text) !important; }
+
+/* free demo banner at the top of the assistant panel */
+.ai-demo-banner { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding: 7px 14px; font-size: 12px; line-height: 1.4; color: var(--text); background: rgba(242, 169, 59, 0.12); border-bottom: 1px solid rgba(242, 169, 59, 0.35); }
+.ai-demo-banner b { color: var(--warn); font-weight: 600; }
+.ai-demo-banner .link { font-size: 12px; }
 
 /* product photos for imported parts */
 .lib-thumb { width: 26px; height: 26px; border-radius: 5px; object-fit: cover; flex-shrink: 0; background: #fff; }

@@ -1,0 +1,17 @@
+{
+  "id": "ws2812-matrix-8x32",
+  "name": "WS2812B flexible LED matrix 8x32",
+  "category": "display",
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "256 LEDs: up to about 15 A at full white. Use a separate 5 V supply and limit brightness" },
+    { "name": "DIN", "role": "digital_in", "needsOutput": true, "notes": "Data in. Add a 330 Ω resistor; a 3.3 V to 5 V level shifter makes it reliable" },
+    { "name": "GND", "role": "ground", "notes": "Share it with the 5 V supply and the ESP32 GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [80, 80, 2], "color": "#1A1A1A" },
+  "keywords": ["ws2812b", "neopixel", "matrix", "8x32", "led panel", "addressable", "matrice led"],
+  "sources": [
+    { "title": "Worldsemi WS2812B datasheet", "section": "Supply 3.5 to 5.3 V; each LED up to about 60 mA at full white" }
+  ]
+}

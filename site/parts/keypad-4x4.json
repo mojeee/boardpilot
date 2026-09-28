@@ -1,0 +1,76 @@
+{
+  "id": "keypad-4x4",
+  "name": "4x4 membrane keypad",
+  "category": "input",
+  "pins": [
+    {
+      "name": "R1",
+      "role": "digital_out",
+      "notes": "Row 1. Rows are read with INPUT_PULLUP"
+    },
+    {
+      "name": "R2",
+      "role": "digital_out",
+      "notes": "Row 2"
+    },
+    {
+      "name": "R3",
+      "role": "digital_out",
+      "notes": "Row 3"
+    },
+    {
+      "name": "R4",
+      "role": "digital_out",
+      "notes": "Row 4"
+    },
+    {
+      "name": "C1",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Column 1. Columns are driven LOW one at a time"
+    },
+    {
+      "name": "C2",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Column 2"
+    },
+    {
+      "name": "C3",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Column 3"
+    },
+    {
+      "name": "C4",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Column 4"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      69,
+      77,
+      1
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "keypad",
+    "4x4",
+    "membrane",
+    "matrix keypad",
+    "tastierino",
+    "tastiera"
+  ],
+  "sources": [
+    {
+      "title": "Arduino Keypad library (Mark Stanley, Alexander Brevig)",
+      "section": "Row/column scanning; pin 1 to 8 = R1-R4, C1-C4 on common membrane keypads"
+    }
+  ]
+}

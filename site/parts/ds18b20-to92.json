@@ -1,0 +1,50 @@
+{
+  "id": "ds18b20-to92",
+  "name": "DS18B20 temperature sensor (TO-92)",
+  "category": "sensor",
+  "measures": [
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Left leg, flat side facing you"
+    },
+    {
+      "name": "DQ",
+      "role": "onewire",
+      "notes": "Middle leg. Needs a 4.7 kΩ pull-up to 3.3 V"
+    },
+    {
+      "name": "VDD",
+      "role": "power",
+      "notes": "Right leg"
+    }
+  ],
+  "bus": "onewire",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "chip",
+    "size": [
+      8.6,
+      4.2,
+      5.2
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ds18b20",
+    "onewire",
+    "to-92",
+    "temperature",
+    "dallas",
+    "temperatura"
+  ],
+  "sources": [
+    {
+      "title": "Maxim DS18B20 datasheet",
+      "section": "TO-92 pin configuration (bottom view): 1 GND, 2 DQ, 3 VDD"
+    }
+  ]
+}

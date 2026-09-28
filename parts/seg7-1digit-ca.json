@@ -1,0 +1,24 @@
+{
+  "id": "seg7-1digit-ca",
+  "name": "7-segment digit 0.56\" common anode",
+  "category": "display",
+  "pins": [
+    { "name": "E", "role": "digital_in", "needsOutput": true, "notes": "Segment: LOW = on. Each segment through a 220 Ω resistor" },
+    { "name": "D", "role": "digital_in", "needsOutput": true },
+    { "name": "COM", "role": "power", "notes": "Common anode: to 3V3" },
+    { "name": "C", "role": "digital_in", "needsOutput": true },
+    { "name": "DP", "role": "digital_in", "needsOutput": true, "notes": "Decimal point" },
+    { "name": "B", "role": "digital_in", "needsOutput": true },
+    { "name": "A", "role": "digital_in", "needsOutput": true },
+    { "name": "COM2", "role": "power", "notes": "Second common pin, same as COM" },
+    { "name": "F", "role": "digital_in", "needsOutput": true },
+    { "name": "G", "role": "digital_in", "needsOutput": true }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "chip", "size": [26.4, 19, 8], "color": "#EDEDED" },
+  "keywords": ["7 segment", "common anode", "5161bs", "digit", "display 7 segmenti", "anodo comune"],
+  "sources": [
+    { "title": "5161BS 0.56\" 7-segment datasheet", "section": "Pins 1 to 10: E D COM C DP B A COM F G" }
+  ]
+}

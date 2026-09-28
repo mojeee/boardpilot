@@ -1,0 +1,54 @@
+{
+  "id": "rain-sensor",
+  "name": "Rain sensor module (FC-37 / YL-83)",
+  "category": "sensor",
+  "measures": [
+    "rain"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Use 3V3 so AO stays within the ADC range"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "DO",
+      "role": "digital_out",
+      "notes": "LOW when rain is detected (threshold set with the trimmer)"
+    },
+    {
+      "name": "AO",
+      "role": "analog_out",
+      "notes": "Lower voltage means more water. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      30,
+      16,
+      8
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "rain",
+    "fc-37",
+    "yl-83",
+    "raindrop",
+    "pioggia",
+    "sensore pioggia"
+  ],
+  "sources": [
+    {
+      "title": "Texas Instruments LM393 datasheet",
+      "section": "Comparator output (DO)"
+    }
+  ]
+}

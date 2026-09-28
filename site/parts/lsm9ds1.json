@@ -1,0 +1,113 @@
+{
+  "id": "lsm9ds1",
+  "name": "LSM9DS1 9-axis IMU breakout",
+  "category": "sensor",
+  "measures": [
+    "acceleration",
+    "rotation",
+    "magnetic field",
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power",
+      "notes": "Adafruit-style pin order. SparkFun boards use other names and order"
+    },
+    {
+      "name": "3VO",
+      "role": "passive",
+      "notes": "Output of the on-board 3.3 V regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "CSAG",
+      "role": "passive",
+      "notes": "Accel/gyro SPI select. Leave unconnected for I2C"
+    },
+    {
+      "name": "CSM",
+      "role": "passive",
+      "notes": "Magnetometer SPI select. Leave unconnected for I2C"
+    },
+    {
+      "name": "SDOAG",
+      "role": "passive",
+      "notes": "Accel/gyro address: HIGH = 0x6B, LOW = 0x6A"
+    },
+    {
+      "name": "SDOM",
+      "role": "passive",
+      "notes": "Magnetometer address: HIGH = 0x1E, LOW = 0x1C"
+    },
+    {
+      "name": "INT1",
+      "role": "int",
+      "notes": "Accel/gyro interrupt, optional"
+    },
+    {
+      "name": "INT2",
+      "role": "int",
+      "notes": "Accel/gyro interrupt, optional"
+    },
+    {
+      "name": "INTM",
+      "role": "int",
+      "notes": "Magnetometer interrupt, optional"
+    },
+    {
+      "name": "DRDY",
+      "role": "int",
+      "notes": "Magnetometer data ready, optional"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x6B",
+    "0x6A",
+    "0x1E",
+    "0x1C"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      34,
+      20,
+      1.6
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "lsm9ds1",
+    "st",
+    "imu",
+    "9dof",
+    "accelerometer",
+    "gyro",
+    "magnetometer",
+    "giroscopio"
+  ],
+  "sources": [
+    {
+      "title": "ST LSM9DS1 datasheet",
+      "section": "WHO_AM_I 0x0F: accel/gyro reads 0x68, magnetometer reads 0x3D (two I2C devices)"
+    },
+    {
+      "title": "ST LSM9DS1 datasheet",
+      "section": "I2C addresses: accel/gyro 0x6A/0x6B, magnetometer 0x1C/0x1E"
+    }
+  ]
+}

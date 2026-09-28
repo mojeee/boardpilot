@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TM1637 6-digit 7-segment display con ESP32: piedinatura e collegamenti</title>
+    <meta name="description" content="Come collegare TM1637 6-digit 7-segment display a un ESP32: pin, GPIO consigliati, alimentazione 3.3-5 V. Dati gratuiti di BoardPilot." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/parts/tm1637-6digit/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/parts/tm1637-6digit/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/parts/tm1637-6digit/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/parts/tm1637-6digit/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/parts/tm1637-6digit/" />
+    <meta property="og:title" content="TM1637 6-digit 7-segment display con ESP32: piedinatura e collegamenti" />
+    <meta property="og:description" content="Come collegare TM1637 6-digit 7-segment display a un ESP32: pin, GPIO consigliati, alimentazione 3.3-5 V. Dati gratuiti di BoardPilot." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"TM1637 6-digit 7-segment display con ESP32","description":"Come collegare TM1637 6-digit 7-segment display a un ESP32: pin, GPIO consigliati, alimentazione 3.3-5 V. Dati gratuiti di BoardPilot.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/parts/tm1637-6digit/","about":"TM1637 6-digit 7-segment display","keywords":"tm1637, 7 segment, 6 digit, display, display 7 segmenti, contatore","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/it/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Libreria componenti","item":"https://boardpilot.agentflowbind.com/it/parts/"},{"@type":"ListItem","position":3,"name":"TM1637 6-digit 7-segment display","item":"https://boardpilot.agentflowbind.com/it/parts/tm1637-6digit/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
+          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/esp32-pinout/" data-i18n="nav.pinout">Piedinatura ESP32</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/parts/tm1637-6digit/" hreflang="en" class="">EN</a><a href="/it/parts/tm1637-6digit/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article">
+      <div class="wrap narrow">
+        <nav class="crumbs"><a href="/it/">BoardPilot</a> / <a href="/it/parts/">Libreria componenti</a> / <span>TM1637 6-digit 7-segment display</span></nav>
+        <h1>TM1637 6-digit 7-segment display con ESP32</h1>
+        <div class="facts-row">
+          <span><b>Alimentazione</b> 3.3-5 V</span>
+          <span><b>Bus</b> GPIO</span>
+          
+          
+        </div>
+        <svg viewBox="0 0 220 170" class="part-svg" style="max-width:275px" role="img" aria-label="TM1637 6-digit 7-segment display pins"><rect x="20" y="16" width="180" height="112" rx="10" fill="#1F4FA8" stroke="rgba(255,255,255,.18)"/><rect x="90" y="36" width="40" height="30" rx="4" fill="#15181c" opacity=".85"/><g><rect x="67" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="71" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="71" y="100" transform="rotate(-60 71 100)" class="pp">CLK</text></g><g><rect x="93" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="97" cy="118" r="7" fill="#12171C" stroke="#5CCB8F" stroke-width="3"/><text x="97" y="100" transform="rotate(-60 97 100)" class="pp">DIO</text></g><g><rect x="119" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="123" cy="118" r="7" fill="#12171C" stroke="#8A96A3" stroke-width="3"/><text x="123" y="100" transform="rotate(-60 123 100)" class="pp">GND</text></g><g><rect x="145" y="118" width="8" height="26" rx="2" fill="#D9B45A"/><circle cx="149" cy="118" r="7" fill="#12171C" stroke="#FF6B5E" stroke-width="3"/><text x="149" y="100" transform="rotate(-60 149 100)" class="pp">VCC</text></g></svg>
+        <h2>Pin e collegamento all’ESP32</h2>
+        <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Ruolo</th><th>Pin ESP32</th><th>Note</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>CLK</td><td>Ingresso (lo pilota l’ESP32)</td><td class="mono">D25</td><td>Pin order varies between boards: match by the printed label. Clock (not I2C, not SPI)</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>DIO</td><td>Ingresso (lo pilota l’ESP32)</td><td class="mono">D26</td><td>Data (not I2C). Digits may be wired out of order: libraries have a setting for it</td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td>Massa</td><td class="mono">GND</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>VCC</td><td>Alimentazione</td><td class="mono">3V3</td><td>Works at 3.3 V or 5 V</td></tr></tbody></table></div>
+        <p class="fine">Collegamento consigliato per l’ESP32 DevKit a 30 pin, evitando i pin della flash, di sola lettura e di strapping. BoardPilot lo controlla mentre colleghi.</p>
+        
+        
+        
+        <h2>Fonti</h2><ul class="sources"><li>Titan Micro TM1637 datasheet, Two-wire interface CLK / DIO (not I2C compatible); up to 6 digits</li></ul>
+        <div class="cta-box"><h2>Provalo in 3D in BoardPilot</h2><p><a class="btn primary" href="/it/#download">BoardPilot</a> <a class="btn" href="/parts/tm1637-6digit.json">Dati del componente (JSON)</a></p></div>
+        <h2>Componenti simili</h2><div class="part-grid"><a class="part-card" href="/it/parts/seg7-4digit-cc/"><span class="sw" style="background:#EDEDED"></span><b>7-segment 4 digits 0.56&quot; common cathode (12 pins)</b></a><a class="part-card" href="/it/parts/seg7-1digit-ca/"><span class="sw" style="background:#EDEDED"></span><b>7-segment digit 0.56&quot; common anode</b></a><a class="part-card" href="/it/parts/seg7-1digit-cc/"><span class="sw" style="background:#EDEDED"></span><b>7-segment digit 0.56&quot; common cathode</b></a><a class="part-card" href="/it/parts/lcd1602-parallel/"><span class="sw" style="background:#2E6FD8"></span><b>LCD 16x2 (parallel, 16 pins)</b></a><a class="part-card" href="/it/parts/led-bar-10/"><span class="sw" style="background:#B22222"></span><b>LED bar graph 10 segments</b></a><a class="part-card" href="/it/parts/neopixel-stick-8/"><span class="sw" style="background:#1A1A1A"></span><b>NeoPixel Stick 8 LEDs</b></a></div>
+        <p class="fine">Dati dei componenti: CC BY 4.0, riutilizzabili citando BoardPilot.</p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/esp32-pinout/" data-i18n="nav.pinout">Piedinatura ESP32</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

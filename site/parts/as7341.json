@@ -1,0 +1,77 @@
+{
+  "id": "as7341",
+  "name": "AS7341 11-channel spectral sensor",
+  "category": "sensor",
+  "measures": [
+    "color",
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "3VO",
+      "role": "passive",
+      "notes": "3.3 V output of the on-board regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "INT",
+      "role": "int",
+      "notes": "Interrupt output, optional"
+    },
+    {
+      "name": "GPIO",
+      "role": "passive",
+      "notes": "Sensor GPIO (sync / LED control). Leave unconnected"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x39"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      25.4,
+      17.8,
+      1.6
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "as7341",
+    "ams",
+    "spectral",
+    "spectrometer",
+    "color",
+    "spettrometro",
+    "colore",
+    "luce"
+  ],
+  "sources": [
+    {
+      "title": "ams AS7341 datasheet",
+      "section": "I2C address 0x39; 8 visible channels plus clear, NIR and flicker"
+    },
+    {
+      "title": "ams AS7341 datasheet",
+      "section": "ID register 0x92: only bits 7:2 are the ID, so it is not checked here"
+    }
+  ]
+}

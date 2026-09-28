@@ -1,0 +1,86 @@
+{
+  "id": "mx1508-driver",
+  "name": "MX1508 dual DC motor driver",
+  "category": "output",
+  "pins": [
+    {
+      "name": "+",
+      "role": "passive",
+      "notes": "Pin order varies between boards: match by the printed label. Motor supply 2 to 9.6 V"
+    },
+    {
+      "name": "-",
+      "role": "ground",
+      "notes": "Share it with the motor supply and the ESP32 GND"
+    },
+    {
+      "name": "IN1",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Motor A"
+    },
+    {
+      "name": "IN2",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Motor A"
+    },
+    {
+      "name": "IN3",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Motor B"
+    },
+    {
+      "name": "IN4",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Motor B"
+    },
+    {
+      "name": "MA1",
+      "role": "passive",
+      "notes": "Motor A"
+    },
+    {
+      "name": "MA2",
+      "role": "passive",
+      "notes": "Motor A"
+    },
+    {
+      "name": "MB1",
+      "role": "passive",
+      "notes": "Motor B"
+    },
+    {
+      "name": "MB2",
+      "role": "passive",
+      "notes": "Motor B"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "2-9.6",
+  "model": {
+    "shape": "module",
+    "size": [
+      26.4,
+      22,
+      5
+    ],
+    "color": "#2E8B57"
+  },
+  "keywords": [
+    "mx1508",
+    "motor driver",
+    "h-bridge",
+    "dual",
+    "dc motor",
+    "driver motore"
+  ],
+  "sources": [
+    {
+      "title": "MX1508 datasheet (Mixic)",
+      "section": "Supply 2 to 9.6 V; about 1.5 A per channel continuous"
+    }
+  ]
+}

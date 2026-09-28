@@ -1,0 +1,18 @@
+{
+  "id": "am2301-dht21",
+  "name": "AM2301 (DHT21) wired temperature + humidity",
+  "category": "sensor",
+  "measures": ["temperature", "humidity"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Red wire" },
+    { "name": "GND", "role": "ground", "notes": "Black wire" },
+    { "name": "DATA", "role": "onewire", "notes": "Yellow wire. Add a 4.7 to 10 kΩ pull-up to 3.3 V if readings fail" }
+  ],
+  "bus": "onewire",
+  "voltage": "3.3-5",
+  "model": { "shape": "dht", "size": [59, 27, 13], "color": "#F2F2F2" },
+  "keywords": ["am2301", "dht21", "aosong", "humidity", "temperature", "umidità", "temperatura"],
+  "sources": [
+    { "title": "Aosong AM2301 datasheet", "section": "Wires: red VDD, yellow data, black GND; supply 3.3 to 5.2 V; single-bus protocol like DHT22" }
+  ]
+}

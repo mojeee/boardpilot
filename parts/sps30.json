@@ -1,0 +1,22 @@
+{
+  "id": "sps30",
+  "name": "Sensirion SPS30 particulate matter sensor",
+  "category": "sensor",
+  "measures": ["particulates"],
+  "pins": [
+    { "name": "VDD", "role": "power", "notes": "Pin 1. Needs 5 V: use VIN" },
+    { "name": "SDA", "role": "i2c_sda", "notes": "Pin 2 (RX/SDA). Add a pull-up to 3.3 V, not 5 V" },
+    { "name": "SCL", "role": "i2c_scl", "notes": "Pin 3 (TX/SCL). Add a pull-up to 3.3 V, not 5 V" },
+    { "name": "SEL", "role": "passive", "notes": "Pin 4. Connect to GND to select I2C; leave open for UART" },
+    { "name": "GND", "role": "ground", "notes": "Pin 5" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x69"],
+  "voltage": "5",
+  "model": { "shape": "module", "size": [41, 41, 12], "color": "#C9CED4" },
+  "keywords": ["sps30", "sensirion", "pm2.5", "pm10", "dust", "particulate", "polveri sottili", "qualità aria"],
+  "sources": [
+    { "title": "Sensirion SPS30 datasheet", "section": "Pin 1 VDD, 2 RX/SDA, 3 TX/SCL, 4 SEL, 5 GND; supply 5 V" },
+    { "title": "Sensirion SPS30 datasheet", "section": "I2C address 0x69, max 100 kHz, external pull-ups needed" }
+  ]
+}

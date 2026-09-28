@@ -1,0 +1,16 @@
+{
+  "id": "solenoid-lock-12v",
+  "name": "Solenoid door lock 12 V",
+  "category": "output",
+  "pins": [
+    { "name": "+", "role": "passive", "notes": "12 V supply +. Switch it with a MOSFET or relay, never from an ESP32 pin" },
+    { "name": "-", "role": "passive", "notes": "To the MOSFET drain. Add a flyback diode across the coil" }
+  ],
+  "bus": "gpio",
+  "voltage": "12",
+  "model": { "shape": "relay", "size": [54, 41, 28], "color": "#C9CED4" },
+  "keywords": ["solenoid", "door lock", "lock", "12v", "elettroserratura", "solenoide"],
+  "sources": [
+    { "title": "Adafruit Lock-style Solenoid 12 VDC product page", "section": "12 V, about 650 mA; flyback diode required" }
+  ]
+}

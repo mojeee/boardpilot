@@ -1,0 +1,50 @@
+{
+  "id": "pulse-sensor",
+  "name": "Pulse Sensor (analog heart rate)",
+  "category": "sensor",
+  "measures": [
+    "heart rate"
+  ],
+  "pins": [
+    {
+      "name": "S",
+      "role": "analog_out",
+      "notes": "Purple wire. To an ADC pin (prefer ADC1: GPIO 32 to 39)"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Red wire. Use 3V3"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Black wire"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      16,
+      16,
+      3
+    ],
+    "color": "#2E6FD8"
+  },
+  "keywords": [
+    "pulse sensor",
+    "heart rate",
+    "pulsesensor",
+    "bpm",
+    "battito",
+    "cardiaco"
+  ],
+  "sources": [
+    {
+      "title": "World Famous Electronics PulseSensor.com",
+      "section": "Wiring: purple signal, red +V (3 to 5 V), black GND"
+    }
+  ]
+}

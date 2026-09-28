@@ -1,4 +1,5 @@
 // AI settings: pick the provider (Claude, GPT, Gemini), paste your own API key, pick a model.
+// The fourth card is the free demo: no key, BoardPilot's test relay, used while no key is set.
 // The key goes to the main process once and is stored encrypted there; this dialog only ever
 // sees whether a key exists and its last 4 characters.
 
@@ -31,6 +32,7 @@ async function refreshAiStatus() {
 function blurb(p: AiProviderId): string {
   if (p === 'anthropic') return t('Claude by Anthropic. Careful answers and strong tool use. The default for BoardPilot.');
   if (p === 'openai') return t('GPT by OpenAI. Uses a key from the OpenAI platform.');
+  if (p === 'demo') return t('No key needed. A free, older Gemini model for trying BoardPilot.');
   return t('Gemini by Google. Uses a key from Google AI Studio.');
 }
 
@@ -67,6 +69,8 @@ function AiSettingsBody() {
   const info = PROVIDER_INFO[provider];
   const state = view.providers[provider];
   const list = models[provider] ?? [];
+  const isDemo = !info.needsKey;
+  const canTest = isDemo ? view.demoEnabled : state.hasKey || Boolean(key.trim());
 
   const pick = (p: AiProviderId) => {
     setProvider(p);
@@ -119,6 +123,7 @@ function AiSettingsBody() {
 
   const keyStatus = (p: AiProviderId) => {
     const s = view.providers[p];
+    if (!PROVIDER_INFO[p].needsKey) return view.demoEnabled ? t('No key needed') : t('Switched off on this computer');
     if (s.keySource === 'saved') return t('Key saved {hint}', { hint: s.keyHint });
     if (s.keySource === 'env') return t('Key from .env.local {hint}', { hint: s.keyHint });
     return t('No key yet');
@@ -140,66 +145,81 @@ function AiSettingsBody() {
             <button key={p} className={`ai-prov ${p === provider ? 'on' : ''}`} onClick={() => pick(p)} aria-pressed={p === provider}>
               <span className="ai-prov-name">
                 {PROVIDER_INFO[p].short}
-                {p === view.provider && view.providers[p].hasKey && <span className="chip ai-chip">{t('in use')}</span>}
+                {p === view.active && (view.providers[p].hasKey || (p === 'demo' && view.demoEnabled)) && <span className="chip ai-chip">{t('in use')}</span>}
               </span>
               <span className="ai-prov-desc">{blurb(p)}</span>
-              <span className={`ai-prov-key small ${view.providers[p].hasKey ? 'ok' : ''}`}>{keyStatus(p)}</span>
+              <span className={`ai-prov-key small ${view.providers[p].hasKey || (p === 'demo' && view.demoEnabled) ? 'ok' : ''}`}>{keyStatus(p)}</span>
             </button>
           ))}
         </div>
 
-        <div className="ai-field">
-          <div className="row between">
-            <label className="label" htmlFor="ai-key">
-              {t('API key for {provider}', { provider: info.name })}
-            </label>
-            <button className="link small" onClick={() => void window.bp.app.openExternal(info.keyUrl)}>
-              <Icon name="key" size={13} /> {t('Get a key')}
-            </button>
+        {isDemo ? (
+          <div className="ai-demo-info">
+            <p>
+              {t("Uses a free, older Gemini model through BoardPilot's test relay. Limited to a few requests per minute. For testing only: don't send private data. Add your own Claude, GPT or Gemini key for full use.")}
+            </p>
+            <p className="dim small">{t('Photos are too large for the demo, and PDF datasheets are looked up on the web instead of read. When you add a key for Claude, GPT or Gemini, BoardPilot uses it instead.')}</p>
+            {!view.demoEnabled && <p className="warn-text small">{t('The free demo is switched off on this computer (BOARDPILOT_DEMO_AI_URL=off in .env.local).')}</p>}
           </div>
-          <input
-            id="ai-key"
-            className="text-in mono"
-            type="password"
-            autoComplete="off"
-            spellCheck={false}
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-            placeholder={state.hasKey ? t('Leave empty to keep the current key ({hint})', { hint: state.keyHint }) : t('Paste your key here')}
-          />
-          {!view.canSaveKeys && <p className="warn-text small">{t('This Mac cannot encrypt keys right now, so keys cannot be saved here. A key in .env.local still works.')}</p>}
-        </div>
+        ) : (
+          <>
+            <div className="ai-field">
+              <div className="row between">
+                <label className="label" htmlFor="ai-key">
+                  {t('API key for {provider}', { provider: info.name })}
+                </label>
+                <button className="link small" onClick={() => void window.bp.app.openExternal(info.keyUrl)}>
+                  <Icon name="key" size={13} /> {t('Get a key')}
+                </button>
+              </div>
+              <input
+                id="ai-key"
+                className="text-in mono"
+                type="password"
+                autoComplete="off"
+                spellCheck={false}
+                value={key}
+                onChange={(e) => setKey(e.target.value)}
+                placeholder={state.hasKey ? t('Leave empty to keep the current key ({hint})', { hint: state.keyHint }) : t('Paste your key here')}
+              />
+              {!view.canSaveKeys && <p className="warn-text small">{t('This Mac cannot encrypt keys right now, so keys cannot be saved here. A key in .env.local still works.')}</p>}
+            </div>
 
-        <div className="ai-field">
-          <label className="label" htmlFor="ai-model">
-            {t('Model')}
-          </label>
-          <div className="row gap">
-            <input
-              id="ai-model"
-              className="text-in mono grow"
-              list="ai-model-list"
-              spellCheck={false}
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              placeholder={info.defaultModel}
-            />
-            <datalist id="ai-model-list">
-              {[info.defaultModel, ...list.map((m) => m.id).filter((id) => id !== info.defaultModel)].map((id) => (
-                <option key={id} value={id}>
-                  {list.find((m) => m.id === id)?.label ?? id}
-                </option>
-              ))}
-            </datalist>
-            <button className="btn small" disabled={busy !== null || (!state.hasKey && !key.trim())} onClick={() => void loadModels()}>
-              {busy === 'models' ? t('Loading…') : t('Load models')}
-            </button>
-          </div>
-          <span className="dim small">{t('Recommended: {model}', { model: info.defaultModel })}</span>
-        </div>
+            <div className="ai-field">
+              <label className="label" htmlFor="ai-model">
+                {t('Model')}
+              </label>
+              <div className="row gap">
+                <input
+                  id="ai-model"
+                  className="text-in mono grow"
+                  list="ai-model-list"
+                  spellCheck={false}
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  placeholder={info.defaultModel}
+                />
+                <datalist id="ai-model-list">
+                  {[info.defaultModel, ...list.map((m) => m.id).filter((id) => id !== info.defaultModel)].map((id) => (
+                    <option key={id} value={id}>
+                      {list.find((m) => m.id === id)?.label ?? id}
+                    </option>
+                  ))}
+                </datalist>
+                <button className="btn small" disabled={busy !== null || (!state.hasKey && !key.trim())} onClick={() => void loadModels()}>
+                  {busy === 'models' ? t('Loading…') : t('Load models')}
+                </button>
+              </div>
+              <span className="dim small">{t('Recommended: {model}', { model: info.defaultModel })}</span>
+            </div>
+          </>
+        )}
 
         <p className="ai-privacy small">
-          <Icon name="key" size={13} /> {t('Your key is stored encrypted on this computer. Requests go directly from the app to the provider you choose.')}
+          <Icon name="key" size={13} />{' '}
+          {isDemo
+            ? t('Demo requests go through BoardPilot’s relay to Google. On the free tier Google may use them to improve its products.')
+            : t('Your key is stored encrypted on this computer. Requests go directly from the app to the provider you choose.')}
         </p>
 
         {msg && <p className={`small ${msg.kind === 'ok' ? 'ok-text' : 'err-text'}`}>{msg.text}</p>}
@@ -211,7 +231,7 @@ function AiSettingsBody() {
             </button>
           )}
           <span className="grow" />
-          <button className="btn" disabled={busy !== null || (!state.hasKey && !key.trim())} onClick={() => void test()}>
+          <button className="btn" disabled={busy !== null || !canTest} onClick={() => void test()}>
             {busy === 'test' ? t('Testing…') : t('Test connection')}
           </button>
           <button className="btn primary" disabled={busy !== null} onClick={() => void save()}>

@@ -1,0 +1,21 @@
+{
+  "id": "cp2102-usb-uart",
+  "name": "CP2102 USB to UART adapter",
+  "category": "output",
+  "pins": [
+    { "name": "DTR", "role": "digital_out", "notes": "Control line for auto-reset, optional" },
+    { "name": "RXD", "role": "digital_in", "needsOutput": true, "notes": "The adapter receives here. Connect to an ESP32 TX pin" },
+    { "name": "TXD", "role": "digital_out", "notes": "The adapter sends here. Connect to an ESP32 RX pin" },
+    { "name": "5V", "role": "passive", "notes": "5 V output from USB. Do not connect when the ESP32 is on USB too" },
+    { "name": "GND", "role": "ground" },
+    { "name": "3V3", "role": "passive", "notes": "3.3 V output from the CP2102 regulator (about 100 mA max)" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [25, 16, 5], "color": "#5B2A86" },
+  "keywords": ["cp2102", "usb uart", "usb serial", "ttl adapter", "ftdi", "ch340", "adattatore usb"],
+  "sources": [
+    { "title": "Silicon Labs CP2102/9 datasheet", "section": "UART signals at 3.3 V; internal 3.3 V regulator, 100 mA" },
+    { "title": "Common CP2102 adapter boards", "section": "Pin order and labels vary (some add RST or CTS): check the silkscreen" }
+  ]
+}

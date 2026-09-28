@@ -1,0 +1,18 @@
+{
+  "id": "yx5300-mp3",
+  "name": "YX5300 serial MP3 player (Catalex)",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power", "notes": "3.2 to 5.2 V" },
+    { "name": "TX", "role": "digital_out", "notes": "Module transmits: to an ESP32 RX pin. 9600 baud" },
+    { "name": "RX", "role": "digital_in", "needsOutput": true, "notes": "Module receives: from an ESP32 TX pin" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [43, 25, 12], "color": "#B22222" },
+  "keywords": ["yx5300", "yx6300", "mp3", "catalex", "serial mp3", "micro sd", "lettore mp3"],
+  "sources": [
+    { "title": "Catalex Serial MP3 Player v1.0 manual", "section": "UART 9600 bps; supply 3.2 to 5.2 V; command frame 7E FF 06 ... EF" }
+  ]
+}

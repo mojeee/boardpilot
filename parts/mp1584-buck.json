@@ -1,0 +1,18 @@
+{
+  "id": "mp1584-buck",
+  "name": "MP1584 mini buck converter",
+  "category": "output",
+  "pins": [
+    { "name": "IN+", "role": "passive", "notes": "Input 4.5 to 28 V" },
+    { "name": "IN-", "role": "ground", "notes": "Input ground, same as OUT-" },
+    { "name": "OUT+", "role": "passive", "notes": "Adjustable 0.8 to 20 V. Set 5 V with the trimmer BEFORE wiring it to VIN" },
+    { "name": "OUT-", "role": "ground", "notes": "To the ESP32 GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "4.5-28",
+  "model": { "shape": "module", "size": [22, 17, 4], "color": "#1A1A1A" },
+  "keywords": ["mp1584", "buck", "step down", "mini", "dc-dc", "riduttore di tensione"],
+  "sources": [
+    { "title": "MPS MP1584 datasheet", "section": "Input 4.5 to 28 V; 3 A peak; 0.8 V feedback reference" }
+  ]
+}

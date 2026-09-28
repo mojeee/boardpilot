@@ -1,0 +1,17 @@
+{
+  "id": "anemometer",
+  "name": "Cup anemometer (reed switch)",
+  "category": "sensor",
+  "measures": ["wind speed"],
+  "pins": [
+    { "name": "1", "role": "digital_out", "notes": "To a GPIO with INPUT_PULLUP. 1 closure per second = 2.4 km/h" },
+    { "name": "2", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [80, 80, 40], "color": "#F2F2F2" },
+  "keywords": ["anemometer", "wind speed", "weather station", "anemometro", "vento", "meteo"],
+  "sources": [
+    { "title": "SparkFun Weather Meter Kit datasheet (SEN-15901)", "section": "Anemometer: reed switch, one closure per second = 2.4 km/h (1.492 mph)" }
+  ]
+}

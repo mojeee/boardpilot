@@ -1,0 +1,26 @@
+{
+  "id": "drv8833-driver",
+  "name": "DRV8833 dual motor driver",
+  "category": "output",
+  "pins": [
+    { "name": "AIN1", "role": "digital_in", "needsOutput": true, "notes": "Pin order varies between boards: match by the printed label. Motor A. PWM on one input, the other LOW" },
+    { "name": "AIN2", "role": "digital_in", "needsOutput": true, "notes": "Motor A" },
+    { "name": "BIN1", "role": "digital_in", "needsOutput": true, "notes": "Motor B" },
+    { "name": "BIN2", "role": "digital_in", "needsOutput": true, "notes": "Motor B" },
+    { "name": "NSLEEP", "role": "digital_in", "needsOutput": true, "notes": "HIGH = driver on. Pulled up on some boards, not on others" },
+    { "name": "NFAULT", "role": "digital_out", "notes": "Open drain, LOW on over-current or over-heat. Needs a pull-up" },
+    { "name": "VM", "role": "passive", "notes": "Motor supply 2.7 to 10.8 V" },
+    { "name": "GND", "role": "ground", "notes": "Share it with the motor supply and the ESP32 GND" },
+    { "name": "AOUT1", "role": "passive", "notes": "Motor A" },
+    { "name": "AOUT2", "role": "passive", "notes": "Motor A" },
+    { "name": "BOUT1", "role": "passive", "notes": "Motor B" },
+    { "name": "BOUT2", "role": "passive", "notes": "Motor B" }
+  ],
+  "bus": "gpio",
+  "voltage": "2.7-10.8",
+  "model": { "shape": "module", "size": [31.5, 18, 3], "color": "#1F4FA8" },
+  "keywords": ["drv8833", "motor driver", "h-bridge", "dc motor", "driver motore", "ponte h"],
+  "sources": [
+    { "title": "Texas Instruments DRV8833 datasheet", "section": "VM 2.7 to 10.8 V; 1.5 A RMS per bridge; nSLEEP, nFAULT" }
+  ]
+}

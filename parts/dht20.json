@@ -1,0 +1,21 @@
+{
+  "id": "dht20",
+  "name": "DHT20 temperature + humidity (I2C)",
+  "category": "sensor",
+  "measures": ["temperature", "humidity"],
+  "pins": [
+    { "name": "VDD", "role": "power", "notes": "Pin 1 (left, grille facing you)" },
+    { "name": "SDA", "role": "i2c_sda", "notes": "Needs a pull-up to 3.3 V (about 4.7 kΩ); the bare sensor has none" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl", "notes": "Needs a pull-up to 3.3 V (about 4.7 kΩ); the bare sensor has none" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x38"],
+  "voltage": "3.3-5",
+  "model": { "shape": "dht", "size": [12, 15.5, 5.5], "color": "#2E6FD8" },
+  "keywords": ["dht20", "aht20", "aosong", "humidity", "temperature", "umidità", "temperatura"],
+  "sources": [
+    { "title": "Aosong DHT20 datasheet", "section": "Pin 1 VDD, 2 SDA, 3 GND, 4 SCL; supply 2.2 to 5.5 V" },
+    { "title": "Aosong DHT20 datasheet", "section": "I2C address 0x38 (same as AHT20; the two cannot share a bus)" }
+  ]
+}

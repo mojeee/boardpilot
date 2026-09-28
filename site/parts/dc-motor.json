@@ -1,0 +1,42 @@
+{
+  "id": "dc-motor",
+  "name": "DC motor (small, 3-6 V)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "M+",
+      "role": "passive",
+      "notes": "Never connect to an ESP32 pin: use a motor driver or a transistor"
+    },
+    {
+      "name": "M-",
+      "role": "passive",
+      "notes": "Swap the wires to reverse the direction"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "motor",
+    "size": [
+      20,
+      15,
+      25
+    ],
+    "color": "#C9CED4"
+  },
+  "keywords": [
+    "dc motor",
+    "motor",
+    "tt motor",
+    "gear motor",
+    "motore",
+    "motore dc"
+  ],
+  "sources": [
+    {
+      "title": "Espressif ESP32 datasheet",
+      "section": "GPIO drive strength is far too low for a motor (about 40 mA max)"
+    }
+  ]
+}

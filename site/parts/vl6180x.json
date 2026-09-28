@@ -1,0 +1,77 @@
+{
+  "id": "vl6180x",
+  "name": "VL6180X time-of-flight proximity + light",
+  "category": "sensor",
+  "measures": [
+    "distance",
+    "light"
+  ],
+  "pins": [
+    {
+      "name": "VIN",
+      "role": "power"
+    },
+    {
+      "name": "2V8",
+      "role": "passive",
+      "notes": "Output of the on-board 2.8 V regulator. Leave unconnected"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "SCL",
+      "role": "i2c_scl"
+    },
+    {
+      "name": "SDA",
+      "role": "i2c_sda"
+    },
+    {
+      "name": "GPIO",
+      "role": "int",
+      "notes": "Interrupt output (GPIO1), optional"
+    },
+    {
+      "name": "SHDN",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Shutdown, active LOW. Optional"
+    }
+  ],
+  "bus": "i2c",
+  "addresses": [
+    "0x29"
+  ],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": {
+    "shape": "breakout",
+    "size": [
+      20.3,
+      17.8,
+      1.6
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "vl6180x",
+    "vl6180",
+    "tof",
+    "time of flight",
+    "proximity",
+    "distance",
+    "distanza"
+  ],
+  "sources": [
+    {
+      "title": "ST VL6180X datasheet",
+      "section": "Default I2C address 0x29; model ID 0xB4 in 16-bit register 0x000"
+    },
+    {
+      "title": "ST VL6180X datasheet",
+      "section": "Ranging 0 to 100 mm; ambient light sensor"
+    }
+  ]
+}

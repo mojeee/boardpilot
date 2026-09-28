@@ -1,0 +1,16 @@
+{
+  "id": "water-pump-5v",
+  "name": "Mini submersible water pump 3-5 V",
+  "category": "output",
+  "pins": [
+    { "name": "+", "role": "passive", "notes": "Red wire. Switch it with a MOSFET or relay: draws more than a GPIO can give" },
+    { "name": "-", "role": "passive", "notes": "Black wire. Add a flyback diode across the motor" }
+  ],
+  "bus": "gpio",
+  "voltage": "3-5",
+  "model": { "shape": "motor", "size": [45, 24, 33], "color": "#1A1A1A" },
+  "keywords": ["water pump", "pump", "submersible", "irrigation", "pompa", "pompa acqua", "irrigazione"],
+  "sources": [
+    { "title": "Mini submersible pump (vendor datasheet)", "section": "DC 2.5 to 6 V, about 130 to 220 mA" }
+  ]
+}

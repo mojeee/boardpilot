@@ -1,0 +1,24 @@
+{
+  "id": "mcp2515-can",
+  "name": "MCP2515 CAN bus module (TJA1050, SPI)",
+  "category": "sensor",
+  "pins": [
+    { "name": "INT", "role": "int", "notes": "LOW on a CAN event. 5 V when powered from 5 V: use a divider" },
+    { "name": "SCK", "role": "spi_sck" },
+    { "name": "SI", "role": "spi_mosi" },
+    { "name": "SO", "role": "spi_miso", "notes": "5 V when powered from 5 V: use a divider or level shifter" },
+    { "name": "CS", "role": "spi_cs" },
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V for the TJA1050 transceiver: use VIN" },
+    { "name": "H", "role": "passive", "notes": "CAN high. To the bus, never to the ESP32" },
+    { "name": "L", "role": "passive", "notes": "CAN low. To the bus, never to the ESP32" }
+  ],
+  "bus": "spi",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [44,28,14], "color": "#1F4FA8" },
+  "keywords": ["mcp2515", "can bus", "can", "tja1050", "automotive", "obd", "auto"],
+  "sources": [
+    { "title": "Microchip MCP2515 datasheet", "section": "SPI interface, INT output; supply 2.7 to 5.5 V" },
+    { "title": "NXP TJA1050 datasheet", "section": "Supply 4.75 to 5.25 V" }
+  ]
+}

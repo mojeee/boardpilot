@@ -1,0 +1,67 @@
+{
+  "id": "relay-4ch",
+  "name": "Relay module 4 channels (5 V, optocoupler)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "IN1",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "LOW = relay on (typical)"
+    },
+    {
+      "name": "IN2",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "IN3",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "IN4",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Needs 5 V: use VIN"
+    },
+    {
+      "name": "JD-VCC",
+      "role": "passive",
+      "notes": "Separate coil supply. Keep the jumper to VCC unless you use an isolated supply"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "relay",
+    "size": [
+      75,
+      55,
+      19
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "relay",
+    "4 channel",
+    "relay board",
+    "optocoupler",
+    "relè",
+    "scheda relè"
+  ],
+  "sources": [
+    {
+      "title": "Songle SRD-05VDC-SL-C datasheet",
+      "section": "Coil 5 V, about 70 mA per channel"
+    }
+  ]
+}

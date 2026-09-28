@@ -2,6 +2,12 @@
 // build-site.mjs writes site/it/ from these.
 
 export const IT = {
+  'nav.parts': 'Componenti',
+  'lib.eyebrow': 'Libreria componenti aperta',
+  'lib.title': 'componenti, pronti da collegare a un ESP32.',
+  'lib.lead': 'Sensori, display, driver per motori, radio e altro: pin, tensione, indirizzi I2C, verifica dell’ID del chip, un modello 3D e un collegamento sicuro all’ESP32 per ognuno. Riutilizzabili liberamente con licenza CC BY 4.0.',
+  'lib.browse': 'Sfoglia la libreria',
+  'lib.json': 'Scarica il JSON',
   'meta.title': 'BoardPilot: debugger per ESP32 con scheda 3D dal vivo',
   'meta.description': 'Trova in pochi minuti gli errori di cablaggio dell’ESP32: scansione I2C, SDA/SCL invertiti, bus decodificato e pin in 3D. Prova gratuita, Mac e Windows.',
   'meta.ogTitle': 'BoardPilot · Guarda dentro il tuo ESP32',
@@ -42,7 +48,7 @@ export const IT = {
   'f5.t': 'Cablaggio controllato mentre costruisci',
   'f5.d': 'Pin della flash, pin di sola lettura, pin di strapping, 5 V su un componente a 3,3 V, bus invertiti, massa mancante: segnalati sul pin, prima di dare tensione.',
   'f6.t': 'Un assistente onesto',
-  'f6.d': 'AI facoltativa che dichiara solo ciò che ha misurato, etichetta le ipotesi come suggerimenti e cita la sezione del datasheet per tutto il resto.',
+  'f6.d': 'AI facoltativa (demo gratuita, o la tua chiave Claude, GPT o Gemini) che dichiara solo ciò che ha misurato, etichetta le ipotesi come suggerimenti e cita la sezione del datasheet per tutto il resto.',
   'tab.debug': 'Debug',
   'tab.test': 'Test hardware',
   'tab.monitor': 'Monitor',
@@ -104,7 +110,7 @@ export const IT = {
   q4: 'Mi serve una scheda per provarlo?',
   a4: 'No. La modalità simulatore fa girare tutta l’app con una scheda virtuale e guasti realistici: fili invertiti, un finto BME280, cali di tensione, baud rate sbagliato.',
   q5: 'Serve internet o un account AI?',
-  a5: 'No. Controlli, misure e simulatore funzionano offline. L’assistente AI è facoltativo e funziona con la tua chiave API di Anthropic (Claude), OpenAI (GPT) o Google (Gemini).',
+  a5: 'No. Controlli, misure e simulatore funzionano offline. L’assistente AI è facoltativo: provalo con la demo gratuita (un modello Gemini più vecchio e limitato, solo per test) oppure usa la tua chiave per Claude, GPT o Gemini.',
   q6: 'Cosa installa sulla mia scheda?',
   a6: 'Solo se confermi: un piccolo agente diagnostico che permette all’app di leggere i pin e fare test sul bus. Prima salva il tuo programma, che torna con un clic.',
   'foot.license': 'Licenza',

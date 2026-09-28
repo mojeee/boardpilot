@@ -1,0 +1,50 @@
+{
+  "id": "hc-sr501",
+  "name": "HC-SR501 PIR motion sensor",
+  "category": "sensor",
+  "measures": [
+    "motion"
+  ],
+  "pins": [
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Needs 4.5 V or more: use VIN"
+    },
+    {
+      "name": "OUT",
+      "role": "digital_out",
+      "notes": "3.3 V HIGH when motion is detected, safe for the ESP32"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      32,
+      24,
+      25
+    ],
+    "color": "#1E7A3C"
+  },
+  "keywords": [
+    "hc-sr501",
+    "pir",
+    "motion",
+    "movement",
+    "infrared",
+    "movimento",
+    "presenza"
+  ],
+  "sources": [
+    {
+      "title": "HC-SR501 PIR module manual",
+      "section": "Supply 4.5 to 20 V; output 3.3 V HIGH / 0 V LOW"
+    }
+  ]
+}

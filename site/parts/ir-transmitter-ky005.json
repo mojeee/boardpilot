@@ -1,0 +1,48 @@
+{
+  "id": "ir-transmitter-ky005",
+  "name": "IR LED transmitter (KY-005)",
+  "category": "output",
+  "pins": [
+    {
+      "name": "S",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "To a GPIO driven at 38 kHz by an IR library"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Middle pin"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Marked - on the board"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      18.5,
+      15,
+      8
+    ],
+    "color": "#1A1A1A"
+  },
+  "keywords": [
+    "ky-005",
+    "ir led",
+    "infrared transmitter",
+    "remote",
+    "trasmettitore ir",
+    "telecomando"
+  ],
+  "sources": [
+    {
+      "title": "Joy-IT KY-005 datasheet",
+      "section": "940 nm IR LED"
+    }
+  ]
+}

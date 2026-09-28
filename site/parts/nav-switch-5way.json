@@ -1,0 +1,76 @@
+{
+  "id": "nav-switch-5way",
+  "name": "5-way navigation button module",
+  "category": "input",
+  "pins": [
+    {
+      "name": "COM",
+      "role": "ground",
+      "notes": "Common: to GND. Keys read LOW with INPUT_PULLUP"
+    },
+    {
+      "name": "UP",
+      "role": "digital_out",
+      "notes": "Up"
+    },
+    {
+      "name": "DWN",
+      "role": "digital_out",
+      "notes": "Down"
+    },
+    {
+      "name": "LFT",
+      "role": "digital_out",
+      "notes": "Left"
+    },
+    {
+      "name": "RHT",
+      "role": "digital_out",
+      "notes": "Right"
+    },
+    {
+      "name": "MID",
+      "role": "digital_out",
+      "notes": "Centre press"
+    },
+    {
+      "name": "SET",
+      "role": "digital_out",
+      "notes": "Extra SET button"
+    },
+    {
+      "name": "RST",
+      "role": "digital_out",
+      "notes": "Extra RST button (not the ESP32 reset)"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      26,
+      26,
+      12
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "5-way switch",
+    "navigation switch",
+    "joystick button",
+    "directional",
+    "menu",
+    "pulsante a 5 vie"
+  ],
+  "sources": [
+    {
+      "title": "ALPS Alpine SKRH multi-directional switch datasheet",
+      "section": "Common terminal and five direction contacts"
+    },
+    {
+      "title": "Common 5-way navigation module",
+      "section": "Header COM, UP, DWN, LFT, RHT, MID, SET, RST. Check the silkscreen"
+    }
+  ]
+}

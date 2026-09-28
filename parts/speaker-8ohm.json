@@ -1,0 +1,16 @@
+{
+  "id": "speaker-8ohm",
+  "name": "Speaker 8 Ω 0.5 W",
+  "category": "output",
+  "pins": [
+    { "name": "+", "role": "passive", "notes": "Never to an ESP32 pin: use an amplifier (PAM8403, MAX98357A)" },
+    { "name": "-", "role": "passive", "notes": "To the amplifier output, not to GND on bridged amplifiers" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "motor", "size": [40, 40, 12], "color": "#1A1A1A" },
+  "keywords": ["speaker", "8 ohm", "loudspeaker", "audio", "altoparlante", "cassa"],
+  "sources": [
+    { "title": "Espressif ESP32 datasheet", "section": "GPIO drive strength is far too low for an 8 Ω load" }
+  ]
+}

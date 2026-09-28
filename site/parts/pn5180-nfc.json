@@ -1,0 +1,99 @@
+{
+  "id": "pn5180-nfc",
+  "name": "PN5180 NFC reader (13.56 MHz, ISO 15693)",
+  "category": "input",
+  "pins": [
+    {
+      "name": "5V",
+      "role": "passive",
+      "notes": "RF supply: connect to VIN (5 V). The reader needs both 5 V and 3.3 V"
+    },
+    {
+      "name": "3.3V",
+      "role": "power",
+      "notes": "Logic supply: connect to 3V3"
+    },
+    {
+      "name": "RST",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Reset, active LOW"
+    },
+    {
+      "name": "NSS",
+      "role": "spi_cs",
+      "notes": "SPI chip select"
+    },
+    {
+      "name": "MOSI",
+      "role": "spi_mosi"
+    },
+    {
+      "name": "MISO",
+      "role": "spi_miso"
+    },
+    {
+      "name": "SCK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "BUSY",
+      "role": "digital_out",
+      "notes": "HIGH while the chip is busy. Wait for LOW before each SPI command"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "GPIO",
+      "role": "passive",
+      "notes": "Not needed"
+    },
+    {
+      "name": "IRQ",
+      "role": "int",
+      "notes": "Interrupt, optional"
+    },
+    {
+      "name": "AUX",
+      "role": "passive",
+      "notes": "Test output, not needed"
+    },
+    {
+      "name": "REQ",
+      "role": "passive",
+      "notes": "Firmware download only. Leave unconnected"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      60,
+      40,
+      4
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "pn5180",
+    "nfc",
+    "rfid",
+    "iso15693",
+    "iso14443",
+    "lettore nfc",
+    "tag"
+  ],
+  "sources": [
+    {
+      "title": "NXP PN5180 datasheet",
+      "section": "SPI host interface with BUSY line; logic supply 3.3 V, RF supply up to 5 V"
+    },
+    {
+      "title": "Common PN5180 breakout",
+      "section": "Header +5V, +3.3V, RST, NSS, MOSI, MISO, SCK, BUSY, GND, GPIO, IRQ, AUX, REQ. Check the silkscreen"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "pzem-004t-v3",
+  "name": "PZEM-004T v3 AC energy meter (UART)",
+  "category": "sensor",
+  "measures": [
+    "voltage",
+    "current",
+    "power",
+    "energy",
+    "frequency",
+    "power factor"
+  ],
+  "pins": [
+    {
+      "name": "5V",
+      "role": "power",
+      "notes": "TTL side supply. Isolated from mains by optocouplers"
+    },
+    {
+      "name": "RX",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "UART: the meter receives data here. Connect to an ESP32 TX pin (9600 baud, Modbus RTU)"
+    },
+    {
+      "name": "TX",
+      "role": "digital_out",
+      "notes": "UART: the meter sends here. Idles at the 5 V supply: add a divider before the ESP32 RX pin"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "L",
+      "role": "passive",
+      "notes": "MAINS 230 V! Only a qualified person connects this. Never to the ESP32"
+    },
+    {
+      "name": "N",
+      "role": "passive",
+      "notes": "MAINS 230 V! Only a qualified person connects this. Never to the ESP32"
+    },
+    {
+      "name": "CT+",
+      "role": "passive",
+      "notes": "Current transformer lead (100 A version). The measured wire passes through the CT"
+    },
+    {
+      "name": "CT-",
+      "role": "passive",
+      "notes": "Current transformer lead (100 A version)"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": {
+    "shape": "module",
+    "size": [
+      73,
+      32,
+      24
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "pzem-004t",
+    "pzem",
+    "energy meter",
+    "ac power",
+    "mains",
+    "contatore",
+    "energia",
+    "rete elettrica"
+  ],
+  "sources": [
+    {
+      "title": "Peacefair PZEM-004T V3.0 user manual",
+      "section": "Measures voltage 80 to 260 V, current, power, energy, frequency, power factor"
+    },
+    {
+      "title": "Peacefair PZEM-004T V3.0 user manual",
+      "section": "TTL serial 9600 baud, Modbus-RTU; TTL side powered with 5 V"
+    }
+  ]
+}

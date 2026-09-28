@@ -1,0 +1,18 @@
+{
+  "id": "ky-013",
+  "name": "KY-013 analog temperature (NTC)",
+  "category": "sensor",
+  "measures": ["temperature"],
+  "pins": [
+    { "name": "S", "role": "analog_out", "notes": "To an ADC1 pin (GPIO 32 to 39). On many boards the reading falls as it gets warmer" },
+    { "name": "VCC", "role": "power", "notes": "Middle pin. Use 3V3 so the output stays in the ADC range" },
+    { "name": "GND", "role": "ground", "notes": "Marked - on the board" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [18.5, 15, 5], "color": "#1A1A1A" },
+  "keywords": ["ky-013", "ntc", "thermistor", "termistore", "temperature", "temperatura", "analog"],
+  "sources": [
+    { "title": "Joy-IT KY-013 datasheet", "section": "10 kΩ NTC thermistor in a divider with a 10 kΩ resistor; pins S, +, -" }
+  ]
+}

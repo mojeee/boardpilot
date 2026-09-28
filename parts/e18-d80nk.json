@@ -1,0 +1,18 @@
+{
+  "id": "e18-d80nk",
+  "name": "E18-D80NK IR proximity switch (3-80 cm)",
+  "category": "sensor",
+  "measures": ["proximity", "presence"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Brown wire. Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground", "notes": "Blue wire" },
+    { "name": "OUT", "role": "digital_out", "notes": "Black wire. LOW when an object is near. Can idle at 5 V: measure first, use a divider or level shifter" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [18,18,45], "color": "#1A1A1A" },
+  "keywords": ["e18-d80nk", "ir proximity", "photoelectric", "obstacle", "fotocellula", "ostacolo", "prossimità"],
+  "sources": [
+    { "title": "E18-D80NK seller datasheet", "section": "Supply 5 V; NPN normally-open output; range 3 to 80 cm (adjustable)" }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "rotary-encoder-ky040",
+  "name": "Rotary encoder (KY-040)",
+  "category": "input",
+  "pins": [
+    {
+      "name": "CLK",
+      "role": "digital_out",
+      "notes": "Encoder output A"
+    },
+    {
+      "name": "DT",
+      "role": "digital_out",
+      "notes": "Encoder output B"
+    },
+    {
+      "name": "SW",
+      "role": "digital_out",
+      "notes": "Push button: LOW when pressed"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Marked + on the board. Use 3V3: the on-board pull-ups go to this pin"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      26,
+      19,
+      30
+    ],
+    "color": "#1F4FA8"
+  },
+  "keywords": [
+    "rotary encoder",
+    "ky-040",
+    "encoder",
+    "knob",
+    "manopola",
+    "encoder rotativo"
+  ],
+  "sources": [
+    {
+      "title": "Joy-IT KY-040 datasheet",
+      "section": "Pins CLK, DT, SW, +, GND"
+    }
+  ]
+}

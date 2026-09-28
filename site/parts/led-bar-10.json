@@ -1,0 +1,124 @@
+{
+  "id": "led-bar-10",
+  "name": "LED bar graph 10 segments",
+  "category": "display",
+  "pins": [
+    {
+      "name": "A1",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "Anode, through a 220 Ω resistor. Which side is anode varies: check with a multimeter (diode mode)"
+    },
+    {
+      "name": "A2",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A3",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A4",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A5",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A6",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A7",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A8",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A9",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "A10",
+      "role": "digital_in",
+      "needsOutput": true
+    },
+    {
+      "name": "K1",
+      "role": "ground",
+      "notes": "Cathode: to GND"
+    },
+    {
+      "name": "K2",
+      "role": "ground"
+    },
+    {
+      "name": "K3",
+      "role": "ground"
+    },
+    {
+      "name": "K4",
+      "role": "ground"
+    },
+    {
+      "name": "K5",
+      "role": "ground"
+    },
+    {
+      "name": "K6",
+      "role": "ground"
+    },
+    {
+      "name": "K7",
+      "role": "ground"
+    },
+    {
+      "name": "K8",
+      "role": "ground"
+    },
+    {
+      "name": "K9",
+      "role": "ground"
+    },
+    {
+      "name": "K10",
+      "role": "ground"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "led",
+    "size": [
+      51.8,
+      10,
+      8
+    ],
+    "color": "#B22222"
+  },
+  "keywords": [
+    "led bar",
+    "bar graph",
+    "10 segment",
+    "vu meter",
+    "barra led",
+    "indicatore"
+  ],
+  "sources": [
+    {
+      "title": "Kingbright DC-10 series bar graph datasheet",
+      "section": "Pin connection (anodes one side, cathodes the other)"
+    }
+  ]
+}

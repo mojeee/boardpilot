@@ -1,0 +1,76 @@
+{
+  "id": "as5048a",
+  "name": "AS5048A magnetic angle encoder (SPI)",
+  "category": "sensor",
+  "measures": [
+    "angle",
+    "rotation"
+  ],
+  "pins": [
+    {
+      "name": "3V3",
+      "role": "power",
+      "notes": "Use this pin with the ESP32. Pin order differs between adapter boards"
+    },
+    {
+      "name": "5V",
+      "role": "passive",
+      "notes": "Only for 5 V systems. Leave unconnected when you use 3V3"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "CSN",
+      "role": "spi_cs"
+    },
+    {
+      "name": "CLK",
+      "role": "spi_sck"
+    },
+    {
+      "name": "MOSI",
+      "role": "spi_mosi"
+    },
+    {
+      "name": "MISO",
+      "role": "spi_miso"
+    },
+    {
+      "name": "PWM",
+      "role": "digital_out",
+      "notes": "Angle as PWM duty cycle. Optional"
+    }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": {
+    "shape": "breakout",
+    "size": [
+      25,
+      25,
+      1.6
+    ],
+    "color": "#1E7A3C"
+  },
+  "keywords": [
+    "as5048a",
+    "as5048",
+    "ams",
+    "magnetic encoder",
+    "angle",
+    "gimbal",
+    "angolo"
+  ],
+  "sources": [
+    {
+      "title": "ams AS5048A/AS5048B datasheet",
+      "section": "SPI interface (mode 1), 14-bit angle register 0x3FFF"
+    },
+    {
+      "title": "ams AS5048A/AS5048B datasheet",
+      "section": "3.3 V or 5 V supply modes"
+    }
+  ]
+}

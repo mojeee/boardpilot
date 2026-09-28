@@ -1,0 +1,55 @@
+{
+  "id": "grove-gsr",
+  "name": "Grove GSR skin response sensor",
+  "category": "sensor",
+  "measures": [
+    "skin conductance"
+  ],
+  "pins": [
+    {
+      "name": "SIG",
+      "role": "analog_out",
+      "notes": "Yellow wire. To an ADC1 pin (GPIO 32 to 39). Power from 3V3 to keep it in range"
+    },
+    {
+      "name": "NC",
+      "role": "passive",
+      "notes": "White wire. Not connected"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Red wire"
+    },
+    {
+      "name": "GND",
+      "role": "ground",
+      "notes": "Black wire"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      20,
+      40,
+      5
+    ],
+    "color": "#2E6FD8"
+  },
+  "keywords": [
+    "gsr",
+    "galvanic skin response",
+    "grove",
+    "eda",
+    "stress",
+    "conduttanza cutanea"
+  ],
+  "sources": [
+    {
+      "title": "Seeed Grove GSR sensor wiki",
+      "section": "Grove pins SIG, NC, VCC, GND; supply 3.3 or 5 V; analog output"
+    }
+  ]
+}

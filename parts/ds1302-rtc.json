@@ -1,0 +1,20 @@
+{
+  "id": "ds1302-rtc",
+  "name": "DS1302 real-time clock module",
+  "category": "sensor",
+  "measures": ["time"],
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "CLK", "role": "digital_in", "needsOutput": true, "notes": "Serial clock. This is a 3-wire bus, not I2C" },
+    { "name": "DAT", "role": "digital_in", "needsOutput": true, "notes": "Data, both directions" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true, "notes": "Chip enable (CE): HIGH during a transfer" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [44, 23, 14], "color": "#1F4FA8" },
+  "keywords": ["ds1302", "rtc", "real time clock", "3-wire", "clock", "orologio", "ora"],
+  "sources": [
+    { "title": "Maxim DS1302 datasheet", "section": "3-wire interface (CE, I/O, SCLK); supply 2.0 to 5.5 V" }
+  ]
+}

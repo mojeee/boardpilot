@@ -2,8 +2,14 @@
 // Docs: https://ai.google.dev/api/generate-content, https://ai.google.dev/gemini-api/docs/function-calling,
 //       https://ai.google.dev/gemini-api/docs/structured-output, https://ai.google.dev/api/models.
 // The model's own content (including thought signatures) is replayed unchanged on the next turn.
+// Web search: https://ai.google.dev/gemini-api/docs/google-search (tool `google_search`; answers carry
+// groundingMetadata.groundingChunks[].web {uri, title}). Combining built-in tools with function
+// calling is a Gemini 3 preview feature (https://ai.google.dev/gemini-api/docs/tool-combination),
+// so search is only sent on requests without our own tools. Structured output together with search
+// is supported on Gemini 3 (https://ai.google.dev/gemini-api/docs/structured-output); older models
+// that refuse it are retried without JSON mode, then without search.
 
-import type { AiModelInfo } from '@shared/ai';
+import type { AiModelInfo, AiProviderId } from '@shared/ai';
 import { httpJson } from './http';
 import { sanitizeForGemini } from './schema';
 import {
@@ -19,6 +25,7 @@ import {
   type StopReason,
   type ToolCall,
   type ToolSpec,
+  type WebCitation,
 } from './types';
 
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
@@ -39,8 +46,13 @@ export interface GeminiContent {
   parts: GeminiPart[];
 }
 
+export interface GeminiGrounding {
+  groundingChunks?: { web?: { uri?: string; title?: string } }[];
+  webSearchQueries?: string[];
+}
+
 export interface GeminiResponse {
-  candidates?: { content?: GeminiContent; finishReason?: string }[];
+  candidates?: { content?: GeminiContent; finishReason?: string; groundingMetadata?: GeminiGrounding }[];
   promptFeedback?: { blockReason?: string };
 }
 
@@ -62,8 +74,9 @@ function toolResponse(content: string, isError: boolean): Record<string, unknown
   return isError ? { error: value } : { output: value };
 }
 
-/** Neutral messages to Gemini contents. Consecutive user-side turns are merged. */
-export function toGeminiContents(messages: ChatMessage[]): GeminiContent[] {
+/** Neutral messages to Gemini contents. Consecutive user-side turns are merged. Raw model turns
+ *  are replayed only when they came from `provider` (the free demo is Gemini under another id). */
+export function toGeminiContents(messages: ChatMessage[], provider: AiProviderId = 'gemini'): GeminiContent[] {
   const out: GeminiContent[] = [];
   const pushUser = (parts: GeminiPart[]) => {
     const last = out[out.length - 1];
@@ -78,7 +91,7 @@ export function toGeminiContents(messages: ChatMessage[]): GeminiContent[] {
           functionResponse: { ...(r.callId.startsWith(LOCAL_ID) ? {} : { id: r.callId }), name: r.name, response: toolResponse(r.content, r.isError) },
         })),
       );
-    } else if (m.raw?.provider === 'gemini' && typeof m.raw.data === 'object' && m.raw.data !== null) {
+    } else if (m.raw?.provider === provider && typeof m.raw.data === 'object' && m.raw.data !== null) {
       const c = m.raw.data as GeminiContent;
       out.push({ role: 'model', parts: c.parts ?? [] });
     } else {
@@ -97,7 +110,18 @@ export function toGeminiTools(tools: ToolSpec[]) {
 
 const BLOCKED = new Set(['SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLIST', 'SPII', 'RECITATION', 'IMAGE_SAFETY']);
 
-export function parseGeminiResponse(res: GeminiResponse): ChatResponse {
+/** Web pages the answer was grounded on, without duplicates. Only http(s) links are kept. */
+export function geminiCitations(g: GeminiGrounding | undefined): WebCitation[] {
+  const out: WebCitation[] = [];
+  for (const c of g?.groundingChunks ?? []) {
+    const url = c.web?.uri ?? '';
+    if (!/^https?:\/\//i.test(url) || out.some((x) => x.url === url)) continue;
+    out.push({ url, title: (c.web?.title ?? '').trim() || new URL(url).hostname });
+  }
+  return out;
+}
+
+export function parseGeminiResponse(res: GeminiResponse, provider: AiProviderId = 'gemini'): ChatResponse {
   const cand = res.candidates?.[0];
   const parts = cand?.content?.parts ?? [];
   let text = '';
@@ -112,7 +136,8 @@ export function parseGeminiResponse(res: GeminiResponse): ChatResponse {
   if (toolCalls.length) stop = 'tool_use';
   else if (res.promptFeedback?.blockReason || !cand || BLOCKED.has(reason)) stop = 'refusal';
   else if (reason === 'MAX_TOKENS') stop = 'max_tokens';
-  return { text, toolCalls, stop, raw: { provider: 'gemini', data: { role: 'model', parts } satisfies GeminiContent } };
+  const citations = geminiCitations(cand?.groundingMetadata);
+  return { text, toolCalls, stop, raw: { provider, data: { role: 'model', parts } satisfies GeminiContent }, ...(citations.length ? { citations } : {}) };
 }
 
 /** Models that can generate text (generateContent), newest names first. */
@@ -125,42 +150,74 @@ export function filterGeminiModels(models: { name: string; displayName?: string;
 }
 
 export class GeminiProvider implements AiProvider {
-  readonly id = 'gemini' as const;
-  /** Models that rejected JSON output together with function calling (older than Gemini 3). */
-  private readonly noJsonWithTools = new Set<string>();
+  readonly id: AiProviderId = 'gemini';
+  /** "model|tools" or "model|search" combinations that rejected JSON output (older than Gemini 3). */
+  private readonly noJsonWith = new Set<string>();
+  /** Models that rejected the google_search tool. */
+  private readonly noSearch = new Set<string>();
 
   constructor(private readonly apiKey: string) {}
 
-  private headers() {
+  protected url(model: string): string {
+    return `${BASE}/models/${encodeURIComponent(model)}:generateContent`;
+  }
+
+  protected headers(): Record<string, string> {
     return { 'x-goog-api-key': this.apiKey };
   }
 
-  private body(req: ChatRequest, withJson: boolean) {
-    const generationConfig: Record<string, unknown> = { maxOutputTokens: req.maxTokens };
+  protected maxOutput(requested: number): number {
+    return requested;
+  }
+
+  protected body(req: ChatRequest, withJson: boolean, withSearch: boolean): Record<string, unknown> {
+    const generationConfig: Record<string, unknown> = { maxOutputTokens: this.maxOutput(req.maxTokens) };
     if (req.jsonSchema && withJson) {
       generationConfig.responseMimeType = 'application/json';
       generationConfig.responseJsonSchema = sanitizeForGemini(req.jsonSchema.schema);
     }
-    const body: Record<string, unknown> = { contents: toGeminiContents(req.messages), generationConfig };
+    const body: Record<string, unknown> = { contents: toGeminiContents(req.messages, this.id), generationConfig };
     if (req.system) body.systemInstruction = { parts: [{ text: req.system }] };
     if (req.tools?.length) body.tools = toGeminiTools(req.tools);
+    else if (withSearch) body.tools = [{ google_search: {} }];
     return body;
   }
 
+  /** True when this request would carry the google_search tool. */
+  protected wantsSearch(req: ChatRequest): boolean {
+    return Boolean(req.webSearch) && !req.tools?.length && !this.noSearch.has(req.model);
+  }
+
   async chat(req: ChatRequest): Promise<ChatResponse> {
-    const url = `${BASE}/models/${encodeURIComponent(req.model)}:generateContent`;
-    const both = Boolean(req.jsonSchema && req.tools?.length);
-    const withJson = !(both && this.noJsonWithTools.has(req.model));
-    try {
-      return parseGeminiResponse(await httpJson<GeminiResponse>('gemini', url, { headers: this.headers(), body: this.body(req, withJson), timeoutMs: req.timeoutMs }));
-    } catch (e) {
-      // Older models refuse JSON mode together with tools; the system prompt still asks for JSON.
-      if (both && withJson && e instanceof ProviderError && e.kind === 'bad_request' && /mime|json|function call|tool/i.test(e.message)) {
-        this.noJsonWithTools.add(req.model);
-        return parseGeminiResponse(await httpJson<GeminiResponse>('gemini', url, { headers: this.headers(), body: this.body(req, false), timeoutMs: req.timeoutMs }));
+    const url = this.url(req.model);
+    let withSearch = this.wantsSearch(req);
+    let withJson = true;
+    const mixKey = () => `${req.model}|${req.tools?.length ? 'tools' : 'search'}`;
+    const mixed = () => Boolean(req.jsonSchema && (req.tools?.length || withSearch));
+    if (mixed() && this.noJsonWith.has(mixKey())) withJson = false;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await httpJson<GeminiResponse>(this.id, url, { headers: this.headers(), body: this.body(req, withJson, withSearch), timeoutMs: req.timeoutMs });
+        return parseGeminiResponse(res, this.id);
+      } catch (e) {
+        if (!(e instanceof ProviderError && e.kind === 'bad_request')) throw e;
+        // Older models refuse JSON mode together with tools or search; the prompt still asks for JSON.
+        if (withJson && mixed() && /mime|json|function call|tool|search|grounding/i.test(e.message)) {
+          this.noJsonWith.add(mixKey());
+          withJson = false;
+          continue;
+        }
+        // A model without Search grounding: answer from the page alone.
+        if (withSearch && /search|grounding|tool/i.test(e.message)) {
+          this.noSearch.add(req.model);
+          withSearch = false;
+          withJson = true;
+          continue;
+        }
+        throw e;
       }
-      throw e;
     }
+    throw new ProviderError('bad_request', this.id, 'The request was rejected in every form that was tried.');
   }
 
   complete(req: CompleteRequest): Promise<ChatResponse> {
@@ -172,7 +229,7 @@ export class GeminiProvider implements AiProvider {
     let pageToken = '';
     for (let i = 0; i < 5; i++) {
       const q = `pageSize=1000${pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''}`;
-      const res = await httpJson<{ models?: typeof all; nextPageToken?: string }>('gemini', `${BASE}/models?${q}`, { headers: this.headers(), timeoutMs });
+      const res = await httpJson<{ models?: typeof all; nextPageToken?: string }>(this.id, `${BASE}/models?${q}`, { headers: this.headers(), timeoutMs });
       all.push(...(res.models ?? []));
       if (!res.nextPageToken) break;
       pageToken = res.nextPageToken;

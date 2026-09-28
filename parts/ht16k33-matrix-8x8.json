@@ -1,0 +1,20 @@
+{
+  "id": "ht16k33-matrix-8x8",
+  "name": "HT16K33 8x8 LED matrix backpack (I2C)",
+  "category": "display",
+  "pins": [
+    { "name": "+", "role": "power", "notes": "Pin order varies between boards: match by the printed label. HT16K33 is rated 4.5 to 5.5 V. At 3V3 it usually works, dimmer" },
+    { "name": "-", "role": "ground" },
+    { "name": "D", "role": "i2c_sda", "notes": "I2C data (SDA)" },
+    { "name": "C", "role": "i2c_scl", "notes": "I2C clock (SCL)" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x70", "0x71", "0x72", "0x73", "0x74", "0x75", "0x76", "0x77"],
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [32, 32, 10], "color": "#1A1A1A" },
+  "keywords": ["ht16k33", "led matrix", "8x8", "backpack", "adafruit", "matrice led"],
+  "sources": [
+    { "title": "Holtek HT16K33 datasheet", "section": "Slave address 1110 A2 A1 A0; VDD 4.5 to 5.5 V" },
+    { "title": "Adafruit LED Backpacks guide", "section": "8x8 matrix backpack pinouts, address jumpers A0 to A2" }
+  ]
+}
