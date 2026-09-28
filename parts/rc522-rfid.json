@@ -1,0 +1,22 @@
+{
+  "id": "rc522-rfid",
+  "name": "RC522 RFID reader (13.56 MHz)",
+  "category": "input",
+  "pins": [
+    { "name": "SDA", "role": "spi_cs", "notes": "This is the SPI chip select (CS), despite the SDA label" },
+    { "name": "SCK", "role": "spi_sck" },
+    { "name": "MOSI", "role": "spi_mosi" },
+    { "name": "MISO", "role": "spi_miso" },
+    { "name": "IRQ", "role": "int", "notes": "Interrupt, optional. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true,"notes": "Reset, active LOW" },
+    { "name": "3.3V", "role": "power", "notes": "3.3 V only. Never 5 V" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [60, 39, 3], "color": "#1F4FA8" },
+  "keywords": ["rc522", "mfrc522", "rfid", "nfc", "card reader", "tag", "lettore rfid", "badge"],
+  "sources": [
+    { "title": "NXP MFRC522 datasheet", "section": "SPI interface; supply 2.5 to 3.6 V" }
+  ]
+}

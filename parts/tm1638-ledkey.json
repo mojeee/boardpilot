@@ -1,0 +1,19 @@
+{
+  "id": "tm1638-ledkey",
+  "name": "TM1638 LED & KEY board",
+  "category": "display",
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "STB", "role": "digital_in", "needsOutput": true,"notes": "Strobe" },
+    { "name": "CLK", "role": "digital_in", "needsOutput": true,"notes": "Clock" },
+    { "name": "DIO", "role": "digital_in", "needsOutput": true,"notes": "Data" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [76, 50, 10], "color": "#B22222" },
+  "keywords": ["tm1638", "led&key", "7 segment", "buttons", "leds", "display", "pulsanti"],
+  "sources": [
+    { "title": "Titan Micro TM1638 datasheet", "section": "Serial interface STB, CLK, DIO" }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "tilt-switch",
+  "name": "Tilt switch (SW-520D)",
+  "category": "input",
+  "pins": [
+    { "name": "1", "role": "digital_out", "notes": "To a GPIO; use INPUT_PULLUP. Closed when upright" },
+    { "name": "2", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "button", "size": [6.1, 6, 12], "color": "#C9CED4" },
+  "keywords": ["tilt switch", "sw-520d", "ball switch", "tilt", "inclinazione"],
+  "sources": [
+    { "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" }
+  ]
+}

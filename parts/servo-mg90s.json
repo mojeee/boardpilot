@@ -1,0 +1,17 @@
+{
+  "id": "servo-mg90s",
+  "name": "MG90S metal gear micro servo",
+  "category": "output",
+  "pins": [
+    { "name": "GND", "role": "ground", "notes": "Brown wire" },
+    { "name": "VCC", "role": "power", "notes": "Red wire, 5 V: use VIN" },
+    { "name": "SIG", "role": "digital_in", "needsOutput": true,"notes": "Orange wire. 50 Hz PWM" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "motor", "size": [22.5, 12, 35], "color": "#1A1A1A" },
+  "keywords": ["mg90s", "servo", "metal gear", "motor", "servomotore"],
+  "sources": [
+    { "title": "Tower Pro MG90S datasheet", "section": "Supply 4.8 to 6 V; 50 Hz PWM" }
+  ]
+}

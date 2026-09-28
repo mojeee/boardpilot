@@ -1,0 +1,18 @@
+{
+  "id": "nema17-stepper",
+  "name": "NEMA 17 bipolar stepper motor",
+  "category": "output",
+  "pins": [
+    { "name": "A+", "role": "passive", "notes": "Coil A. Wire colours vary: find the pairs with a multimeter" },
+    { "name": "A-", "role": "passive", "notes": "Coil A" },
+    { "name": "B+", "role": "passive", "notes": "Coil B" },
+    { "name": "B-", "role": "passive", "notes": "Coil B. Never connect the motor to the ESP32 directly: use a driver" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "motor", "size": [42.3, 42.3, 40], "color": "#1A1A1A" },
+  "keywords": ["nema17", "nema 17", "stepper", "bipolar", "step motor", "motore passo passo"],
+  "sources": [
+    { "title": "NEMA ICS 16 standard", "section": "42.3 mm frame size" }
+  ]
+}

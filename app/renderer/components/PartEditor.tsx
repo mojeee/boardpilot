@@ -19,6 +19,7 @@ interface EditorReq {
   notes?: string[];
   fromImport?: boolean;
   usedAi?: boolean;
+  basis?: 'ai' | 'library' | 'keywords';
   replaceId?: string;
 }
 
@@ -145,7 +146,7 @@ export function PartEditor() {
         {req.fromImport && (
           <div className="import-notes">
             <span className="conf conf-suggestion">{t('suggestion')}</span>{' '}
-            {req.usedAi ? t('Drafted by the AI assistant from the page.') : t('Guessed from keywords on the page.')}{' '}
+            {req.basis === 'library' ? t('Matched to a part in the library from the chip name on the page.') : req.usedAi ? t('Drafted by the AI assistant from the page.') : t('Guessed from keywords on the page.')}{' '}
             {t('Check the pins against the part in your hand before saving.')}
             {!!req.notes?.length && (
               <ul>
@@ -267,6 +268,7 @@ export function PartEditor() {
           </div>
           <div className="pe-preview">
             <Preview def={previewDef} />
+            {d.image && <img className="pe-photo" src={d.image} alt={t('Product photo')} title={t('Product photo')} />}
           </div>
         </div>
         {err && <p className="err-text">{err}</p>}

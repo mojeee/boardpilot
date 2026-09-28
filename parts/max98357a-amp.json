@@ -1,0 +1,21 @@
+{
+  "id": "max98357a-amp",
+  "name": "MAX98357A I2S audio amplifier",
+  "category": "output",
+  "pins": [
+    { "name": "LRC", "role": "spi_cs", "notes": "I2S word select (LRCLK), not SPI" },
+    { "name": "BCLK", "role": "spi_sck", "notes": "I2S bit clock, not SPI" },
+    { "name": "DIN", "role": "digital_in", "needsOutput": true,"notes": "I2S audio data from the ESP32" },
+    { "name": "GAIN", "role": "passive", "notes": "Leave unconnected for 9 dB" },
+    { "name": "SD", "role": "passive", "notes": "Shutdown / channel select. Leave unconnected" },
+    { "name": "GND", "role": "ground" },
+    { "name": "VIN", "role": "power", "notes": "2.5 to 5.5 V; 5 V gives more volume" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "breakout", "size": [18.8, 18, 3], "color": "#1A1A1A" },
+  "keywords": ["max98357a", "i2s", "amplifier", "speaker", "audio", "amplificatore", "altoparlante"],
+  "sources": [
+    { "title": "Maxim MAX98357A datasheet", "section": "I2S inputs BCLK, LRCLK, DIN; supply 2.5 to 5.5 V" }
+  ]
+}

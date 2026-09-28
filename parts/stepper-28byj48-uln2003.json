@@ -1,0 +1,21 @@
+{
+  "id": "stepper-28byj48-uln2003",
+  "name": "28BYJ-48 stepper + ULN2003 driver",
+  "category": "output",
+  "pins": [
+    { "name": "IN1", "role": "digital_in", "needsOutput": true },
+    { "name": "IN2", "role": "digital_in", "needsOutput": true },
+    { "name": "IN3", "role": "digital_in", "needsOutput": true },
+    { "name": "IN4", "role": "digital_in", "needsOutput": true },
+    { "name": "-", "role": "ground", "notes": "Driver ground. Share it with the ESP32 GND" },
+    { "name": "+", "role": "power", "notes": "Motor supply 5 V: use VIN (about 240 mA)" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "motor", "size": [35, 32, 19], "color": "#C9CED4" },
+  "keywords": ["28byj-48", "uln2003", "stepper", "step motor", "motore passo passo"],
+  "sources": [
+    { "title": "Texas Instruments ULN2003A datasheet", "section": "Darlington array inputs compatible with 3.3 V logic" },
+    { "title": "28BYJ-48 motor datasheet", "section": "5 V unipolar, 4-phase" }
+  ]
+}

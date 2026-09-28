@@ -44,6 +44,11 @@ const api: BoardPilotApi = {
   safety: { grant: call('safety:grant') } as BoardPilotApi['safety'],
   ai: {
     status: call('ai:status'),
+    getSettings: call('ai:getSettings'),
+    saveSettings: call('ai:saveSettings'),
+    clearKey: call('ai:clearKey'),
+    listModels: call('ai:listModels'),
+    test: call('ai:test'),
     ask: call('ai:ask'),
     recognize: call('ai:recognize'),
     classify: call('ai:classify'),

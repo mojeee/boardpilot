@@ -1,7 +1,7 @@
-name: Release Mac app
+name: Release apps
 
-# Push a tag like v0.2.0 to build the .dmg files and publish them as a GitHub Release.
-# The website download buttons point to releases/latest/download/BoardPilot-mac-<arch>.dmg.
+# Push a tag like v0.3.0 to build the macOS .dmg files and the Windows installer, then publish them
+# as one GitHub Release. The website download buttons point to releases/latest/download/<file>.
 
 on:
   push:
@@ -23,14 +23,50 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npx electron-vite build
-      - name: Package (unsigned)
+      - name: Package macOS (unsigned)
         run: npx electron-builder --mac --arm64 --x64 --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac
+          path: |
+            dist/BoardPilot-mac-arm64.dmg
+            dist/BoardPilot-mac-x64.dmg
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx electron-vite build
+      - name: Package Windows (unsigned)
+        run: npx electron-builder --win --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: dist/BoardPilot-win-x64.exe
+
+  publish:
+    needs: [mac, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
       - uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/BoardPilot-mac-arm64.dmg
             dist/BoardPilot-mac-x64.dmg
+            dist/BoardPilot-win-x64.exe
           generate_release_notes: true
           fail_on_unmatched_files: true

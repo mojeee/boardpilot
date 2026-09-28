@@ -1,0 +1,23 @@
+{
+  "id": "pms5003",
+  "name": "PMS5003 particulate matter sensor",
+  "category": "sensor",
+  "measures": ["particulates"],
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V for the fan: use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SET", "role": "digital_in", "needsOutput": true,"notes": "HIGH or unconnected = working, LOW = sleep (3.3 V logic)" },
+    { "name": "RX", "role": "digital_in", "needsOutput": true,"notes": "UART: the part receives data here. Connect to an ESP32 TX pin" },
+    { "name": "TX", "role": "digital_out", "notes": "UART: the part sends data here. Connect to an ESP32 RX pin (9600 baud, 3.3 V level)" },
+    { "name": "RESET", "role": "digital_in", "needsOutput": true,"notes": "Reset, active LOW. Optional" },
+    { "name": "NC1", "role": "passive", "notes": "Not connected" },
+    { "name": "NC2", "role": "passive", "notes": "Not connected" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [50, 38, 21], "color": "#C9CED4" },
+  "keywords": ["pms5003", "plantower", "pm2.5", "pm10", "dust", "particulate", "polveri sottili", "qualità aria"],
+  "sources": [
+    { "title": "Plantower PMS5003 datasheet", "section": "Pin 1 VCC, 2 GND, 3 SET, 4 RX, 5 TX, 6 RESET, 7-8 NC; 3.3 V logic" }
+  ]
+}

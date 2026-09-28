@@ -1,0 +1,23 @@
+{
+  "id": "max6675",
+  "name": "MAX6675 K-type thermocouple module",
+  "category": "sensor",
+  "measures": ["temperature"],
+  "pins": [
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power" },
+    { "name": "SCK", "role": "spi_sck" },
+    { "name": "CS", "role": "spi_cs" },
+    { "name": "SO", "role": "spi_miso", "notes": "Data out of the module (SPI MISO)" },
+    { "name": "TC+", "role": "passive", "notes": "Thermocouple + (screw terminal)" },
+    { "name": "TC-", "role": "passive", "notes": "Thermocouple - (screw terminal)" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [25, 15, 12], "color": "#B22222" },
+  "keywords": ["max6675", "thermocouple", "k-type", "termocoppia", "high temperature", "temperatura"],
+  "sources": [
+    { "title": "Maxim MAX6675 datasheet", "section": "Serial interface: SO, CS, SCK (read-only SPI)" },
+    { "title": "Maxim MAX6675 datasheet", "section": "Supply 3.0 to 5.5 V" }
+  ]
+}

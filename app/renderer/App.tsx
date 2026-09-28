@@ -19,6 +19,7 @@ import { NewProjectPanel } from './screens/NewProject';
 import { runDemo } from './demo';
 import { PartEditor } from './components/PartEditor';
 import { LicenseDialog, LockScreen, useLicense } from './components/License';
+import { AiSettingsDialog } from './components/AiSettings';
 import { usePartsLib } from './state/partsLib';
 import { useScene } from './state/store';
 import { t } from '@shared/i18n';
@@ -122,6 +123,7 @@ export function App() {
       <DevMenu />
       <PartEditor />
       <LicenseDialog />
+      <AiSettingsDialog />
       <ConfirmDialog />
       <LockScreen />
     </div>

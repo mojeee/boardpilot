@@ -37,9 +37,9 @@ function ImportFromLink() {
       return;
     }
     log('info', t('Drafted “{name}” from {page}. Check it before saving.', { name: r.value.draft.name, page: r.value.pageTitle }), {
-      source: r.value.usedAi ? t('assistant (suggestion)') : t('keyword rules (suggestion)'),
+      source: r.value.basis === 'ai' ? t('assistant (suggestion)') : r.value.basis === 'library' ? t('parts library match (suggestion)') : t('keyword rules (suggestion)'),
     });
-    usePartEditor.getState().open({ draft: r.value.draft, notes: r.value.notes, fromImport: true, usedAi: r.value.usedAi });
+    usePartEditor.getState().open({ draft: r.value.draft, notes: r.value.notes, fromImport: true, usedAi: r.value.usedAi, basis: r.value.basis });
     setUrl('');
   };
   return (
@@ -71,7 +71,7 @@ function PartRow({ p, onAdded }: { p: PartDef; onAdded?: () => void }) {
   const mine = !isBuiltin(p.id);
   return (
     <div className="lib-row">
-      <div className="lib-swatch" style={{ background: p.model.color }} />
+      {p.image ? <img className="lib-thumb" src={p.image} alt="" /> : <div className="lib-swatch" style={{ background: p.model.color }} />}
       <div className="lib-main">
         <b>{p.name}</b>
         <div className="lib-pins">

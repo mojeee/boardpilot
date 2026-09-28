@@ -21,6 +21,7 @@ import type {
   ScenarioInfo,
   WriteRequest,
 } from './types';
+import type { AiModelInfo, AiProviderId, AiSettingsInput, AiSettingsView, AiStatus } from './ai';
 
 export type Unsubscribe = () => void;
 
@@ -59,7 +60,15 @@ export interface BoardPilotApi {
     grant(kind: WriteRequest['kind'] | 'restore'): Promise<string>;
   };
   ai: {
-    status(): Promise<{ enabled: boolean; model: string }>;
+    status(): Promise<AiStatus>;
+    /** Provider, models and which keys exist. Never contains a key. */
+    getSettings(): Promise<AiSettingsView>;
+    saveSettings(input: AiSettingsInput): Promise<Result<AiSettingsView>>;
+    clearKey(provider: AiProviderId): Promise<Result<AiSettingsView>>;
+    /** Lists models with the pasted key (not saved) or the stored one. */
+    listModels(provider: AiProviderId, apiKey?: string): Promise<Result<AiModelInfo[]>>;
+    /** One tiny request to check key and model; uses the draft values when given. */
+    test(draft?: Partial<AiSettingsInput>): Promise<Result<{ provider: AiProviderId; model: string; ms: number }>>;
     ask(question: string, ctx: AiContext): Promise<Result<AiReply>>;
     recognize(imageBase64: string, mediaType: 'image/jpeg' | 'image/png' | 'image/webp'): Promise<Result<PhotoRecognition>>;
     classify(text: string, options: { id: string; label: string }[]): Promise<Result<{ optionId: string | null; reason: string }>>;
@@ -78,7 +87,7 @@ export interface BoardPilotApi {
     list(): Promise<PartDef[]>;
     save(def: PartDef, replaceId?: string): Promise<Result<PartDef>>;
     remove(id: string): Promise<Result<true>>;
-    importFromUrl(url: string): Promise<Result<{ draft: PartDef; notes: string[]; usedAi: boolean; pageTitle: string }>>;
+    importFromUrl(url: string): Promise<Result<{ draft: PartDef; notes: string[]; usedAi: boolean; basis: 'ai' | 'library' | 'keywords'; pageTitle: string }>>;
   };
   project: {
     autosave(scene: Scene): void;

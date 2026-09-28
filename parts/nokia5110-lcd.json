@@ -1,0 +1,22 @@
+{
+  "id": "nokia5110-lcd",
+  "name": "Nokia 5110 LCD 84x48 (PCD8544)",
+  "category": "display",
+  "pins": [
+    { "name": "RST", "role": "digital_in", "needsOutput": true,"notes": "Reset" },
+    { "name": "CE", "role": "spi_cs", "notes": "SPI chip select" },
+    { "name": "DC", "role": "digital_in", "needsOutput": true,"notes": "Data / command select" },
+    { "name": "DIN", "role": "spi_mosi", "notes": "SPI data (MOSI)" },
+    { "name": "CLK", "role": "spi_sck", "notes": "SPI clock" },
+    { "name": "VCC", "role": "power", "notes": "3.3 V only" },
+    { "name": "BL", "role": "passive", "notes": "Backlight: to 3V3 through a resistor, or a GPIO" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": { "shape": "module", "size": [45, 45, 5], "color": "#B22222" },
+  "keywords": ["nokia 5110", "pcd8544", "lcd", "84x48", "display", "schermo"],
+  "sources": [
+    { "title": "Philips PCD8544 datasheet", "section": "Serial interface: SCE, D/C, SDIN, SCLK, RES; supply 2.7 to 3.3 V" }
+  ]
+}

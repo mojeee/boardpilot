@@ -1,0 +1,27 @@
+{
+  "id": "ads1115",
+  "name": "ADS1115 16-bit ADC",
+  "category": "sensor",
+  "measures": ["voltage"],
+  "pins": [
+    { "name": "VDD", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "ADDR", "role": "passive", "notes": "Address select: GND 0x48, VDD 0x49, SDA 0x4A, SCL 0x4B" },
+    { "name": "ALRT", "role": "int", "notes": "Alert / ready output, optional" },
+    { "name": "A0", "role": "passive", "notes": "Analog input. Never above VDD" },
+    { "name": "A1", "role": "passive", "notes": "Analog input" },
+    { "name": "A2", "role": "passive", "notes": "Analog input" },
+    { "name": "A3", "role": "passive", "notes": "Analog input" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x48", "0x49", "0x4A", "0x4B"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [28, 17.5, 1.6], "color": "#1F4FA8" },
+  "keywords": ["ads1115", "adc", "analog to digital", "16 bit", "convertitore", "analogico"],
+  "sources": [
+    { "title": "Texas Instruments ADS111x datasheet", "section": "ADDR pin connection and corresponding slave address (0x48 to 0x4B)" }
+  ]
+}

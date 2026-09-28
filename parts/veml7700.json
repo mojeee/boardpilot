@@ -1,0 +1,21 @@
+{
+  "id": "veml7700",
+  "name": "VEML7700 ambient light sensor",
+  "category": "sensor",
+  "measures": ["light"],
+  "pins": [
+    { "name": "VIN", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x10"],
+  "voltage": "3.3",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [18, 13, 1.6], "color": "#1A1A1A" },
+  "keywords": ["veml7700", "vishay", "lux", "light", "luce", "luminosità"],
+  "sources": [
+    { "title": "Vishay VEML7700 datasheet", "section": "Slave address 0x10 (fixed)" }
+  ]
+}

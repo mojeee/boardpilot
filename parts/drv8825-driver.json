@@ -1,0 +1,31 @@
+{
+  "id": "drv8825-driver",
+  "name": "DRV8825 stepper driver",
+  "category": "output",
+  "pins": [
+    { "name": "EN", "role": "digital_in", "needsOutput": true,"notes": "Enable, active LOW. Leave unconnected to keep it on" },
+    { "name": "M0", "role": "passive", "notes": "Microstep select" },
+    { "name": "M1", "role": "passive", "notes": "Microstep select" },
+    { "name": "M2", "role": "passive", "notes": "Microstep select" },
+    { "name": "RST", "role": "digital_in", "needsOutput": true,"notes": "Must be HIGH: tie RST and SLP to 3V3" },
+    { "name": "SLP", "role": "digital_in", "needsOutput": true,"notes": "Must be HIGH: tie RST and SLP to 3V3" },
+    { "name": "STEP", "role": "digital_in", "needsOutput": true,"notes": "One pulse = one step" },
+    { "name": "DIR", "role": "digital_in", "needsOutput": true,"notes": "Direction" },
+    { "name": "VMOT", "role": "passive", "notes": "Motor supply 8.2 to 45 V from a separate supply. Add a 100 µF capacitor" },
+    { "name": "GND_MOT", "role": "ground", "notes": "Motor supply ground" },
+    { "name": "B2", "role": "passive", "notes": "Motor coil B" },
+    { "name": "B1", "role": "passive", "notes": "Motor coil B" },
+    { "name": "A1", "role": "passive", "notes": "Motor coil A" },
+    { "name": "A2", "role": "passive", "notes": "Motor coil A" },
+    { "name": "FAULT", "role": "digital_out", "notes": "LOW on over-current or over-temperature" },
+    { "name": "GND_LOGIC", "role": "ground", "notes": "Logic ground: to the ESP32 GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [41.6, 15.2, 10], "color": "#5B2A86" },
+  "keywords": ["drv8825", "stepper driver", "pololu", "nema17", "driver passo passo"],
+  "sources": [
+    { "title": "Texas Instruments DRV8825 datasheet", "section": "Motor supply 8.2 to 45 V; logic inputs 3.3 V / 5 V compatible" },
+    { "title": "Pololu DRV8825 stepper driver carrier", "section": "Pinout" }
+  ]
+}

@@ -99,6 +99,9 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
   if (ic && /^0x[0-9a-f]{1,2}$/i.test(str(ic.register)) && /^0x[0-9a-f]{1,2}$/i.test(str(ic.expect))) {
     def.idCheck = { register: str(ic.register), expect: str(ic.expect).toLowerCase() };
   }
+  if (typeof o.image === 'string' && /^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(o.image) && o.image.length < 120000) {
+    def.image = o.image;
+  }
   const origin = o.origin as Record<string, unknown> | undefined;
   if (origin) {
     const url = str(origin.url, 500);

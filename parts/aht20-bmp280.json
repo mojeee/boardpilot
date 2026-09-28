@@ -1,0 +1,22 @@
+{
+  "id": "aht20-bmp280",
+  "name": "AHT20 + BMP280 combo module",
+  "category": "sensor",
+  "measures": ["temperature","humidity","pressure"],
+  "pins": [
+    { "name": "VDD", "role": "power" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x38", "0x77"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [15, 12, 1.6], "color": "#1F4FA8" },
+  "keywords": ["aht20", "bmp280", "combo", "humidity", "pressure", "temperature", "umidità", "pressione"],
+  "sources": [
+    { "title": "Aosong AHT20 datasheet", "section": "I2C address 0x38" },
+    { "title": "Bosch BMP280 datasheet", "section": "I2C interface: 0x77 when SDO = VDDIO (as wired on most combo boards)" }
+  ]
+}

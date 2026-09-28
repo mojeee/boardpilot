@@ -1,0 +1,17 @@
+{
+  "id": "ws2812-matrix-8x8",
+  "name": "WS2812 8x8 LED matrix",
+  "category": "display",
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Needs a 5 V supply able to give enough current (up to 3.8 A at full white)" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DIN", "role": "digital_in", "needsOutput": true,"notes": "Data in. Add a 330 Ω resistor" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [65, 65, 3], "color": "#1A1A1A" },
+  "keywords": ["ws2812", "neopixel", "led matrix", "8x8", "rgb", "matrice led"],
+  "sources": [
+    { "title": "Worldsemi WS2812B datasheet", "section": "Supply 3.5 to 5.3 V; up to about 60 mA per LED at full white" }
+  ]
+}

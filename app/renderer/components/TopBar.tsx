@@ -5,6 +5,8 @@ import { LicenseChip } from './License';
 import { LANGS, getLanguage, type Lang } from '@shared/i18n';
 import { changeLanguage } from '../state/lang';
 import { t } from '@shared/i18n';
+import { PROVIDER_INFO } from '@shared/ai';
+import { openAiSettings } from './AiSettings';
 
 export function TopBar() {
   const conn = useApp((s) => s.conn);
@@ -56,9 +58,13 @@ export function TopBar() {
             </option>
           ))}
         </select>
-        <span className={`chip ${ai.enabled ? 'ai-chip' : ''}`} title={ai.enabled ? t('AI model {model}', { model: ai.model }) : t('Add ANTHROPIC_API_KEY to .env.local')}>
-          {ai.enabled ? t('AI on') : t('AI off')}
-        </span>
+        <button
+          className={`chip ai-set-chip ${ai.enabled ? 'ai-chip' : ''}`}
+          onClick={openAiSettings}
+          title={ai.enabled ? t('{provider}, model {model}. Click to change.', { provider: PROVIDER_INFO[ai.provider].name, model: ai.model }) : t('Set up the AI assistant')}
+        >
+          <Icon name="ai" size={13} /> {ai.enabled ? PROVIDER_INFO[ai.provider].short : t('AI off')}
+        </button>
         <button className={`btn icon ${devOpen ? 'on' : ''}`} aria-label={t('Developer menu')} title={t('Developer menu (simulator)')} onClick={() => useApp.getState().set({ devOpen: !devOpen })}>
           <Icon name="gear" size={17} />
         </button>

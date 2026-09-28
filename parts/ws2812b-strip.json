@@ -1,0 +1,17 @@
+{
+  "id": "ws2812b-strip",
+  "name": "WS2812B addressable LED strip",
+  "category": "display",
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Use VIN for a few LEDs; a separate 5 V supply for more (up to 60 mA per LED)" },
+    { "name": "DIN", "role": "digital_in", "needsOutput": true,"notes": "Data in. Add a 330 Ω resistor; a 3.3 V to 5 V level shifter makes it reliable" },
+    { "name": "GND", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [60, 10, 2], "color": "#EDEDED" },
+  "keywords": ["ws2812b", "neopixel", "led strip", "rgb", "addressable", "striscia led"],
+  "sources": [
+    { "title": "Worldsemi WS2812B datasheet", "section": "Supply 3.5 to 5.3 V; data input high level 0.7 × VDD" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ws2812-ring",
+  "name": "WS2812 LED ring (16 LEDs)",
+  "category": "display",
+  "pins": [
+    { "name": "5V", "role": "power", "notes": "Use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DI", "role": "digital_in", "needsOutput": true,"notes": "Data in. Add a 330 Ω resistor" },
+    { "name": "DO", "role": "passive", "notes": "Data out to the next ring. Leave unconnected" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [44, 44, 3], "color": "#1A1A1A" },
+  "keywords": ["ws2812", "neopixel", "led ring", "rgb", "addressable", "anello led"],
+  "sources": [
+    { "title": "Worldsemi WS2812B datasheet", "section": "Data input high level 0.7 × VDD" }
+  ]
+}

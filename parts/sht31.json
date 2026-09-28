@@ -1,0 +1,24 @@
+{
+  "id": "sht31",
+  "name": "SHT31 temperature + humidity",
+  "category": "sensor",
+  "measures": ["temperature","humidity"],
+  "pins": [
+    { "name": "VIN", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "SCL", "role": "i2c_scl" },
+    { "name": "SDA", "role": "i2c_sda" },
+    { "name": "AD", "role": "passive", "notes": "Address select: LOW = 0x44, HIGH = 0x45" },
+    { "name": "AL", "role": "int", "notes": "Alert output, optional" }
+  ],
+  "bus": "i2c",
+  "addresses": ["0x44", "0x45"],
+  "voltage": "3.3-5",
+  "pullupsOnBoard": true,
+  "model": { "shape": "breakout", "size": [16.2, 13, 1.6], "color": "#5B2A86" },
+  "keywords": ["sht31", "sht30", "sht3x", "sensirion", "humidity", "temperature", "umidità", "temperatura"],
+  "sources": [
+    { "title": "Sensirion SHT3x-DIS datasheet", "section": "I2C address: 0x44 (ADDR low), 0x45 (ADDR high)" },
+    { "title": "Sensirion SHT3x-DIS datasheet", "section": "Supply voltage 2.15 to 5.5 V" }
+  ]
+}

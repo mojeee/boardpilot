@@ -1,0 +1,18 @@
+{
+  "id": "guva-s12sd",
+  "name": "GUVA-S12SD UV sensor module",
+  "category": "sensor",
+  "measures": ["uv"],
+  "pins": [
+    { "name": "GND", "role": "ground", "notes": "Marked - on the board" },
+    { "name": "VCC", "role": "power", "notes": "Marked + on the board" },
+    { "name": "OUT", "role": "analog_out", "notes": "About 0.1 V per UV index step. To an ADC pin (prefer ADC1: GPIO 32 to 39)" }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [20, 15, 3], "color": "#1A1A1A" },
+  "keywords": ["guva-s12sd", "uv", "ultraviolet", "uv index", "ultravioletti", "raggi uv"],
+  "sources": [
+    { "title": "Genicom GUVA-S12SD datasheet", "section": "Photocurrent vs UV index" }
+  ]
+}

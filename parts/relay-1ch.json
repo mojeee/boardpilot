@@ -1,0 +1,20 @@
+{
+  "id": "relay-1ch",
+  "name": "Relay module 1 channel (5 V)",
+  "category": "output",
+  "pins": [
+    { "name": "IN", "role": "digital_in", "needsOutput": true,"notes": "Many modules switch on with IN LOW. Some do not react to 3.3 V: check with a test" },
+    { "name": "GND", "role": "ground" },
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V for the coil: use VIN" },
+    { "name": "COM", "role": "passive", "notes": "Relay common contact. Mains voltage is dangerous" },
+    { "name": "NO", "role": "passive", "notes": "Normally open contact" },
+    { "name": "NC", "role": "passive", "notes": "Normally closed contact" }
+  ],
+  "bus": "gpio",
+  "voltage": "5",
+  "model": { "shape": "relay", "size": [50, 26, 19], "color": "#1F4FA8" },
+  "keywords": ["relay", "1 channel", "srd-05vdc", "switch", "relè", "interruttore"],
+  "sources": [
+    { "title": "Songle SRD-05VDC-SL-C datasheet", "section": "Coil 5 V, about 70 mA" }
+  ]
+}

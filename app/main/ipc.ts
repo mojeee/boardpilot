@@ -4,6 +4,7 @@ import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
+import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { BUY_URL } from '@shared/brand';
 import { setLanguage, t } from '@shared/i18n';
 import type { UserParts } from './parts/userParts';
@@ -12,7 +13,6 @@ import type { License } from './license/license';
 import { EVENT_CHANNELS } from '@shared/api';
 import type { HardwareHub } from './hardware/hub';
 import type { Assistant } from './ai/assistant';
-import { MAIN_MODEL } from './ai/assistant';
 import { grant } from './session/safety';
 import type { SessionLog } from './session/sessionLog';
 import { toAppError } from './hardware/errors';
@@ -42,7 +42,12 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
 
   h('safety:grant', (kind: WriteRequest['kind'] | 'restore') => grant(kind));
 
-  h('ai:status', () => ({ enabled: ai.enabled, model: MAIN_MODEL }));
+  h('ai:status', () => ai.status());
+  h('ai:getSettings', () => ai.getSettings());
+  h('ai:saveSettings', (input: AiSettingsInput) => ai.saveSettings(input));
+  h('ai:clearKey', (provider: AiProviderId) => ai.clearKey(provider));
+  h('ai:listModels', (provider: AiProviderId, apiKey?: string) => ai.listModels(provider, apiKey));
+  h('ai:test', (draft?: Partial<AiSettingsInput>) => ai.test(draft));
   h('ai:ask', (q: string, ctx: AiContext) => ai.ask(q, { ...ctx, log: ctx.log.length ? ctx.log : log.recent(50) }));
   h('ai:recognize', (b64: string, mt: 'image/jpeg' | 'image/png' | 'image/webp') => ai.recognizePart(b64, mt));
   h('ai:classify', (text: string, options: { id: string; label: string }[]) => ai.classify(text, options));

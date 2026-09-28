@@ -1,0 +1,19 @@
+{
+  "id": "max7219-matrix",
+  "name": "MAX7219 8x8 LED matrix",
+  "category": "display",
+  "pins": [
+    { "name": "VCC", "role": "power", "notes": "Needs 5 V: use VIN" },
+    { "name": "GND", "role": "ground" },
+    { "name": "DIN", "role": "spi_mosi", "notes": "Data in. 3.3 V signals usually work, a level shifter is safer" },
+    { "name": "CS", "role": "spi_cs", "notes": "Load (CS)" },
+    { "name": "CLK", "role": "spi_sck", "notes": "Clock" }
+  ],
+  "bus": "spi",
+  "voltage": "5",
+  "model": { "shape": "module", "size": [32, 32, 12], "color": "#B22222" },
+  "keywords": ["max7219", "led matrix", "8x8", "dot matrix", "matrice led", "display"],
+  "sources": [
+    { "title": "Maxim MAX7219 datasheet", "section": "Serial interface DIN, CLK, LOAD (CS); supply 4 to 5.5 V" }
+  ]
+}

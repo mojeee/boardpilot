@@ -224,6 +224,14 @@ const it: Record<string, string> = {
   'This would write to the board, and it was not confirmed.':
     'Questo scriverebbe sulla scheda, ma non è stato confermato.',
   'Use the Confirm button in the dialog to allow it.': 'Usa il pulsante Conferma nella finestra per consentirlo.',
+  'Install Python from python.org (tick “Add python.exe to PATH”), then open Command Prompt and run: py -m pip install esptool. Then restart BoardPilot.':
+    'Installa Python da python.org (spunta “Add python.exe to PATH”), poi apri il Prompt dei comandi ed esegui: py -m pip install esptool. Poi riavvia BoardPilot.',
+  'Open Terminal and run: pip3 install esptool (or brew install esptool). Then restart BoardPilot.':
+    'Apri il Terminale ed esegui: pip3 install esptool (oppure brew install esptool). Poi riavvia BoardPilot.',
+  'This board uses a Silicon Labs CP210x chip. Install the “CP210x Universal Windows Driver” from silabs.com, then unplug and replug the board.':
+    'Questa scheda usa un chip Silicon Labs CP210x. Installa il “CP210x Universal Windows Driver” da silabs.com, poi scollega e ricollega la scheda.',
+  'This board uses a WCH CH34x chip. Install the “CH341SER” Windows driver from wch-ic.com, then unplug and replug the board.':
+    'Questa scheda usa un chip WCH CH34x. Installa il driver Windows “CH341SER” da wch-ic.com, poi scollega e ricollega la scheda.',
 };
 
 export default it;

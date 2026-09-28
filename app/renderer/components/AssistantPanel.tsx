@@ -7,6 +7,7 @@ import { useAi, useApp, useScene } from '../state/store';
 import { askAi } from './ai';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
+import { openAiSettings } from './AiSettings';
 
 const CONF_TEXT = { measured: 'Measured', documented: 'From documentation', suggestion: 'Suggestion' };
 const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said' };
@@ -75,7 +76,7 @@ export function AskBox({ placeholder, autoFocus }: { placeholder?: string; autoF
       <textarea
         value={q}
         rows={2}
-        placeholder={enabled ? (placeholder ?? t('Ask about your board…')) : t('AI is off: add ANTHROPIC_API_KEY to .env.local')}
+        placeholder={enabled ? (placeholder ?? t('Ask about your board…')) : t('AI is off: add a key in AI settings')}
         autoFocus={autoFocus}
         onChange={(e) => setQ(e.target.value)}
         onKeyDown={(e) => {
@@ -107,14 +108,23 @@ export function AssistantPanel({ title, hideInput }: { title?: string; hideInput
         <span className="panel-title ai-title">
           <Icon name="ai" size={16} /> {title ?? t('Assistant')}
         </span>
-        <span className="dim small mono">{ai.enabled ? ai.model : t('off')}</span>
+        <button className="link dim small mono" onClick={openAiSettings} title={t('AI settings')}>
+          {ai.enabled ? ai.model : t('off')}
+        </button>
       </header>
       <div className="ai-list" ref={list}>
         {items.length === 0 && (
           <div className="ai-empty">
-            {ai.enabled
-              ? t('Ask anything about your board, wiring or code. I only state measurements I actually took, and show where every fact comes from.')
-              : t('The assistant is off because no API key is set. Add ANTHROPIC_API_KEY=… to .env.local in the project folder and restart. Every check and measurement works without it.')}
+            {ai.enabled ? (
+              t('Ask anything about your board, wiring or code. I only state measurements I actually took, and show where every fact comes from.')
+            ) : (
+              <>
+                {t('The assistant is off because no API key is set. Add your own key for Claude, GPT or Gemini. Every check and measurement works without it.')}{' '}
+                <button className="link" onClick={openAiSettings}>
+                  {t('Open AI settings')}
+                </button>
+              </>
+            )}
           </div>
         )}
         {items.map((it) =>

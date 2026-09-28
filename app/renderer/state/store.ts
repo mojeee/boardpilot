@@ -17,6 +17,7 @@ import type {
 import type { TraceEvent } from '@shared/api';
 import { checkWiring } from '@shared/wiring';
 import { getBoard, PARTS, pinByGpio } from '@shared/board';
+import type { AiStatus } from '@shared/ai';
 
 export type Screen = 'home' | 'connect' | 'newProject' | 'flash' | 'debug' | 'monitor' | 'test' | 'report';
 
@@ -26,7 +27,7 @@ interface AppStore {
   screen: Screen;
   conn: ConnectionState;
   progress: { task: string; pct: number } | null;
-  ai: { enabled: boolean; model: string };
+  ai: AiStatus;
   scenarios: ScenarioInfo[];
   devOpen: boolean;
   setScreen(s: Screen): void;
@@ -37,7 +38,7 @@ export const useApp = create<AppStore>((set) => ({
   screen: 'home',
   conn: { mode: 'sim', port: null, chip: null, agent: null, streaming: false, serialOpen: false, scenario: null, backups: [] },
   progress: null,
-  ai: { enabled: false, model: '' },
+  ai: { enabled: false, provider: 'anthropic', model: '' },
   scenarios: [],
   devOpen: false,
   setScreen: (screen) => set({ screen }),

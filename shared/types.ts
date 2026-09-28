@@ -263,6 +263,8 @@ export interface PartDef {
   /** the part pulls its data lines up to this voltage when powered (breakouts with on-board pull-ups) */
   pullupsOnBoard?: boolean;
   model: { shape: PartShape; size: [number, number, number]; color: string };
+  /** Small product photo (JPEG data URL, about 160 px) for imported parts. */
+  image?: string;
   /** Where a user-imported part came from. Built-in parts have no origin. */
   origin?: { url?: string; importedAt: string; method: 'ai' | 'manual' };
   keywords: string[];

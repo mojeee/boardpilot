@@ -1,6 +1,6 @@
 // Electron main process entry.
 
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, safeStorage, shell } from 'electron';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { writeFile } from 'node:fs/promises';
@@ -10,8 +10,10 @@ import { registerIpc } from './ipc';
 import { SessionLog } from './session/sessionLog';
 import { UserParts } from './parts/userParts';
 import { License } from './license/license';
+import { AiSettingsStore } from './settings/settings';
 
-/** Minimal .env.local reader (KEY=value lines). The key stays in this process only. */
+/** Minimal .env.local reader (KEY=value lines). Keys stay in this process only; they are the
+ *  fallback when no key is saved in AI settings (ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY). */
 function loadEnvLocal() {
   const candidates = [join(process.cwd(), '.env.local'), join(app.getAppPath(), '.env.local')];
   for (const p of candidates) {
@@ -31,7 +33,8 @@ const agentDir = app.isPackaged ? join(process.resourcesPath, 'agent') : join(ap
 const mode = process.env.BOARDPILOT_MODE === 'real' ? 'real' : 'sim';
 const hub = new HardwareHub(dataDir, agentDir, mode);
 const sessionLog = new SessionLog(dataDir);
-const assistant = new Assistant(hub, process.env.ANTHROPIC_API_KEY || undefined);
+const aiSettings = new AiSettingsStore(join(dataDir, 'settings.json'), safeStorage);
+const assistant = new Assistant(hub, aiSettings);
 const userParts = new UserParts(join(dataDir, 'parts'));
 const license = new License(dataDir);
 
@@ -42,8 +45,10 @@ function createWindow() {
     minWidth: 1200,
     minHeight: 760,
     backgroundColor: '#161B21',
-    titleBarStyle: 'hiddenInset',
-    trafficLightPosition: { x: 16, y: 20 },
+    // macOS: content under the title bar with the traffic lights inset; Windows/Linux: normal frame, no menu bar.
+    ...(process.platform === 'darwin'
+      ? { titleBarStyle: 'hiddenInset' as const, trafficLightPosition: { x: 16, y: 20 } }
+      : { autoHideMenuBar: true }),
     title: 'BoardPilot',
     show: false,
     webPreferences: {

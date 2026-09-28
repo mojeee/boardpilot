@@ -1,0 +1,20 @@
+{
+  "id": "us-100",
+  "name": "US-100 ultrasonic distance",
+  "category": "sensor",
+  "measures": ["distance","temperature"],
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "TRIG/TX", "role": "digital_in", "needsOutput": true,"notes": "With the jumper on: UART TX of the ESP32 goes here. Jumper off: trigger input" },
+    { "name": "ECHO/RX", "role": "digital_out", "notes": "With the jumper on: UART, connect to ESP32 RX. Jumper off: echo output" },
+    { "name": "GND", "role": "ground" },
+    { "name": "GND2", "role": "ground", "notes": "Second ground pin, same as GND" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3-5",
+  "model": { "shape": "module", "size": [45, 20, 17], "color": "#1F4FA8" },
+  "keywords": ["us-100", "ultrasonic", "distance", "uart", "ultrasuoni", "distanza"],
+  "sources": [
+    { "title": "US-100 ultrasonic module manual", "section": "Jumper selects UART (9600 baud) or trigger/echo mode; supply 2.4 to 5.5 V" }
+  ]
+}

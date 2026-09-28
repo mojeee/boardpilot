@@ -1,0 +1,16 @@
+{
+  "id": "reed-switch",
+  "name": "Reed switch (magnetic)",
+  "category": "input",
+  "pins": [
+    { "name": "1", "role": "digital_out", "notes": "To a GPIO; use INPUT_PULLUP. Closes when a magnet is near" },
+    { "name": "2", "role": "ground" }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": { "shape": "button", "size": [14, 3, 3], "color": "#C9CED4" },
+  "keywords": ["reed switch", "magnet", "door sensor", "reed", "interruttore magnetico", "porta"],
+  "sources": [
+    { "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" }
+  ]
+}
