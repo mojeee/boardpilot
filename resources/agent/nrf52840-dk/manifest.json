@@ -1,0 +1,13 @@
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "board": "nrf52840-dk",
+  "fqbn": "adafruit:nrf52:pca10056",
+  "format": "hex",
+  "parts": [
+    {
+      "offset": "0x0",
+      "file": "agent.hex"
+    }
+  ]
+}

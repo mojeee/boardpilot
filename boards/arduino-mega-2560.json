@@ -1674,7 +1674,7 @@
       "baud": 115200
     },
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "link": "usb-serial"
   },
   "usb": [

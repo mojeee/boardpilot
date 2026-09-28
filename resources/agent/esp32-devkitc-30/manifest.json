@@ -1,0 +1,26 @@
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "board": "esp32-devkitc-30",
+  "fqbn": "esp32:esp32:esp32",
+  "format": "bin",
+  "parts": [
+    {
+      "offset": "0x1000",
+      "file": "bootloader.bin"
+    },
+    {
+      "offset": "0x8000",
+      "file": "partitions.bin"
+    },
+    {
+      "offset": "0xe000",
+      "file": "boot_app0.bin"
+    },
+    {
+      "offset": "0x10000",
+      "file": "agent.bin"
+    }
+  ],
+  "chip": "esp32"
+}

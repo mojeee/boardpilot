@@ -1,0 +1,13 @@
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "board": "blackpill-f411ce",
+  "fqbn": "STMicroelectronics:stm32:GenF4:pnum=BLACKPILL_F411CE,usb=CDCgen,upload_method=dfuMethod",
+  "format": "bin",
+  "parts": [
+    {
+      "offset": "0x08000000",
+      "file": "agent.bin"
+    }
+  ]
+}

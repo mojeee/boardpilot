@@ -4,10 +4,20 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "bp_port.h"
+
+#if defined(BP_NRF52) && defined(USE_TINYUSB)
+// Adafruit nRF52 core: the USB stack (and its Serial object, which the core's
+// serialEvent code references) comes from this bundled library.
+#include <Adafruit_TinyUSB.h>
+#endif
+
+#if defined(BP_ESP32)
 #include "driver/gpio.h"
 #include "esp_log.h"
-#include "soc/soc.h"
 #include "soc/gpio_reg.h"
+#include "soc/soc.h"
+#endif
 
 #include "bp_commands.h"
 #include "bp_config.h"
@@ -17,38 +27,48 @@
 #include "bp_req.h"
 
 // ---------------------------------------------------------------------------
-// Strapping pins
+// Strapping pins (bp_board.h: BP_STRAP_PINS; none on non-ESP boards)
 // ---------------------------------------------------------------------------
 //
 // ESP32 Series Datasheet, section 2.4 "Strapping Pins": GPIO 0, 2, 5, 12 (MTDI)
 // and 15 (MTDO) are sampled by the chip at reset and select the boot mode,
 // the flash voltage (GPIO 12: HIGH selects 1.8 V, which stops a 3.3 V-flash
-// module from booting), and debug-output behaviour.
+// module from booting), and debug-output behaviour. (ESP32-S3: GPIO 0, 3, 45,
+// 46; ESP32-C3: GPIO 2, 8, 9, from their datasheets' "Strapping Pins" sections.)
 //
 // The chip latches these levels at the moment of reset, before this code
 // runs. Reading the pins right after boot (before any pin is configured,
 // with the default reset pulls still active) is a best effort: it shows what
 // is connected to the pins now, which is normally what the chip saw at reset.
 //
-// We also report the raw GPIO_STRAP_REG value, which holds the levels the
-// chip actually latched (ESP32 Technical Reference Manual, IO_MUX and GPIO
-// Matrix chapter, register GPIO_STRAP_REG; the ROM prints the same value as
-// "boot:0x.." on reset). The app decodes it; the agent does not guess.
+// On the ESP32 we also report the raw GPIO_STRAP_REG value, which holds the
+// levels the chip actually latched (ESP32 Technical Reference Manual, IO_MUX
+// and GPIO Matrix chapter, register GPIO_STRAP_REG; the ROM prints the same
+// value as "boot:0x.." on reset). The app decodes it; the agent does not guess.
 
-static const uint8_t kStrapPins[] = {0, 2, 5, 12, 15};
+#if BP_STRAP_COUNT > 0
+static const uint8_t kStrapPins[] = BP_STRAP_PINS;
 static const size_t kStrapCount = sizeof(kStrapPins) / sizeof(kStrapPins[0]);
 static uint8_t gStrapLevel[kStrapCount];
+#endif
 static uint32_t gStrapReg = 0;
 static bool gHaveStrapReg = false;
 
 static void captureStrapping() {
+#if BP_STRAP_COUNT > 0
   for (size_t i = 0; i < kStrapCount; i++) {
+#if defined(BP_ESP32)
     const gpio_num_t g = (gpio_num_t)kStrapPins[i];
     // Enables the input buffer only; pulls and pin function stay as reset
     // left them, and no output is driven.
     gpio_set_direction(g, GPIO_MODE_INPUT);
     gStrapLevel[i] = gpio_get_level(g) ? 1 : 0;
+#else
+    bpPinMode(kStrapPins[i], INPUT);
+    gStrapLevel[i] = (uint8_t)bpRead(kStrapPins[i]);
+#endif
   }
+#endif
 #if defined(CONFIG_IDF_TARGET_ESP32) && defined(GPIO_STRAP_REG) && defined(REG_READ)
   gStrapReg = REG_READ(GPIO_STRAP_REG);
   gHaveStrapReg = true;
@@ -56,18 +76,20 @@ static void captureStrapping() {
 }
 
 void bpPrintStrappingFields() {
-  bpout::raw("\"strapping\":{");
+  bpout::raw(BPS("\"strapping\":{"));
+#if BP_STRAP_COUNT > 0
   for (size_t i = 0; i < kStrapCount; i++) {
     if (i) bpout::ch(',');
     bpout::pinKey(kStrapPins[i]);
     bpout::num(gStrapLevel[i]);
   }
+#endif
   bpout::ch('}');
   if (gHaveStrapReg) {
     char b[16];
-    snprintf(b, sizeof(b), "0x%02lX", (unsigned long)(gStrapReg & 0xFF));
-    bpout::key("strapReg");
-    bpout::str(b);
+    bp_snprintf(b, sizeof(b), "0x%02lX", (unsigned long)(gStrapReg & 0xFF));
+    bpout::key(BPS("strapReg"));
+    bpout::strRam(b);
   }
 }
 
@@ -77,31 +99,10 @@ void bpPrintStrappingFields() {
 
 namespace {
 
-struct CmdEntry {
-  const char* name;
-  void (*fn)(const BpReq&);
-};
-
-const CmdEntry kCommands[] = {
-    {"hello", cmdHello},
-    {"pins", cmdPins},
-    {"strapping", cmdStrapping},
-    {"pullup_check", cmdPullupCheck},
-    {"i2c_scan", cmdI2cScan},
-    {"i2c_read", cmdI2cRead},
-    {"adc", cmdAdc},
-    {"pwm", cmdPwm},
-    {"gpio_write", cmdGpioWrite},
-    {"gpio_read", cmdGpioRead},
-    {"stream", cmdStream},
-    {"stream_stop", cmdStreamStop},
-    {"reset_pins", cmdResetPins},
-};
-
 char gLine[AGENT_LINE_MAX];
 size_t gLen = 0;
 bool gOverflow = false;
-BpReq gReq;  // static: keeps the ~260-byte field table off the loop stack
+BpReq gReq;  // static: keeps the field table off the loop stack
 
 bool isBlank(const char* s, size_t n) {
   for (size_t i = 0; i < n; i++) {
@@ -110,61 +111,78 @@ bool isBlank(const char* s, size_t n) {
   return true;
 }
 
+// Command names live in flash (on AVR a RAM table of names would cost ~100 bytes).
+#define BP_CMD(name, fn)                   \
+  if (bp_strcmpP(cmd, BPS(name)) == 0) {   \
+    fn(gReq);                              \
+    return true;                           \
+  }
+
+bool dispatch(const char* cmd) {
+  BP_CMD("hello", cmdHello)
+  BP_CMD("pins", cmdPins)
+  BP_CMD("strapping", cmdStrapping)
+  BP_CMD("pullup_check", cmdPullupCheck)
+  BP_CMD("i2c_scan", cmdI2cScan)
+  BP_CMD("i2c_read", cmdI2cRead)
+  BP_CMD("adc", cmdAdc)
+  BP_CMD("pwm", cmdPwm)
+  BP_CMD("gpio_write", cmdGpioWrite)
+  BP_CMD("gpio_read", cmdGpioRead)
+  BP_CMD("stream", cmdStream)
+  BP_CMD("stream_stop", cmdStreamStop)
+  BP_CMD("reset_pins", cmdResetPins)
+  return false;
+}
+
 void handleLine(const char* line, size_t len) {
   if (isBlank(line, len)) return;
 
   const char* err = nullptr;
   if (!bpjson::parse(line, len, gReq.doc, &err)) {
-    bpout::errorNoId("bad_json", err ? err : "The request is not valid JSON.");
+    bpout::errorNoId(BPS("bad_json"), err ? err : BPS("The request is not valid JSON."));
     return;
   }
 
   gReq.hasId = false;
   gReq.id = 0;
-  const bpjson::Field* idf = bpjson::find(gReq.doc, "id");
+  const bpjson::Field* idf = bpjson::find(gReq.doc, BPS("id"));
   if (idf && idf->type != bpjson::T_NULL) {
     long id;
-    if (!bpjson::getLong(gReq.doc, "id", id)) {
-      bpout::errorNoId("bad_args", "\"id\" must be a whole number.");
+    if (!bpjson::getLong(gReq.doc, BPS("id"), id)) {
+      bpout::errorNoId(BPS("bad_args"), BPS("\"id\" must be a whole number."));
       return;
     }
     gReq.hasId = true;
     gReq.id = id;
   }
 
-  const bpjson::Field* cf = bpjson::find(gReq.doc, "cmd");
+  const bpjson::Field* cf = bpjson::find(gReq.doc, BPS("cmd"));
   if (!cf) {
-    bpout::error(gReq, "bad_args", "The request has no \"cmd\". Example: {\"id\":1,\"cmd\":\"hello\"}");
+    bpout::error(gReq, BPS("bad_args"), BPS("The request has no \"cmd\". Example: {\"id\":1,\"cmd\":\"hello\"}"));
     return;
   }
   if (cf->type != bpjson::T_STRING) {
-    bpout::error(gReq, "bad_args", "\"cmd\" must be text, for example \"hello\".");
+    bpout::error(gReq, BPS("bad_args"), BPS("\"cmd\" must be text, for example \"hello\"."));
     return;
   }
   char cmd[24];
-  if (bpjson::getString(gReq.doc, "cmd", cmd, sizeof(cmd))) {
-    for (size_t i = 0; i < sizeof(kCommands) / sizeof(kCommands[0]); i++) {
-      if (strcmp(cmd, kCommands[i].name) == 0) {
-        kCommands[i].fn(gReq);
-        return;
-      }
-    }
-  }
-  bpout::error(gReq, "unknown_cmd",
-               "The agent does not know this command. Known commands: hello, pins, strapping, "
-               "pullup_check, i2c_scan, i2c_read, adc, pwm, gpio_write, gpio_read, stream, "
-               "stream_stop, reset_pins.");
+  if (bpjson::getString(gReq.doc, BPS("cmd"), cmd, sizeof(cmd)) && dispatch(cmd)) return;
+  bpout::error(gReq, BPS("unknown_cmd"),
+               BPS("The agent does not know this command. Known commands: hello, pins, strapping, "
+                   "pullup_check, i2c_scan, i2c_read, adc, pwm, gpio_write, gpio_read, stream, "
+                   "stream_stop, reset_pins."));
 }
 
 void pollSerial() {
   // Bounded so a flood of input cannot starve the stream timer.
   int budget = 2 * AGENT_LINE_MAX;
-  while (budget-- > 0 && Serial.available() > 0) {
-    const int c = Serial.read();
+  while (budget-- > 0 && BpSerial.available() > 0) {
+    const int c = BpSerial.read();
     if (c < 0) break;
     if (c == '\n') {
       if (gOverflow) {
-        bpout::errorNoId("too_long", "The request line is longer than 511 characters.");
+        bpout::errorNoId(BPS("too_long"), BPS("The request line is longer than " AGENT_LINE_MAX_TEXT " characters."));
       } else if (gLen > 0) {
         gLine[gLen] = '\0';
         handleLine(gLine, gLen);
@@ -183,6 +201,26 @@ void pollSerial() {
   }
 }
 
+void printBootEvent() {
+  // The ROM bootloader (ESP32) prints plain text at reset. Start on a fresh
+  // line so the boot event is always a clean JSON line.
+  bpout::raw(BPS("\n{\"event\":\"boot\",\"agent\":"));
+  bpout::str(BPS(AGENT_NAME));
+  bpout::raw(BPS(",\"ver\":"));
+  bpout::str(BPS(AGENT_VER));
+  bpout::key(BPS("board"));
+  bpout::str(BPS(BP_BOARD_ID));
+#if BP_STRAP_COUNT > 0
+  bpout::ch(',');
+  bpPrintStrappingFields();
+#endif
+  bpout::raw(BPS("}\n"));
+}
+
+#if defined(BP_SERIAL_USB)
+bool gHostWasConnected = false;
+#endif
+
 }  // namespace
 
 // ---------------------------------------------------------------------------
@@ -191,30 +229,38 @@ void pollSerial() {
 
 void agentSetup() {
   // Must run before anything configures a pin (Serial.begin only touches
-  // GPIO 1 and 3, but keep the order strict anyway).
+  // the UART pins, but keep the order strict anyway).
   captureStrapping();
 
-  Serial.setRxBufferSize(AGENT_SERIAL_RX_BUF);
-  Serial.setTxBufferSize(AGENT_SERIAL_TX_BUF);
-  Serial.begin(AGENT_BAUD);
+#if defined(BP_ESP32)
+  BpSerial.setRxBufferSize(AGENT_SERIAL_RX_BUF);
+  BpSerial.setTxBufferSize(AGENT_SERIAL_TX_BUF);
+#endif
+  BpSerial.begin(AGENT_BAUD);
 
+#if defined(BP_ESP32)
   // Driver log lines on UART0 would corrupt the JSON protocol.
   esp_log_level_set("*", ESP_LOG_NONE);
+#endif
 
   bppins::init();
 
-  // The ROM bootloader prints plain text at reset. Start on a fresh line so
-  // the boot event is always a clean JSON line.
-  bpout::raw("\n{\"event\":\"boot\",\"agent\":");
-  bpout::str(AGENT_NAME);
-  bpout::raw(",\"ver\":");
-  bpout::str(AGENT_VER);
-  bpout::ch(',');
-  bpPrintStrappingFields();
-  bpout::raw("}\n");
+#if defined(BP_SERIAL_USB)
+  // Native USB: nothing is listening yet. The boot event is sent when a host
+  // opens the port (agentLoop).
+#else
+  printBootEvent();
+#endif
 }
 
 void agentLoop() {
+#if defined(BP_SERIAL_USB)
+  // On a native USB port the host opens the port after boot, so send the boot
+  // event each time a host connects (DTR raised). It still describes this boot.
+  const bool connected = (bool)BpSerial;
+  if (connected && !gHostWasConnected) printBootEvent();
+  gHostWasConnected = connected;
+#endif
   pollSerial();
   bpStreamTick();
 }

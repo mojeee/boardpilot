@@ -1681,7 +1681,7 @@
      "baud": 115200
     },
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "link": "usb-serial"
    },
    "usb": [
@@ -2467,7 +2467,7 @@
      "baud": 115200
     },
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "link": "usb-serial",
     "uploadNote": "Clones with the old bootloader upload at 57600 baud: choose “ATmega328P (Old Bootloader)” if uploads fail."
    },
@@ -3293,7 +3293,7 @@
      "baud": 115200
     },
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "link": "usb-serial"
    },
    "usb": [
@@ -4472,7 +4472,7 @@
     "core": "STMicroelectronics:stm32",
     "coreUrl": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
     "imageFormat": "bin",
-    "agent": false,
+    "agent": true,
     "link": "usb-bootloader",
     "uploadNote": "To upload over USB, hold BOOT0, press and release NRST, then release BOOT0 (DFU mode). An ST-LINK on the SWD pins also works."
    },
@@ -8431,7 +8431,7 @@
     "core": "adafruit:nrf52",
     "coreUrl": "https://adafruit.github.io/arduino-board-index/package_adafruit_index.json",
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "uploadNote": "Plug USB into the port on the short edge (interface MCU, J2) and set the power switch to ON; before the first Arduino sketch, burn the Adafruit bootloader and SoftDevice once.",
     "link": "debug-probe"
    },
@@ -10797,7 +10797,7 @@
     "core": "STMicroelectronics:stm32",
     "coreUrl": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
     "imageFormat": "bin",
-    "agent": false,
+    "agent": true,
     "link": "debug-probe",
     "uploadNote": "Plug the USB cable into the mini-USB port on the ST-LINK end. No button press is needed."
    },
@@ -11854,7 +11854,7 @@
     "core": "rp2040:rp2040",
     "coreUrl": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
     "imageFormat": "uf2",
-    "agent": false,
+    "agent": true,
     "link": "usb-bootloader",
     "uploadNote": "If the board is not found, hold the BOOTSEL button while plugging in the USB cable."
    },
@@ -12882,7 +12882,7 @@
     "core": "rp2040:rp2040",
     "coreUrl": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
     "imageFormat": "uf2",
-    "agent": false,
+    "agent": true,
     "link": "usb-bootloader",
     "uploadNote": "If the board is not found, hold the BOOTSEL button while plugging in the USB cable."
    },
@@ -13898,7 +13898,7 @@
     "core": "rp2040:rp2040",
     "coreUrl": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
     "imageFormat": "uf2",
-    "agent": false,
+    "agent": true,
     "link": "usb-bootloader",
     "uploadNote": "If the board is not found, hold the BOOTSEL button while plugging in the USB cable."
    },
@@ -15142,7 +15142,7 @@
     "core": "teensy:avr",
     "coreUrl": "https://www.pjrc.com/teensy/package_teensy_index.json",
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "uploadNote": "Press the white program button once if the upload waits for the board.",
     "link": "usb-bootloader"
    },

@@ -1,0 +1,13 @@
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "board": "teensy-41",
+  "fqbn": "teensy:avr:teensy41",
+  "format": "hex",
+  "parts": [
+    {
+      "offset": "0x0",
+      "file": "agent.hex"
+    }
+  ]
+}

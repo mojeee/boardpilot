@@ -1162,7 +1162,7 @@
     "core": "teensy:avr",
     "coreUrl": "https://www.pjrc.com/teensy/package_teensy_index.json",
     "imageFormat": "hex",
-    "agent": false,
+    "agent": true,
     "uploadNote": "Press the white program button once if the upload waits for the board.",
     "link": "usb-bootloader"
   },

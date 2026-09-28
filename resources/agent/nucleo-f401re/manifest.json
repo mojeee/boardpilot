@@ -1,0 +1,13 @@
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "board": "nucleo-f401re",
+  "fqbn": "STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F401RE",
+  "format": "bin",
+  "parts": [
+    {
+      "offset": "0x08000000",
+      "file": "agent.bin"
+    }
+  ]
+}

@@ -2282,7 +2282,7 @@
     "core": "STMicroelectronics:stm32",
     "coreUrl": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
     "imageFormat": "bin",
-    "agent": false,
+    "agent": true,
     "link": "debug-probe",
     "uploadNote": "Plug the USB cable into the mini-USB port on the ST-LINK end. No button press is needed."
   },

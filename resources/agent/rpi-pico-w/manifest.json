@@ -1,0 +1,13 @@
+{
+  "name": "bp-agent",
+  "ver": "0.2",
+  "board": "rpi-pico-w",
+  "fqbn": "rp2040:rp2040:rpipicow",
+  "format": "uf2",
+  "parts": [
+    {
+      "offset": "0x0",
+      "file": "agent.uf2"
+    }
+  ]
+}

@@ -252,6 +252,22 @@ const it: Record<string, string> = {
     "Ingresso (lo pilota la scheda)",
   "Then the diagnostic agent is written to the board.":
     "Poi l’agente diagnostico viene scritto sulla scheda.",
+  "This pin is wired to the board’s flash memory.": "Questo pin è collegato alla memoria flash della scheda.",
+  "Pick another pin. Using the flash pins crashes the board.": "Scegli un altro pin. Usare i pin della flash blocca la scheda.",
+  "This pin can only read signals. It cannot drive an output.": "Questo pin può solo leggere segnali. Non può pilotare un’uscita.",
+  "Move this wire to an output-capable pin (see the board’s safe pins in the pin card).": "Sposta questo filo su un pin che può fare da uscita (vedi i pin sicuri della scheda nella scheda del pin).",
+  "This pin carries the USB serial link the app uses to talk to the board.": "Questo pin porta il collegamento seriale USB che l’app usa per parlare con la scheda.",
+  "Leave the USB serial pins free while the app is connected.": "Lascia liberi i pin della seriale USB mentre l’app è collegata.",
+  "This pin is used for USB or the debug port, so the agent does not touch it.": "Questo pin è usato per l’USB o la porta di debug, quindi l’agente non lo tocca.",
+  "Pick another pin.": "Scegli un altro pin.",
+  "Use an analog (ADC) pin. On ESP32 boards, ADC1 pins keep working with Wi-Fi on.": "Usa un pin analogico (ADC). Sulle schede ESP32 i pin ADC1 funzionano anche con il Wi-Fi acceso.",
+  "This pin is analog only: it can measure a voltage but has no digital input or output.": "Questo pin è solo analogico: può misurare una tensione ma non ha ingresso o uscita digitale.",
+  "Use it with an analog reading, or pick another pin for digital signals.": "Usalo per una lettura analogica, oppure scegli un altro pin per i segnali digitali.",
+  "This pin cannot output PWM on this board.": "Su questa scheda questo pin non può generare PWM.",
+  "Pick a pin marked PWM on the board, such as the ones with ~ on Arduino boards.": "Scegli un pin segnato come PWM sulla scheda, per esempio quelli con ~ sulle schede Arduino.",
+  "The I2C lines did not go HIGH: the bus is stuck or has no pull-up resistors.": "Le linee I2C non sono andate ALTE: il bus è bloccato o non ha resistenze di pull-up.",
+  "Check that the sensor is powered and that SDA and SCL have pull-ups (most breakout boards include them).": "Controlla che il sensore sia alimentato e che SDA e SCL abbiano le pull-up (la maggior parte dei moduli le include).",
+  "That pin number does not exist on this board.": "Quel numero di pin non esiste su questa scheda.",
 };
 
 export default it;
