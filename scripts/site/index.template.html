@@ -142,18 +142,18 @@
       <section class="section showcase">
         <div class="wrap">
           <div class="tabs" role="tablist">
-            <button class="on" data-shot="debug" data-i18n="tab.debug">Debug</button>
-            <button data-shot="test" data-i18n="tab.test">Test hardware</button>
-            <button data-shot="monitor" data-i18n="tab.monitor">Monitor</button>
-            <button data-shot="library" data-i18n="tab.library">Parts library</button>
-            <button data-shot="import" data-i18n="tab.import">Import from a link</button>
-            <button data-shot="home" data-i18n="tab.home">Home</button>
+            <button class="on" data-shot="test" data-src="/img/test.jpg" data-srcset="/img/test-900.jpg 900w, /img/test.jpg 1800w" data-i18n="tab.test">Test hardware</button>
+            <button data-shot="debug" data-src="/img/debug.jpg" data-srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" data-i18n="tab.debug">Debug</button>
+            <button data-shot="monitor" data-src="/img/monitor.jpg" data-srcset="/img/monitor-900.jpg 900w, /img/monitor.jpg 1800w" data-i18n="tab.monitor">Monitor</button>
+            <button data-shot="library" data-src="/img/library.jpg" data-srcset="/img/library-900.jpg 900w, /img/library.jpg 1800w" data-i18n="tab.library">Parts library</button>
+            <button data-shot="import" data-src="/img/import.jpg" data-srcset="/img/import-900.jpg 900w, /img/import.jpg 1800w" data-i18n="tab.import">Import from a link</button>
+            <button data-shot="home" data-src="/img/home.jpg" data-srcset="/img/home-900.jpg 900w, /img/home.jpg 1800w" data-i18n="tab.home">Home</button>
           </div>
           <div class="window big">
             <div class="window-bar"><i></i><i></i><i></i></div>
-            <img id="shot" src="/img/debug.jpg" srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1109" data-i18n-alt="img.shot" alt="BoardPilot screenshot: debug wizard result on a 3D ESP32 board" loading="lazy" />
+            <img id="shot" src="/img/test.jpg" srcset="/img/test-900.jpg 900w, /img/test.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1109" data-i18n-alt="img.shot" alt="BoardPilot screenshot: I2C scan grid and decoded bus" loading="lazy" />
           </div>
-          <p class="caption" id="shot-caption" data-i18n="cap.debug">The debug wizard found SDA and SCL crossed at the sensor, and shows which wires to swap.</p>
+          <p class="caption" id="shot-caption" data-i18n="cap.test">I2C address scan, bus wiring diagram and the transaction decoded bit by bit.</p>
         </div>
       </section>
 

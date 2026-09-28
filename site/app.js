@@ -31,8 +31,8 @@ document.querySelectorAll('.tabs button').forEach((b) =>
     if (!img) return;
     img.style.opacity = '0';
     setTimeout(() => {
-      img.srcset = `/img/${shot}-900.jpg 900w, /img/${shot}.jpg 1800w`;
-      img.src = `/img/${shot}.jpg`;
+      img.srcset = b.dataset.srcset;
+      img.src = b.dataset.src;
       img.onload = () => (img.style.opacity = '1');
     }, 150);
     if (cap) cap.textContent = CAPTIONS[lang][shot];

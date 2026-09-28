@@ -14,7 +14,7 @@ export const IT = {
   'meta.ogDescription': 'Un’app per Mac e Windows che trova gli errori di cablaggio, decodifica l’I2C e spiega cosa non va, con parole semplici. In italiano e in inglese.',
   'meta.ogAlt': 'BoardPilot mostra un ESP32 in 3D con i fili SDA e SCL invertiti evidenziati',
   'img.hero': 'BoardPilot trova i fili SDA e SCL invertiti su un sensore BME280 collegato a un ESP32',
-  'img.shot': 'Schermata di BoardPilot: risultato del debug guidato su una scheda ESP32 in 3D',
+  'img.shot': 'Schermata di BoardPilot: griglia di scansione I2C e bus decodificato',
   'nav.pinout': 'Piedinatura ESP32',
   'cta.win': 'Windows',
   'nav.features': 'Funzioni',
