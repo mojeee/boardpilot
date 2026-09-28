@@ -2,20 +2,18 @@
 
 import type { BoardDef, PartDef, PinDef, Scene, PartPinRole, TargetRef } from './types';
 import esp32Devkit30 from '../boards/esp32-devkitc-30.json';
-import bme280 from '../parts/bme280-gy.json';
-import ssd1306 from '../parts/ssd1306-i2c.json';
-import led from '../parts/led-resistor.json';
-import button from '../parts/push-button.json';
-import pot from '../parts/potentiometer.json';
-import mpu6050 from '../parts/mpu6050.json';
-import dht22 from '../parts/dht22.json';
-
 export const BOARDS: Record<string, BoardDef> = {
   [esp32Devkit30.id]: esp32Devkit30 as unknown as BoardDef,
 };
 
+/** Every JSON file in /parts is a built-in part (Vite bundles them at build time). */
+const PART_FILES = import.meta.glob<{ default: unknown }>('../parts/*.json', { eager: true });
+
 export const PARTS: Record<string, PartDef> = Object.fromEntries(
-  [bme280, ssd1306, led, button, pot, mpu6050, dht22].map((p) => [p.id, p as unknown as PartDef]),
+  Object.values(PART_FILES)
+    .map((m) => m.default as PartDef)
+    .filter((p) => p && typeof p.id === 'string')
+    .map((p) => [p.id, p]),
 );
 
 /** Parts shipped with the app. User parts are added with registerPart and can be removed. */

@@ -13,7 +13,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:agent": "bash scripts/build-agent.sh",
-    "dist:mac": "electron-vite build && electron-builder --mac"
+    "dist:mac": "electron-vite build && electron-builder --mac",
+    "build:site": "node scripts/build-site.mjs",
+    "seo:ping": "node scripts/indexnow.mjs"
   },
   "build": {
     "appId": "com.agentflowbind.boardpilot",

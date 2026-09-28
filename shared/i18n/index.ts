@@ -9,6 +9,7 @@ import wizard from './it/wizard';
 import flows from './it/flows';
 import main from './it/main';
 import parts from './it/parts';
+import settings from './it/settings';
 
 export type Lang = 'en' | 'it';
 export const LANGS: { id: Lang; label: string }[] = [
@@ -16,7 +17,7 @@ export const LANGS: { id: Lang; label: string }[] = [
   { id: 'it', label: 'Italiano' },
 ];
 
-export const IT: Record<string, string> = { ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts };
+export const IT: Record<string, string> = { ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts, ...settings };
 
 let current: Lang = 'en';
 const listeners = new Set<(l: Lang) => void>();

@@ -1,0 +1,13 @@
+{
+  "name": "BoardPilot",
+  "short_name": "BoardPilot",
+  "description": "ESP32 debugging with a live 3D board",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0f1419",
+  "theme_color": "#12171C",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
