@@ -523,6 +523,49 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
    - [ ] Before building, it asks several short questions (board, power, what the project must do),
          then proposes the parts, pins and wiring for the user to confirm. Nothing is written to the
          board without the usual confirmation.
+   - [ ] **The AI can do everything the app does.** If the user can't find something or doesn't
+         know how, they ask ("back up my board", "flash my code, then open the monitor") and the
+         assistant runs the same app actions, showing each step and a "Show me where it is" link
+         so the user learns the way. An "Ask AI or find anything" box (⌘K) sits in the top menu.
+         Writes to the board still go through the confirmation dialog.
+   - [ ] **AI code suggestions** in the Code panel: a "Suggest code" button and inline suggestions
+         (accept with Tab, explain, dismiss) that use the parts and pins in the drawing, each with
+         its source (part library entry, library name).
+   - [ ] New project also offers **"Describe it"**: the assistant asks questions, then suggests
+         parts, wiring and starter code for the user to confirm.
+6. **Warnings as a banner**
+   - [ ] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the
+         project page: plain text, the source, and buttons Fix, Show on the board, Ask why, with
+         "1 of N" to step through them. They stay in the log too.
+7. **Better 3D view**
+   - [ ] Better lighting: a studio light setup with soft shadows, a floor grid that fades out,
+         metal and gold materials, glowing wires and pins, and a Light switch (Studio / Bench /
+         High contrast).
+   - [ ] More detail on the boards and parts: silkscreen pin labels, the main chips (USB-serial
+         chip, voltage regulator), small resistors and capacitors, LEDs (power LED lit when the
+         board is powered), mounting holes, PCB traces, connector heads on the wire ends, and part
+         breakouts with their own chips and labels. A Detail switch (Simple / Full / Labels) keeps
+         slow computers fast. Every detail stays generated from the board and part JSON files.
+8. **Electrical design export (PDF)**
+   - [ ] "Export PDF" makes a technical drawing set: 1 schematic (IEC 60617 or ANSI symbols),
+         2 wiring diagram and pin map, 3 bill of materials, 4 checks, power budget and the
+         measurements from this session (optional 5: code listing). A3, A4, Letter or Tabloid,
+         a title block (project, drawn by, date, revision, sheet n of m), notes with datasheet
+         sources, and open warnings listed.
+9. **Update every screenshot** (after the redesign is built)
+   - [ ] Retake all screenshots on the website (landing page, Learn and tool pages) and in the
+         GitHub README with the new workspace, using the existing screenshot scripts in simulator
+         mode.
+10. **Last step: real end-to-end tests of each scenario**
+   - [ ] Playwright tests on the built Electron app, one per scenario (connect and identify, new
+         project Blank / Read from port / Template / Describe it, flash with backup, each debug
+         flow, monitor, test hardware, report, PDF export, AI doing an action), in simulator mode.
+   - [ ] Claude drives the app for real: clicks through each scenario, performs the actions,
+         checks what the screen, 3D view and log show, and reports anything broken, before the
+         release.
+
+Design mockups of this plan (workspace, New project, PDF export):
+https://claude.ai/artifact/7ZXocFamKF2neLh5cnJgeL
 
 Open decisions for you when we start: which code editor (new dependency?), and whether the old
 task screens stay reachable from the top menu or merge into the project page.
