@@ -17,6 +17,9 @@ const COMPONENTS = new Set(['module', 'mcu', 'chip', 'usb', 'jack', 'button', 'l
 const FAMILIES = new Set(['esp32', 'esp32s3', 'esp32c3', 'rp2040', 'rp2350', 'avr', 'stm32', 'nrf52', 'imxrt']);
 const FLASHERS = new Set(['esptool', 'picotool', 'avrdude', 'stm32', 'nrfjprog', 'teensy']);
 const LINKS = new Set(['usb-serial', 'usb-bootloader', 'debug-probe']);
+const IDF_TARGETS = new Set(['esp32', 'esp32s3', 'esp32c3']);
+/** STM32 pin functions that go through the GPIO alternate function mux and so need an AF number. */
+const AF_FUNCTION = /^(TIM\d+_CH\d+N?|I2C\d_(SDA|SCL)|SPI\d_(SCK|MOSI|MISO|NSS)|UART\d_(TX|RX|CTS|RTS|CK))$/;
 
 /** Same maths as pinPositionMm in shared/board.ts, but in PCB-corner coordinates. */
 export function pinCornerMm(board, p) {
@@ -137,6 +140,54 @@ export function checkBoard(b) {
   const rp = b.family === 'rp2040' || b.family === 'rp2350';
   if (rp && !/^[a-z0-9_]+$/.test(tc.picoBoard ?? '')) e('RP2040/RP2350 boards need toolchain.picoBoard (the Pico SDK PICO_BOARD name, e.g. "pico")');
   if (!rp && tc.picoBoard !== undefined) e('toolchain.picoBoard is only for RP2040/RP2350 boards');
+  // ESP-IDF target (idf.py set-target) for the ESP-IDF starter project.
+  const esp = b.family === 'esp32' || b.family === 'esp32s3' || b.family === 'esp32c3';
+  if (esp && !IDF_TARGETS.has(tc.idfTarget)) e(`ESP32 family boards need toolchain.idfTarget (${[...IDF_TARGETS].join(', ')})`);
+  if (esp && tc.idfTarget !== undefined && tc.idfTarget !== b.family) e(`toolchain.idfTarget ${tc.idfTarget} does not match family ${b.family}`);
+  if (!esp && tc.idfTarget !== undefined) e('toolchain.idfTarget is only for ESP32 family boards');
+  // STM32: alternate function numbers for every muxed peripheral function, and the HAL starter config.
+  const stm = b.family === 'stm32';
+  for (const p of b.pins ?? []) {
+    if (p.af !== undefined && !stm) e(`${p.id}: af is only for STM32 boards`);
+    if (!stm || p.kind !== 'gpio') continue;
+    for (const f of p.functions ?? []) if (AF_FUNCTION.test(f) && !(Number.isInteger(p.af?.[f]) && p.af[f] >= 0 && p.af[f] <= 15)) e(`${p.id}: af.${f} (0 to 15) missing, see the datasheet's alternate function table`);
+    for (const f of Object.keys(p.af ?? {})) if (!p.functions.includes(f)) e(`${p.id}: af.${f} is not one of the pin's functions`);
+  }
+  if (stm) {
+    const h = tc.stm32Hal;
+    if (!h) e('STM32 boards need toolchain.stm32Hal (device, clock tree, printf UART)');
+    else {
+      if (!/^STM32F4\d\dx[BCDEGHI]$/.test(h.device ?? '')) e('toolchain.stm32Hal.device must be an STM32F4 CMSIS device define such as STM32F401xE');
+      const int = (k, lo, hi) => Number.isInteger(h[k]) && h[k] >= lo && h[k] <= hi;
+      if (!['hsi', 'hse'].includes(h.pllSource)) e('toolchain.stm32Hal.pllSource must be hsi or hse');
+      if (!(Number.isInteger(h.hseHz) && h.hseHz >= 4e6 && h.hseHz <= 26e6)) e('toolchain.stm32Hal.hseHz must be 4 to 26 MHz');
+      if (!int('pllM', 2, 63) || !int('pllN', 50, 432) || ![2, 4, 6, 8].includes(h.pllP) || !int('pllQ', 2, 15)) e('toolchain.stm32Hal PLL values out of range (RCC_PLLCFGR)');
+      if (![1, 2, 4, 8, 16].includes(h.apb1Div) || ![1, 2, 4, 8, 16].includes(h.apb2Div)) e('toolchain.stm32Hal APB prescalers must be 1, 2, 4, 8 or 16');
+      if (!int('flashLatency', 0, 7) || !int('vos', 1, 3)) e('toolchain.stm32Hal flashLatency (0-7) or vos (1-3) out of range');
+      if (!h.source?.title) e('toolchain.stm32Hal needs a source');
+      // The PLL must give the board's documented clocks.
+      const vco = ((h.pllSource === 'hse' ? h.hseHz : 16e6) / h.pllM) * h.pllN;
+      const sys = vco / h.pllP;
+      const tim1 = (sys / h.apb1Div) * (h.apb1Div === 1 ? 1 : 2);
+      if (vco / h.pllN < 1e6 || vco / h.pllN > 2e6) e('toolchain.stm32Hal: PLL input (source / pllM) must be 1 to 2 MHz');
+      if (b.clocks && sys !== b.clocks.cpuHz) e(`toolchain.stm32Hal gives SYSCLK ${sys} Hz, but clocks.cpuHz is ${b.clocks.cpuHz}`);
+      if (b.clocks?.pwmHz && tim1 !== b.clocks.pwmHz) e(`toolchain.stm32Hal gives APB1 timer clock ${tim1} Hz, but clocks.pwmHz is ${b.clocks.pwmHz}`);
+      if (sys / h.apb1Div > 50e6) e('toolchain.stm32Hal: APB1 above 50 MHz');
+      const s = h.stdio ?? {};
+      const m = /^UART(\d)$/.exec(s.uart ?? '');
+      if (!m) e('toolchain.stm32Hal.stdio.uart must look like UART2');
+      else {
+        const apb = ['1', '6'].includes(m[1]) ? h.apb2Div : h.apb1Div; // RM0368/RM0383: USART1/6 on APB2, USART2 on APB1
+        if (b.clocks?.uartHz && sys / apb !== b.clocks.uartHz) e(`stdio ${s.uart} clock ${sys / apb} Hz does not match clocks.uartHz ${b.clocks.uartHz}`);
+        for (const [k, fn] of [['tx', `${s.uart}_TX`], ['rx', `${s.uart}_RX`]]) {
+          const p = pin(s[k]);
+          if (!p) e(`toolchain.stm32Hal.stdio.${k}: ${s[k]} is not a pin`);
+          else if (!p.functions.includes(fn)) e(`toolchain.stm32Hal.stdio.${k}: ${s[k]} has no ${fn} function`);
+        }
+      }
+      if (!(Number.isInteger(s.baud) && s.baud > 0) || !s.note) e('toolchain.stm32Hal.stdio needs baud and a note');
+    }
+  } else if (tc.stm32Hal !== undefined) e('toolchain.stm32Hal is only for STM32 boards');
   if (!Array.isArray(b.usb) || !b.usb.length) e('usb ids missing');
   for (const u of b.usb ?? []) if (!/^[0-9a-f]{4}$/.test(u.vid) || (u.pid !== undefined && !/^[0-9a-f]{4}$/.test(u.pid))) e(`usb id ${u.vid}:${u.pid} must be 4 lower-case hex digits`);
   const s = b.layoutPxPerMm;
