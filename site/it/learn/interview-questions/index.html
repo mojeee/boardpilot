@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Domande da colloquio sui sistemi embedded, per argomento | BoardPilot</title>
+    <meta name="description" content="33 domande dei colloqui per sviluppatori software embedded, divise per argomento: microcontrollori, elettronica, C, GPIO, interrupt, UART, I2C, SPI, ADC, RTOS e progettazione senior." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/learn/interview-questions/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/interview-questions/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/interview-questions/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/interview-questions/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/learn/interview-questions/" />
+    <meta property="og:title" content="Domande da colloquio sui sistemi embedded, per argomento | BoardPilot" />
+    <meta property="og:description" content="33 domande dei colloqui per sviluppatori software embedded, divise per argomento: microcontrollori, elettronica, C, GPIO, interrupt, UART, I2C, SPI, ADC, RTOS e progettazione senior." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"ItemList","name":"Domande da colloquio sui sistemi embedded","description":"33 domande dei colloqui per sviluppatori software embedded, divise per argomento: microcontrollori, elettronica, C, GPIO, interrupt, UART, I2C, SPI, ADC, RTOS e progettazione senior.","url":"https://boardpilot.agentflowbind.com/it/learn/interview-questions/","inLanguage":"it","numberOfItems":33,"itemListElement":[{"@type":"ListItem","position":1,"name":"Qual è la differenza tra un microcontrollore e un microprocessore?","url":"https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/#interview"},{"@type":"ListItem","position":2,"name":"Dove si trovano il codice e le variabili in un MCU?","url":"https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/#interview"},{"@type":"ListItem","position":3,"name":"Che cosa succede tra il reset e main()?","url":"https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/#interview"},{"@type":"ListItem","position":4,"name":"Perché un LED vuole una resistenza in serie, e come scegli il suo valore?","url":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/#interview"},{"@type":"ListItem","position":5,"name":"Cosa succede se lasci un ingresso GPIO fluttuante?","url":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/#interview"},{"@type":"ListItem","position":6,"name":"Come colleghi l’uscita a 5 V di un sensore a un microcontrollore a 3,3 V?","url":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/#interview"},{"@type":"ListItem","position":7,"name":"Perché l’I2C vuole resistenze di pull-up, e cosa va storto se sono troppo grandi?","url":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/#interview"},{"@type":"ListItem","position":8,"name":"Qual è la differenza tra absolute maximum ratings e condizioni di funzionamento raccomandate?","url":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/#interview"},{"@type":"ListItem","position":9,"name":"Come si imposta, azzera e inverte un bit senza cambiare gli altri?","url":"https://boardpilot.agentflowbind.com/it/learn/c-bits/#interview"},{"@type":"ListItem","position":10,"name":"Che cosa fa volatile, e quando è necessario?","url":"https://boardpilot.agentflowbind.com/it/learn/c-bits/#interview"},{"@type":"ListItem","position":11,"name":"Perché usare uint32_t invece di int per un registro?","url":"https://boardpilot.agentflowbind.com/it/learn/c-bits/#interview"},{"@type":"ListItem","position":12,"name":"Che cos’è una resistenza di pull-up e perché serve a un pulsante?","url":"https://boardpilot.agentflowbind.com/it/learn/gpio/#interview"},{"@type":"ListItem","position":13,"name":"Che cos’è il rimbalzo dei contatti e come si gestisce?","url":"https://boardpilot.agentflowbind.com/it/learn/gpio/#interview"},{"@type":"ListItem","position":14,"name":"Perché bisogna attivare il clock di una periferica prima di usarla?","url":"https://boardpilot.agentflowbind.com/it/learn/gpio/#interview"},{"@type":"ListItem","position":15,"name":"Qual è la differenza tra polling e interrupt?","url":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/#interview"},{"@type":"ListItem","position":16,"name":"Perché una routine di interrupt deve essere breve?","url":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/#interview"},{"@type":"ListItem","position":17,"name":"Come si scelgono PSC e ARR per un interrupt ogni secondo?","url":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/#interview"},{"@type":"ListItem","position":18,"name":"Quando sceglieresti SPI invece di I2C?","url":"https://boardpilot.agentflowbind.com/it/learn/buses/#interview"},{"@type":"ListItem","position":19,"name":"Perché l’I2C ha bisogno di resistenze di pull-up?","url":"https://boardpilot.agentflowbind.com/it/learn/buses/#interview"},{"@type":"ListItem","position":20,"name":"Che cosa ti dice un NACK sul bus I2C?","url":"https://boardpilot.agentflowbind.com/it/learn/buses/#interview"},{"@type":"ListItem","position":21,"name":"Che cosa limita la precisione di una lettura ADC?","url":"https://boardpilot.agentflowbind.com/it/learn/adc/#interview"},{"@type":"ListItem","position":22,"name":"Che cosa succede se campioni un segnale troppo lentamente?","url":"https://boardpilot.agentflowbind.com/it/learn/adc/#interview"},{"@type":"ListItem","position":23,"name":"Come si converte una lettura grezza a 12 bit in volt?","url":"https://boardpilot.agentflowbind.com/it/learn/adc/#interview"},{"@type":"ListItem","position":24,"name":"Che cos’è l’inversione di priorità e come si risolve?","url":"https://boardpilot.agentflowbind.com/it/learn/rtos/#interview"},{"@type":"ListItem","position":25,"name":"Coda o variabile globale: come devono condividere i dati due task?","url":"https://boardpilot.agentflowbind.com/it/learn/rtos/#interview"},{"@type":"ListItem","position":26,"name":"Quando un semplice ciclo è meglio di un RTOS?","url":"https://boardpilot.agentflowbind.com/it/learn/rtos/#interview"},{"@type":"ListItem","position":27,"name":"Come controlla il PWM la velocità di un motore?","url":"https://boardpilot.agentflowbind.com/it/learn/essentials/#interview"},{"@type":"ListItem","position":28,"name":"Perché progettare il firmware come una macchina a stati?","url":"https://boardpilot.agentflowbind.com/it/learn/essentials/#interview"},{"@type":"ListItem","position":29,"name":"Come si alimenta in sicurezza un watchdog quando girano più task?","url":"https://boardpilot.agentflowbind.com/it/learn/essentials/#interview"},{"@type":"ListItem","position":30,"name":"Descrivimi che cosa succede dall’accensione alla prima lettura del sensore.","url":"https://boardpilot.agentflowbind.com/it/learn/full-picture/#interview"},{"@type":"ListItem","position":31,"name":"Come arriva il codice dal tuo computer dentro il chip?","url":"https://boardpilot.agentflowbind.com/it/learn/full-picture/#interview"},{"@type":"ListItem","position":32,"name":"Raccontami un bug che si presentava solo sull’hardware reale, e come l’hai trovato.","url":"https://boardpilot.agentflowbind.com/it/learn/road-to-senior/#interview"},{"@type":"ListItem","position":33,"name":"Come progetteresti gli aggiornamenti firmware perché un dispositivo non resti mai inutilizzabile?","url":"https://boardpilot.agentflowbind.com/it/learn/road-to-senior/#interview"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"Domande da colloquio sui sistemi embedded","item":"https://boardpilot.agentflowbind.com/it/learn/interview-questions/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/interview-questions/" hreflang="en" class="">EN</a><a href="/it/learn/interview-questions/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/learn/">Impara</a> / <span>Domande da colloquio sui sistemi embedded</span></nav>
+        <h1>Domande da colloquio sui sistemi embedded</h1>
+        <p class="lead">33 domande che fanno davvero ai colloqui per sviluppatori software embedded, divise per la lezione che spiega l’argomento. Leggi la lezione, poi rispondi ad alta voce.</p>
+        <aside class="learn-box learn-tip"><p>Questa pagina elenca solo le domande, senza risposte modello. Nell’app BoardPilot l’allenatore per i colloqui commenta le tue risposte: cosa era giusto, cosa manca e cosa chiederebbe dopo un intervistatore senior.</p></aside>
+        <h2 id="what-is-mcu"><a href="/it/learn/what-is-mcu/">Che cos’è un microcontrollore?</a></h2>
+        <ol class="learn-list learn-questions"><li>Qual è la differenza tra un microcontrollore e un microprocessore?</li><li>Dove si trovano il codice e le variabili in un MCU?</li><li>Che cosa succede tra il reset e main()?</li></ol>
+        <p class="fine"><a href="/it/learn/what-is-mcu/">Leggi la lezione: Che cos’è un microcontrollore? →</a></p>
+        <h2 id="hardware-basics"><a href="/it/learn/hardware-basics/">Basi di hardware per chi viene dal software</a></h2>
+        <ol class="learn-list learn-questions"><li>Perché un LED vuole una resistenza in serie, e come scegli il suo valore?</li><li>Cosa succede se lasci un ingresso GPIO fluttuante?</li><li>Come colleghi l’uscita a 5 V di un sensore a un microcontrollore a 3,3 V?</li><li>Perché l’I2C vuole resistenze di pull-up, e cosa va storto se sono troppo grandi?</li><li>Qual è la differenza tra absolute maximum ratings e condizioni di funzionamento raccomandate?</li></ol>
+        <p class="fine"><a href="/it/learn/hardware-basics/">Leggi la lezione: Basi di hardware per chi viene dal software →</a></p>
+        <h2 id="c-bits"><a href="/it/learn/c-bits/">Il C per l’embedded</a></h2>
+        <ol class="learn-list learn-questions"><li>Come si imposta, azzera e inverte un bit senza cambiare gli altri?</li><li>Che cosa fa volatile, e quando è necessario?</li><li>Perché usare uint32_t invece di int per un registro?</li></ol>
+        <p class="fine"><a href="/it/learn/c-bits/">Leggi la lezione: Il C per l’embedded →</a></p>
+        <h2 id="gpio"><a href="/it/learn/gpio/">GPIO: pin in ingresso e in uscita</a></h2>
+        <ol class="learn-list learn-questions"><li>Che cos’è una resistenza di pull-up e perché serve a un pulsante?</li><li>Che cos’è il rimbalzo dei contatti e come si gestisce?</li><li>Perché bisogna attivare il clock di una periferica prima di usarla?</li></ol>
+        <p class="fine"><a href="/it/learn/gpio/">Leggi la lezione: GPIO: pin in ingresso e in uscita →</a></p>
+        <h2 id="timers-interrupts"><a href="/it/learn/timers-interrupts/">Timer e interrupt</a></h2>
+        <ol class="learn-list learn-questions"><li>Qual è la differenza tra polling e interrupt?</li><li>Perché una routine di interrupt deve essere breve?</li><li>Come si scelgono PSC e ARR per un interrupt ogni secondo?</li></ol>
+        <p class="fine"><a href="/it/learn/timers-interrupts/">Leggi la lezione: Timer e interrupt →</a></p>
+        <h2 id="buses"><a href="/it/learn/buses/">UART, I2C e SPI</a></h2>
+        <ol class="learn-list learn-questions"><li>Quando sceglieresti SPI invece di I2C?</li><li>Perché l’I2C ha bisogno di resistenze di pull-up?</li><li>Che cosa ti dice un NACK sul bus I2C?</li></ol>
+        <p class="fine"><a href="/it/learn/buses/">Leggi la lezione: UART, I2C e SPI →</a></p>
+        <h2 id="adc"><a href="/it/learn/adc/">ADC: leggere il mondo analogico</a></h2>
+        <ol class="learn-list learn-questions"><li>Che cosa limita la precisione di una lettura ADC?</li><li>Che cosa succede se campioni un segnale troppo lentamente?</li><li>Come si converte una lettura grezza a 12 bit in volt?</li></ol>
+        <p class="fine"><a href="/it/learn/adc/">Leggi la lezione: ADC: leggere il mondo analogico →</a></p>
+        <h2 id="rtos"><a href="/it/learn/rtos/">RTOS: tanti lavori su un solo chip</a></h2>
+        <ol class="learn-list learn-questions"><li>Che cos’è l’inversione di priorità e come si risolve?</li><li>Coda o variabile globale: come devono condividere i dati due task?</li><li>Quando un semplice ciclo è meglio di un RTOS?</li></ol>
+        <p class="fine"><a href="/it/learn/rtos/">Leggi la lezione: RTOS: tanti lavori su un solo chip →</a></p>
+        <h2 id="essentials"><a href="/it/learn/essentials/">PWM, macchine a stati e altro</a></h2>
+        <ol class="learn-list learn-questions"><li>Come controlla il PWM la velocità di un motore?</li><li>Perché progettare il firmware come una macchina a stati?</li><li>Come si alimenta in sicurezza un watchdog quando girano più task?</li></ol>
+        <p class="fine"><a href="/it/learn/essentials/">Leggi la lezione: PWM, macchine a stati e altro →</a></p>
+        <h2 id="full-picture"><a href="/it/learn/full-picture/">Il quadro completo</a></h2>
+        <ol class="learn-list learn-questions"><li>Descrivimi che cosa succede dall’accensione alla prima lettura del sensore.</li><li>Come arriva il codice dal tuo computer dentro il chip?</li></ol>
+        <p class="fine"><a href="/it/learn/full-picture/">Leggi la lezione: Il quadro completo →</a></p>
+        <h2 id="road-to-senior"><a href="/it/learn/road-to-senior/">La strada verso senior</a></h2>
+        <ol class="learn-list learn-questions"><li>Raccontami un bug che si presentava solo sull’hardware reale, e come l’hai trovato.</li><li>Come progetteresti gli aggiornamenti firmware perché un dispositivo non resti mai inutilizzabile?</li></ol>
+        <p class="fine"><a href="/it/learn/road-to-senior/">Leggi la lezione: La strada verso senior →</a></p>
+        <div class="cta-box">
+          <h2>Nell’app le lezioni prendono vita</h2>
+          <p>Nell’app le lezioni hanno demo interattive ed esercitazioni pratiche verificate sulla tua scheda. Queste pagine sono la versione da leggere: le demo sono descritte a parole e le esercitazioni richiedono l’app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/it/#download">Scarica BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Prova le lezioni nel browser</a></p>
+        </div>
+        <p><a href="/it/learn/">← Tutte le lezioni</a></p>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

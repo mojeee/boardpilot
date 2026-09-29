@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"Modulo joystick con WeAct Black Pill STM32F411CE","description":"Come collegare Modulo joystick a WeAct Black Pill STM32F411CE: quali pin usare (VRX → A1, VRY → A2, SW → B12), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/joystick-ky023/","tool":[{"@type":"HowToTool","name":"WeAct Black Pill STM32F411CE"},{"@type":"HowToTool","name":"Analog joystick (KY-023)"}],"step":[{"@type":"HowToStep","position":1,"name":"GND → G","text":"GND (Massa) → G"},{"@type":"HowToStep","position":2,"name":"+5V → 3V3","text":"+5V (Alimentazione) → 3V3"},{"@type":"HowToStep","position":3,"name":"VRX → A1","text":"VRX (Uscita analogica) → A1 (PA1)"},{"@type":"HowToStep","position":4,"name":"VRY → A2","text":"VRY (Uscita analogica) → A2 (PA2)"},{"@type":"HowToStep","position":5,"name":"SW → B12","text":"SW (Uscita del componente) → B12 (PB12)"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di WeAct Black Pill STM32F411CE uso per Modulo joystick?","acceptedAnswer":{"@type":"Answer","text":"GND → G, +5V → 3V3, VRX → A1 (PA1), VRY → A2 (PA2), SW → B12 (PB12)."}},{"@type":"Question","name":"Modulo joystick funziona con WeAct Black Pill STM32F411CE a 3,3 V?","acceptedAnswer":{"@type":"Answer","text":"Sì: Modulo joystick funziona a 3,3 V e WeAct Black Pill STM32F411CE usa segnali a 3,3 V, quindi non serve adattare i livelli."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"WeAct Black Pill STM32F411CE","item":"https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/"},{"@type":"ListItem","position":4,"name":"Analog joystick (KY-023)","item":"https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/joystick-ky023/"}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -93,6 +93,7 @@ void loop() {
         <p class="link-cloud"><a href="/it/parts/joystick-ky023/">ESP32 DevKit</a> <a href="/it/boards/arduino-mega-2560/joystick-ky023/">Arduino Mega 2560 R3</a> <a href="/it/boards/arduino-nano/joystick-ky023/">Arduino Nano</a> <a href="/it/boards/arduino-uno-r3/joystick-ky023/">Arduino Uno R3</a> <a href="/it/boards/esp32-c3-devkitm-1/joystick-ky023/">ESP32-C3-DevKitM-1</a> <a href="/it/boards/esp32-s3-devkitc-1/joystick-ky023/">ESP32-S3-DevKitC-1</a> <a href="/it/boards/nrf52840-dk/joystick-ky023/">Nordic nRF52840 DK</a> <a href="/it/boards/nucleo-f401re/joystick-ky023/">NUCLEO-F401RE</a> <a href="/it/boards/rpi-pico-2/joystick-ky023/">Raspberry Pi Pico 2</a> <a href="/it/boards/rpi-pico-w/joystick-ky023/">Raspberry Pi Pico W</a> <a href="/it/boards/rpi-pico/joystick-ky023/">Raspberry Pi Pico</a> <a href="/it/boards/teensy-41/joystick-ky023/">Teensy 4.1</a></p>
         <h2>Altri componenti su WeAct Black Pill STM32F411CE</h2>
         <p class="link-cloud"><a href="/it/boards/blackpill-f411ce/bme280-gy/">BME280</a> <a href="/it/boards/blackpill-f411ce/bmp280-gy/">BMP280</a> <a href="/it/boards/blackpill-f411ce/dht22/">DHT22</a> <a href="/it/boards/blackpill-f411ce/dht11/">DHT11</a> <a href="/it/boards/blackpill-f411ce/hc-sr04/">HC-SR04</a> <a href="/it/boards/blackpill-f411ce/ssd1306-i2c/">SSD1306 OLED</a> <a href="/it/boards/blackpill-f411ce/mpu6050/">MPU6050</a> <a href="/it/boards/blackpill-f411ce/ds18b20-probe/">DS18B20</a> <a href="/it/boards/blackpill-f411ce/ws2812b-strip/">Striscia LED WS2812B</a> <a href="/it/boards/blackpill-f411ce/servo-sg90/">Servo SG90</a> <a href="/it/boards/blackpill-f411ce/relay-1ch/">Modulo relè</a> <a href="/it/boards/blackpill-f411ce/hc-sr501/">HC-SR501 PIR</a> <a href="/it/boards/blackpill-f411ce/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/it/boards/blackpill-f411ce/ina219/">INA219</a> <a href="/it/boards/blackpill-f411ce/vl53l0x/">VL53L0X</a> <a href="/it/boards/blackpill-f411ce/bh1750-gy302/">BH1750</a> <a href="/it/boards/blackpill-f411ce/max30102/">MAX30102</a> <a href="/it/boards/blackpill-f411ce/rc522-rfid/">RC522 RFID</a> <a href="/it/boards/blackpill-f411ce/neo-6m-gps/">NEO-6M GPS</a> <a href="/it/boards/blackpill-f411ce/soil-moisture-capacitive/">Sensore di umidità del terreno capacitivo</a> <a href="/it/boards/blackpill-f411ce/ads1115/">ADS1115</a> <a href="/it/boards/blackpill-f411ce/tm1637-4digit/">TM1637</a> <a href="/it/boards/blackpill-f411ce/stepper-28byj48-uln2003/">Motore passo-passo 28BYJ-48</a> <a href="/it/boards/blackpill-f411ce/l298n-driver/">L298N</a> <a href="/it/boards/blackpill-f411ce/potentiometer/">Potenziometro</a> <a href="/it/boards/blackpill-f411ce/push-button/">Pulsante</a> <a href="/it/boards/blackpill-f411ce/led-resistor/">LED</a> <a href="/it/boards/blackpill-f411ce/sd-card-module/">Modulo scheda SD</a> <a href="/it/boards/blackpill-f411ce/aht20/">AHT20</a></p>
+        <h2>Le basi, spiegate</h2><p class="link-cloud"><a href="/it/learn/adc/">Lezione: ADC: leggere il mondo analogico</a> <a href="/it/learn/gpio/">Lezione: GPIO: pin in ingresso e in uscita</a> <a href="/it/learn/glossary/#adc">ADC (convertitore analogico-digitale)</a> <a href="/it/learn/glossary/#gpio">GPIO</a></p>
       </div>
     </main>
 <footer class="footer">
@@ -105,6 +106,7 @@ void loop() {
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>

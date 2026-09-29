@@ -22,6 +22,8 @@
   <a href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg">Mac (Apple Silicon)</a> ·
   <a href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-x64.dmg">Mac (Intel)</a> ·
   <a href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-win-x64.exe">Windows</a> ·
+  <a href="https://boardpilot.agentflowbind.com/learn/"><b>Learn embedded</b></a> ·
+  <a href="https://boardpilot.agentflowbind.com/tools/">Calculators</a> ·
   <a href="https://boardpilot.agentflowbind.com/parts/"><b>Parts library</b></a> ·
   <a href="https://boardpilot.agentflowbind.com/boards/">Board pinouts</a> ·
   <a href="docs/README.md">Docs</a>
@@ -30,6 +32,8 @@
 ![BoardPilot finds SDA and SCL crossed on a BME280 connected to an ESP32: the crossed wire is highlighted on the 3D workbench, with the measurements that prove it](docs/img/debug.jpg)
 
 <p align="center"><sub>If BoardPilot helped you find a wiring mistake, a ⭐ helps other makers find it too.</sub></p>
+
+**New to embedded?** Read the free lessons at <https://boardpilot.agentflowbind.com/learn/> (microcontrollers, GPIO, I2C/UART/SPI, ADC, timers, RTOS), the [embedded glossary](https://boardpilot.agentflowbind.com/learn/glossary/) and use the [free calculators](https://boardpilot.agentflowbind.com/tools/) (LED resistor, voltage divider, I2C pull-up, UART baud rate, PWM timer). Or [try the app in your browser](https://boardpilot.agentflowbind.com/#try), no install.
 
 ## Why BoardPilot
 

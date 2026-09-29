@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Electronics basics for programmers: Ohm’s law, LED resistors, pull-ups | BoardPilot</title>
+    <meta name="description" content="Voltage, current and resistance for software developers: Ohm’s law, the LED resistor, pull-ups, voltage dividers, 3.3 V vs 5 V and how to read a datasheet." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/hardware-basics/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/learn/hardware-basics/" />
+    <meta property="og:title" content="Electronics basics for programmers: Ohm’s law, LED resistors, pull-ups | BoardPilot" />
+    <meta property="og:description" content="Voltage, current and resistance for software developers: Ohm’s law, the LED resistor, pull-ups, voltage dividers, 3.3 V vs 5 V and how to read a datasheet." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/learn/hardware-basics/#lesson","headline":"Hardware basics for software developers","name":"Hardware basics for software developers","description":"Voltage, current and resistance for software developers: Ohm’s law, the LED resistor, pull-ups, voltage dividers, 3.3 V vs 5 V and how to read a datasheet.","url":"https://boardpilot.agentflowbind.com/learn/hardware-basics/","inLanguage":"en","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT15M","position":2,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Embedded systems from zero","url":"https://boardpilot.agentflowbind.com/learn/"},"teaches":["Logic level (HIGH and LOW)","Pull-up resistor","Pull-down resistor","Floating input","Brownout","Ohm’s law","Current-limiting resistor","Voltage divider","Level shifter","Datasheet","Absolute maximum ratings","Schematic","Breadboard","Jumper wire (Dupont)","Multimeter"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://boardpilot.agentflowbind.com/learn/"},{"@type":"ListItem","position":3,"name":"Hardware basics for software developers","item":"https://boardpilot.agentflowbind.com/learn/hardware-basics/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/hardware-basics/" hreflang="en" class="on">EN</a><a href="/it/learn/hardware-basics/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/learn/">Learn</a> / <span>Hardware basics for software developers</span></nav>
+        <p class="learn-kicker">Foundations · Lesson 2 of 11 · about 15 min</p>
+        <h1>Hardware basics for software developers</h1>
+        <p class="lead">Voltage, current, resistors, and how not to burn a pin</p>
+        <nav class="learn-toc" aria-label="In this lesson"><p class="learn-box-h">In this lesson</p><ol><li><a href="#ohms-law-v-i-r">Ohm’s law: V = I × R</a></li><li><a href="#an-led-always-needs-a-resistor">An LED always needs a resistor</a></li><li><a href="#pull-up-resistors-a-defined-level">Pull-up resistors: a defined level</a></li><li><a href="#voltage-dividers">Voltage dividers</a></li><li><a href="#5-v-and-3-3-v-do-not-mix">5 V and 3.3 V do not mix</a></li><li><a href="#reading-a-schematic-and-a-datasheet">Reading a schematic and a datasheet</a></li><li><a href="#interview">Interview questions</a></li></ol></nav>
+        <p>Code can be undone; a burnt LED or a dead pin cannot. Three numbers explain almost every hardware mistake a beginner makes: voltage, current and resistance.</p>
+        <div class="table-wrap"><table class="pin-table learn-table"><thead><tr><th scope="col">Quantity</th><th scope="col">What it is</th><th scope="col">Unit</th><th scope="col">Water picture</th></tr></thead><tbody><tr><td>Voltage (V)</td><td>The push that moves electrons</td><td>volt (V)</td><td>Water pressure</td></tr><tr><td>Current (I)</td><td>How much flows</td><td>ampere (A), usually mA</td><td>Litres per second</td></tr><tr><td>Resistance (R)</td><td>How hard it is to flow</td><td>ohm (Ω)</td><td>A narrow pipe</td></tr></tbody></table></div>
+        <h2 id="ohms-law-v-i-r">Ohm’s law: V = I × R</h2>
+        <p>Know two of the three and you get the third. It tells you how big a resistor must be, how much current a pin sends, and how hot a part gets (power = V × I).</p>
+        <h2 id="an-led-always-needs-a-resistor">An LED always needs a resistor</h2>
+        <p>An LED drops an almost fixed voltage (about 2 V for red, about 3 V for blue and white). Whatever is left over must be taken by a resistor, or the current rises until the LED or the pin dies. Most pins are happy with 5 to 10 mA.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Interactive demo</p><p><b>LED resistor calculator.</b> Choose the LED colour, a 3.3 V or 5 V supply and the current, and get the resistor from Ohm’s law, the standard value to buy, the real current and the heat in the resistor.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=hardware-basics&lang=en" target="_blank" rel="noopener">Try it in the browser demo →</a></p></aside>
+        <aside class="learn-box learn-board"><p class="learn-box-h">On the 3D board</p><p><b>An LED with its resistor on GP15 of a Raspberry Pi Pico</b></p><p class="fine">Pins: <span class="mono">GP15</span> · <a href="/boards/rpi-pico/">Raspberry Pi Pico</a></p><p class="fine">In the app this opens a 3D preview of the Raspberry Pi Pico with these pins highlighted. Your own project is never touched.</p></aside>
+      </div>
+      <div class="wrap try-wrap learn-try"><div class="try-live" data-src="/demo/#demo=lesson-preview&amp;lesson=hardware-basics&amp;lang=en" data-title="BoardPilot live demo" data-full="Open full screen">
+          <img src="/img/learn.jpg?v=6ecc3e7445" width="1800" height="1125" alt="The BoardPilot Learn screen: a lesson with its 3D board preview" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=lesson-preview&amp;lesson=hardware-basics&amp;lang=en" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Try it live</a>
+            <p>The real app, running in your browser: this lesson with its 3D preview on a simulated Raspberry Pi Pico. No install, nothing to plug in.</p>
+          </div>
+        </div>
+        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+      <div class="wrap narrow">
+        <aside class="learn-box learn-tip"><p class="learn-box-h">In real products</p><p>A GPIO pin is not a power supply. The ESP32 and the Pico give a few mA per pin comfortably; motors, relays, LED strips and servos need a transistor or a driver and their own supply, with the grounds connected.</p></aside>
+        <h2 id="pull-up-resistors-a-defined-level">Pull-up resistors: a defined level</h2>
+        <p>An input connected to nothing floats and reads random values. A pull-up resistor to 3.3 V makes it read HIGH until a button pulls it to GND. Most chips have weak internal pull-ups (INPUT_PULLUP); I2C needs real ones, because the bus must rise fast enough.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Interactive demo</p><p><b>I2C pull-up calculator.</b> Set the bus voltage, the bus capacitance, the I2C speed and the pull-up value, and see how fast the line rises, the allowed resistor range and whether it fits the I2C limit.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=hardware-basics&lang=en" target="_blank" rel="noopener">Try it in the browser demo →</a></p></aside>
+        <h2 id="voltage-dividers">Voltage dividers</h2>
+        <p>Two resistors in series split a voltage in the ratio of their values. This is how you read a 5 V signal on a 3.3 V pin, or measure a battery with an ADC.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Interactive demo</p><p><b>Voltage divider calculator.</b> Set the input voltage, R1 and R2, and see the output voltage, the current through the divider, whether the output is safe for a 3.3 V pin, and the R2 that gives 3.3 V.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=hardware-basics&lang=en" target="_blank" rel="noopener">Try it in the browser demo →</a></p></aside>
+        <h2 id="5-v-and-3-3-v-do-not-mix">5 V and 3.3 V do not mix</h2>
+        <ul class="learn-list"><li>ESP32, Pico, STM32 and nRF52 pins take at most 3.3 V (a few STM32 pins are 5 V tolerant: the board file says which).</li><li>A 5 V signal going into a 3.3 V pin: use a divider (one direction) or a level shifter (I2C, both directions).</li><li>A 3.3 V signal into a 5 V Arduino usually reads HIGH, but check the part: some need 0.7 × 5 V = 3.5 V.</li><li>Always connect the grounds: a voltage only means something against a shared ground.</li></ul>
+        <p>BoardPilot checks these for you: the wiring rules flag a 5 V part on a 3.3 V pin, a missing ground, and an output on an input-only pin, and the shopping list adds the divider or level shifter you need.</p>
+        <h2 id="reading-a-schematic-and-a-datasheet">Reading a schematic and a datasheet</h2>
+        <ul class="learn-list"><li>A schematic shows connections, not positions: two wires that meet with a dot are connected; lines that cross without a dot are not.</li><li>Labels with the same name (3V3, GND, SDA) are connected even when no line joins them.</li><li>On a datasheet’s first page: the supply voltage range, the interface (I2C, SPI…) and the I2C address.</li><li>Then look for “Absolute maximum ratings”: never go beyond them, not even for a moment.</li></ul>
+        <aside class="learn-box learn-tip"><p class="learn-box-h">In real products</p><p>Before powering a new circuit, check three things: no wire from power straight to GND, every 5 V part away from 3.3 V pins, and the grounds connected. It takes a minute and saves boards.</p></aside>
+        <h2 id="interview">Interview questions</h2>
+        <ol class="learn-list learn-questions"><li>Why does an LED need a series resistor, and how do you choose its value?</li><li>What happens if you leave a GPIO input floating?</li><li>How do you connect a 5 V sensor output to a 3.3 V microcontroller?</li><li>Why does I2C need pull-up resistors, and what goes wrong if they are too large?</li><li>What is the difference between absolute maximum ratings and recommended operating conditions?</li></ol>
+        <p class="fine">No answers here on purpose: try answering out loud first. In the BoardPilot app, the interview coach reads your own answer and tells you what was right, what is missing and what a senior interviewer would ask next (it uses the AI provider you choose in the app). <a href="/learn/interview-questions/">Embedded systems interview questions →</a></p>
+        <h2>Key terms</h2>
+        <p class="link-cloud"><a href="/learn/glossary/#logic-level">Logic level (HIGH and LOW)</a> <a href="/learn/glossary/#pull-up">Pull-up resistor</a> <a href="/learn/glossary/#pull-down">Pull-down resistor</a> <a href="/learn/glossary/#floating-input">Floating input</a> <a href="/learn/glossary/#brownout">Brownout</a> <a href="/learn/glossary/#ohms-law">Ohm’s law</a> <a href="/learn/glossary/#led-resistor">Current-limiting resistor</a> <a href="/learn/glossary/#voltage-divider">Voltage divider</a> <a href="/learn/glossary/#level-shifter">Level shifter</a> <a href="/learn/glossary/#datasheet">Datasheet</a> <a href="/learn/glossary/#absolute-maximum-ratings">Absolute maximum ratings</a> <a href="/learn/glossary/#schematic">Schematic</a> <a href="/learn/glossary/#breadboard">Breadboard</a> <a href="/learn/glossary/#jumper-wire">Jumper wire (Dupont)</a> <a href="/learn/glossary/#multimeter">Multimeter</a></p>
+        <div class="cta-box">
+          <h2>In the app, the lessons come alive</h2>
+          <p>The lessons have interactive demos and hands-on labs checked on your board in the app. These pages are the readable version: the demos are described in words, and the labs need the app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/#download">Download BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=en" target="_blank" rel="noopener">Try the lessons in your browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="All lessons">
+          <a class="learn-prev" href="/learn/what-is-mcu/" rel="prev"><span>← Previous</span><b>What is a microcontroller?</b></a>
+          <a class="learn-all" href="/learn/">All lessons</a>
+          <a class="learn-next" href="/learn/c-bits/" rel="next"><span>Next →</span><b>C for embedded</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

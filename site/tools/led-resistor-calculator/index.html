@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LED resistor calculator (with E12 value) | BoardPilot</title>
+    <meta name="description" content="Find the series resistor for an LED from the supply voltage, forward voltage and current: the exact value, the standard E12 resistor to buy, the real current and the heat. Free, with the formula." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/" />
+    <meta property="og:title" content="LED resistor calculator (with E12 value) | BoardPilot" />
+    <meta property="og:description" content="Find the series resistor for an LED from the supply voltage, forward voltage and current: the exact value, the standard E12 resistor to buy, the real current and the heat. Free, with the formula." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/tools.css?v=6f74802083" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/#app","name":"LED resistor calculator","url":"https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/","description":"Find the series resistor for an LED from the supply voltage, forward voltage and current: the exact value, the standard E12 resistor to buy, the real current and the heat. Free, with the formula.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://boardpilot.agentflowbind.com/tools/"},{"@type":"ListItem","position":3,"name":"LED resistor calculator","item":"https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does an LED need a resistor?","acceptedAnswer":{"@type":"Answer","text":"Once the voltage passes an LED’s forward voltage, its current rises very steeply, so without something to limit it the LED draws far too much current and fails, and it can damage the pin that drives it. A series resistor takes the extra voltage and sets the current by Ohm’s law."}},{"@type":"Question","name":"Does the resistor go before or after the LED?","acceptedAnswer":{"@type":"Answer","text":"Either side works. In a series circuit the same current flows through every part, so the resistor can sit between the supply and the LED’s anode (the long leg) or between its cathode (the short leg, flat side) and ground."}},{"@type":"Question","name":"Can several LEDs share one resistor?","acceptedAnswer":{"@type":"Answer","text":"Not when the LEDs are in parallel: their forward voltages differ slightly, so the LED with the lowest one takes most of the current. Give each LED its own resistor. LEDs in series can share one resistor, as long as the supply is higher than the sum of their forward voltages."}},{"@type":"Question","name":"What wattage should the resistor be?","acceptedAnswer":{"@type":"Answer","text":"Work out the heat with P = (Vsupply − Vf)² / R and pick a resistor rated for at least twice that. For indicator LEDs this is a few tens of milliwatts, so the common 1/4 W (250 mW) resistor is plenty."}},{"@type":"Question","name":"How much current can a microcontroller pin give an LED?","acceptedAnswer":{"@type":"Answer","text":"It depends on the chip, so check its datasheet. The ATmega328P on an Arduino Uno allows at most 40 mA per pin (absolute maximum), so 20 mA or less is a sensible target. RP2040 pins on a Raspberry Pi Pico are set to 4 mA drive strength by default (2 to 12 mA can be chosen); ask for more and the pin voltage drops. For bright LEDs or many LEDs, switch them with a transistor."}},{"@type":"Question","name":"Can I run a blue or white LED from 3.3 V?","acceptedAnswer":{"@type":"Answer","text":"Only just. With a forward voltage around 3 V, only a few tenths of a volt are left for the resistor, so the current depends strongly on the exact LED and its temperature. It is fine for a dim indicator; for steady brightness use 5 V with a transistor, or a constant-current LED driver."}}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/tools/led-resistor-calculator/" hreflang="en" class="on">EN</a><a href="/it/tools/led-resistor-calculator/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article tools-page">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/tools/">Calculators</a> / <span>LED resistor calculator</span></nav>
+        <h1>LED resistor calculator</h1>
+        <p class="lead">Enter the supply voltage, the LED’s forward voltage and the current you want. You get the exact resistor, the standard (E12) value to buy, and the current that really flows with it.</p>
+        <div class="calc">
+        <form class="calc-form" data-tool="led" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Supply voltage (V)</span><input type="number" name="supply" value="5" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>LED colour</span><select name="color"><option value="2" selected>Red (2.0 V)</option><option value="2.1">Yellow (2.1 V)</option><option value="2.2">Green (2.2 V)</option><option value="3.1">Blue or white (3.1 V)</option></select></label>
+            <label class="calc-field"><span>Forward voltage Vf (V)</span><input type="number" name="vf" value="2" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Current (mA)</span><input type="number" name="ma" value="10" step="any" inputmode="decimal" min="0"/></label>
+          </div>
+          <dl class="calc-outs">
+            <div class="calc-row big"><dt>Exact resistor</dt><dd class="mono" data-out="exact">—</dd></div>
+            <p class="calc-formula mono" data-out="formula"></p>
+            <div class="calc-row big"><dt>Resistor to buy (E12, next value up)</dt><dd class="mono" data-out="standard">—</dd></div>
+            <div class="calc-row"><dt>Current with that resistor</dt><dd class="mono" data-out="actual">—</dd></div>
+            <div class="calc-row"><dt>Heat in the resistor</dt><dd class="mono" data-out="power">—</dd></div>
+          </dl>
+          <p class="calc-note" data-out="note" aria-live="polite"></p>
+        </form>
+        <noscript><p class="calc-noscript">This calculator needs JavaScript. The formula and a worked example are below, so you can also work it out by hand.</p></noscript>
+        </div>
+        <p class="fine calc-honest">Results are arithmetic on published formulas, not measurements. Check them on your hardware. <span class="free">Free, no sign-up</span></p>
+        <h2>Why an LED needs a resistor</h2>
+        <p>An LED is a diode. Below its forward voltage almost no current flows; just above it, the current climbs very steeply with every extra millivolt. Connected straight to a supply, the LED takes as much current as the supply or the pin can give, and the LED, the pin or both burn out.</p>
+        <p>A resistor in series fixes this. The LED keeps roughly its forward voltage, the resistor takes the rest, and Ohm’s law sets the current: the leftover voltage divided by the resistance.</p>
+        <h2>Choosing the values</h2>
+        <p><b>Forward voltage (Vf)</b> depends mostly on the colour. Typical values: red about 1.8 to 2.2 V, yellow and orange about 2.0 to 2.2 V, classic yellow-green about 2.1 to 2.2 V, bright (true) green, blue and white about 2.8 to 3.4 V. The LED’s datasheet gives the exact figure at a stated current.</p>
+        <p><b>Current:</b> common 3 mm and 5 mm indicator LEDs are rated about 20 mA maximum. Modern LEDs are already bright at 2 to 10 mA, which is also kinder to a microcontroller pin.</p>
+        <p><b>Standard value:</b> resistors are sold in fixed series. This calculator rounds up to the next E12 value, so the real current ends up a little under your target, never over.</p>
+        <h2>The formula</h2>
+        <pre class="formula">R = (Vsupply − Vf) / I
+I(real) = (Vsupply − Vf) / R(standard)
+P = (Vsupply − Vf)² / R(standard)</pre>
+        <p class="fine">Source: Ohm’s law. Standard values: E12 series, IEC 60063.</p>
+        <h2>Worked example</h2>
+        <p>A red LED (forward voltage about 2.0 V) on a 3.3 V pin of an ESP32 or Raspberry Pi Pico, at 10 mA: R = (3.3 − 2.0) V / 0.010 A = <b>130 Ω</b>. The next E12 value up is <b>150 Ω</b>, which gives 8.67 mA and about 11.3 mW of heat, so any small 1/4 W resistor is fine.</p>
+<p>The same LED on a 5 V Arduino Uno pin: R = (5 − 2.0) V / 0.010 A = 300 Ω, so buy <b>330 Ω</b>: 9.09 mA and 27.3 mW.</p>
+        <h2>Questions and answers</h2>
+        <div class="faq">
+        <details><summary>Why does an LED need a resistor?</summary><p>Once the voltage passes an LED’s forward voltage, its current rises very steeply, so without something to limit it the LED draws far too much current and fails, and it can damage the pin that drives it. A series resistor takes the extra voltage and sets the current by Ohm’s law.</p></details>
+        <details><summary>Does the resistor go before or after the LED?</summary><p>Either side works. In a series circuit the same current flows through every part, so the resistor can sit between the supply and the LED’s anode (the long leg) or between its cathode (the short leg, flat side) and ground.</p></details>
+        <details><summary>Can several LEDs share one resistor?</summary><p>Not when the LEDs are in parallel: their forward voltages differ slightly, so the LED with the lowest one takes most of the current. Give each LED its own resistor. LEDs in series can share one resistor, as long as the supply is higher than the sum of their forward voltages.</p></details>
+        <details><summary>What wattage should the resistor be?</summary><p>Work out the heat with P = (Vsupply − Vf)² / R and pick a resistor rated for at least twice that. For indicator LEDs this is a few tens of milliwatts, so the common 1/4 W (250 mW) resistor is plenty.</p></details>
+        <details><summary>How much current can a microcontroller pin give an LED?</summary><p>It depends on the chip, so check its datasheet. The ATmega328P on an Arduino Uno allows at most 40 mA per pin (absolute maximum), so 20 mA or less is a sensible target. RP2040 pins on a Raspberry Pi Pico are set to 4 mA drive strength by default (2 to 12 mA can be chosen); ask for more and the pin voltage drops. For bright LEDs or many LEDs, switch them with a transistor.</p></details>
+        <details><summary>Can I run a blue or white LED from 3.3 V?</summary><p>Only just. With a forward voltage around 3 V, only a few tenths of a volt are left for the resistor, so the current depends strongly on the exact LED and its temperature. It is fine for a dim indicator; for steady brightness use 5 V with a transistor, or a constant-current LED driver.</p></details>
+        </div>
+        <h2>Learn the background</h2>
+        <p>Free lessons of the BoardPilot course that explain the ideas behind this calculator:</p>
+        <p class="link-cloud"><a href="/learn/hardware-basics/">Hardware basics for software developers</a><a href="/learn/gpio/">GPIO: pins in and out</a></p>
+        <h2>Other calculators</h2>
+        <p class="link-cloud"><a href="/tools/voltage-divider-calculator/">Voltage divider calculator</a><a href="/tools/i2c-pull-up-calculator/">I2C pull-up resistor calculator</a><a href="/tools/uart-baud-rate-calculator/">UART baud rate calculator</a><a href="/tools/pwm-timer-calculator/">PWM and timer calculator</a><a href="/tools/adc-sample-rate-calculator/">ADC sample rate calculator</a></p>
+        <div class="cta-box">
+          <h2>See it on a real board</h2>
+          <p>BoardPilot uses these same calculations inside the app, next to a live 3D view of your board, its pins and wires, with guided debugging when something does not work. Try it in your browser, or download it for macOS and Windows.</p>
+          <div class="cta"><a class="btn primary" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=en">Try it in your browser</a><a class="btn" href="/#download">Download BoardPilot</a></div>
+        </div>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+    <script src="/tools/calc.js?v=a3890e388f" defer></script>
+  </body>
+</html>

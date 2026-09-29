@@ -15,7 +15,8 @@
     "build:agent": "bash scripts/build-agent.sh",
     "dist:mac": "electron-vite build && electron-builder --mac",
     "build:web": "vite build -c vite.web.config.ts",
-    "build:site": "npm run build:web && node scripts/build-site.mjs",
+    "build:tools": "vite build -c vite.tools.config.ts",
+    "build:site": "npm run build:web && npm run build:tools && node scripts/build-site.mjs",
     "motion": "electron-vite build && node scripts/render-motion.mjs",
     "seo:ping": "node scripts/indexnow.mjs",
     "dist:win": "electron-vite build && electron-builder --win"

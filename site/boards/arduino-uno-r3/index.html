@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Arduino Uno R3 pinout","description":"Arduino Uno R3 pinout (ATmega328P): all 31 pins with functions, the pins to avoid, default I2C/SPI pins and how to flash it. 5 V logic.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/arduino-uno-r3/","image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"},"about":{"@type":"Product","name":"Arduino Uno R3","brand":"Arduino (and many clones)","description":"The classic Arduino board for learning. It uses 5 V logic, so 3.3 V-only sensors need a level shifter."}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"Arduino Uno R3","item":"https://boardpilot.agentflowbind.com/boards/arduino-uno-r3/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which pins are I2C on the Arduino Uno R3?","acceptedAnswer":{"@type":"Answer","text":"SDA is A4 and SCL is A5 (the defaults of the Arduino Wire library). Only certain pins support I2C in hardware, so use these unless you know your core allows others."}},{"@type":"Question","name":"Which Arduino Uno R3 pins should I avoid?","acceptedAnswer":{"@type":"Answer","text":"TX→1, RX←0 (USB serial link)."}},{"@type":"Question","name":"Is the Arduino Uno R3 5 V tolerant?","acceptedAnswer":{"@type":"Answer","text":"The Arduino Uno R3 runs at 5 V, so 5 V sensors connect directly. 3.3 V-only parts need a level shifter."}},{"@type":"Question","name":"Which pins can read analog voltage on the Arduino Uno R3?","acceptedAnswer":{"@type":"Answer","text":"A0, A1, A2, A3, A4, A5, from 0 to 5 V."}},{"@type":"Question","name":"How do I upload code to the Arduino Uno R3?","acceptedAnswer":{"@type":"Answer","text":"In the Arduino IDE pick the board arduino:avr:uno (core arduino:avr)."}}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/#features" data-i18n="nav.features">Features</a>
-          <a href="/#how" data-i18n="nav.how">How it works</a>
-          <a href="/#safety" data-i18n="nav.safety">Safety</a>
-          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
-          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
           <a href="/parts/" data-i18n="nav.parts">Parts library</a>
           <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -130,6 +130,7 @@
         <details><summary>How do I upload code to the Arduino Uno R3?</summary><p>In the Arduino IDE pick the board arduino:avr:uno (core arduino:avr).</p></details>
         <h2>Wiring guides for the Arduino Uno R3</h2><p>Step-by-step wiring, voltage checks and test code for the most used parts:</p><p class="link-cloud"><a href="/boards/arduino-uno-r3/bme280-gy/">BME280</a> <a href="/boards/arduino-uno-r3/bmp280-gy/">BMP280</a> <a href="/boards/arduino-uno-r3/dht22/">DHT22</a> <a href="/boards/arduino-uno-r3/dht11/">DHT11</a> <a href="/boards/arduino-uno-r3/hc-sr04/">HC-SR04</a> <a href="/boards/arduino-uno-r3/ssd1306-i2c/">SSD1306 OLED</a> <a href="/boards/arduino-uno-r3/mpu6050/">MPU6050</a> <a href="/boards/arduino-uno-r3/ds18b20-probe/">DS18B20</a> <a href="/boards/arduino-uno-r3/ws2812b-strip/">WS2812B LED strip</a> <a href="/boards/arduino-uno-r3/servo-sg90/">SG90 servo</a> <a href="/boards/arduino-uno-r3/relay-1ch/">Relay module</a> <a href="/boards/arduino-uno-r3/hc-sr501/">HC-SR501 PIR</a> <a href="/boards/arduino-uno-r3/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/boards/arduino-uno-r3/ina219/">INA219</a> <a href="/boards/arduino-uno-r3/vl53l0x/">VL53L0X</a> <a href="/boards/arduino-uno-r3/bh1750-gy302/">BH1750</a> <a href="/boards/arduino-uno-r3/max30102/">MAX30102</a> <a href="/boards/arduino-uno-r3/rc522-rfid/">RC522 RFID</a> <a href="/boards/arduino-uno-r3/neo-6m-gps/">NEO-6M GPS</a> <a href="/boards/arduino-uno-r3/soil-moisture-capacitive/">Capacitive soil moisture sensor</a> <a href="/boards/arduino-uno-r3/ads1115/">ADS1115</a> <a href="/boards/arduino-uno-r3/tm1637-4digit/">TM1637</a> <a href="/boards/arduino-uno-r3/stepper-28byj48-uln2003/">28BYJ-48 stepper</a> <a href="/boards/arduino-uno-r3/l298n-driver/">L298N</a> <a href="/boards/arduino-uno-r3/potentiometer/">Potentiometer</a> <a href="/boards/arduino-uno-r3/push-button/">Push button</a> <a href="/boards/arduino-uno-r3/led-resistor/">LED</a> <a href="/boards/arduino-uno-r3/joystick-ky023/">Joystick module</a> <a href="/boards/arduino-uno-r3/sd-card-module/">SD card module</a> <a href="/boards/arduino-uno-r3/aht20/">AHT20</a></p>
         <h2>Compare</h2><p class="link-cloud"><a href="/compare/esp32-devkitc-30-vs-arduino-uno-r3/">ESP32 DevKit vs Arduino Uno R3</a> <a href="/compare/arduino-uno-r3-vs-arduino-nano/">Arduino Uno R3 vs Arduino Nano</a> <a href="/compare/arduino-uno-r3-vs-arduino-mega-2560/">Arduino Uno R3 vs Arduino Mega 2560 R3</a></p>
+        <h2>Learn the basics</h2><p class="link-cloud"><a href="/learn/what-is-mcu/">Lesson: What is a microcontroller?</a> <a href="/learn/hardware-basics/">Lesson: Hardware basics for software developers</a> <a href="/learn/gpio/">Lesson: GPIO: pins in and out</a> <a href="/learn/glossary/#pinout">Pinout</a> <a href="/learn/glossary/#gpio">GPIO</a> <a href="/learn/glossary/#logic-level">Logic level (HIGH and LOW)</a> <a href="/learn/glossary/#arduino">Arduino</a> <a href="/learn/glossary/#bootloader">Bootloader</a></p>
         <div class="cta-box">
           <h2>Check your wiring with BoardPilot</h2>
           <p>BoardPilot shows this board in 3D, flags risky pins as you wire, and flashes it safely with a backup first.</p>
@@ -150,6 +151,7 @@
           <a href="/parts/" data-i18n="nav.parts">Parts library</a>
           <a href="/boards/" data-i18n="nav.pinout">Boards</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>

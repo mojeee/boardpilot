@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Si4703 FM radio receiver breakout con ESP32","description":"Come collegare Si4703 FM radio receiver breakout a un ESP32: pin, GPIO consigliati, alimentazione 3.3 V, indirizzo I2C 0x10. Dati gratuiti di BoardPilot.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/parts/si4703-fm/","about":"Si4703 FM radio receiver breakout","keywords":"si4703, fm radio, fm, rds, radio fm, ricevitore","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/it/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Libreria componenti","item":"https://boardpilot.agentflowbind.com/it/parts/"},{"@type":"ListItem","position":3,"name":"Si4703 FM radio receiver breakout","item":"https://boardpilot.agentflowbind.com/it/parts/si4703-fm/"}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -81,6 +81,7 @@ void loop() {}</code></pre>
         <h2>Fonti</h2><ul class="sources"><li>Silicon Labs Si4702/03-C19 datasheet, Bus mode selection with RST, SEN and SDIO; 2-wire address 0010000 (0x10)</li><li>Silicon Labs AN230 Si4700/01/02/03 programming guide, 2-wire reads start at register 0x0A</li><li>SparkFun Si4703 FM tuner breakout, Header order differs between boards: check the silkscreen</li></ul>
         <div class="cta-box"><h2>Provalo in 3D in BoardPilot</h2><p><a class="btn primary" href="/it/#download">BoardPilot</a> <a class="btn" href="/parts/si4703-fm.json">Dati del componente (JSON)</a></p></div>
         
+        <h2>Le basi, spiegate</h2><p class="link-cloud"><a href="/it/learn/buses/">Lezione: UART, I2C e SPI</a> <a href="/it/learn/gpio/">Lezione: GPIO: pin in ingresso e in uscita</a> <a href="/it/learn/timers-interrupts/">Lezione: Timer e interrupt</a> <a href="/it/learn/glossary/#i2c">I2C</a> <a href="/it/learn/glossary/#i2c-address">Indirizzo I2C</a> <a href="/it/learn/glossary/#sda-scl">SDA e SCL</a> <a href="/it/learn/glossary/#pull-up">Resistenza di pull-up</a> <a href="/it/learn/glossary/#gpio">GPIO</a> <a href="/it/learn/glossary/#interrupt">Interrupt</a></p>
         <h2>Componenti simili</h2><div class="part-grid"><a class="part-card" href="/it/parts/at24c256-eeprom/"><span class="sw" style="background:#1F4FA8"></span><b>AT24C256 I2C EEPROM module</b></a><a class="part-card" href="/it/parts/aw9523-expander/"><span class="sw" style="background:#1F4FA8"></span><b>AW9523 16-bit I/O expander and LED driver</b></a><a class="part-card" href="/it/parts/drv2605l-haptic/"><span class="sw" style="background:#1A1A1A"></span><b>DRV2605L haptic motor driver (I2C)</b></a><a class="part-card" href="/it/parts/fram-mb85rc256v/"><span class="sw" style="background:#1F4FA8"></span><b>MB85RC256V I2C FRAM breakout (32 KB)</b></a><a class="part-card" href="/it/parts/mcp23008-expander/"><span class="sw" style="background:#1A1A1A"></span><b>MCP23008 8-bit I/O expander (DIP-18)</b></a><a class="part-card" href="/it/parts/mcp23017-expander/"><span class="sw" style="background:#1F4FA8"></span><b>MCP23017 16-bit I/O expander</b></a></div>
         <p class="fine">Dati dei componenti: CC BY 4.0, riutilizzabili citando BoardPilot.</p>
       </div>
@@ -95,6 +96,7 @@ void loop() {}</code></pre>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>

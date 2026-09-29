@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"Modulo relè con ESP32-S3-DevKitC-1","description":"Come collegare Modulo relè a ESP32-S3-DevKitC-1: quali pin usare (IN → 4), alimentazione 5 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/relay-1ch/","tool":[{"@type":"HowToTool","name":"ESP32-S3-DevKitC-1"},{"@type":"HowToTool","name":"Relay module 1 channel (5 V)"}],"step":[{"@type":"HowToStep","position":1,"name":"IN → 4","text":"IN (Ingresso del componente) → 4"},{"@type":"HowToStep","position":2,"name":"GND → G","text":"GND (Massa) → G"},{"@type":"HowToStep","position":3,"name":"VCC → 5V","text":"VCC (Alimentazione) → 5V"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di ESP32-S3-DevKitC-1 uso per Modulo relè?","acceptedAnswer":{"@type":"Answer","text":"IN → 4, GND → G, VCC → 5V."}},{"@type":"Question","name":"Modulo relè funziona con ESP32-S3-DevKitC-1 a 3,3 V?","acceptedAnswer":{"@type":"Answer","text":"Sì: Modulo relè funziona a 5 V e ESP32-S3-DevKitC-1 usa segnali a 3,3 V, quindi non serve adattare i livelli."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"ESP32-S3-DevKitC-1","item":"https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/"},{"@type":"ListItem","position":4,"name":"Relay module 1 channel (5 V)","item":"https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/relay-1ch/"}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -94,6 +94,7 @@ void loop() {
         <p class="link-cloud"><a href="/it/parts/relay-1ch/">ESP32 DevKit</a> <a href="/it/boards/arduino-mega-2560/relay-1ch/">Arduino Mega 2560 R3</a> <a href="/it/boards/arduino-nano/relay-1ch/">Arduino Nano</a> <a href="/it/boards/arduino-uno-r3/relay-1ch/">Arduino Uno R3</a> <a href="/it/boards/blackpill-f411ce/relay-1ch/">WeAct Black Pill STM32F411CE</a> <a href="/it/boards/esp32-c3-devkitm-1/relay-1ch/">ESP32-C3-DevKitM-1</a> <a href="/it/boards/nrf52840-dk/relay-1ch/">Nordic nRF52840 DK</a> <a href="/it/boards/nucleo-f401re/relay-1ch/">NUCLEO-F401RE</a> <a href="/it/boards/rpi-pico-2/relay-1ch/">Raspberry Pi Pico 2</a> <a href="/it/boards/rpi-pico-w/relay-1ch/">Raspberry Pi Pico W</a> <a href="/it/boards/rpi-pico/relay-1ch/">Raspberry Pi Pico</a> <a href="/it/boards/teensy-41/relay-1ch/">Teensy 4.1</a></p>
         <h2>Altri componenti su ESP32-S3-DevKitC-1</h2>
         <p class="link-cloud"><a href="/it/boards/esp32-s3-devkitc-1/bme280-gy/">BME280</a> <a href="/it/boards/esp32-s3-devkitc-1/bmp280-gy/">BMP280</a> <a href="/it/boards/esp32-s3-devkitc-1/dht22/">DHT22</a> <a href="/it/boards/esp32-s3-devkitc-1/dht11/">DHT11</a> <a href="/it/boards/esp32-s3-devkitc-1/hc-sr04/">HC-SR04</a> <a href="/it/boards/esp32-s3-devkitc-1/ssd1306-i2c/">SSD1306 OLED</a> <a href="/it/boards/esp32-s3-devkitc-1/mpu6050/">MPU6050</a> <a href="/it/boards/esp32-s3-devkitc-1/ds18b20-probe/">DS18B20</a> <a href="/it/boards/esp32-s3-devkitc-1/ws2812b-strip/">Striscia LED WS2812B</a> <a href="/it/boards/esp32-s3-devkitc-1/servo-sg90/">Servo SG90</a> <a href="/it/boards/esp32-s3-devkitc-1/hc-sr501/">HC-SR501 PIR</a> <a href="/it/boards/esp32-s3-devkitc-1/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/it/boards/esp32-s3-devkitc-1/ina219/">INA219</a> <a href="/it/boards/esp32-s3-devkitc-1/vl53l0x/">VL53L0X</a> <a href="/it/boards/esp32-s3-devkitc-1/bh1750-gy302/">BH1750</a> <a href="/it/boards/esp32-s3-devkitc-1/max30102/">MAX30102</a> <a href="/it/boards/esp32-s3-devkitc-1/rc522-rfid/">RC522 RFID</a> <a href="/it/boards/esp32-s3-devkitc-1/neo-6m-gps/">NEO-6M GPS</a> <a href="/it/boards/esp32-s3-devkitc-1/soil-moisture-capacitive/">Sensore di umidità del terreno capacitivo</a> <a href="/it/boards/esp32-s3-devkitc-1/ads1115/">ADS1115</a> <a href="/it/boards/esp32-s3-devkitc-1/tm1637-4digit/">TM1637</a> <a href="/it/boards/esp32-s3-devkitc-1/stepper-28byj48-uln2003/">Motore passo-passo 28BYJ-48</a> <a href="/it/boards/esp32-s3-devkitc-1/l298n-driver/">L298N</a> <a href="/it/boards/esp32-s3-devkitc-1/potentiometer/">Potenziometro</a> <a href="/it/boards/esp32-s3-devkitc-1/push-button/">Pulsante</a> <a href="/it/boards/esp32-s3-devkitc-1/led-resistor/">LED</a> <a href="/it/boards/esp32-s3-devkitc-1/joystick-ky023/">Modulo joystick</a> <a href="/it/boards/esp32-s3-devkitc-1/sd-card-module/">Modulo scheda SD</a> <a href="/it/boards/esp32-s3-devkitc-1/aht20/">AHT20</a></p>
+        <h2>Le basi, spiegate</h2><p class="link-cloud"><a href="/it/learn/gpio/">Lezione: GPIO: pin in ingresso e in uscita</a> <a href="/it/learn/hardware-basics/">Lezione: Basi di hardware per chi viene dal software</a> <a href="/it/learn/glossary/#gpio">GPIO</a> <a href="/it/learn/glossary/#level-shifter">Level shifter (traslatore di livello)</a> <a href="/it/learn/glossary/#logic-level">Livello logico (HIGH e LOW)</a></p>
       </div>
     </main>
 <footer class="footer">
@@ -106,6 +107,7 @@ void loop() {
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>

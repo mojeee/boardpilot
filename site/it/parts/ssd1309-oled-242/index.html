@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"SSD1309 2.42\" OLED 128x64 (SPI) con ESP32","description":"Come collegare SSD1309 2.42\" OLED 128x64 (SPI) a un ESP32: pin, GPIO consigliati, alimentazione 3.3-5 V. Dati gratuiti di BoardPilot.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/parts/ssd1309-oled-242/","about":"SSD1309 2.42\" OLED 128x64 (SPI)","keywords":"ssd1309, oled, 2.42, 128x64, display, schermo, big oled","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/it/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Libreria componenti","item":"https://boardpilot.agentflowbind.com/it/parts/"},{"@type":"ListItem","position":3,"name":"SSD1309 2.42\" OLED 128x64 (SPI)","item":"https://boardpilot.agentflowbind.com/it/parts/ssd1309-oled-242/"}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -71,6 +71,7 @@
         <h2>Fonti</h2><ul class="sources"><li>Solomon Systech SSD1309 datasheet, 4-wire serial interface: CS#, D/C#, SCLK (D0), SDIN (D1); RES# low pulse at power-up</li></ul>
         <div class="cta-box"><h2>Provalo in 3D in BoardPilot</h2><p><a class="btn primary" href="/it/#download">BoardPilot</a> <a class="btn" href="/parts/ssd1309-oled-242.json">Dati del componente (JSON)</a></p></div>
         
+        <h2>Le basi, spiegate</h2><p class="link-cloud"><a href="/it/learn/buses/">Lezione: UART, I2C e SPI</a> <a href="/it/learn/gpio/">Lezione: GPIO: pin in ingresso e in uscita</a> <a href="/it/learn/glossary/#spi">SPI</a> <a href="/it/learn/glossary/#chip-select">Chip select (CS)</a> <a href="/it/learn/glossary/#gpio">GPIO</a></p>
         <h2>Componenti simili</h2><div class="part-grid"><a class="part-card" href="/it/parts/apa102-strip/"><span class="sw" style="background:#EDEDED"></span><b>APA102 / SK9822 LED strip (clock + data)</b></a><a class="part-card" href="/it/parts/epaper-154/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 1.54&quot; 200x200 (SPI)</b></a><a class="part-card" href="/it/parts/epaper-213/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 2.13&quot; 250x122 (SPI)</b></a><a class="part-card" href="/it/parts/epaper-29/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 2.9&quot; 296x128 (SPI)</b></a><a class="part-card" href="/it/parts/epaper-42/"><span class="sw" style="background:#EDEDED"></span><b>E-paper 4.2&quot; 400x300 (SPI)</b></a><a class="part-card" href="/it/parts/gc9a01-round/"><span class="sw" style="background:#1F4FA8"></span><b>GC9A01 1.28&quot; round IPS 240x240 (SPI)</b></a></div>
         <p class="fine">Dati dei componenti: CC BY 4.0, riutilizzabili citando BoardPilot.</p>
       </div>
@@ -85,6 +86,7 @@
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>

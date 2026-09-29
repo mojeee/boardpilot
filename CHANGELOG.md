@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Website "Learn" section, free: all 11 lessons as readable pages in English and Italian, an 86-term embedded glossary and 33 interview questions grouped by topic. Each interactive demo is described in words and linked to the browser demo, and the pages say clearly that hands-on labs need the app. Part, board and wiring-guide pages link to the lesson and glossary terms that explain them.
+- Website calculators at /tools/, free, in English and Italian: LED resistor, voltage divider, I2C pull-up, UART baud rate, PWM timer and ADC sample rate. Each page has the calculator, a plain explanation, the formula with its source, a worked example and a FAQ. The page script is built from the app's own tested code, so the numbers match the app.
+- Landing page for beginners: title and description aimed at learning embedded from zero, Learn and Calculators in every page's navigation, a "Start from zero" section, a lessons counter and a beginner FAQ answer; the README links the lessons, glossary and calculators.
 ## 0.6.0 (2026-09-29)
 
 The October plan: design your project (templates, pin planner, wiring diagram and schematic, shopping list, power budget, calculators, state machines, Arduino and Pico SDK starters), learn embedded (11 lessons with labs checked on the board, portfolio projects, interview coach), new debugging tools (timing view, register maps, flash pre-flight, part gotchas), a 3D workbench, BoardPilot as an MCP server for AI coding agents, and a browser demo on the website.

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>I2C pull-up resistor calculator (NXP UM10204) | BoardPilot</title>
+    <meta name="description" content="Find the allowed I2C pull-up resistor range for 100 kHz, 400 kHz or 1 MHz from the bus voltage and capacitance, as in the NXP I2C-bus specification (UM10204), with a suggested standard value and the rise time." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/i2c-pull-up-calculator/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/" />
+    <meta property="og:title" content="I2C pull-up resistor calculator (NXP UM10204) | BoardPilot" />
+    <meta property="og:description" content="Find the allowed I2C pull-up resistor range for 100 kHz, 400 kHz or 1 MHz from the bus voltage and capacitance, as in the NXP I2C-bus specification (UM10204), with a suggested standard value and the rise time." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/tools.css?v=6f74802083" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/#app","name":"I2C pull-up resistor calculator","url":"https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/","description":"Find the allowed I2C pull-up resistor range for 100 kHz, 400 kHz or 1 MHz from the bus voltage and capacitance, as in the NXP I2C-bus specification (UM10204), with a suggested standard value and the rise time.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://boardpilot.agentflowbind.com/tools/"},{"@type":"ListItem","position":3,"name":"I2C pull-up resistor calculator","item":"https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is 4.7 kΩ always right for I2C?","acceptedAnswer":{"@type":"Answer","text":"It is a common choice for 100 kHz at 3.3 V or 5 V with short wires, and there it usually works. At 400 kHz, or with long wires and many devices, it can be too weak: check it against the largest allowed value for your bus."}},{"@type":"Question","name":"Do I need pull-ups if my module already has them?","acceptedAnswer":{"@type":"Answer","text":"Usually not. Most breakout boards include pull-ups on SDA and SCL. Check the module’s schematic, or measure the resistance between SDA and VCC with the power off. With many modules on one bus, their pull-ups add up in parallel and can become too strong."}},{"@type":"Question","name":"Can I use the microcontroller’s internal pull-ups?","acceptedAnswer":{"@type":"Answer","text":"Only for short, slow buses. Internal pull-ups are weak, typically 20 to 80 kΩ depending on the chip, so the lines rise slowly. They can do for a quick test at 100 kHz with one sensor on short wires; use external resistors for anything else."}},{"@type":"Question","name":"What happens if the pull-up is wrong?","acceptedAnswer":{"@type":"Answer","text":"Too strong (too small) and a chip cannot pull the line low enough, so bits are misread. Too weak (too large) and the edges become slow ramps; at higher speeds the bits blur, devices stop answering or the bus hangs. Both can look like a “device not found” error."}},{"@type":"Question","name":"Should I pull up to 3.3 V or 5 V?","acceptedAnswer":{"@type":"Answer","text":"To the supply of the chips on the bus. If a 3.3 V board such as an ESP32 or a Raspberry Pi Pico is on the bus, pull up to 3.3 V: pulling its pins up to 5 V can damage it. To mix 3.3 V and 5 V devices, use an I2C level shifter."}}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/tools/i2c-pull-up-calculator/" hreflang="en" class="on">EN</a><a href="/it/tools/i2c-pull-up-calculator/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article tools-page">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/tools/">Calculators</a> / <span>I2C pull-up resistor calculator</span></nav>
+        <h1>I2C pull-up resistor calculator</h1>
+        <p class="lead">I2C needs a pull-up resistor on SDA and one on SCL. Too small and the chips cannot pull the lines low; too big and the lines rise too slowly. Enter the speed, the voltage and the bus capacitance to get the range that works.</p>
+        <div class="calc">
+        <form class="calc-form" data-tool="pullup" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Bus speed</span><select name="mode"><option value="standard">Standard mode (100 kHz)</option><option value="fast" selected>Fast mode (400 kHz)</option><option value="fastPlus">Fast mode plus (1 MHz)</option></select></label>
+            <label class="calc-field"><span>Bus voltage VDD (V)</span><input type="number" name="vdd" value="3.3" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Bus capacitance (pF)</span><input type="number" name="pf" value="100" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Check a resistor you have (Ω, optional)</span><input type="number" name="mine" value="4700" step="any" inputmode="decimal" min="0"/></label>
+          </div>
+          <dl class="calc-outs">
+            <div class="calc-row"><dt>Smallest allowed</dt><dd class="mono" data-out="min">—</dd></div>
+            <div class="calc-row"><dt>Largest allowed</dt><dd class="mono" data-out="max">—</dd></div>
+            <div class="calc-row big"><dt>Suggested standard value (rise time)</dt><dd class="mono" data-out="suggest">—</dd></div>
+            <p class="calc-formula">A suggestion: any standard value inside the range meets the specification.</p>
+            <div class="calc-row"><dt>Rise time with your resistor</dt><dd class="mono" data-out="rise">—</dd></div>
+            <div class="calc-row"><dt>Limit for this speed</dt><dd class="mono" data-out="limit">—</dd></div>
+            <div class="calc-row"><dt>Verdict</dt><dd class="mono" data-out="verdict">—</dd></div>
+          </dl>
+          <p class="calc-note" data-out="note" aria-live="polite"></p>
+        </form>
+        <noscript><p class="calc-noscript">This calculator needs JavaScript. The formula and a worked example are below, so you can also work it out by hand.</p></noscript>
+        </div>
+        <p class="fine calc-honest">Results are arithmetic on published formulas, not measurements. Check them on your hardware. <span class="free">Free, no sign-up</span></p>
+        <h2>What is a pull-up resistor?</h2>
+        <p>I2C chips never drive SDA and SCL high. Their outputs are open-drain: they can only connect the line to ground, or let go of it. A pull-up resistor to the supply brings the line back up whenever no chip is holding it low. Every I2C bus needs one on SDA and one on SCL.</p>
+        <h2>Why there is a minimum and a maximum</h2>
+        <p><b>Minimum:</b> when a chip pulls the line low, current flows through the pull-up into that chip. The specification only guarantees that a chip can sink 3 mA while keeping the line at 0.4 V or less (20 mA in Fast-mode Plus), so a smaller resistor would ask for more current than the chip can take.</p>
+        <p><b>Maximum:</b> every wire and every chip pin adds capacitance, and the resistor has to charge it. The line must rise from 30 % to 70 % of VDD within the rise time the speed allows: 1000 ns at 100 kHz, 300 ns at 400 kHz, 120 ns at 1 MHz.</p>
+        <h2>Estimating the bus capacitance</h2>
+        <p>Each chip pin adds up to 10 pF (the limit in the specification) and wiring adds more: short breadboard wires a few tens of picofarads, a metre of cable often around 100 pF. For a small hobby setup, 50 to 200 pF is a reasonable guess. The specification allows at most 400 pF (550 pF in Fast-mode Plus).</p>
+        <h2>Pull-ups that are already there</h2>
+        <p>Many breakout boards (BME280 sensors, SSD1306 displays, MPU6050 modules) already carry pull-ups, often 4.7 kΩ or 10 kΩ. Several modules on one bus put their pull-ups in parallel: two 4.7 kΩ make about 2.35 kΩ. Check the result against the smallest allowed value.</p>
+        <h2>The formula</h2>
+        <pre class="formula">Rp(min) = (VDD − VOL(max)) / IOL     VOL(max) = 0.4 V, IOL = 3 mA (20 mA in Fast-mode Plus)
+Rp(max) = tr / (0.8473 × Cb)         tr = 1000 ns, 300 ns or 120 ns; Cb = bus capacitance
+tr      = 0.8473 × Rp × Cb          0.8473 = ln(0.7 / 0.3): the time to rise from 30 % to 70 % of VDD</pre>
+        <p class="fine">Source: NXP UM10204, I2C-bus specification and user manual, section 7.1 “Pull-up resistor sizing” and table 10 (rise time limits).</p>
+        <h2>Worked example</h2>
+        <p>An ESP32 at 3.3 V with a sensor and a display on short wires, about 100 pF, at 400 kHz: Rp(min) = (3.3 − 0.4) V / 3 mA = <b>967 Ω</b>, Rp(max) = 300 ns / (0.8473 × 100 pF) = <b>3.54 kΩ</b>. The calculator suggests <b>1.8 kΩ</b> (rise time 153 ns).</p>
+<p>A 10 kΩ pull-up would give a 847 ns rise time: too slow for 400 kHz, but fine at 100 kHz, where up to 11.8 kΩ is allowed.</p>
+        <h2>Questions and answers</h2>
+        <div class="faq">
+        <details><summary>Is 4.7 kΩ always right for I2C?</summary><p>It is a common choice for 100 kHz at 3.3 V or 5 V with short wires, and there it usually works. At 400 kHz, or with long wires and many devices, it can be too weak: check it against the largest allowed value for your bus.</p></details>
+        <details><summary>Do I need pull-ups if my module already has them?</summary><p>Usually not. Most breakout boards include pull-ups on SDA and SCL. Check the module’s schematic, or measure the resistance between SDA and VCC with the power off. With many modules on one bus, their pull-ups add up in parallel and can become too strong.</p></details>
+        <details><summary>Can I use the microcontroller’s internal pull-ups?</summary><p>Only for short, slow buses. Internal pull-ups are weak, typically 20 to 80 kΩ depending on the chip, so the lines rise slowly. They can do for a quick test at 100 kHz with one sensor on short wires; use external resistors for anything else.</p></details>
+        <details><summary>What happens if the pull-up is wrong?</summary><p>Too strong (too small) and a chip cannot pull the line low enough, so bits are misread. Too weak (too large) and the edges become slow ramps; at higher speeds the bits blur, devices stop answering or the bus hangs. Both can look like a “device not found” error.</p></details>
+        <details><summary>Should I pull up to 3.3 V or 5 V?</summary><p>To the supply of the chips on the bus. If a 3.3 V board such as an ESP32 or a Raspberry Pi Pico is on the bus, pull up to 3.3 V: pulling its pins up to 5 V can damage it. To mix 3.3 V and 5 V devices, use an I2C level shifter.</p></details>
+        </div>
+        <h2>Learn the background</h2>
+        <p>Free lessons of the BoardPilot course that explain the ideas behind this calculator:</p>
+        <p class="link-cloud"><a href="/learn/buses/">UART, I2C and SPI</a><a href="/learn/hardware-basics/">Hardware basics for software developers</a></p>
+        <h2>Other calculators</h2>
+        <p class="link-cloud"><a href="/tools/led-resistor-calculator/">LED resistor calculator</a><a href="/tools/voltage-divider-calculator/">Voltage divider calculator</a><a href="/tools/uart-baud-rate-calculator/">UART baud rate calculator</a><a href="/tools/pwm-timer-calculator/">PWM and timer calculator</a><a href="/tools/adc-sample-rate-calculator/">ADC sample rate calculator</a></p>
+        <div class="cta-box">
+          <h2>See it on a real board</h2>
+          <p>BoardPilot uses these same calculations inside the app, next to a live 3D view of your board, its pins and wires, with guided debugging when something does not work. Try it in your browser, or download it for macOS and Windows.</p>
+          <div class="cta"><a class="btn primary" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=en">Try it in your browser</a><a class="btn" href="/#download">Download BoardPilot</a></div>
+        </div>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+    <script src="/tools/calc.js?v=a3890e388f" defer></script>
+  </body>
+</html>

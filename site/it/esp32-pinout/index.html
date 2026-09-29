@@ -24,7 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Piedinatura ESP32 DevKit (30 pin, ESP32-WROOM-32)","description":"Piedinatura ESP32 DevKit V1 a 30 pin: ogni GPIO con funzioni ADC, touch, SPI, UART e I2C, e i pin da evitare (strapping, sola lettura, flash).","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/esp32-pinout/","image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"},"about":"ESP32 DevKit V1 30-pin pinout"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinatura ESP32 DevKit (30 pin, ESP32-WROOM-32)","item":"https://boardpilot.agentflowbind.com/it/esp32-pinout/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin dell’ESP32 devo evitare?","acceptedAnswer":{"@type":"Answer","text":"Evita i GPIO 6–11 (flash), fai attenzione ai pin di strapping 0, 2, 5, 12 e 15, lascia liberi TX0/RX0 per il caricamento e non usare mai i GPIO 34–39 come uscite."}},{"@type":"Question","name":"Quali pin dell’ESP32 sono di sola lettura?","acceptedAnswer":{"@type":"Answer","text":"GPIO 34, 35, 36 (VP) e 39 (VN). Non hanno pull-up interne, quindi un pulsante su questi pin richiede una resistenza esterna."}},{"@type":"Question","name":"Quali sono i pin I2C predefiniti dell’ESP32?","acceptedAnswer":{"@type":"Answer","text":"GPIO 21 è SDA e GPIO 22 è SCL. Se un sensore risponde solo con i due scambiati, i fili sono invertiti."}},{"@type":"Question","name":"Perché il mio ESP32 non si avvia con qualcosa collegato al GPIO 12?","acceptedAnswer":{"@type":"Answer","text":"GPIO 12 è un pin di strapping: se è ALTO al reset, il chip seleziona 1,8 V per la flash e può non avviarsi. Sposta quel collegamento su un altro pin."}},{"@type":"Question","name":"Quali pin ADC funzionano con il Wi-Fi acceso?","acceptedAnswer":{"@type":"Answer","text":"Solo l’ADC1: GPIO 32, 33, 34, 35, 36 e 39. L’ADC2 è usato dal driver Wi-Fi."}}]}]}</script>
   </head>
   <body>
@@ -33,12 +33,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -135,6 +135,7 @@
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>

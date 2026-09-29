@@ -65,6 +65,342 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/boards/"/>
   </url>
   <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/what-is-mcu/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/what-is-mcu/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/what-is-mcu/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/what-is-mcu/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/what-is-mcu/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/hardware-basics/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/hardware-basics/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/hardware-basics/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/hardware-basics/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/c-bits/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/c-bits/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/c-bits/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/c-bits/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/c-bits/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/c-bits/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/c-bits/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/c-bits/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/gpio/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/gpio/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/gpio/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/gpio/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/gpio/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/gpio/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/gpio/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/gpio/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/timers-interrupts/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/buses/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/buses/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/buses/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/buses/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/buses/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/buses/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/buses/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/buses/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/adc/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/adc/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/adc/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/adc/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/adc/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/adc/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/adc/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/adc/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/rtos/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/rtos/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/rtos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/rtos/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/rtos/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/rtos/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/rtos/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/rtos/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/essentials/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/essentials/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/essentials/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/essentials/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/essentials/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/essentials/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/essentials/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/essentials/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/full-picture/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/full-picture/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/full-picture/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/full-picture/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/full-picture/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/full-picture/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/full-picture/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/full-picture/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/road-to-senior/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/road-to-senior/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/road-to-senior/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/road-to-senior/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/road-to-senior/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/road-to-senior/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/road-to-senior/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/road-to-senior/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/glossary/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/glossary/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/glossary/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/glossary/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/glossary/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/learn/interview-questions/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/interview-questions/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/interview-questions/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/interview-questions/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/learn/interview-questions/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/interview-questions/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/interview-questions/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/interview-questions/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/i2c-pull-up-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/uart-baud-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/pwm-timer-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+  </url>
+  <url>
     <loc>https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/</loc>
     <lastmod>2026-09-29</lastmod>
     <priority>0.8</priority>

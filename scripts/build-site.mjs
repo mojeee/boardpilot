@@ -12,6 +12,8 @@ import { buildParts } from './site/parts.mjs';
 import { buildBoards, boardCards } from './site/boards.mjs';
 import { buildCompare, buildGuides, compareLinks, partBoardLinks } from './site/guides.mjs';
 import { tryLive } from './site/demo.mjs';
+import { buildLearn, learnLinks, learnNavLabel, learnPath } from './site/learn.mjs';
+import { buildTools } from './site/tools.mjs';
 import { readdirSync } from 'node:fs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -29,6 +31,8 @@ const parts = readdirSync(join(root, 'parts'))
   .map((f) => JSON.parse(readFileSync(join(root, 'parts', f), 'utf8')))
   .sort((a, b) => a.name.localeCompare(b.name));
 const PARTS_COUNT = String(parts.length);
+// lessons are TypeScript data: count their ids rather than importing the module
+const LESSONS_COUNT = String((readFileSync(join(root, 'shared/lessons.ts'), 'utf8').match(/^    id: '/gm) ?? []).length);
 const featured = ['bme280-gy', 'hc-sr04', 'ssd1306-i2c', 'mpu6050', 'ws2812b-strip', 'vl53l0x', 'ds18b20-probe', 'rc522-rfid', 'relay-1ch', 'servo-sg90', 'ina219', 'neo-6m-gps', 'bh1750-gy302', 'max30102', 'l298n-driver', 'tm1637-4digit'];
 const partsCloud = (lang) =>
   featured
@@ -54,7 +58,7 @@ function hashOf(rel) {
   return hashCache.get(rel);
 }
 function bust(html) {
-  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/(?:boards\/|demo\/(?:en|it)\/)?[\w.-]+|style\.css|app\.js|try-live\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
+  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/(?:boards\/|demo\/(?:en|it)\/)?[\w.-]+|style\.css|learn\.css|tools\.css|tools\/calc\.js|app\.js|try-live\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
     const h = hashOf(rel);
     return h ? `${url}?v=${h}` : m;
   });
@@ -120,7 +124,10 @@ function landing(lang) {
     .replaceAll('{{PARTS}}', `${lang === 'it' ? '/it' : ''}/parts/`)
     .replaceAll('{{PARTS_COUNT}}', PARTS_COUNT)
     .replaceAll('{{BOARDS}}', `${lang === 'it' ? '/it' : ''}/boards/`)
+    .replaceAll('{{LEARN}}', learnPath(lang))
     .replaceAll('{{BOARDS_COUNT}}', String(boards.length))
+    .replaceAll('{{GLOSSARY}}', `${lang === 'it' ? '/it' : ''}/learn/glossary/`)
+    .replaceAll('{{TOOLS}}', `${lang === 'it' ? '/it' : ''}/tools/`)
     .replaceAll('{{BOARD_CARDS}}', boardCards(lang, boards, BOARD_IT))
     .replaceAll('{{PARTS_CLOUD}}', partsCloud(lang))
     .replaceAll('{{TRY_LIVE}}', tryBlock(lang, board, false))
@@ -131,6 +138,9 @@ function landing(lang) {
     .replaceAll('{{OG_LOCALE}}', lang === 'it' ? 'it_IT' : 'en_US')
     .replaceAll('{{OG_LOCALE_ALT}}', lang === 'it' ? 'en_US' : 'it_IT');
   if (lang === 'it') html = translate(html, IT);
+  // after translation too: the Italian texts carry the same placeholder
+  html = html.replaceAll('{{LESSONS_COUNT}}', LESSONS_COUNT);
+  html = addLearnLinks(html, lang);
   const title = unesc(/<title[^>]*>([\s\S]*?)<\/title>/.exec(html)[1]);
   const description = unesc(/<meta name="description"[^>]*content="([^"]*)"/.exec(html)[1]);
   const ld = {
@@ -144,7 +154,7 @@ function landing(lang) {
         url,
         description,
         applicationCategory: 'DeveloperApplication',
-        applicationSubCategory: 'Embedded development, ESP32 debugging',
+        applicationSubCategory: 'Embedded development, electronics learning, ESP32 debugging',
         operatingSystem: 'macOS 12+, Windows 10, Windows 11',
         softwareVersion: pkg.version,
         inLanguage: ['en', 'it'],
@@ -159,10 +169,14 @@ function landing(lang) {
         license: `${REPO}/blob/main/LICENSE.md`,
         author: { '@type': 'Person', name: 'Mojtaba Amini', url: 'https://github.com/mojeee' },
         sameAs: [REPO],
+        keywords:
+          lang === 'it'
+            ? 'sistemi embedded, imparare embedded da zero, microcontrollore, ESP32, Raspberry Pi Pico, Arduino, STM32, I2C, SPI, UART, GPIO, ADC, PWM, RTOS, debug firmware, schema elettrico'
+            : 'embedded systems, learn embedded from zero, microcontroller, ESP32, Raspberry Pi Pico, Arduino, STM32, I2C, SPI, UART, GPIO, ADC, PWM, RTOS, firmware debugging, schematic',
         featureList:
           lang === 'it'
-            ? 'Scheda ESP32 in 3D, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, libreria componenti, grafici dal vivo, simulatore'
-            : 'Live 3D ESP32 board, guided I2C debugging, SDA/SCL swap test, decoded I2C bus, wiring checker, parts library, live plots, simulator',
+            ? 'Scheda 3D dal vivo per 13 schede, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, schema elettrico, pianificatore dei pin, lista della spesa, consumi e batteria, calcolatori di timer e UART, macchine a stati, codice di partenza Arduino e Pico SDK, lezioni di embedded con laboratori verificati sulla scheda, vista temporale, mappe dei registri, server MCP per agenti AI, simulatore'
+            : 'Live 3D board for 13 boards, guided I2C debugging, SDA/SCL swap test, decoded I2C bus, wiring checker, schematic, pin planner, shopping list, power budget and battery life, timer and UART calculators, state machine designer, Arduino and Pico SDK starter code, embedded lessons with labs checked on the board, timing view, register maps, MCP server for AI agents, simulator',
       },
       { '@type': 'WebPage', '@id': `${url}#page`, url, name: title, inLanguage: lang, isPartOf: { '@id': `${SITE}/#website` }, about: { '@id': `${SITE}/#app` } },
       { '@type': 'FAQPage', mainEntity: faqFrom(html) },
@@ -171,6 +185,19 @@ function landing(lang) {
   html = html.replace('{{JSONLD}}', JSON.stringify(ld).replace(/</g, '\\u003c'));
   if (html.includes('{{')) throw new Error(`Unreplaced placeholder in ${lang} landing page`);
   return html;
+}
+
+/**
+ * "Learn" in the header nav and the footer of every page that shares the landing page chrome.
+ * Skipped when the template already links to the learn hub (e.g. with {{LEARN}}).
+ */
+function addLearnLinks(html, lang) {
+  const href = learnPath(lang);
+  const link = `<a href="${href}">${learnNavLabel(lang)}</a>`;
+  const add = (m, before, after) => (m.includes(`href="${href}"`) ? m : `${before}\n          ${link}${after}`);
+  return html
+    .replace(/(<header class="nav">[\s\S]*?<nav class="links">[\s\S]*?)(\s*<\/nav>)/, add)
+    .replace(/(<div class="foot-links">[\s\S]*?)(\s*<\/div>)/, add);
 }
 
 const BOARD_IT = {};
@@ -199,12 +226,25 @@ const IT_MEASURES = {};
 for (const f of readdirSync(join(root, 'shared/i18n/it'))) {
   if (/^(partsdata\d*|three|gotchas)\.ts$/.test(f)) Object.assign(IT_MEASURES, (await import(join(root, 'shared/i18n/it', f))).default);
 }
+/* lessons (shared/lessons.ts, the app's Learn screen) and their Italian texts */
+const { LESSONS, TRACKS } = await import(join(root, 'shared/lessons.ts'));
+// The app's Italian dictionary, merged in the same order as shared/i18n/index.ts (lesson tables reuse
+// UI words such as "Memory" that live in other files).
+const LESSON_IT = {};
+{
+  const src = readFileSync(join(root, 'shared/i18n/index.ts'), 'utf8');
+  const files = Object.fromEntries([...src.matchAll(/^import (\w+) from '\.\/it\/([\w-]+)';$/gm)].map((m) => [m[1], m[2]]));
+  const order = [.../export const IT[^=]*=\s*\{([^}]*)\}/.exec(src)[1].matchAll(/\.\.\.(\w+)/g)].map((m) => m[1]);
+  for (const name of order) Object.assign(LESSON_IT, (await import(join(root, 'shared/i18n/it', `${files[name]}.ts`))).default);
+}
+const learn = learnLinks({ lessons: LESSONS, IT: LESSON_IT });
+
 /** A page's social image: its own when it exists in site/img (e.g. a board's), else the default. */
 function ogImage(image) {
   return image && existsSync(join(root, 'site', image.replace(/^\//, ''))) ? image : '/img/og.jpg';
 }
 
-function head({ lang, title, description, url, alt, ld, body, image }) {
+function head({ lang, title, description, url, alt, ld, body, image, css }) {
   return `<!doctype html>
 <html lang="${lang}">
   <head>
@@ -230,7 +270,7 @@ function head({ lang, title, description, url, alt, ld, body, image }) {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/style.css" />${css ? `\n    <link rel="stylesheet" href="/${css}" />` : ''}
     <script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
   </head>
   <body>
@@ -241,7 +281,7 @@ ${body}
 }
 const partPaths = { en: '/parts/', it: '/it/parts/' };
 for (const [lang, html] of [['en', en], ['it', it]]) {
-  const pages = buildParts({ parts, lang, site: SITE, IT_MEASURES, head, boardLinks: (p) => partBoardLinks(lang, p, boards), ...chrome(html, lang, partPaths) });
+  const pages = buildParts({ parts, lang, site: SITE, IT_MEASURES, head, boardLinks: (p) => partBoardLinks(lang, p, boards), learnLinks: (p) => learn.part(lang, p), ...chrome(html, lang, partPaths) });
   for (const [rel, content] of Object.entries(pages)) write(rel, content);
 }
 write('boards.json', JSON.stringify({ name: 'BoardPilot board library', license: 'CC-BY-4.0', source: `${REPO}/tree/main/boards`, generated: today, count: boards.length, boards }, null, 1));
@@ -251,15 +291,24 @@ for (const p of parts) write(`parts/${p.id}.json`, JSON.stringify(p, null, 2));
 const boardPaths = { en: '/boards/', it: '/it/boards/' };
 const extraPages = [];
 for (const [lang, html] of [['en', en], ['it', it]]) {
-  const pages = buildBoards({ lang, boards, parts, site: SITE, repo: REPO, head, IT: BOARD_IT, tryLive: (b) => tryBlock(lang, b), ...chrome(html, lang, boardPaths) });
+  const pages = buildBoards({ lang, boards, parts, site: SITE, repo: REPO, head, IT: BOARD_IT, tryLive: (b) => tryBlock(lang, b), learnLinks: (b) => learn.board(lang, b), ...chrome(html, lang, boardPaths) });
   for (const [rel, content] of Object.entries(pages)) write(rel, content);
   // Wiring guides: part names and notes translated with the parts dictionaries, board texts with the board one.
-  const guides = buildGuides({ lang, boards, parts, site: SITE, head, IT: { ...IT_MEASURES, ...BOARD_IT }, ...chrome(html, lang, boardPaths) });
+  const guides = buildGuides({ lang, boards, parts, site: SITE, head, IT: { ...IT_MEASURES, ...BOARD_IT }, learnLinks: (p) => learn.part(lang, p), ...chrome(html, lang, boardPaths) });
   for (const [rel, content] of Object.entries(guides.pages)) write(rel, content);
   const compare = buildCompare({ lang, boards, site: SITE, head, ...chrome(html, lang, boardPaths) });
   for (const [rel, content] of Object.entries(compare.pages)) write(rel, content);
   extraPages.push(...guides.sitemap, ...compare.sitemap);
 }
+// Free calculators (/tools/): pages from scripts/site/tools.mjs, script from `npm run build:tools`.
+const toolPages = [];
+for (const [lang, html] of [['en', en], ['it', it]]) {
+  const built = buildTools({ lang, boards, site: SITE, head, chromeFor: (paths) => chrome(html, lang, paths) });
+  for (const [rel, content] of Object.entries(built.pages)) write(rel, content);
+  toolPages.push(...built.sitemap);
+}
+if (!existsSync(join(root, 'site/tools/calc.js'))) console.warn('site/tools/calc.js is missing: run `npm run build:tools` so the calculators work.');
+
 // The hand-written ESP32 page links to its comparisons too.
 for (const [rel, lang] of [['esp32-pinout/index.html', 'en'], ['it/esp32-pinout/index.html', 'it']]) {
   const file = join(root, 'site', rel);
@@ -269,12 +318,32 @@ for (const [rel, lang] of [['esp32-pinout/index.html', 'en'], ['it/esp32-pinout/
   if (links && !html.includes('class="link-cloud"')) writeFileSync(file, html.replace('<div class="cta-box">', `<h2>${h}</h2><p class="link-cloud">${links}</p>\n        <div class="cta-box">`));
 }
 
+/* learn pages: course hub, one page per lesson, glossary, interview questions */
+const learnPages = [];
+for (const [lang, html] of [['en', en], ['it', it]]) {
+  const out = buildLearn({
+    lang,
+    lessons: LESSONS,
+    tracks: TRACKS,
+    IT: LESSON_IT,
+    site: SITE,
+    head,
+    boards,
+    demo: existsSync(join(root, 'site/demo/index.html')),
+    chrome: (paths) => chrome(html, lang, paths),
+  });
+  for (const [rel, content] of Object.entries(out.pages)) write(rel, content);
+  learnPages.push(...out.sitemap);
+}
+
 /* sitemap with language alternates */
 const pages = [
   { en: '/', it: '/it/', priority: '1.0' },
   { en: '/parts/', it: '/it/parts/', priority: '0.9' },
   { en: '/esp32-pinout/', it: '/it/esp32-pinout/', priority: '0.8' },
   { en: '/boards/', it: '/it/boards/', priority: '0.9' },
+  ...learnPages,
+  ...toolPages,
   ...boards.filter((b) => b.id !== 'esp32-devkitc-30').map((b) => ({ en: `/boards/${b.id}/`, it: `/it/boards/${b.id}/`, priority: '0.8' })),
   ...extraPages.map((p) => ({ ...p, priority: '0.6' })),
   ...parts.map((p) => ({ en: `/parts/${p.id}/`, it: `/it/parts/${p.id}/`, priority: '0.6' })),
@@ -296,4 +365,4 @@ ${pages.flatMap((p) => [urlEntry(p.en, p), urlEntry(p.it, p)]).join('\n')}
 `,
 );
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`site built: ${pages.length * 2} pages in the sitemap, ${boards.length} boards, ${extraPages.length} guide and comparison pages per language (${parts.length} parts), sitemap, robots, parts.json (version ${pkg.version})`);
+console.log(`site built: ${pages.length * 2} pages in the sitemap, ${learnPages.length * 2} learn pages, ${boards.length} boards, ${extraPages.length} guide and comparison pages per language (${parts.length} parts), sitemap, robots, parts.json (version ${pkg.version})`);
