@@ -10,6 +10,7 @@ import { Parts } from './Parts';
 import { Wires } from './Wires';
 import { CameraRig } from './CameraRig';
 import { PinoutView2D } from './PinoutView2D';
+import { DiagramView } from './DiagramView';
 import { PinInfoCard } from './PinInfoCard';
 import { Stage } from './Stage';
 import { PartsLibrary } from '../components/PartsLibrary';
@@ -116,6 +117,10 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
           <OrbitControls makeDefault enableDamping dampingFactor={0.12} minDistance={15} maxDistance={400} maxPolarAngle={Math.PI * 0.49} />
           <CameraRig board={board} />
         </Canvas>
+      ) : view === 'diagram' ? (
+        <div className="pinout-wrap dg-host">
+          <DiagramView board={board} />
+        </div>
       ) : (
         <div className="pinout-wrap">
           <PinoutView2D board={board} />
@@ -129,6 +134,9 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
           </button>
           <button className={view === '2d' ? 'on' : ''} onClick={() => useScene.getState().set({ view: '2d' })}>
             {t('2D pinout')}
+          </button>
+          <button className={view === 'diagram' ? 'on' : ''} title={t('Wiring diagram of the project')} onClick={() => useScene.getState().set({ view: 'diagram' })}>
+            {t('Diagram')}
           </button>
         </div>
         {view === '3d' && (

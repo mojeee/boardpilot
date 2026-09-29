@@ -688,3 +688,20 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 @media (prefers-reduced-motion: reduce) {
   .learn-progress .bar i { transition: none; }
 }
+
+/* Wiring diagram */
+.pinout-wrap.dg-host { place-items: stretch; }
+.dg-wrap { position: relative; width: 100%; height: 100%; overflow: auto; display: grid; place-items: center; }
+.diagram { max-width: 100%; height: auto; }
+.dg-block { fill: var(--panel); stroke: var(--line); cursor: pointer; }
+.dg-block.hot { stroke: var(--ai); stroke-width: 2; }
+.dg-title { fill: var(--text); font: 600 13px var(--font-ui); pointer-events: none; }
+.dg-sub, .dg-gap { fill: var(--dim); font: 11px var(--font-ui); pointer-events: none; }
+.dg-pin { cursor: pointer; }
+.dg-pin circle.hot { stroke: #fff; stroke-width: 2; }
+.dg-pin-label { fill: var(--muted); font: 11px var(--font-mono); }
+.dg-wire { cursor: pointer; }
+.dg-mark { cursor: pointer; }
+.dg-mark-text { fill: #12171D; font: 700 11px var(--font-ui); pointer-events: none; }
+.dg-export { position: absolute; right: 0; bottom: 0; }
+.dg-empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; }
