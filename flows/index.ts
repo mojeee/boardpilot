@@ -5,9 +5,10 @@ import { debugBoardNotDetected } from './debug-board-not-detected';
 import { debugKeepsResetting } from './debug-keeps-resetting';
 import { debugGarbageOnSerial } from './debug-garbage-on-serial';
 import { flashFirmware } from './flash-firmware';
+import { LABS } from './labs';
 
 export const FLOWS: Record<string, FlowDef> = Object.fromEntries(
-  [connectIdentify, debugSensorNotResponding, debugBoardNotDetected, debugKeepsResetting, debugGarbageOnSerial, flashFirmware].map((f) => [f.id, f]),
+  [connectIdentify, debugSensorNotResponding, debugBoardNotDetected, debugKeepsResetting, debugGarbageOnSerial, flashFirmware, ...LABS].map((f) => [f.id, f]),
 );
 
 /** Symptoms offered by "Debug a problem", each mapped to a flow. */

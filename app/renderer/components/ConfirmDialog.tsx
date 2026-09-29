@@ -32,7 +32,7 @@ export function ConfirmDialog() {
             className="btn primary"
             autoFocus
             onClick={async () => {
-              const token = await window.bp.safety.grant(req.kind);
+              const token = await window.bp.safety.grant(req.kind, req.uses);
               close(token);
             }}
           >

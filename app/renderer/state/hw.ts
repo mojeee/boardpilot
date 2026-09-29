@@ -13,12 +13,17 @@ export async function agent<K extends AgentRequest['cmd']>(req: Extract<AgentReq
   return (await bp().hw.agent(req)) as Result<AgentReplyMap[K]>;
 }
 
+export async function agentWrite<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>, token: string): Promise<Result<AgentReplyMap[K]>> {
+  return (await bp().hw.agentWrite(req, token)) as Result<AgentReplyMap[K]>;
+}
+
 export const flowHardware: FlowHardware = {
   listPorts: () => bp().hw.listPorts(),
   identify: (port) => bp().hw.identify(port),
   state: () => useApp.getState().conn,
   agentReady: () => !!useApp.getState().conn.agent,
   installAgent: (token) => bp().hw.installAgent(token),
+  agentWrite: (req, token) => agentWrite(req, token),
   agent: (req) => agent(req),
   captureSerial: (baud, ms) => bp().hw.captureSerial(baud, ms),
   flashUser: (token, path) => bp().hw.flashUser(token, path),

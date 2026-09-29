@@ -176,11 +176,14 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     return { ok: true, value: this.st };
   }
 
-  simControl(action: 'fixWiring' | 'turnKnob'): Result<true> {
+  simControl(action: 'fixWiring' | 'turnKnob' | 'pressButton'): Result<true> {
     if (this.st.mode !== 'sim') return { ok: false, error: { code: 'not_sim', humanMessage: t('This only works in simulator mode.'), hint: t('Switch to the simulator in the developer menu.') } };
     if (action === 'fixWiring') {
       this.world.fixWiring();
       this.log('action', t('Simulator: the wiring on the bench was fixed.'));
+    } else if (action === 'pressButton') {
+      this.world.pressButton();
+      this.log('action', t('Simulator: holding the button down for 4 seconds.'));
     } else {
       this.world.turnKnob();
       this.log('action', t('Simulator: turning the knob from one end to the other.'));

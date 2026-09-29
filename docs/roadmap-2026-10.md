@@ -458,7 +458,7 @@ say so if you want it the other way.
 | 13 | Power budget and battery life (merges step 3 C "Power budget") | M | Yes to sourced current fields in parts; unknown parts listed as unknown | [x] |
 | 10 | Clock-aware calculators with code (timer, PWM, UART, ADC) | M | Add a sourced `clocks` section to board files | [x] |
 | 14 | Register map viewer, decoded live | M | BME280, MPU6050, SSD1306 first | [ ] |
-| 7 | Hands-on labs inside lessons, checked live | L | All boards with the agent; simulator scenarios for each | [ ] |
+| 7 | Hands-on labs inside lessons, checked live | L | All boards with the agent; simulator scenarios for each | [x] |
 | 8 | Timing view (logic-analyser style) | L | Current stream rate first, labelled "sampled"; fast capture later | [ ] |
 | 16 | Guided portfolio projects with checkpoints (builds on the templates) | L | Finished reference code, with hints shown first | [ ] |
 | 12 | State machine designer → C code and tests | L | A tool in New project | [ ] |
