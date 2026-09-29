@@ -248,7 +248,8 @@ describe('generated C', () => {
         expect(build.out).toBe('');
         expect(build.status).toBe(0);
         const test = run(join(dir, `test_${p}`), []);
-        expect(test.out).toMatch(/^\d+ checks, 0 failed\n$/);
+        // Windows C runtimes print \r\n line endings
+        expect(test.out).toMatch(/^\d+ checks, 0 failed\r?\n$/);
         expect(test.status).toBe(0);
         const checks = Number(/^(\d+)/.exec(test.out)?.[1]);
         expect(checks).toBeGreaterThanOrEqual(1 + m.transitions.length * 3);
