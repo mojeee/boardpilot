@@ -1,7 +1,7 @@
 // One clickable object per board pin, generated from the board file. Colors come from the role of
 // whatever is wired to the pin; live levels, PWM and ADC readings animate it.
 
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -11,6 +11,9 @@ import { useLive, useScene } from '../state/store';
 import { pinLiftMm } from './geometry';
 
 const GOLD = '#D9B45A';
+/** Gold plating: very metallic and fairly smooth, so it catches the studio lights. */
+const GOLD_METAL = 0.9;
+const GOLD_ROUGH = 0.28;
 const PLASTIC = '#1a1d21';
 const PITCH = 2.54;
 
@@ -35,6 +38,7 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
     [scene, pin.id],
   );
   const finding = findings.find((f) => f.targets.includes(target));
+  const [hovered, setHovered] = useState(false);
 
   const ring = useRef<THREE.Mesh>(null);
   const ringMat = useRef<THREE.MeshStandardMaterial>(null);
@@ -81,7 +85,7 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
       {/* solder pad */}
       <mesh position={[0, 0.05, 0]}>
         <cylinderGeometry args={[0.85, 0.85, 0.12, 20]} />
-        <meshStandardMaterial color={GOLD} metalness={0.4} roughness={0.35} />
+        <meshStandardMaterial color={GOLD} metalness={GOLD_METAL} roughness={GOLD_ROUGH} />
       </mesh>
       {mount === 'male-down' && (
         <>
@@ -92,7 +96,7 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
           </mesh>
           <mesh position={[0, -5.2, 0]}>
             <boxGeometry args={[0.64, 10, 0.64]} />
-            <meshStandardMaterial color={GOLD} metalness={0.4} roughness={0.35} />
+            <meshStandardMaterial color={GOLD} metalness={GOLD_METAL} roughness={GOLD_ROUGH} />
           </mesh>
         </>
       )}
@@ -104,7 +108,7 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
           </mesh>
           <mesh position={[0, lift / 2, 0]}>
             <boxGeometry args={[0.64, lift, 0.64]} />
-            <meshStandardMaterial color={GOLD} metalness={0.4} roughness={0.35} />
+            <meshStandardMaterial color={GOLD} metalness={GOLD_METAL} roughness={GOLD_ROUGH} />
           </mesh>
         </>
       )}
@@ -161,14 +165,20 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
         onPointerOver={(e) => {
           e.stopPropagation();
           document.body.style.cursor = 'pointer';
+          setHovered(true);
         }}
-        onPointerOut={() => (document.body.style.cursor = '')}
+        onPointerOut={() => {
+          document.body.style.cursor = '';
+          setHovered(false);
+        }}
         userData={{ target }}
       >
         <boxGeometry args={[2.3, 3, 2.3]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
-      {labels && (board.pins.length <= 48 || inUse || isSelected || isHighlighted) && (
+      {/* Floating tags only where they help: pins in use, hovered, selected, highlighted or with a
+          finding. The pin names are printed on the PCB; "Labels" shows a tag on every pin. */}
+      {(inUse || hovered || isSelected || isHighlighted || !!finding || wireFrom === pin.id || (labels && board.pins.length <= 64)) && (
         <Html position={[ox * 3.4, lift + 0.3, oz * 3.4]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
           <div className={`pin-label ${isHighlighted || isSelected ? 'hot' : ''}`} style={{ borderColor: color }}>
             {pin.label}

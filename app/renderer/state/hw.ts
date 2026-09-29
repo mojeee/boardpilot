@@ -51,7 +51,7 @@ export async function wireEvents() {
 
   const [conn, ai, scenarios] = await Promise.all([api.hw.state(), api.ai.status(), api.sim.scenarios()]);
   useApp.getState().set({ conn, ai, scenarios });
-  if (conn.mode === 'sim') useScene.getState().setScene(await api.sim.scene());
+  if (conn.mode === 'sim') useScene.getState().openScene(await api.sim.scene());
 
   // The project's board drives the hardware layer (chip tool, pin rules, simulated bench).
   const sync = async (boardId: string) => {

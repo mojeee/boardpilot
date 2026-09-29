@@ -15,6 +15,28 @@
     "thickness": 1.0
   },
   "layoutPxPerMm": 10,
+  "holesMm": [
+    [
+      2.0,
+      4.8,
+      2.1
+    ],
+    [
+      2.0,
+      16.2,
+      2.1
+    ],
+    [
+      49.0,
+      4.8,
+      2.1
+    ],
+    [
+      49.0,
+      16.2,
+      2.1
+    ]
+  ],
   "headerStyle": "male-down",
   "pcbColor": "#1B6B3A",
   "summary": "The second-generation Pico with the faster RP2350 chip, twice the memory and 4 MB flash. Same 40-pin layout as the Pico, 3.3 V logic.",

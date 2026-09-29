@@ -1,11 +1,12 @@
 // The board, generated from its JSON definition: PCB, module with shield and antenna, USB,
 // buttons, small chips, header strips, and one clickable mesh per pin (see Pins).
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { BoardComponent, BoardDef } from '@shared/types';
 import { rectToMm } from '@shared/board';
 import { Pins } from './Pins';
+import { Silkscreen } from './Silkscreen';
 
 const COLORS = {
   pcb: '#1F3A5F',
@@ -42,7 +43,7 @@ function Antenna({ x0, x1, z, y, depth = 11 }: { x0: number; x1: number; z: numb
   return (
     <>
       {segs.map((s, i) => (
-        <Box key={i} pos={s.pos} size={s.size} color={COLORS.gold} metal={0.4} rough={0.35} />
+        <Box key={i} pos={s.pos} size={s.size} color={COLORS.gold} metal={0.85} rough={0.3} />
       ))}
     </>
   );
@@ -68,9 +69,60 @@ function defaultHeight(type: BoardComponent['type'], label?: string): number {
   }
 }
 
+/**
+ * The PCB outline with rounded corners and the mounting holes cut out, lying flat and centred like
+ * the old box (top face at +thickness/2).
+ */
+function pcbGeometry(board: BoardDef): THREE.ExtrudeGeometry {
+  const { length: L, width: W, thickness: T } = board.pcbMm;
+  const r = Math.min(board.cornerRadiusMm ?? 0.8, L / 4, W / 4);
+  // Shape in the x/y plane with y = -z, so it lands the right way round after rotating it flat.
+  const shape = new THREE.Shape();
+  const x0 = -L / 2;
+  const x1 = L / 2;
+  const y0 = -W / 2;
+  const y1 = W / 2;
+  shape.moveTo(x0 + r, y0);
+  shape.lineTo(x1 - r, y0);
+  shape.quadraticCurveTo(x1, y0, x1, y0 + r);
+  shape.lineTo(x1, y1 - r);
+  shape.quadraticCurveTo(x1, y1, x1 - r, y1);
+  shape.lineTo(x0 + r, y1);
+  shape.quadraticCurveTo(x0, y1, x0, y1 - r);
+  shape.lineTo(x0, y0 + r);
+  shape.quadraticCurveTo(x0, y0, x0 + r, y0);
+  for (const [hx, hy, d] of board.holesMm ?? []) {
+    const hole = new THREE.Path();
+    hole.absarc(hx - L / 2, -(hy - W / 2), d / 2, 0, Math.PI * 2, true);
+    shape.holes.push(hole);
+  }
+  const geo = new THREE.ExtrudeGeometry(shape, { depth: T, bevelEnabled: false, curveSegments: 16 });
+  // Extruded along +z from 0 to T; rotate so the extrusion points up and centre it on y = 0.
+  geo.rotateX(-Math.PI / 2);
+  geo.translate(0, -T / 2, 0);
+  return geo;
+}
+
+/** Plated ring around each mounting hole. */
+function Holes({ board }: { board: BoardDef }) {
+  const { length: L, width: W, thickness: T } = board.pcbMm;
+  return (
+    <>
+      {(board.holesMm ?? []).map(([hx, hy, d], i) => (
+        <mesh key={i} position={[hx - L / 2, T / 2 + 0.02, hy - W / 2]} rotation-x={-Math.PI / 2}>
+          <ringGeometry args={[d / 2, d / 2 + 0.9, 32]} />
+          <meshStandardMaterial color={COLORS.gold} metalness={0.85} roughness={0.3} />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
 export function Board3D({ board }: { board: BoardDef }) {
   const { length, width, thickness } = board.pcbMm;
   const top = thickness / 2;
+  const pcb = useMemo(() => pcbGeometry(board), [board]);
+  useEffect(() => () => pcb.dispose(), [pcb]);
 
   const comps = board.components.map((c, i) => {
     const r = rectToMm(board, c.rect);
@@ -84,7 +136,7 @@ export function Board3D({ board }: { board: BoardDef }) {
         return (
           <group key={i}>
             <Box pos={[r.cx, top + 0.4, r.cz]} size={[r.w, 0.8, r.h]} color={COLORS.module} />
-            <Box pos={[shieldX, top + 0.8 + 1.2, r.cz]} size={[shieldLen, 2.4, r.h - 1]} color={COLORS.shield} metal={0.35} rough={0.35} />
+            <Box pos={[shieldX, top + 0.8 + 1.2, r.cz]} size={[shieldLen, 2.4, r.h - 1]} color={COLORS.shield} metal={0.9} rough={0.28} />
             <Antenna x0={antX0} x1={antX1} z={r.cz} y={top + 0.82} depth={Math.min(11, r.h - 3)} />
           </group>
         );
@@ -92,12 +144,12 @@ export function Board3D({ board }: { board: BoardDef }) {
       case 'antenna':
         return <Antenna key={i} x0={r.cx - r.w / 2 + 0.4} x1={r.cx + r.w / 2 - 0.4} z={r.cz} y={top + 0.03} depth={Math.max(1, r.h - 1)} />;
       case 'usb':
-        return <Box key={i} pos={[r.cx, top + h / 2, r.cz]} size={[r.w, h, r.h]} color={c.color ?? COLORS.shield} metal={0.35} rough={0.4} />;
+        return <Box key={i} pos={[r.cx, top + h / 2, r.cz]} size={[r.w, h, r.h]} color={c.color ?? COLORS.shield} metal={c.color ? 0.35 : 0.9} rough={c.color ? 0.4 : 0.25} />;
       case 'jack':
       case 'connector':
         return <Box key={i} pos={[r.cx, top + h / 2, r.cz]} size={[r.w, h, r.h]} color={c.color ?? COLORS.plastic} rough={0.8} />;
       case 'crystal':
-        return <Box key={i} pos={[r.cx, top + h / 2, r.cz]} size={[r.w, h, r.h]} color={c.color ?? COLORS.shield} metal={0.35} rough={0.35} />;
+        return <Box key={i} pos={[r.cx, top + h / 2, r.cz]} size={[r.w, h, r.h]} color={c.color ?? COLORS.shield} metal={0.85} rough={0.3} />;
       case 'mcu':
         return (
           <group key={i}>
@@ -109,7 +161,7 @@ export function Board3D({ board }: { board: BoardDef }) {
       case 'button':
         return (
           <group key={i}>
-            <Box pos={[r.cx, top + 0.7, r.cz]} size={[r.w, 1.4, r.h]} color={COLORS.shield} metal={0.3} rough={0.45} />
+            <Box pos={[r.cx, top + 0.7, r.cz]} size={[r.w, 1.4, r.h]} color={COLORS.shield} metal={0.8} rough={0.35} />
             <Box pos={[r.cx, top + 1.8, r.cz]} size={[r.w * 0.45, 0.9, r.h * 0.45]} color={c.color ?? '#2b2b2b'} />
           </group>
         );
@@ -131,8 +183,7 @@ export function Board3D({ board }: { board: BoardDef }) {
 
   return (
     <group>
-      <mesh receiveShadow castShadow userData={{ target: 'part:board' }}>
-        <boxGeometry args={[length, thickness, width]} />
+      <mesh geometry={pcb} receiveShadow castShadow userData={{ target: 'part:board' }}>
         <meshStandardMaterial color={board.pcbColor ?? COLORS.pcb} roughness={0.6} metalness={0.05} />
       </mesh>
       {/* silkscreen outline */}
@@ -140,6 +191,8 @@ export function Board3D({ board }: { board: BoardDef }) {
         <edgesGeometry args={[new THREE.BoxGeometry(length - 1.2, 0.001, width - 1.2)]} />
         <lineBasicMaterial color={isLight(board.pcbColor) ? '#5b6570' : '#9fb4cc'} transparent opacity={0.35} />
       </lineSegments>
+      <Silkscreen board={board} />
+      <Holes board={board} />
       {comps}
       <Pins board={board} />
     </group>

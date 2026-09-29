@@ -24,3 +24,5 @@ Notes on the layout:
 - Micro-USB overhang 1.3 mm (Figure 3 "1.3 (typ)"), USB width 8 mm (Figure 3). Positions of BOOTSEL, LED, RP2040, flash, SMPS and crystal are **estimated** (±1 mm) from the Figure 3 drawing and are only for the 3D view.
 - VSYS `supplies: 4.7` is an **approximation** (datasheet: VBUS minus the Schottky diode drop; exact drop depends on current).
 - Arduino-Pico can also report 2e8a:010a/400a/410a/800a/810a/c00a/c10a for other USB stack settings (boards.txt); only the default id is listed.
+
+Mounting holes (`holesMm`): four Ø 2.1 mm holes, 47.0 mm apart along the board and 11.4 mm apart across it, centred, so 2.0 mm from each short edge and 4.8 mm from each long edge (mechanical drawing in the board's datasheet, "Mechanical specification").

@@ -21,3 +21,5 @@ Notes on the layout:
 - GP0-GP22 carry `five_volt_tolerant` with `maxVolt: 5` per the RP2350 FT pin type; the notes say this holds only while the board is powered.
 - Component positions (BOOTSEL, LED, RP2350A, flash, RT6150 SMPS, crystal) are **estimated** (±1 mm) from Figure 3; the flash position is the least certain.
 - VSYS `supplies: 4.7` is an **approximation** (VBUS minus the Schottky drop).
+
+Mounting holes (`holesMm`): four Ø 2.1 mm holes, 47.0 mm apart along the board and 11.4 mm apart across it, centred, so 2.0 mm from each short edge and 4.8 mm from each long edge (mechanical drawing in the board's datasheet, "Mechanical specification").
