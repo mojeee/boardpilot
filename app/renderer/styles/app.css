@@ -722,3 +722,4 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .planner-need input[type='number'] { width: 56px; }
 .planner-row { cursor: pointer; }
 .planner-row:hover td { background: var(--raised); }
+.learn-seg { align-self: flex-start; flex-wrap: wrap; }
