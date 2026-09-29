@@ -16,6 +16,7 @@ import { TestHardware } from './screens/TestHardware';
 import { Monitor } from './screens/Monitor';
 import { Report } from './screens/Report';
 import { NewProjectPanel } from './screens/NewProject';
+import { Learn } from './screens/Learn';
 import { runDemo } from './demo';
 import { PartEditor } from './components/PartEditor';
 import { LicenseDialog, LockScreen, useLicense } from './components/License';
@@ -94,6 +95,8 @@ function Center() {
       return <Monitor />;
     case 'report':
       return <Report />;
+    case 'learn':
+      return <Learn />;
     default:
       return <Viewport />;
   }
