@@ -19,7 +19,7 @@ import { checkWiring } from '@shared/wiring';
 import { DEFAULT_BOARD_ID, getBoard, PARTS, pinByGpio } from '@shared/board';
 import type { AiStatus } from '@shared/ai';
 
-export type Screen = 'home' | 'connect' | 'newProject' | 'flash' | 'debug' | 'monitor' | 'test' | 'report';
+export type Screen = 'home' | 'connect' | 'newProject' | 'flash' | 'debug' | 'monitor' | 'test' | 'report' | 'learn';
 
 /* ---------------- app ---------------- */
 

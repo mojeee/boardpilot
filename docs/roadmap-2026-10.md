@@ -441,6 +441,29 @@ Each can feed back into BoardPilot (CAN, RTOS monitoring), which strengthens the
 
   Never write to industrial PLCs. Revisit after the launch if users ask for it.
 
+## Your issues (added Sep 29), in the order I will do them
+
+The Learn screen (PR #4) is merged. Your 14 issues are ordered by value for users and by how little
+they depend on open decisions. Where an issue asks for a decision, my default is written next to it;
+say so if you want it the other way.
+
+| # | Issue | Size | Decision needed (my default) | Status |
+|---|---|---|---|---|
+| 5 | Wiring diagram and schematic from the project | L | Wiring view first; lives as a viewport tab and in the report | [ ] |
+| 18 | Bill of materials and shopping list export | S | none | [ ] |
+| 9 | Peripheral and pin planner | M | Suggest first, "Apply" button to add the wires | [ ] |
+| 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [ ] |
+| 6 | Lessons: "Show on the 3D board" buttons | M | Split view (lesson left, 3D right) | [ ] |
+| 13 | Power budget and battery life (merges step 3 C "Power budget") | M | Yes to sourced current fields in parts; unknown parts listed as unknown | [ ] |
+| 10 | Clock-aware calculators with code (timer, PWM, UART, ADC) | M | Add a sourced `clocks` section to board files | [ ] |
+| 14 | Register map viewer, decoded live | M | BME280, MPU6050, SSD1306 first | [ ] |
+| 7 | Hands-on labs inside lessons, checked live | L | All boards with the agent; simulator scenarios for each | [ ] |
+| 8 | Timing view (logic-analyser style) | L | Current stream rate first, labelled "sampled"; fast capture later | [ ] |
+| 16 | Guided portfolio projects with checkpoints (builds on the templates) | L | Finished reference code, with hints shown first | [ ] |
+| 12 | State machine designer → C code and tests | L | A tool in New project | [ ] |
+| 11 | Starter firmware for STM32 HAL, ESP-IDF, Pico SDK | L | Pico SDK first; compile check as a nightly CI job | [ ] |
+| 17 | AI interview coach | M | Answers stored only on this computer, deletable, 90 days | [ ] |
+
 ## Last step · Try it in the browser (your request, Sep 29)
 
 The website shows the real app, running, instead of screenshots: visitors click pins, drag parts,
