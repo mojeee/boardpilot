@@ -1,0 +1,178 @@
+{
+  "id": "motion-alarm",
+  "name": "Motion alarm",
+  "summary": "A PIR sensor sees movement; a buzzer and an LED go off for 3 seconds.",
+  "difficulty": "easy",
+  "minutes": 20,
+  "learn": [
+    "Read a digital sensor",
+    "Write a small state machine: waiting and alarm",
+    "Time the alarm without blocking the program"
+  ],
+  "parts": [
+    {
+      "id": "pir1",
+      "partId": "hc-sr501",
+      "label": "PIR"
+    },
+    {
+      "id": "buzz1",
+      "partId": "buzzer-active",
+      "label": "Buzzer"
+    },
+    {
+      "id": "led1",
+      "partId": "led-resistor",
+      "label": "LED"
+    }
+  ],
+  "pins": {
+    "PIR": {
+      "part": "pir1",
+      "pin": "OUT"
+    },
+    "BUZZER": {
+      "part": "buzz1",
+      "pin": "+"
+    },
+    "LED": {
+      "part": "led1",
+      "pin": "A"
+    }
+  },
+  "notes": [
+    "After power-up the PIR needs about a minute to settle (HC-SR501 manual)."
+  ],
+  "code": {
+    "globals": [
+      "const int PIR_PIN = {PIR};",
+      "const int BUZZER_PIN = {BUZZER};",
+      "const int LED_PIN = {LED};",
+      "bool alarm = false;",
+      "unsigned long alarmSince = 0;"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(PIR_PIN, INPUT);",
+      "  pinMode(BUZZER_PIN, OUTPUT);",
+      "  pinMode(LED_PIN, OUTPUT);"
+    ],
+    "loop": [
+      "  probe.step(\"Watch for motion\");",
+      "  bool motion = digitalRead(PIR_PIN) == HIGH;",
+      "  if (motion && !alarm) {",
+      "    probe.state(\"ALARM\");",
+      "    probe.event(\"Motion detected: alarm on for 3 s\");",
+      "    alarm = true;",
+      "    alarmSince = millis();",
+      "    digitalWrite(BUZZER_PIN, HIGH);",
+      "    digitalWrite(LED_PIN, HIGH);",
+      "  }",
+      "  if (alarm && millis() - alarmSince >= 3000) {",
+      "    probe.state(\"WAITING\");",
+      "    probe.event(\"Alarm off\");",
+      "    alarm = false;",
+      "    digitalWrite(BUZZER_PIN, LOW);",
+      "    digitalWrite(LED_PIN, LOW);",
+      "  }",
+      "  probe.value(\"motion\", motion ? 1 : 0, PIR_PIN);",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 250,
+    "vars": {
+      "alarm": 0
+    },
+    "inputs": {
+      "PIR": {
+        "pulses": {
+          "everyS": 14,
+          "highS": 2,
+          "offsetS": 3
+        }
+      }
+    },
+    "loop": [
+      {
+        "step": "Watch for motion"
+      },
+      {
+        "read": "PIR",
+        "as": "motion",
+        "digits": 0
+      },
+      {
+        "if": "motion == 1",
+        "then": [
+          {
+            "if": "alarm == 0",
+            "then": [
+              {
+                "state": "ALARM"
+              },
+              {
+                "event": "Motion detected: alarm on for 3 s"
+              },
+              {
+                "set": "alarm",
+                "value": 1
+              },
+              {
+                "timer": "alarm",
+                "ms": 3000
+              },
+              {
+                "write": "BUZZER",
+                "level": 1
+              },
+              {
+                "write": "LED",
+                "level": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "if": "alarm == 1",
+        "then": [
+          {
+            "if": "alarm_done",
+            "then": [
+              {
+                "state": "WAITING"
+              },
+              {
+                "event": "Alarm off"
+              },
+              {
+                "set": "alarm",
+                "value": 0
+              },
+              {
+                "write": "BUZZER",
+                "level": 0
+              },
+              {
+                "write": "LED",
+                "level": 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "title": "HC-SR501 PIR motion detector user manual",
+      "section": "Output HIGH on motion; initialisation time"
+    },
+    {
+      "title": "Arduino reference",
+      "section": "millis()"
+    }
+  ]
+}

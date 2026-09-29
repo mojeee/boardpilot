@@ -1,0 +1,209 @@
+{
+  "id": "plant-watering",
+  "name": "Plant watering",
+  "summary": "A soil sensor checks how dry the soil is and a relay runs the pump for 3 seconds when it is too dry.",
+  "difficulty": "medium",
+  "minutes": 45,
+  "needs": [
+    "adc"
+  ],
+  "learn": [
+    "Read an analog sensor in millivolts",
+    "Calibrate a sensor with two known points (dry and wet)",
+    "Switch a pump safely through a relay, with a pause between waterings"
+  ],
+  "parts": [
+    {
+      "id": "soil1",
+      "partId": "soil-moisture-capacitive",
+      "label": "Soil"
+    },
+    {
+      "id": "relay1",
+      "partId": "relay-1ch",
+      "label": "Relay"
+    }
+  ],
+  "pins": {
+    "SOIL": {
+      "part": "soil1",
+      "pin": "AOUT"
+    },
+    "PUMP": {
+      "part": "relay1",
+      "pin": "IN"
+    }
+  },
+  "notes": [
+    "The pump is not wired to the board: it goes through the relay's COM and NO contacts, with its own supply.",
+    "DRY_MV and WET_MV are example values: measure your sensor in dry air and in water and put your numbers in."
+  ],
+  "code": {
+    "globals": [
+      "const int SOIL_PIN = {SOIL};",
+      "const int PUMP_PIN = {PUMP};",
+      "const int RELAY_ON = HIGH;   // many relay modules switch on with LOW: set LOW if yours does",
+      "const long DRY_MV = 2600;    // sensor in dry air (measure yours)",
+      "const long WET_MV = 1200;    // sensor in a glass of water (measure yours)",
+      "const int DRY_BELOW = 40;    // water when the soil is drier than this (%)",
+      "unsigned long lastCheck = 0, pumpSince = 0, lastWatering = 0;",
+      "bool pumping = false;"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(PUMP_PIN, OUTPUT);",
+      "  digitalWrite(PUMP_PIN, !RELAY_ON);  // pump off at start",
+      "  probe.state(\"WAITING\");"
+    ],
+    "loop": [
+      "  if (pumping && millis() - pumpSince >= 3000) {",
+      "    probe.step(\"Stop the pump\");",
+      "    digitalWrite(PUMP_PIN, !RELAY_ON);",
+      "    pumping = false;",
+      "    lastWatering = millis();",
+      "    probe.state(\"WAITING\");",
+      "    probe.event(\"Pump off. Waiting 30 s for the water to soak in\");",
+      "  }",
+      "  if (millis() - lastCheck >= 1000) {",
+      "    lastCheck = millis();",
+      "    probe.step(\"Read the soil sensor\");",
+      "    long mv = {READ_MV:SOIL};",
+      "    int moisture = constrain(map(mv, DRY_MV, WET_MV, 0, 100), 0, 100);  // drier soil = higher voltage",
+      "    probe.value(\"moisture\", moisture, SOIL_PIN);",
+      "    bool rested = lastWatering == 0 || millis() - lastWatering >= 30000;",
+      "    if (!pumping && moisture < DRY_BELOW && rested) {",
+      "      probe.step(\"Too dry: start the pump\");",
+      "      probe.state(\"WATERING\");",
+      "      probe.event(\"Soil below 40%: pump on for 3 s\");",
+      "      digitalWrite(PUMP_PIN, RELAY_ON);",
+      "      pumping = true;",
+      "      pumpSince = millis();",
+      "    }",
+      "  }",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 1000,
+    "vars": {
+      "pumping": 0,
+      "rested": 1
+    },
+    "inputs": {
+      "SOIL": {
+        "level": {
+          "start": 52,
+          "perSecond": -1.2,
+          "min": 5,
+          "max": 95
+        }
+      }
+    },
+    "loop": [
+      {
+        "if": "pumping == 1",
+        "then": [
+          {
+            "if": "pump_done",
+            "then": [
+              {
+                "step": "Stop the pump"
+              },
+              {
+                "write": "PUMP",
+                "level": 0
+              },
+              {
+                "set": "pumping",
+                "value": 0
+              },
+              {
+                "timer": "rest",
+                "ms": 30000
+              },
+              {
+                "set": "rested",
+                "value": 0
+              },
+              {
+                "bump": "SOIL",
+                "by": 35
+              },
+              {
+                "state": "WAITING"
+              },
+              {
+                "event": "Pump off. Waiting 30 s for the water to soak in"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "if": "rest_done",
+        "then": [
+          {
+            "set": "rested",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "step": "Read the soil sensor"
+      },
+      {
+        "read": "SOIL",
+        "as": "moisture",
+        "unit": "%",
+        "digits": 0
+      },
+      {
+        "if": "moisture < 40",
+        "then": [
+          {
+            "if": "pumping == 0",
+            "then": [
+              {
+                "if": "rested",
+                "then": [
+                  {
+                    "step": "Too dry: start the pump"
+                  },
+                  {
+                    "state": "WATERING"
+                  },
+                  {
+                    "event": "Soil below 40%: pump on for 3 s"
+                  },
+                  {
+                    "write": "PUMP",
+                    "level": 1
+                  },
+                  {
+                    "set": "pumping",
+                    "value": 1
+                  },
+                  {
+                    "timer": "pump",
+                    "ms": 3000
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki",
+      "section": "Calibration (dry air and water)"
+    },
+    {
+      "title": "Songle SRD-05VDC-SL-C datasheet",
+      "section": "Coil voltage 5 V; contact COM/NO/NC"
+    }
+  ]
+}

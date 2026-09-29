@@ -5,7 +5,10 @@
 #include <string.h>
 
 BoardPilotProbe::BoardPilotProbe(Print& out)
-    : _out(out), _n(0), _interval(100), _last(0), _memEnabled(true) {}
+    : _out(out), _n(0), _interval(100), _last(0), _memEnabled(true) {
+  _lastStep[0] = '\0';
+  _lastState[0] = '\0';
+}
 
 void BoardPilotProbe::begin(uint32_t intervalMs) {
   setInterval(intervalMs);
@@ -92,7 +95,37 @@ void BoardPilotProbe::send() {
   _n = 0;
 }
 
+void BoardPilotProbe::story(const char* key, const char* text) {
+  if (!text) return;
+  char buf[61];
+  strncpy(buf, text, sizeof(buf) - 1);
+  buf[sizeof(buf) - 1] = '\0';
+  _out.print("@bp {\"t\":");
+  _out.print((unsigned long)millis());
+  _out.print(",\"");
+  _out.print(key);
+  _out.print("\":");
+  printName(buf);
+  _out.print("}\n");
+}
+
+static bool changed(char* last, const char* text) {
+  if (!text || strncmp(last, text, 60) == 0) return false;
+  strncpy(last, text, 60);
+  last[60] = '\0';
+  return true;
+}
+
+void BoardPilotProbe::step(const char* text) {
+  if (changed(_lastStep, text)) story("step", text);
+}
+void BoardPilotProbe::state(const char* text) {
+  if (changed(_lastState, text)) story("state", text);
+}
+void BoardPilotProbe::event(const char* text) { story("event", text); }
+
 void BoardPilotProbe::memory() {
+#if defined(ESP32)
   _out.print("@bp {\"t\":");
   _out.print((unsigned long)millis());
   _out.print(",\"mem\":{\"heapFree\":");
@@ -106,6 +139,7 @@ void BoardPilotProbe::memory() {
   _out.print(",\"stackFree\":");
   _out.print((unsigned long)uxTaskGetStackHighWaterMark(NULL));
   _out.print("}}\n");
+#endif
 }
 
 void BoardPilotProbe::loop() {
