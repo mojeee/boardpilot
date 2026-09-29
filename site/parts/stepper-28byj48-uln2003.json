@@ -52,6 +52,15 @@
     "step motor",
     "motore passo passo"
   ],
+  "gotchas": [
+    {
+      "text": "Each coil draws about 100 mA at 5 V (50 Ω). Power the ULN2003 board from 5 V, never from a GPIO pin.",
+      "source": {
+        "title": "28BYJ-48 stepper motor datasheet",
+        "section": "Rated voltage 5 V, DC resistance 50 Ω per phase"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Texas Instruments ULN2003A datasheet",

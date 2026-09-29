@@ -12,6 +12,9 @@
   "voltage": "3.3-5",
   "model": { "shape": "dht", "size": [15, 25, 7.7], "color": "#F2F2F2" },
   "keywords": ["dht22", "am2302", "dht", "humidity", "temperature"],
+  "gotchas": [
+    { "text": "Read it at most once every 2 seconds. Faster reads return the old value or fail.", "source": { "title": "Aosong AM2302 datasheet", "section": "Collecting period 2 s" } }
+  ],
   "sources": [{ "title": "Aosong AM2302 datasheet", "section": "Single-bus communication; pull-up resistor on DATA" }],
   "starterSketch": "dht22"
 }

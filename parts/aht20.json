@@ -15,6 +15,10 @@
   "pullupsOnBoard": true,
   "model": { "shape": "breakout", "size": [12, 12, 1.6], "color": "#1A1A1A" },
   "keywords": ["aht20", "aht21", "aosong", "humidity", "temperature", "umidità"],
+  "gotchas": [
+    { "text": "Its address is fixed at 0x38: one per bus. The DHT20 uses the same chip and the same address.", "source": { "title": "Aosong AHT20 datasheet", "section": "Sensor address 0x38" } },
+    { "text": "After power-up, wait 40 ms; each measurement takes about 80 ms.", "source": { "title": "Aosong AHT20 datasheet", "section": "Sensor reading process" } }
+  ],
   "sources": [
     { "title": "Aosong AHT20 datasheet", "section": "I2C address 0x38" },
     { "title": "Aosong AHT20 datasheet", "section": "Supply voltage 2.2 to 5.5 V" }

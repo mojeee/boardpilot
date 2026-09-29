@@ -1,7 +1,7 @@
 // Floating card for the selected pin, part or wire.
 
 import type { BoardDef, PinFlag, TargetRef } from '@shared/types';
-import { PARTS, ROLE_HEX, ROLE_VAR, canOutput, partRoleColor, pinById, pinRoleInScene, targetLabel } from '@shared/board';
+import { PARTS, ROLE_HEX, ROLE_VAR, canOutput, getBoard, gotchasFor, partRoleColor, pinById, pinRoleInScene, targetLabel } from '@shared/board';
 import { useApp, useLive, useScene } from '../state/store';
 import { confirmGpioWrite } from '../state/hw';
 import { duplicateSelected, removeTarget, renamePart, rotateSelected } from '../state/sceneActions';
@@ -147,6 +147,20 @@ function PartCard({ id }: { id: string }) {
           {t(f.message)} <span className="dim">{t(f.hint)}</span>
         </p>
       ))}
+      {gotchasFor(def, getBoard(scene.board)).length > 0 && (
+        <div className="card-section">
+          <div className="label">{t('Good to know')}</div>
+          {gotchasFor(def, getBoard(scene.board)).map((g, i) => (
+            <p key={i} className="card-note gotcha">
+              {t(g.text)}{' '}
+              <span className="dim small">
+                ({g.source.title}
+                {g.source.section ? `, ${g.source.section}` : ''})
+              </span>
+            </p>
+          ))}
+        </div>
+      )}
       <div className="card-section">
         <div className="label">{t('Pins')}</div>
         {def.pins.map((p) => {

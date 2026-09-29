@@ -63,6 +63,22 @@
     "display",
     "schermo"
   ],
+  "gotchas": [
+    {
+      "text": "The backpack answers at 0x27 (PCF8574) or 0x3F (PCF8574A). If nothing shows up at 0x27, try 0x3F.",
+      "source": {
+        "title": "NXP PCF8574 / PCF8574A datasheet",
+        "section": "Slave address"
+      }
+    },
+    {
+      "text": "Blank screen or only blocks? Turn the contrast potentiometer on the back.",
+      "source": {
+        "title": "Hitachi HD44780 datasheet",
+        "section": "V0: LCD drive voltage (contrast)"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "NXP PCF8574 / PCF8574A datasheet",

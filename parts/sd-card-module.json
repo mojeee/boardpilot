@@ -16,6 +16,9 @@
   "voltage": "3.3-5",
   "model": { "shape": "module", "size": [52, 30, 5], "color": "#1F4FA8" },
   "keywords": ["sd card", "sd card module", "lc studio", "storage", "data logger", "scheda sd", "memoria"],
+  "gotchas": [
+    { "text": "The SD library reads FAT16 and FAT32 cards. Cards formatted as exFAT (most over 32 GB) are not found.", "source": { "title": "Arduino SD library reference", "section": "Supported file systems: FAT16 and FAT32" } }
+  ],
   "sources": [
     { "title": "SD Association Physical Layer Simplified Specification", "section": "SPI mode; card supply 2.7 to 3.6 V" },
     { "title": "LC Studio SD card module", "section": "Header GND, 3.3V, 5V, CS, MOSI, SCK, MISO, GND" }

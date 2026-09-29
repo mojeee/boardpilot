@@ -38,6 +38,30 @@
     "addressable",
     "striscia led"
   ],
+  "gotchas": [
+    {
+      "text": "Each LED draws up to about 60 mA at full white: 30 LEDs need about 1.8 A, more than USB gives. Power the strip from its own 5 V supply and connect the grounds.",
+      "source": {
+        "title": "Adafruit NeoPixel Überguide",
+        "section": "Powering NeoPixels"
+      }
+    },
+    {
+      "text": "Put a 300 to 500 Ω resistor in the data line and a large capacitor (about 1000 µF) across the strip’s supply.",
+      "source": {
+        "title": "Adafruit NeoPixel Überguide",
+        "section": "Best practices"
+      }
+    },
+    {
+      "text": "At 5 V the data input needs at least 0.7 × 5 V = 3.5 V to read HIGH. A 3.3 V board often works but not always: a level shifter (74AHCT125) makes it reliable.",
+      "when": "logic3v3",
+      "source": {
+        "title": "Worldsemi WS2812B datasheet",
+        "section": "Electrical characteristics: VIH = 0.7 VDD"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Worldsemi WS2812B datasheet",

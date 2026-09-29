@@ -33,6 +33,15 @@
     "resistor",
     "blink"
   ],
+  "gotchas": [
+    {
+      "text": "The long leg (anode) goes to the pin, the short leg to GND, always through a resistor (220 Ω to 1 kΩ).",
+      "source": {
+        "title": "Arduino examples",
+        "section": "Blink: circuit"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Generic 5 mm LED",

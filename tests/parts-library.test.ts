@@ -6,6 +6,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { validatePartDef } from '@shared/partSchema';
 import type { PartDef } from '@shared/types';
+import { IT } from '@shared/i18n';
+import { PARTS, getBoard, gotchasFor } from '@shared/board';
 
 const DIR = join(__dirname, '..', 'parts');
 const FILES = readdirSync(DIR).filter((f) => f.endsWith('.json')).sort();
@@ -54,5 +56,38 @@ describe('built-in parts library', () => {
       expect(raw.keywords.length).toBeGreaterThan(0);
       expect(raw.sources.length).toBeGreaterThan(0);
     });
+  });
+});
+
+describe('part gotchas', () => {
+  const withGotchas = RAW.filter(({ raw }) => Array.isArray((raw as { gotchas?: unknown[] }).gotchas));
+
+  it('covers the most used parts', () => expect(withGotchas.length).toBeGreaterThanOrEqual(25));
+
+  it('every gotcha has a source, a known condition and an Italian translation', () => {
+    for (const { file, raw } of withGotchas) {
+      for (const g of (raw as { gotchas: { text: string; when?: string; source?: { title?: string; section?: string } }[] }).gotchas) {
+        expect(g.source?.title, file).toBeTruthy();
+        expect(g.source?.section, file).toBeTruthy();
+        expect([undefined, 'logic3v3', 'logic5v', 'avr', 'esp32'], file).toContain(g.when);
+        expect(IT[g.text], `${file}: ${g.text}`).toBeTruthy();
+      }
+    }
+  });
+
+  it('keeps gotchas when a user part is validated', () => {
+    const r = validatePartDef({ ...PARTS['hc-sr04'], id: 'my-sonar' });
+    expect(r.ok && r.value.gotchas?.length).toBe(PARTS['hc-sr04'].gotchas?.length);
+  });
+
+  it('shows board-specific gotchas only on the boards they are about', () => {
+    const esp = getBoard('esp32-devkitc-30');
+    const uno = getBoard('arduino-uno-r3');
+    const divider = (b: typeof esp) => gotchasFor(PARTS['hc-sr04'], b).some((g) => /divider/.test(g.text));
+    expect(divider(esp)).toBe(true);
+    expect(divider(uno)).toBe(false);
+    const ram = (b: typeof esp) => gotchasFor(PARTS['ssd1306-i2c'], b).some((g) => /RAM/.test(g.text));
+    expect(ram(uno)).toBe(true);
+    expect(ram(esp)).toBe(false);
   });
 });

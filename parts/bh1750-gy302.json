@@ -16,6 +16,9 @@
   "pullupsOnBoard": true,
   "model": { "shape": "breakout", "size": [18.5, 13.9, 1.6], "color": "#1F4FA8" },
   "keywords": ["bh1750", "gy-302", "lux", "light", "ambient light", "luce", "luminosità"],
+  "gotchas": [
+    { "text": "A high-resolution reading takes about 120 ms. Reading faster returns the previous value.", "source": { "title": "ROHM BH1750FVI datasheet", "section": "Measurement time, H-resolution mode" } }
+  ],
   "sources": [
     { "title": "ROHM BH1750FVI datasheet", "section": "I2C slave address: ADDR = L gives 0x23, ADDR = H gives 0x5C" }
   ]

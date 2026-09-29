@@ -63,6 +63,15 @@
     "distanza",
     "laser"
   ],
+  "gotchas": [
+    {
+      "text": "Every sensor starts at address 0x29. To use two on one bus, hold one in reset with XSHUT and give the other a new address at start-up; the new address is lost at power-off.",
+      "source": {
+        "title": "ST VL53L0X datasheet",
+        "section": "I²C interface: device address 0x52 (8-bit), change of address"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "ST VL53L0X datasheet",

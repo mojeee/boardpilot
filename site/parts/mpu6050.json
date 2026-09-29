@@ -60,6 +60,22 @@
     "imu",
     "motion"
   ],
+  "gotchas": [
+    {
+      "text": "The address is 0x68, or 0x69 when AD0 is HIGH.",
+      "source": {
+        "title": "InvenSense MPU-6000/MPU-6050 Product Specification",
+        "section": "I²C interface: slave address"
+      }
+    },
+    {
+      "text": "It starts in sleep mode and reads zeros until PWR_MGMT_1 (0x6B) is cleared. Libraries do this in begin(); your own code must too.",
+      "source": {
+        "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+        "section": "Register 107, Power Management 1 (reset value 0x40, sleep)"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "InvenSense MPU-6000/6050 Register Map",

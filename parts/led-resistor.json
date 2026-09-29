@@ -10,6 +10,9 @@
   "voltage": "3.3",
   "model": { "shape": "led", "size": [5, 5, 8.6], "color": "#FF4D4D" },
   "keywords": ["led", "light", "diode", "resistor", "blink"],
+  "gotchas": [
+    { "text": "The long leg (anode) goes to the pin, the short leg to GND, always through a resistor (220 Ω to 1 kΩ).", "source": { "title": "Arduino examples", "section": "Blink: circuit" } }
+  ],
   "sources": [{ "title": "Generic 5 mm LED", "section": "Forward voltage about 2 V (red); 220 Ω at 3.3 V gives about 6 mA" }],
   "starterSketch": "led"
 }

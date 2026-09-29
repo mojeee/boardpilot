@@ -210,6 +210,15 @@
     "step motor",
     "motore passo passo"
    ],
+   "gotchas": [
+    {
+     "text": "Each coil draws about 100 mA at 5 V (50 Ω). Power the ULN2003 board from 5 V, never from a GPIO pin.",
+     "source": {
+      "title": "28BYJ-48 stepper motor datasheet",
+      "section": "Rated voltage 5 V, DC resistance 50 Ω per phase"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "Texas Instruments ULN2003A datasheet",
@@ -1899,6 +1908,15 @@
     "convertitore",
     "analogico"
    ],
+   "gotchas": [
+    {
+     "text": "Each input must stay between GND and VDD, even in differential mode. The default range is ±2.048 V; set the gain for larger signals.",
+     "source": {
+      "title": "TI ADS111x datasheet",
+      "section": "Absolute maximum ratings: analog input; PGA full-scale range (default ±2.048 V)"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "Texas Instruments ADS111x datasheet",
@@ -2242,6 +2260,22 @@
     "humidity",
     "temperature",
     "umidità"
+   ],
+   "gotchas": [
+    {
+     "text": "Its address is fixed at 0x38: one per bus. The DHT20 uses the same chip and the same address.",
+     "source": {
+      "title": "Aosong AHT20 datasheet",
+      "section": "Sensor address 0x38"
+     }
+    },
+    {
+     "text": "After power-up, wait 40 ms; each measurement takes about 80 ms.",
+     "source": {
+      "title": "Aosong AHT20 datasheet",
+      "section": "Sensor reading process"
+     }
+    }
    ],
    "sources": [
     {
@@ -4653,6 +4687,15 @@
     "terreno",
     "piante"
    ],
+   "gotchas": [
+    {
+     "text": "The reading depends on your soil and supply voltage. Note the values in dry air and in water, and scale between them.",
+     "source": {
+      "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki",
+      "section": "Calibration"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki",
@@ -5273,6 +5316,22 @@
     "umidità",
     "temperatura"
    ],
+   "gotchas": [
+    {
+     "text": "It measures 0 to 50 °C and 20 to 90 %RH in whole numbers only. Below 0 °C it cannot measure.",
+     "source": {
+      "title": "Aosong DHT11 datasheet",
+      "section": "Technical specifications"
+     }
+    },
+    {
+     "text": "After power-up, wait 1 second before the first read.",
+     "source": {
+      "title": "Aosong DHT11 datasheet",
+      "section": "Power and pin"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "Aosong DHT11 datasheet",
@@ -5388,6 +5447,15 @@
     "dht",
     "humidity",
     "temperature"
+   ],
+   "gotchas": [
+    {
+     "text": "Read it at most once every 2 seconds. Faster reads return the old value or fail.",
+     "source": {
+      "title": "Aosong AM2302 datasheet",
+      "section": "Collecting period 2 s"
+     }
+    }
    ],
    "sources": [
     {
@@ -6124,6 +6192,22 @@
     "dallas",
     "sonda",
     "temperatura"
+   ],
+   "gotchas": [
+    {
+     "text": "It needs a 4.7 kΩ pull-up resistor between DATA and VCC. Without it the sensor is not found.",
+     "source": {
+      "title": "Maxim DS18B20 datasheet",
+      "section": "Powering the DS18B20; 1-Wire bus pull-up"
+     }
+    },
+    {
+     "text": "A 12-bit reading takes up to 750 ms. Code that waits less gets the last value, or 85 °C (the power-on value).",
+     "source": {
+      "title": "Maxim DS18B20 datasheet",
+      "section": "Temperature conversion time 750 ms max; power-on reset value +85 °C"
+     }
+    }
    ],
    "sources": [
     {
@@ -7697,6 +7781,15 @@
     "luce",
     "luminosità"
    ],
+   "gotchas": [
+    {
+     "text": "A high-resolution reading takes about 120 ms. Reading faster returns the previous value.",
+     "source": {
+      "title": "ROHM BH1750FVI datasheet",
+      "section": "Measurement time, H-resolution mode"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "ROHM BH1750FVI datasheet",
@@ -8178,6 +8271,22 @@
     "barometer",
     "bosch"
    ],
+   "gotchas": [
+    {
+     "text": "Many boards sold as BME280 carry a BMP280, which has no humidity sensor. The chip ID register 0xD0 tells them apart: 0x60 is a BME280, 0x58 a BMP280.",
+     "source": {
+      "title": "Bosch BME280 and BMP280 datasheets",
+      "section": "Register 0xD0 “id”"
+     }
+    },
+    {
+     "text": "Read in normal mode at a high rate, the sensor warms itself and reads high. For weather readings use forced mode, about one reading per minute.",
+     "source": {
+      "title": "Bosch BME280 datasheet",
+      "section": "Recommended modes of operation: weather monitoring"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "Bosch BME280 datasheet",
@@ -8262,6 +8371,22 @@
     "bosch",
     "pressione",
     "barometro"
+   ],
+   "gotchas": [
+    {
+     "text": "It measures temperature and pressure only, no humidity. If your code asks for humidity, you need a BME280.",
+     "source": {
+      "title": "Bosch BMP280 datasheet",
+      "section": "Product description"
+     }
+    },
+    {
+     "text": "The address is 0x76 with SDO to GND and 0x77 with SDO high. Most GY boards answer at 0x76, while the Adafruit library looks at 0x77 unless you pass 0x76.",
+     "source": {
+      "title": "Bosch BMP280 datasheet",
+      "section": "I²C interface, slave address"
+     }
+    }
    ],
    "sources": [
     {
@@ -8553,6 +8678,30 @@
     "distanza",
     "sensore distanza"
    ],
+   "gotchas": [
+    {
+     "text": "ECHO outputs 5 V. On a 3.3 V board, put a voltage divider (for example 1 kΩ and 2 kΩ) between ECHO and the pin.",
+     "when": "logic3v3",
+     "source": {
+      "title": "Cytron / ElecFreaks HC-SR04 user manual",
+      "section": "Electric parameters: working voltage DC 5 V"
+     }
+    },
+    {
+     "text": "It needs 5 V on VCC. At 3.3 V most modules give no echo or wrong distances.",
+     "source": {
+      "title": "Cytron / ElecFreaks HC-SR04 user manual",
+      "section": "Electric parameters: working voltage DC 5 V"
+     }
+    },
+    {
+     "text": "Leave at least 60 ms between measurements, or the echo of the last one is measured again.",
+     "source": {
+      "title": "Cytron / ElecFreaks HC-SR04 user manual",
+      "section": "Timing diagram: measurement cycle over 60 ms"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "Cytron / ElecFreaks HC-SR04 user manual",
@@ -8658,6 +8807,15 @@
     "infrared",
     "movimento",
     "presenza"
+   ],
+   "gotchas": [
+    {
+     "text": "After power-up it needs about a minute to settle and may trigger by itself during that time.",
+     "source": {
+      "title": "HC-SR501 PIR motion detector user manual",
+      "section": "Initialisation time"
+     }
+    }
    ],
    "sources": [
     {
@@ -9749,6 +9907,22 @@
     "corrente",
     "tensione",
     "consumo"
+   ],
+   "gotchas": [
+    {
+     "text": "With the usual 0.1 Ω shunt it measures up to 3.2 A (±320 mV across the shunt), and the bus voltage up to 26 V.",
+     "source": {
+      "title": "TI INA219 datasheet",
+      "section": "Electrical characteristics: shunt voltage range ±320 mV, bus voltage 0 to 26 V"
+     }
+    },
+    {
+     "text": "Put it in series on the positive side: supply + to VIN+, VIN− to the load.",
+     "source": {
+      "title": "TI INA219 datasheet",
+      "section": "Typical application: high-side sensing"
+     }
+    }
    ],
    "sources": [
     {
@@ -11026,6 +11200,15 @@
     "driver motore",
     "ponte h"
    ],
+   "gotchas": [
+    {
+     "text": "The L298 loses about 2 to 3 V inside: a motor on a 6 V supply gets roughly 4 V. Connect the driver’s GND to the board’s GND.",
+     "source": {
+      "title": "ST L298 datasheet",
+      "section": "Total drop (source + sink saturation voltage)"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "ST L298 datasheet",
@@ -11460,6 +11643,22 @@
     "display",
     "schermo"
    ],
+   "gotchas": [
+    {
+     "text": "The backpack answers at 0x27 (PCF8574) or 0x3F (PCF8574A). If nothing shows up at 0x27, try 0x3F.",
+     "source": {
+      "title": "NXP PCF8574 / PCF8574A datasheet",
+      "section": "Slave address"
+     }
+    },
+    {
+     "text": "Blank screen or only blocks? Turn the contrast potentiometer on the back.",
+     "source": {
+      "title": "Hitachi HD44780 datasheet",
+      "section": "V0: LCD drive voltage (contrast)"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "NXP PCF8574 / PCF8574A datasheet",
@@ -11705,6 +11904,15 @@
     "diode",
     "resistor",
     "blink"
+   ],
+   "gotchas": [
+    {
+     "text": "The long leg (anode) goes to the pin, the short leg to GND, always through a resistor (220 Ω to 1 kΩ).",
+     "source": {
+      "title": "Arduino examples",
+      "section": "Blink: circuit"
+     }
+    }
    ],
    "sources": [
     {
@@ -15497,6 +15705,22 @@
     "imu",
     "motion"
    ],
+   "gotchas": [
+    {
+     "text": "The address is 0x68, or 0x69 when AD0 is HIGH.",
+     "source": {
+      "title": "InvenSense MPU-6000/MPU-6050 Product Specification",
+      "section": "I²C interface: slave address"
+     }
+    },
+    {
+     "text": "It starts in sleep mode and reads zeros until PWR_MGMT_1 (0x6B) is cleared. Libraries do this in begin(); your own code must too.",
+     "source": {
+      "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+      "section": "Register 107, Power Management 1 (reset value 0x40, sleep)"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "InvenSense MPU-6000/6050 Register Map",
@@ -16796,6 +17020,22 @@
     "location",
     "posizione",
     "navigatore"
+   ],
+   "gotchas": [
+    {
+     "text": "The first fix needs a view of the sky and takes about 30 seconds or more. Indoors it may never find one.",
+     "source": {
+      "title": "u-blox NEO-6 datasheet",
+      "section": "Time-to-first-fix, cold start 27 s"
+     }
+    },
+    {
+     "text": "It talks at 9600 baud. Connect the module’s TX to the board’s RX.",
+     "source": {
+      "title": "u-blox NEO-6 datasheet",
+      "section": "UART default 9600 baud"
+     }
+    }
    ],
    "sources": [
     {
@@ -18855,6 +19095,22 @@
     "push",
     "tactile"
    ],
+   "gotchas": [
+    {
+     "text": "An input with nothing pulling it reads random values. Use INPUT_PULLUP and wire the button to GND: pressed reads LOW.",
+     "source": {
+      "title": "Arduino reference",
+      "section": "Digital pins: INPUT_PULLUP"
+     }
+    },
+    {
+     "text": "The contacts bounce for a few milliseconds, so one press can count as several. Debounce in code.",
+     "source": {
+      "title": "Arduino examples",
+      "section": "Debounce"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "Arduino reference",
@@ -19111,6 +19367,15 @@
     "lettore rfid",
     "badge"
    ],
+   "gotchas": [
+    {
+     "text": "It runs on 3.3 V only: 5 V on VCC damages it.",
+     "source": {
+      "title": "NXP MFRC522 datasheet",
+      "section": "Operating conditions: supply voltage 2.5 to 3.6 V"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "NXP MFRC522 datasheet",
@@ -19354,6 +19619,15 @@
     "switch",
     "relè",
     "interruttore"
+   ],
+   "gotchas": [
+    {
+     "text": "The relay coil needs 5 V: power the module from the 5 V pin, not 3V3.",
+     "source": {
+      "title": "Songle SRD-05VDC-SL-C datasheet",
+      "section": "Coil voltage 5 V"
+     }
+    }
    ],
    "sources": [
     {
@@ -20173,6 +20447,15 @@
     "scheda sd",
     "memoria"
    ],
+   "gotchas": [
+    {
+     "text": "The SD library reads FAT16 and FAT32 cards. Cards formatted as exFAT (most over 32 GB) are not found.",
+     "source": {
+      "title": "Arduino SD library reference",
+      "section": "Supported file systems: FAT16 and FAT32"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "SD Association Physical Layer Simplified Specification",
@@ -20451,6 +20734,15 @@
     "motor",
     "servomotore",
     "motore"
+   ],
+   "gotchas": [
+    {
+     "text": "A moving servo draws current peaks that can reset a USB-powered board. Power servos from a separate 5 V supply and connect the grounds.",
+     "source": {
+      "title": "Arduino Servo library reference",
+      "section": "Servos draw considerable power; use a separate supply"
+     }
+    }
    ],
    "sources": [
     {
@@ -21917,6 +22209,23 @@
     "display",
     "screen",
     "128x64"
+   ],
+   "gotchas": [
+    {
+     "text": "The address is 0x3C or 0x3D (the jumper on the back). A board printed “0x78” is 0x3C: the print shows the address shifted left by one bit.",
+     "source": {
+      "title": "Solomon Systech SSD1306 datasheet",
+      "section": "I²C-bus interface: slave address, SA0 bit"
+     }
+    },
+    {
+     "text": "A 128×64 display needs a 1 KB screen buffer in RAM. On a board with 2 KB of RAM (Uno, Nano) that leaves little for the rest of the sketch.",
+     "when": "avr",
+     "source": {
+      "title": "Adafruit SSD1306 library",
+      "section": "Buffer of width × height / 8 bytes; ATmega328P datasheet: 2 KB SRAM"
+     }
+    }
    ],
    "sources": [
     {
@@ -23514,6 +23823,15 @@
     "clock display",
     "display 7 segmenti",
     "orologio"
+   ],
+   "gotchas": [
+    {
+     "text": "CLK and DIO are not I2C: use a TM1637 library. Any two pins work.",
+     "source": {
+      "title": "Titan Micro TM1637 datasheet",
+      "section": "Two-wire serial interface"
+     }
+    }
    ],
    "sources": [
     {
@@ -25224,6 +25542,15 @@
     "distanza",
     "laser"
    ],
+   "gotchas": [
+    {
+     "text": "Every sensor starts at address 0x29. To use two on one bus, hold one in reset with XSHUT and give the other a new address at start-up; the new address is lost at power-off.",
+     "source": {
+      "title": "ST VL53L0X datasheet",
+      "section": "I²C interface: device address 0x52 (8-bit), change of address"
+     }
+    }
+   ],
    "sources": [
     {
      "title": "ST VL53L0X datasheet",
@@ -26067,6 +26394,30 @@
     "rgb",
     "addressable",
     "striscia led"
+   ],
+   "gotchas": [
+    {
+     "text": "Each LED draws up to about 60 mA at full white: 30 LEDs need about 1.8 A, more than USB gives. Power the strip from its own 5 V supply and connect the grounds.",
+     "source": {
+      "title": "Adafruit NeoPixel Überguide",
+      "section": "Powering NeoPixels"
+     }
+    },
+    {
+     "text": "Put a 300 to 500 Ω resistor in the data line and a large capacitor (about 1000 µF) across the strip’s supply.",
+     "source": {
+      "title": "Adafruit NeoPixel Überguide",
+      "section": "Best practices"
+     }
+    },
+    {
+     "text": "At 5 V the data input needs at least 0.7 × 5 V = 3.5 V to read HIGH. A 3.3 V board often works but not always: a level shifter (74AHCT125) makes it reliable.",
+     "when": "logic3v3",
+     "source": {
+      "title": "Worldsemi WS2812B datasheet",
+      "section": "Electrical characteristics: VIH = 0.7 VDD"
+     }
+    }
    ],
    "sources": [
     {

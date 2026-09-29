@@ -94,6 +94,15 @@
     "driver motore",
     "ponte h"
   ],
+  "gotchas": [
+    {
+      "text": "The L298 loses about 2 to 3 V inside: a motor on a 6 V supply gets roughly 4 V. Connect the driver’s GND to the board’s GND.",
+      "source": {
+        "title": "ST L298 datasheet",
+        "section": "Total drop (source + sink saturation voltage)"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "ST L298 datasheet",

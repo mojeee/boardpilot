@@ -1,7 +1,7 @@
 // Validation for part definitions: user-imported parts are data from outside the app,
 // so every field is checked before the part enters the library.
 
-import type { PartDef, PartPinRole, PartShape, Result } from './types';
+import type { PartDef, PartGotcha, PartPinRole, PartShape, Result } from './types';
 import { t } from './i18n';
 
 export const PIN_ROLES: PartPinRole[] = [
@@ -91,6 +91,18 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
           .slice(0, 6)
       : [],
   };
+  if (Array.isArray(o.gotchas)) {
+    const g = o.gotchas
+      .map((x) => (typeof x === 'object' && x !== null ? (x as Record<string, unknown>) : {}))
+      .map((x) => {
+        const src = (typeof x.source === 'object' && x.source !== null ? x.source : {}) as Record<string, unknown>;
+        const when = ['logic3v3', 'logic5v', 'avr', 'esp32'].includes(x.when as string) ? (x.when as PartGotcha['when']) : undefined;
+        return { text: str(x.text, 400), ...(when ? { when } : {}), source: { title: str(src.title, 120), section: str(src.section, 160) || undefined } };
+      })
+      .filter((x) => x.text && x.source.title)
+      .slice(0, 8);
+    if (g.length) def.gotchas = g;
+  }
   if (bus) def.bus = bus;
   if (addresses?.length) def.addresses = addresses;
   if (Array.isArray(o.measures)) def.measures = o.measures.map((x) => str(x, 30)).filter(Boolean).slice(0, 8);

@@ -45,6 +45,22 @@
     "umidità",
     "temperatura"
   ],
+  "gotchas": [
+    {
+      "text": "It measures 0 to 50 °C and 20 to 90 %RH in whole numbers only. Below 0 °C it cannot measure.",
+      "source": {
+        "title": "Aosong DHT11 datasheet",
+        "section": "Technical specifications"
+      }
+    },
+    {
+      "text": "After power-up, wait 1 second before the first read.",
+      "source": {
+        "title": "Aosong DHT11 datasheet",
+        "section": "Power and pin"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Aosong DHT11 datasheet",
