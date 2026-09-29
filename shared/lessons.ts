@@ -490,6 +490,7 @@ switch (state) {
     case ERROR:   if (button_pressed)  {               state = IDLE;    } break;
 }`,
       },
+      { kind: 'p', text: 'Try it: in New project, the State machine designer draws your machine, checks it, and writes the C code with a unit test for every transition. The thermostat above is one of its examples.' },
       { kind: 'h', text: 'DMA, watchdog and low power' },
       {
         kind: 'list',
