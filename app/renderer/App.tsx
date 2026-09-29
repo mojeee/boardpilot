@@ -48,6 +48,8 @@ async function boot() {
   const params = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
   const screen = params.get('screen');
   if (screen) openTask(screen as Parameters<typeof openTask>[0]);
+  // motion=1: the social-clip capture overlay (only used with BP_MOTION, see app/main/motion.ts)
+  if (params.get('motion')) void import('./motion/overlay');
   const demo = params.get('demo');
   if (demo) void runDemo(demo, params.get('scenario'));
 }
