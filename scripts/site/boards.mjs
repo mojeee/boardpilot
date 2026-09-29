@@ -306,6 +306,7 @@ ${footer}`,
       .map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" rel="nofollow noopener">${esc(s.title)}</a>` : esc(s.title)}${s.section ? `, ${esc(s.section)}` : ''}</li>`)
       .join('');
     pages[`${pre.slice(1) ? 'it/' : ''}boards/${b.id}/index.html`] = head({
+      image: `/img/boards/${b.id}.jpg`,
       lang,
       title,
       description,
