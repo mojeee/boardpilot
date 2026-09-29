@@ -8,6 +8,8 @@ import type { ResultData } from '@shared/flow';
 import { useAi, useApp, useLog, useScene, log } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { Viewport } from '../three/Viewport';
+import { BomTable } from '../components/BomTable';
+import { billOfMaterials, bomToMarkdown } from '@shared/bom';
 import { t, getLanguage } from '@shared/i18n';
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
@@ -48,6 +50,7 @@ function buildMarkdown(snapshot: string | null, result: ResultData | undefined) 
   L.push('', `## ${t('Wiring check')}`, '');
   if (!findings.length) L.push(t('No rule found a problem in the wiring drawing.'));
   for (const f of findings) L.push(`- **${t(f.severity)}**: ${f.message} ${f.hint}${f.source ? ` _(${f.source})_` : ''}`);
+  if (scene.parts.length) L.push('', `## ${t('Shopping list')}`, '', bomToMarkdown(billOfMaterials(scene, board, PARTS)));
   L.push('', `## ${t('Project')}`, '', `| ${t('Part')} | ${t('Model')} |`, '|---|---|');
   for (const p of scene.parts)
     L.push(`| ${p.label ?? p.id} | ${PARTS[p.partId]?.name ?? p.partId}${p.confirmed === false ? ` (${t('unconfirmed suggestion')})` : ''} |`);
@@ -162,6 +165,10 @@ export function Report() {
       <div className="report-grid">
         <div className="report-3d">
           <Viewport compact />
+        </div>
+        <div className="card report-bom">
+          <div className="label">{t('Shopping list')}</div>
+          <BomTable />
         </div>
         <div className="card report-preview">
           {snapshot && <img src={snapshot} alt={t('3D snapshot')} className="snap" />}

@@ -705,3 +705,12 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .dg-mark-text { fill: #12171D; font: 700 11px var(--font-ui); pointer-events: none; }
 .dg-export { position: absolute; right: 0; bottom: 0; }
 .dg-empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; }
+
+/* Shopping list */
+.bom { display: flex; flex-direction: column; gap: 8px; }
+.bom-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.bom-table th { text-align: left; color: var(--dim); font-weight: 500; border-bottom: 1px solid var(--line); padding: 4px 6px; }
+.bom-table td { border-bottom: 1px solid var(--line); padding: 5px 6px; vertical-align: top; }
+.bom-table tr.bom-extra td:first-child { box-shadow: inset 2px 0 0 var(--warn); }
+.bom-details summary { cursor: pointer; }
+.report-bom { grid-column: 1 / -1; }
