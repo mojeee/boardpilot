@@ -23,7 +23,7 @@ function run(id: string, boardId: string, loops: number): StoryItem[] {
 
 describe('template projects', () => {
   it('has the first templates', () => {
-    expect(TEMPLATES.map((x) => x.id).sort()).toEqual(['blink-button', 'distance-meter', 'motion-alarm', 'plant-watering', 'smart-room-monitor', 'weather-station']);
+    expect(TEMPLATES.map((x) => x.id).sort()).toEqual(['blink-button', 'distance-meter', 'industrial-node', 'motion-alarm', 'plant-watering', 'smart-room-monitor', 'vibration-monitor', 'weather-station']);
   });
 
   describe.each(TEMPLATES)('$id', (tpl) => {

@@ -1,0 +1,108 @@
+{
+  "id": "industrial-node",
+  "name": "Industrial sensor node",
+  "summary": "A temperature probe switches a fan relay above a limit, a status LED latches the alarm, and a button acknowledges it.",
+  "difficulty": "medium",
+  "minutes": 90,
+  "learn": [
+    "Read a 1-Wire temperature probe",
+    "Switch a load safely through a relay",
+    "Latch an alarm until someone acknowledges it"
+  ],
+  "parts": [
+    { "id": "temp1", "partId": "ds18b20-probe", "label": "Temperature probe" },
+    { "id": "relay1", "partId": "relay-1ch", "label": "Fan relay" },
+    { "id": "led1", "partId": "led-resistor", "label": "Status LED" },
+    { "id": "btn1", "partId": "push-button", "label": "Alarm reset" }
+  ],
+  "pins": {
+    "TEMP": { "part": "temp1", "pin": "DQ" },
+    "RELAY": { "part": "relay1", "pin": "IN" },
+    "LED": { "part": "led1", "pin": "A" },
+    "BUTTON": { "part": "btn1", "pin": "1" }
+  },
+  "libraries": ["OneWire", "DallasTemperature"],
+  "notes": ["The DS18B20 data line needs a 4.7 kΩ pull-up to the probe’s supply, VDD (the shopping list adds it).", "The fan is not wired to the board: it goes through the relay's COM and NO contacts, with its own supply."],
+  "code": {
+    "includes": ["#include <OneWire.h>", "#include <DallasTemperature.h>"],
+    "globals": [
+      "const int TEMP_PIN = {TEMP};",
+      "const int RELAY_PIN = {RELAY};",
+      "const int LED_PIN = {LED};",
+      "const int BUTTON_PIN = {BUTTON};",
+      "const int RELAY_ON = HIGH;   // many relay modules switch on with LOW: set LOW if yours does",
+      "const float LIMIT_C = 30.0;  // fan on above this",
+      "OneWire oneWire(TEMP_PIN);",
+      "DallasTemperature probeT(&oneWire);",
+      "unsigned long lastRead = 0;",
+      "bool alarm = false;"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(RELAY_PIN, OUTPUT);",
+      "  digitalWrite(RELAY_PIN, !RELAY_ON);  // fan off at start",
+      "  pinMode(LED_PIN, OUTPUT);",
+      "  pinMode(BUTTON_PIN, INPUT_PULLUP);",
+      "  probeT.begin();",
+      "  if (probeT.getDeviceCount() == 0) probe.event(\"No DS18B20 found: check the 4.7 kOhm pull-up\");"
+    ],
+    "loop": [
+      "  probe.step(\"Read the reset button\");",
+      "  if (alarm && digitalRead(BUTTON_PIN) == LOW) {",
+      "    alarm = false;",
+      "    probe.event(\"Alarm acknowledged\");",
+      "  }",
+      "  digitalWrite(LED_PIN, alarm ? HIGH : LOW);",
+      "  if (millis() - lastRead < 2000) {",
+      "    probe.loop();",
+      "    return;",
+      "  }",
+      "  lastRead = millis();",
+      "  probe.step(\"Read the temperature\");",
+      "  probeT.requestTemperatures();  // about 750 ms at 12-bit resolution",
+      "  float temperature = probeT.getTempCByIndex(0);",
+      "  probe.value(\"temperature\", temperature, TEMP_PIN);",
+      "  probe.step(\"Switch the fan\");",
+      "  bool hot = temperature > LIMIT_C;",
+      "  digitalWrite(RELAY_PIN, hot ? RELAY_ON : !RELAY_ON);",
+      "  if (hot && !alarm) {",
+      "    alarm = true;",
+      "    probe.event(\"Too hot: fan on, alarm latched\");",
+      "  }",
+      "  Serial.print(\"T=\"); Serial.print(temperature, 1);",
+      "  Serial.print(\" C relay=\"); Serial.print(hot ? \"ON\" : \"OFF\");",
+      "  Serial.print(\" alarm=\"); Serial.println(alarm ? 1 : 0);",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 1000,
+    "vars": { "alarm": 0 },
+    "inputs": {
+      "temperature": { "wave": { "min": 24, "max": 34, "periodS": 60 } },
+      "BUTTON": { "pulses": { "everyS": 20, "highS": 1, "offsetS": 15 } }
+    },
+    "loop": [
+      { "step": "Read the reset button" },
+      { "read": "BUTTON", "as": "reset", "digits": 0 },
+      { "if": "reset", "then": [{ "if": "alarm == 1", "then": [{ "set": "alarm", "value": 0 }, { "event": "Alarm acknowledged" }, { "write": "LED", "level": 0 }] }] },
+      { "step": "Read the temperature" },
+      { "read": "temperature", "as": "temperature", "unit": "°C", "digits": 1 },
+      { "step": "Switch the fan" },
+      {
+        "if": "temperature > 30",
+        "then": [
+          { "write": "RELAY", "level": 1 },
+          { "if": "alarm == 0", "then": [{ "set": "alarm", "value": 1 }, { "event": "Too hot: fan on, alarm latched" }, { "write": "LED", "level": 1 }] }
+        ],
+        "else": [{ "write": "RELAY", "level": 0 }]
+      }
+    ]
+  },
+  "sources": [
+    { "title": "Maxim DS18B20 datasheet", "section": "Operation: 750 ms conversion at 12 bits; 4.7 kΩ pull-up" },
+    { "title": "DallasTemperature library", "section": "requestTemperatures(), getTempCByIndex()" },
+    { "title": "Arduino reference", "section": "pinMode(), INPUT_PULLUP" }
+  ]
+}

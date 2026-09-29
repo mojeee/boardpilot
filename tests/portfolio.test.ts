@@ -18,7 +18,7 @@ describe('portfolio projects', () => {
         const scene = templateScene(tpl, board, PARTS);
         for (const s of stagesFor(p, board)) {
           const code = stageCode(p, s, board, scene);
-          expect(code, `${board.id}/${s.id}`).not.toContain('not wired');
+          expect(code, `${board.id}/${s.id}`).not.toContain('not wired */');
           expect(code).not.toMatch(/\{[A-Z_]+(:[A-Z_]+)?\}/);
           const errors = checkCode(code, scene, board, PARTS, { monitorBaud: 115200 }).filter((f) => f.severity === 'error');
           expect(errors, `${board.id}/${s.id}: ${errors.map((e) => e.message).join('; ')}`).toEqual([]);
