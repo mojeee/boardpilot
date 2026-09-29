@@ -109,6 +109,35 @@ async function runNamedDemo(name: string, scenario: string | null) {
   } else if (name === 'boards') {
     const { openBoardPicker } = await import('./components/BoardPicker');
     openBoardPicker();
+  } else if (name === 'code') {
+    // #demo=code: the weather station with a sketch that has SDA/SCL reversed and the LED on the wrong pin.
+    openTask('newProject');
+    const { loadSketch } = await import('./components/CodeCheck');
+    const led = useScene.getState().scene.wires.find((w) => w.to.part.startsWith('led') || w.from.part.startsWith('led'));
+    const ledPin = led ? (led.from.part === 'board' ? led.from.pin : led.to.pin).replace(/^D/, '') : '25';
+    loadSketch(
+      'weather_station.ino',
+      [
+        '#include <Wire.h>',
+        '#include <Adafruit_BME280.h>',
+        '',
+        `#define LED_PIN ${Number(ledPin) + 1}`,
+        'Adafruit_BME280 bme;',
+        '',
+        'void setup() {',
+        '  Serial.begin(9600);',
+        '  Wire.begin(22, 21);',
+        '  pinMode(LED_PIN, OUTPUT);',
+        '  bme.begin(0x76);',
+        '}',
+        '',
+        'void loop() {',
+        '  digitalWrite(LED_PIN, !digitalRead(LED_PIN));',
+        '  Serial.println(bme.readTemperature());',
+        '  delay(1000);',
+        '}',
+      ].join('\n'),
+    );
   } else if (name === 'project') {
     useScene.getState().openScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

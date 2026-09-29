@@ -79,6 +79,8 @@ export interface BoardPilotApi {
   session: {
     append(entry: LogEntry): void;
     pickFile(kind: 'firmware' | 'datasheet'): Promise<string | null>;
+    /** Shows an open dialog for an Arduino sketch and returns its text (read-only, 1 MB max). */
+    openSketch(): Promise<Result<{ name: string; text: string }>>;
     /** Shows a save dialog and writes text (CSV recordings, generated sketches). */
     saveFile(suggestedName: string, content: string): Promise<Result<string>>;
     exportReport(markdown: string, html: string, suggestedName: string): Promise<Result<{ markdownPath: string; pdfPath: string }>>;
