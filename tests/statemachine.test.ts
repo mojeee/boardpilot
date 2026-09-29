@@ -264,7 +264,7 @@ describe('generated C', () => {
       } finally {
         rmSync(dir, { recursive: true, force: true });
       }
-    });
+    }, 60000); // compiling C is slow on the Windows runners
   }
 
   it.skipIf(!cc)('the generated test catches a wrong transition', () => {
