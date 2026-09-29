@@ -20,9 +20,10 @@ import resetting from './scenarios/keeps-resetting.json';
 import garbage from './scenarios/garbage-serial.json';
 import labMistakes from './scenarios/lab-mistakes.json';
 import imuAsleep from './scenarios/imu-asleep.json';
+import roomMonitor from './scenarios/room-monitor.json';
 
 /** Hand-written benches for the ESP32 DevKit. Other boards get generated benches (see bench.ts). */
-export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage, labMistakes, imuAsleep].map(
+export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage, labMistakes, imuAsleep, roomMonitor].map(
   (s) => s as unknown as Scenario,
 );
 

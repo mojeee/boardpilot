@@ -1,0 +1,123 @@
+{
+  "id": "smart-room-monitor",
+  "name": "Smart room monitor",
+  "summary": "Temperature, humidity and pressure on an OLED, a knob sets the comfort limit, an LED warns when it is too warm, and a button changes the page.",
+  "difficulty": "medium",
+  "minutes": 90,
+  "learn": [
+    "Combine GPIO, ADC and I2C in one program",
+    "Detect a button press once, not on every loop",
+    "Compare a measurement with a limit the user sets"
+  ],
+  "needs": ["adc"],
+  "parts": [
+    { "id": "bme1", "partId": "bme280-gy", "label": "BME280" },
+    { "id": "oled1", "partId": "ssd1306-i2c", "label": "OLED" },
+    { "id": "led1", "partId": "led-resistor", "label": "Warm LED" },
+    { "id": "btn1", "partId": "push-button", "label": "Page button" },
+    { "id": "pot1", "partId": "potentiometer", "label": "Comfort knob" }
+  ],
+  "pins": {
+    "SDA": { "part": "bme1", "pin": "SDA" },
+    "SCL": { "part": "bme1", "pin": "SCL" },
+    "LED": { "part": "led1", "pin": "A" },
+    "BUTTON": { "part": "btn1", "pin": "1" },
+    "KNOB": { "part": "pot1", "pin": "OUT" }
+  },
+  "libraries": ["Adafruit BME280 Library", "Adafruit SSD1306", "Adafruit GFX Library"],
+  "code": {
+    "includes": ["#include <Wire.h>", "#include <Adafruit_BME280.h>", "#include <Adafruit_SSD1306.h>"],
+    "globals": [
+      "const int LED_PIN = {LED};",
+      "const int BUTTON_PIN = {BUTTON};",
+      "const int KNOB_PIN = {KNOB};",
+      "Adafruit_BME280 bme;",
+      "Adafruit_SSD1306 oled(128, 64, &Wire, -1);",
+      "unsigned long lastRead = 0;",
+      "bool wasPressed = false;",
+      "int page = 0;",
+      "float temperature = 0, humidity = 0, pressure = 0, limit = 0;"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(LED_PIN, OUTPUT);",
+      "  pinMode(BUTTON_PIN, INPUT_PULLUP);  // pressed = LOW",
+      "{I2C_BEGIN}",
+      "  if (!bme.begin(0x76) && !bme.begin(0x77)) probe.event(\"BME280 not found: check the wiring\");",
+      "  if (!oled.begin(SSD1306_SWITCHCAPVCC, 0x3C)) probe.event(\"Display not found at 0x3C\");",
+      "  oled.setTextColor(SSD1306_WHITE);",
+      "  Serial.println(\"Room monitor: hello\");"
+    ],
+    "loop": [
+      "  probe.step(\"Read the button\");",
+      "  bool pressed = digitalRead(BUTTON_PIN) == LOW;",
+      "  if (pressed && !wasPressed) {  // only on the press, not while held",
+      "    page = 1 - page;",
+      "    probe.event(\"Button: next page\");",
+      "  }",
+      "  wasPressed = pressed;",
+      "  if (millis() - lastRead < 2000) {",
+      "    probe.loop();",
+      "    return;",
+      "  }",
+      "  lastRead = millis();",
+      "  probe.step(\"Read the sensor and the knob\");",
+      "  temperature = bme.readTemperature();",
+      "  humidity = bme.readHumidity();",
+      "  pressure = bme.readPressure() / 100.0F;  // Pa to hPa",
+      "  limit = 16 + {READ_MV:KNOB} / 250.0;  // knob: 0 to 3.3 V gives 16 to about 29 °C",
+      "  probe.value(\"temperature\", temperature);",
+      "  probe.value(\"limit\", limit, KNOB_PIN);",
+      "  probe.step(\"Compare with the comfort limit\");",
+      "  digitalWrite(LED_PIN, temperature > limit ? HIGH : LOW);",
+      "  probe.step(\"Show the page on the display\");",
+      "  oled.clearDisplay();",
+      "  oled.setCursor(0, 0);",
+      "  oled.setTextSize(2);",
+      "  if (page == 0) {",
+      "    oled.print(temperature, 1);",
+      "    oled.println(\" C\");",
+      "    oled.print(humidity, 0);",
+      "    oled.println(\" %\");",
+      "  } else {",
+      "    oled.print(pressure, 0);",
+      "    oled.println(\" hPa\");",
+      "    oled.print(\"max \");",
+      "    oled.print(limit, 0);",
+      "  }",
+      "  oled.display();",
+      "  Serial.print(\"T=\"); Serial.print(temperature, 1); Serial.print(\" C H=\"); Serial.print(humidity, 0);",
+      "  Serial.print(\" % limit=\"); Serial.println(limit, 1);",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 1000,
+    "vars": { "page": 0 },
+    "inputs": {
+      "temperature": { "wave": { "min": 21.0, "max": 25.5, "periodS": 60 } },
+      "humidity": { "wave": { "min": 40, "max": 55, "periodS": 90 } },
+      "KNOB": { "wave": { "min": 1200, "max": 2200, "periodS": 45 } },
+      "BUTTON": { "pulses": { "everyS": 12, "highS": 1, "offsetS": 6 } }
+    },
+    "loop": [
+      { "step": "Read the button" },
+      { "read": "BUTTON", "as": "pressed", "digits": 0 },
+      { "if": "pressed", "then": [{ "event": "Button: next page" }] },
+      { "step": "Read the sensor and the knob" },
+      { "read": "temperature", "as": "temperature", "unit": "°C", "digits": 1 },
+      { "read": "humidity", "as": "humidity", "unit": "%", "digits": 0 },
+      { "read": "KNOB", "as": "knob", "unit": "mV", "digits": 0 },
+      { "step": "Compare with the comfort limit" },
+      { "if": "temperature > 23.5", "then": [{ "write": "LED", "level": 1 }], "else": [{ "write": "LED", "level": 0 }] },
+      { "step": "Show the page on the display" },
+      { "show": "oled1", "text": "{temperature} C  {humidity} %" }
+    ]
+  },
+  "sources": [
+    { "title": "Bosch BME280 datasheet", "section": "I²C interface; measurement ranges" },
+    { "title": "Adafruit SSD1306 library", "section": "begin(SSD1306_SWITCHCAPVCC, 0x3C)" },
+    { "title": "Arduino reference", "section": "pinMode(), INPUT_PULLUP; analogRead()" }
+  ]
+}
