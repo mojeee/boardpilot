@@ -193,6 +193,7 @@ export function checkBoard(b) {
   const s = b.layoutPxPerMm;
   for (const c of b.components ?? []) {
     if (!COMPONENTS.has(c.type)) e(`component type ${c.type} unknown`);
+    if (c.package !== undefined && !['qfn', 'lqfp', 'soic', 'dip', 'sot223', 'sot23', 'module', 'none'].includes(c.package)) e(`component ${c.label ?? c.type}: package ${c.package} unknown`);
     if (!Array.isArray(c.rect) || c.rect.length !== 4) e(`component ${c.label ?? c.type}: rect must be [x,y,w,h]`);
     else {
       const [x, y, w, h] = c.rect.map((v) => v / s);

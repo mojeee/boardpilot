@@ -12,6 +12,8 @@ import { t } from '@shared/i18n';
 import { log, useLive, useScene } from '../state/store';
 import { useTemplate } from '../state/templateRun';
 import { PART_BASE_Y, partPinLocal, partRotationDeg } from './geometry';
+import { markingTexture } from './textures';
+import { useDetailed } from '../state/view3d';
 
 const Std = ({ color, ...rest }: { color: string; transparent?: boolean; opacity?: number; emissive?: string; emissiveIntensity?: number; metalness?: number; roughness?: number }) => (
   <meshStandardMaterial color={color} roughness={rest.roughness ?? 0.6} metalness={rest.metalness ?? 0.05} {...rest} />
@@ -250,8 +252,54 @@ function LedGlow({ sp, def }: { sp: ScenePart; def: PartDef }) {
   );
 }
 
+/**
+ * Full detail on breakout boards and modules: the black pin header, gold mounting holes, two small
+ * SMD parts and the part's name printed on the board, all from the part's size and pins.
+ */
+function PartDetail({ def }: { def: PartDef }) {
+  const [w, d, h] = def.model.size;
+  const shape = def.model.shape;
+  const tex = useMemo(() => markingTexture([def.name.split(/[ (]/)[0]], (w * 0.8) / (d * 0.22), 'rgba(236,240,244,0.85)'), [def.name, w, d]);
+  if (shape !== 'breakout' && shape !== 'module' && shape !== 'oled') return null;
+  const pins = def.pins.map((p) => partPinLocal(def, p.name)).filter((v): v is THREE.Vector3 => !!v);
+  const xs = pins.map((v) => v.x);
+  const z = pins[0]?.z ?? -d / 2;
+  const top = shape === 'oled' ? 1.6 : h;
+  return (
+    <group>
+      {pins.length > 0 && (
+        <mesh position={[(Math.min(...xs) + Math.max(...xs)) / 2, top + 1.25, z]}>
+          <boxGeometry args={[Math.max(...xs) - Math.min(...xs) + 2.54, 2.5, 2.54]} />
+          <meshStandardMaterial color="#15181b" roughness={0.8} />
+        </mesh>
+      )}
+      {w > 12 && d > 12 &&
+        [-1, 1].map((s) => (
+          <mesh key={s} position={[s * (w / 2 - 2.2), top + 0.01, d / 2 - 2.2]} rotation-x={-Math.PI / 2}>
+            <ringGeometry args={[1.1, 1.9, 24]} />
+            <meshStandardMaterial color="#D9B45A" metalness={0.85} roughness={0.3} />
+          </mesh>
+        ))}
+      {shape !== 'oled' &&
+        [-1, 1].map((s) => (
+          <mesh key={`r${s}`} position={[s * w * 0.28, top + 0.25, d * 0.18]}>
+            <boxGeometry args={[1.6, 0.5, 0.8]} />
+            <meshStandardMaterial color={s < 0 ? '#1e1f22' : '#b8996a'} roughness={0.6} />
+          </mesh>
+        ))}
+      {shape !== 'oled' && (
+        <mesh position={[0, top + 0.02, d / 2 - Math.min(3.5, d * 0.14)]} rotation-x={-Math.PI / 2}>
+          <planeGeometry args={[w * 0.8, d * 0.22]} />
+          <meshBasicMaterial map={tex} transparent depthWrite={false} />
+        </mesh>
+      )}
+    </group>
+  );
+}
+
 function PartModel({ sp }: { sp: ScenePart }) {
   const def = PARTS[sp.partId];
+  const detailed = useDetailed();
   const labels = useScene((s) => s.labels);
   const target: TargetRef = `part:${sp.id}`;
   const selected = useScene((s) => s.selected === target);
@@ -316,6 +364,7 @@ function PartModel({ sp }: { sp: ScenePart }) {
           onPointerOut={() => (document.body.style.cursor = '')}
         >
           <PartBody def={def} />
+          {detailed && <PartDetail def={def} />}
         </group>
         {def.model.shape === 'led' && <LedGlow sp={sp} def={def} />}
         <PartPins def={def} labels={labels || selected || highlighted || wireMode} tagged={wired} onPinClick={onPinClick} />

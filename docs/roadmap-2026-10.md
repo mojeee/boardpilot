@@ -540,10 +540,10 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
          project page: plain text, the source, and buttons Fix, Show on the board, Ask why, with
          "1 of N" to step through them. They stay in the log too.
 7. **Better 3D view**
-   - [ ] Better lighting: a studio light setup with soft shadows, a floor grid that fades out,
+   - [x] Better lighting: a studio light setup with soft shadows, a floor grid that fades out,
          metal and gold materials, glowing wires and pins, and a Light switch (Studio / Bench /
          High contrast).
-   - [ ] More detail on the boards and parts: silkscreen pin labels, the main chips (USB-serial
+   - [x] More detail on the boards and parts: silkscreen pin labels, the main chips (USB-serial
          chip, voltage regulator), small resistors and capacitors, LEDs (power LED lit when the
          board is powered), mounting holes, PCB traces, connector heads on the wire ends, and part
          breakouts with their own chips and labels. A Detail switch (Simple / Full / Labels) keeps

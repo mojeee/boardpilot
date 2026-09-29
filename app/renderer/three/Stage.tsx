@@ -9,12 +9,45 @@ import { ContactShadows, Environment, Grid, Lightformer } from '@react-three/dre
 import { DESK_Y, FLOOR_Y } from './geometry';
 import { useScene } from '../state/store';
 import { drawerTexture, labelTexture, matTexture, woodTexture } from './textures';
+import type { Light } from '../state/view3d';
 
 const BG = '#12171D';
 const BG_DESK = '#0f1318';
 
-/** Studio lighting built in code: soft boxes around the scene give metals something to reflect. */
-function Lights() {
+/**
+ * The three light setups (3D toolbar → Light):
+ * - Studio: soft boxes around the scene give metals something to reflect (the default).
+ * - Bench: a warm desk lamp from the left, darker surroundings, like a real workbench at night.
+ * - High contrast: flat, bright and neutral, strong outlines of every part (easier to read).
+ */
+function Lights({ light }: { light: Light }) {
+  if (light === 'bench') {
+    return (
+      <>
+        <Environment resolution={64} frames={1} environmentIntensity={0.6}>
+          <color attach="background" args={['#1d1a17']} />
+          <Lightformer form="rect" color="#ffd9a8" intensity={2.6} position={[-4, 6, 2]} rotation-x={Math.PI / 2} scale={[6, 6, 1]} />
+          <Lightformer form="rect" intensity={0.5} position={[0, 3, -7]} scale={[14, 5, 1]} />
+        </Environment>
+        <hemisphereLight args={['#f3dcc0', '#120f0c', 0.6]} />
+        <spotLight position={[-70, 120, 50]} angle={0.6} penumbra={0.8} intensity={32000} decay={2} color="#ffd8a6" />
+        <directionalLight position={[60, 40, -60]} intensity={0.25} color="#9fb8ff" />
+      </>
+    );
+  }
+  if (light === 'contrast') {
+    return (
+      <>
+        <Environment resolution={64} frames={1} environmentIntensity={0.35}>
+          <color attach="background" args={['#ffffff']} />
+          <Lightformer form="rect" intensity={1.5} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[14, 10, 1]} />
+        </Environment>
+        <ambientLight intensity={0.9} />
+        <directionalLight position={[0, 120, 60]} intensity={2.2} />
+        <directionalLight position={[-80, 30, -80]} intensity={0.8} />
+      </>
+    );
+  }
   return (
     <>
       <Environment resolution={128} frames={1} environmentIntensity={1}>
@@ -311,11 +344,13 @@ function DeskFloor() {
   );
 }
 
-export function Stage({ style }: { style: 'desk' | 'plain' }) {
+export function Stage({ style, light = 'studio' }: { style: 'desk' | 'plain'; light?: Light }) {
   return (
     <>
-      <Lights />
+      <Lights light={light} />
       {style === 'desk' ? <DeskFloor /> : <PlainFloor />}
+      {light === 'contrast' && <color attach="background" args={['#07090c']} />}
+      {light === 'bench' && style === 'plain' && <color attach="background" args={['#0d0b09']} />}
     </>
   );
 }
