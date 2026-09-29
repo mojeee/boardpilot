@@ -1,0 +1,74 @@
+/* Interview coach on the Learn screen (components/InterviewCoach.tsx). */
+
+.coach-open { display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; vertical-align: middle; }
+.coach {
+  margin: 10px 0 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.coach p { margin: 0; }
+.coach .label { margin: 4px 0 0; }
+.coach textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+.coach h4 { margin: 6px 0 2px; font-size: 13px; font-weight: 600; }
+.coach ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
+.coach-hint { display: flex; justify-content: space-between; gap: 12px; }
+.coach-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.coach-actions .btn { display: inline-flex; align-items: center; gap: 6px; }
+
+.coach-error {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-left: 3px solid var(--err);
+  background: var(--chrome);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 8px 10px;
+}
+
+.coach-feedback {
+  background: var(--chrome);
+  border: 1px solid var(--ai-line);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  user-select: text;
+}
+.coach-feedback-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.coach-followup { color: var(--ai); }
+.coach-sources { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+.coach-sources .label { margin: 0; }
+.coach-sources .chip { white-space: normal; max-width: 100%; border-radius: 10px; }
+
+.coach-keys {
+  border-left: 3px solid var(--pin-sda);
+  background: var(--chrome);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.coach-key b { font-size: 12.5px; font-weight: 600; }
+.coach-key ul { margin-top: 3px; color: var(--muted); }
+
+.coach-history { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+.coach-history-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.coach-history-head .btn { display: inline-flex; align-items: center; gap: 5px; }
+.learn-article .coach-attempts { list-style: none; margin: 0; padding: 0; max-width: none; display: flex; flex-direction: column; gap: 4px; }
+.learn-article .coach li { margin: 2px 0; }
+.coach-attempts details { background: var(--chrome); border-radius: var(--radius-sm); padding: 6px 10px; }
+.coach-attempts summary { cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 12.5px; }
+.coach-attempts details[open] { display: flex; flex-direction: column; gap: 6px; }
+.coach-score { font-size: 11.5px; }
+.coach-score.ok { color: var(--ok); }
+.coach-score.warn { color: var(--warn); }
+.coach-answer { color: var(--muted); font-size: 12.5px; margin-top: 6px; user-select: text; }
+.coach-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.5px; }
+.coach-delete-all { align-self: flex-start; }

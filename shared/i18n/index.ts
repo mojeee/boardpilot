@@ -25,6 +25,7 @@ import power from './it/power';
 import clocks from './it/clocks';
 import labs from './it/labs';
 import registers from './it/registers';
+import coach from './it/coach';
 
 export type Lang = 'en' | 'it';
 export const LANGS: { id: Lang; label: string }[] = [
@@ -33,7 +34,7 @@ export const LANGS: { id: Lang; label: string }[] = [
 ];
 
 // lessons first: an existing UI translation with the same English key wins
-export const IT: Record<string, string> = { ...lessons, ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts, ...settings, ...partsdata, ...partsdata2, ...partsdata3, ...partsdata4, ...partsdata5, ...boardsUi, ...boardsData, ...code, ...gotchas, ...templates, ...power, ...clocks, ...labs, ...registers };
+export const IT: Record<string, string> = { ...lessons, ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts, ...settings, ...partsdata, ...partsdata2, ...partsdata3, ...partsdata4, ...partsdata5, ...boardsUi, ...boardsData, ...code, ...gotchas, ...templates, ...power, ...clocks, ...labs, ...registers, ...coach };
 
 let current: Lang = 'en';
 const listeners = new Set<(l: Lang) => void>();
