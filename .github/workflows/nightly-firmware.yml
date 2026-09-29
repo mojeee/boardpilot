@@ -1,0 +1,71 @@
+name: Nightly firmware
+
+# Builds the starter firmware that New project generates, with the real vendor toolchains.
+# Nightly instead of on every PR, because installing the SDKs and compilers takes minutes.
+# Pico SDK: every template on every RP2040/RP2350 board (rpi-pico, rpi-pico-2, rpi-pico-w).
+
+on:
+  schedule:
+    - cron: '23 3 * * *' # every night at 03:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pico-sdk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      # Latest releases (both repos keep their latest release on master).
+      PICO_SDK_REF: master
+      PICOTOOL_REF: master
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Install the Arm compiler, CMake and Ninja
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib \
+            cmake ninja-build build-essential pkg-config libusb-1.0-0-dev
+
+      - name: Get the Pico SDK
+        run: |
+          git clone --depth 1 --branch "$PICO_SDK_REF" https://github.com/raspberrypi/pico-sdk.git "$RUNNER_TEMP/pico-sdk"
+          git -C "$RUNNER_TEMP/pico-sdk" submodule update --init --depth 1
+          echo "PICO_SDK_PATH=$RUNNER_TEMP/pico-sdk" >> "$GITHUB_ENV"
+
+      # The SDK needs picotool to write .uf2 files; installed once instead of fetched per project.
+      - name: Build picotool
+        run: |
+          git clone --depth 1 --branch "$PICOTOOL_REF" https://github.com/raspberrypi/picotool.git "$RUNNER_TEMP/picotool"
+          cmake -S "$RUNNER_TEMP/picotool" -B "$RUNNER_TEMP/picotool/build" -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/picotool/build"
+          sudo cmake --install "$RUNNER_TEMP/picotool/build"
+
+      - name: Generate the starter projects
+        run: node scripts/gen-starters.mjs "$RUNNER_TEMP/starters"
+
+      - name: Build every project
+        run: bash scripts/build-starters.sh "$RUNNER_TEMP/starters"
+
+      - name: Keep the generated projects and .uf2 files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pico-sdk-starters
+          path: |
+            ${{ runner.temp }}/starters/*/*/CMakeLists.txt
+            ${{ runner.temp }}/starters/*/*/pico_sdk_import.cmake
+            ${{ runner.temp }}/starters/*/*/main.c
+            ${{ runner.temp }}/starters/*/*/README.md
+            ${{ runner.temp }}/starters/*/*/build.log
+            ${{ runner.temp }}/starters/*/*/build/*.uf2
+          retention-days: 7
+          if-no-files-found: ignore
