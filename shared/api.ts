@@ -24,6 +24,7 @@ import type {
 import type { AiModelInfo, AiProviderId, AiSettingsInput, AiSettingsView, AiStatus } from './ai';
 import type { PreflightReport } from './preflight';
 import type { CoachAttempt } from './coach';
+import type { StarterFile } from './starter/common';
 
 export type Unsubscribe = () => void;
 
@@ -89,6 +90,11 @@ export interface BoardPilotApi {
     saveFile(suggestedName: string, content: string): Promise<Result<string>>;
     /** Shows a save dialog and writes a PNG given as a data:image/png;base64 URL (timing view export). */
     savePng(suggestedName: string, dataUrl: string): Promise<Result<string>>;
+    /**
+     * Asks for a place with a folder dialog, creates `folder` there (adds -2, -3… if it exists) and
+     * writes the files into it. Names must pass isSafeProjectName (no paths). Returns the folder path.
+     */
+    saveProject(folder: string, files: StarterFile[]): Promise<Result<string>>;
     exportReport(markdown: string, html: string, suggestedName: string): Promise<Result<{ markdownPath: string; pdfPath: string }>>;
     info(): Promise<{ dataDir: string; logPath: string; version: string }>;
   };

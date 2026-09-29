@@ -1,0 +1,4 @@
+/* New project, "3. Starter code": the file tabs of a generated project wrap inside the 400 px panel. */
+.starter-files { display: flex; flex-wrap: wrap; max-width: 100%; }
+.starter-files button { font-size: 11px; padding: 4px 8px; border-bottom: 1px solid var(--line); }
+.starter-files button + button { border-left: 1px solid var(--line); }

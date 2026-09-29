@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { PARTS, getBoard } from '@shared/board';
 import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
+import { generateStarter, starterToolchains, type StarterProject, type StarterToolchain } from '@shared/starter';
 import { useScene, log } from '../state/store';
 import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
@@ -20,15 +21,46 @@ import { TemplatePicker, TemplateView } from '../components/TemplatePanel';
 import { useTemplate } from '../state/templateRun';
 import { TEMPLATES } from '@shared/templates';
 import { t } from '@shared/i18n';
+import '../styles/starter.css';
 
 export function NewProjectPanel() {
   const scene = useScene((s) => s.scene);
   const findings = useScene((s) => s.findings);
   const [sketch, setSketch] = useState<string | null>(null);
+  const [toolchainPick, setToolchain] = useState<StarterToolchain>('arduino');
+  const [project, setProject] = useState<StarterProject | null>(null);
+  const [openFile, setOpenFile] = useState('main.c');
   const [showTemplates, setShowTemplates] = useState(false);
   const tplOpen = useTemplate((s) => !!s.tpl);
   const hasMachine = useScene((s) => s.scene.stateMachine !== undefined);
   const board = getBoard(scene.board);
+  const toolchains = starterToolchains(board);
+  // A board without the picked toolchain falls back to Arduino.
+  const toolchain = toolchains.includes(toolchainPick) ? toolchainPick : 'arduino';
+  const shownProject = toolchain === 'arduino' ? null : project;
+  const shownFile = shownProject?.files.find((f) => f.name === openFile) ?? shownProject?.files[0];
+
+  const generate = () => {
+    if (toolchain === 'arduino') {
+      setSketch(generateSketch(scene, board, PARTS));
+      return;
+    }
+    const p = generateStarter(toolchain, scene, board, PARTS);
+    setProject(p);
+    setOpenFile('main.c');
+    log('action', t('Generated a Pico SDK project for {board}.', { board: board.name }), { source: 'starter generator' });
+    for (const n of p.notes) log('warning', n, { source: 'starter generator' });
+  };
+
+  const saveFolder = async () => {
+    const p = toolchain === 'arduino' ? (sketch ? generateStarter('arduino', scene, board, PARTS) : null) : shownProject;
+    if (!p) return;
+    // The Arduino folder holds the sketch shown on screen, as generated.
+    const files = toolchain === 'arduino' && sketch ? p.files.map((f) => ({ ...f, text: sketch })) : p.files;
+    const r = await window.bp.session.saveProject(p.folder, files);
+    if (r.ok) log('action', t('Saved the project in {path}.', { path: r.value }));
+    else if (r.error.code !== 'cancelled') log('failed', [r.error.humanMessage, r.error.hint].filter(Boolean).join(' '));
+  };
 
   const assign = () => {
     const r = assignPins(scene, board, PARTS);
@@ -122,17 +154,56 @@ export function NewProjectPanel() {
             <StateMachineDesigner />
           </details>
           <div className="label">{t('3. Starter code')}</div>
+          {toolchains.length > 1 && (
+            <div className="row gap wrap">
+              <span className="small dim">{t('Toolchain')}</span>
+              <div className="seg" role="group" aria-label={t('Toolchain')}>
+                {toolchains.map((tc) => (
+                  <button key={tc} className={toolchain === tc ? 'on' : ''} onClick={() => setToolchain(tc)}>
+                    {tc === 'arduino' ? t('Arduino') : t('Pico SDK')}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {toolchain === 'pico-sdk' && <p className="small dim">{t('A CMake project for the official Raspberry Pi Pico SDK, with only the pins in your drawing. The README says how to build it.')}</p>}
           <div className="row gap wrap">
-            <button className="btn small" disabled={!scene.parts.length} onClick={() => setSketch(generateSketch(scene, board, PARTS))}>
-              {t('Generate sketch')}
+            <button className="btn small" disabled={!scene.parts.length} onClick={generate}>
+              {toolchain === 'arduino' ? t('Generate sketch') : t('Generate Pico SDK project')}
             </button>
-            {sketch && (
+            {toolchain === 'arduino' && sketch && (
               <button className="btn small ghost" onClick={() => window.bp.session.saveFile('BoardPilotProject.ino', sketch)}>
                 {t('Save .ino…')}
               </button>
             )}
+            {((toolchain === 'arduino' && sketch) || shownProject) && (
+              <button className="btn small ghost" onClick={saveFolder}>
+                {t('Save project folder…')}
+              </button>
+            )}
           </div>
-          {sketch && <pre className="code">{sketch}</pre>}
+          {toolchain === 'arduino' && sketch && <pre className="code">{sketch}</pre>}
+          {shownProject && (
+            <>
+              {shownProject.notes.length > 0 && (
+                <div className="findings">
+                  {shownProject.notes.map((n) => (
+                    <div key={n} className="finding sev-warning">
+                      <b>{n}</b>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="seg starter-files" role="tablist" aria-label={t('Project files')}>
+                {shownProject.files.map((f) => (
+                  <button key={f.name} role="tab" aria-selected={shownFile?.name === f.name} className={shownFile?.name === f.name ? 'on mono' : 'mono'} onClick={() => setOpenFile(f.name)}>
+                    {f.name}
+                  </button>
+                ))}
+              </div>
+              {shownFile && <pre className="code">{shownFile.text}</pre>}
+            </>
+          )}
           <div className="label">{t('4. Check my code against the drawing')}</div>
           <CodeCheck />
             </>
