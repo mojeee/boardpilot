@@ -2,8 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { AiReply, AiSource } from '@shared/types';
-import { getBoard, targetLabel } from '@shared/board';
-import { currentBoard, useAi, useApp, useScene } from '../state/store';
+import { PARTS, targetLabel } from '@shared/board';
+import { currentBoard, log, useAi, useApp, useScene, type ChatItem } from '../state/store';
+import { showWhere, stopAction } from '../state/appActions';
+import { sceneWithParts } from '../state/buildProject';
+import { revealLine } from '../state/code';
+import { useLayout } from '../state/layout';
 import { askAi } from './ai';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
@@ -48,6 +52,7 @@ export function ReplyView({ reply }: { reply: AiReply }) {
           ))}
         </details>
       )}
+      {reply.proposal && <ProposalCard proposal={reply.proposal} />}
       {reply.nextOptions.length > 0 && (
         <div className="next-options">
           {reply.nextOptions.map((o) => (
@@ -57,6 +62,125 @@ export function ReplyView({ reply }: { reply: AiReply }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+/** Parts the assistant proposed: nothing changes until the user clicks "Add to the project". */
+function ProposalCard({ proposal }: { proposal: NonNullable<AiReply['proposal']> }) {
+  const [done, setDone] = useState(false);
+  const add = () => {
+    const before = useScene.getState().scene;
+    const { scene, notes } = sceneWithParts(before, proposal.partIds);
+    useScene.getState().setScene(scene, true);
+    useScene.getState().preset('home');
+    log('action', t('Added {parts} (you confirmed the assistant’s suggestion). ⌘Z undoes it.', { parts: proposal.partIds.map((id) => PARTS[id]?.name ?? id).join(', ') }), {
+      source: 'assistant suggestion, confirmed by you',
+    });
+    for (const n of notes) log('action', t('Pin assigned: {note}', { note: n }), { source: 'pin rules (safe pins)' });
+    setDone(true);
+  };
+  return (
+    <div className="ai-proposal">
+      <div className="label">{t('Parts to add')}</div>
+      <ul>
+        {proposal.partIds.map((id) => (
+          <li key={id}>
+            <b>{PARTS[id]?.name ?? id}</b> <span className="mono small dim">parts library · {id}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="row gap wrap">
+        <button className="btn small primary" disabled={done} onClick={add}>
+          {done ? t('Added') : t('Add to the project')}
+        </button>
+        <span className="small dim">{t('The safe-pin rules pick the pins. Nothing changes until you click.')}</span>
+      </div>
+    </div>
+  );
+}
+
+const STEP_ICON = { run: '…', ok: '✓', fail: '✕', skip: '–' } as const;
+
+/** An app action running for the user: its steps, where it lives in the UI, and Stop. */
+function ActionCard({ item }: { item: Extract<ChatItem, { role: 'action' }> }) {
+  const progress = useApp((s) => s.progress);
+  return (
+    <div className={`ai-action st-${item.state}`}>
+      <ul className="act-steps">
+        {item.steps.map((s, i) => (
+          <li key={i} className={`as-${s.status}`}>
+            <span className="as-ico">{s.status === 'run' ? <span className="spinner sm" /> : STEP_ICON[s.status]}</span>
+            <span>{s.text}</span>
+            {s.status === 'run' && progress && (
+              <span className="as-bar">
+                <i style={{ width: `${progress.pct}%` }} />
+              </span>
+            )}
+          </li>
+        ))}
+        {item.steps.length === 0 && item.state === 'running' && (
+          <li className="as-run">
+            <span className="as-ico">
+              <span className="spinner sm" />
+            </span>
+            <span>{item.title}</span>
+          </li>
+        )}
+      </ul>
+      <div className="mono small dim">
+        {t('app action')} · {item.title} · {item.readOnly ? t('read only') : t('asks before writing')}
+      </div>
+      <div className="row gap wrap">
+        <button className="btn small ghost" onClick={() => showWhere(item.where)}>
+          {t('Show me where it is')}
+        </button>
+        {item.state === 'running' && (
+          <button className="btn small ghost" onClick={() => stopAction(item.id)}>
+            {t('Stop')}
+          </button>
+        )}
+        {item.state === 'stopped' && <span className="small dim">{t('Stopped. A step already running on the board finishes first.')}</span>}
+      </div>
+    </div>
+  );
+}
+
+/** Something the app's checks found by themselves, said by the assistant with its source. */
+function NoticeCard({ item }: { item: Extract<ChatItem, { role: 'notice' }> }) {
+  return (
+    <div className={`ai-notice sev-${item.severity}`}>
+      <div className="row gap">
+        <span className="notice-kicker">{t('I noticed')}</span>
+        <span className="conf conf-documented">{t('Check')}</span>
+      </div>
+      <div className="ai-text">
+        <b>{item.text}</b> {item.hint}
+      </div>
+      <div className="src-line src-library">
+        <span>{t('source')}</span> {item.source}
+      </div>
+      <div className="row gap wrap">
+        {item.targets.length > 0 && (
+          <button className="btn small ghost" onClick={() => useScene.getState().focusOn(item.targets)}>
+            {t('Show on the board')}
+          </button>
+        )}
+        {item.line ? (
+          <button
+            className="btn small ghost"
+            onClick={() => {
+              useLayout.getState().showBottom('code');
+              revealLine(item.line!);
+            }}
+          >
+            {t('Show in the code')}
+          </button>
+        ) : null}
+        <button className="btn small ghost" onClick={() => void askAi(t('Why is this a problem, and how do I fix it? {text}', { text: item.text }))}>
+          ✦ {t('Ask why')}
+        </button>
+      </div>
     </div>
   );
 }
@@ -76,7 +200,7 @@ export function AskBox({ placeholder, autoFocus }: { placeholder?: string; autoF
       <textarea
         value={q}
         rows={2}
-        placeholder={enabled ? (placeholder ?? t('Ask about your board…')) : t('AI is off: add a key in AI settings')}
+        placeholder={enabled ? (placeholder ?? t('Ask, describe what to build, or tell it what to do')) : t('AI is off: add a key in AI settings')}
         autoFocus={autoFocus}
         onChange={(e) => setQ(e.target.value)}
         onKeyDown={(e) => {
@@ -148,6 +272,10 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
             </div>
           ) : it.role === 'assistant' ? (
             <ReplyView key={it.id} reply={it.reply} />
+          ) : it.role === 'action' ? (
+            <ActionCard key={it.id} item={it} />
+          ) : it.role === 'notice' ? (
+            <NoticeCard key={it.id} item={it} />
           ) : (
             <div key={it.id} className="ai-error">
               {t(it.text)} <span className="dim">{t(it.hint)}</span>

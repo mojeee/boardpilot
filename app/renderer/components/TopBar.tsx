@@ -20,7 +20,7 @@ function BoardStatus() {
   const board = getBoard(useScene((s) => s.scene.board));
   return (
     <div className="conn">
-      <button className="chip board-chip" onClick={openBoardPicker} title={t('Change the board')}>
+      <button className="chip board-chip" onClick={openBoardPicker} title={t('Change the board')} data-where="top:board">
         <Icon name="board" size={14} /> {board.name}
       </button>
       <button
@@ -69,7 +69,7 @@ export function TopBar({ children }: { children?: React.ReactNode }) {
       )}
       <div className="top-actions">
         {conn.backups.length > 0 && conn.agent && (
-          <button className="btn small" onClick={() => confirmRestore()} title={t('Restore my firmware')}>
+          <button className="btn small" onClick={() => confirmRestore()} title={t('Restore my firmware')} data-where="top:restore">
             <Icon name="restore" size={15} /> <span className="wide-only">{t('Restore my firmware')}</span>
           </button>
         )}
@@ -84,6 +84,7 @@ export function TopBar({ children }: { children?: React.ReactNode }) {
         <button
           className={`chip ai-set-chip ${ai.enabled ? 'ai-chip' : ''}`}
           onClick={openAiSettings}
+          data-where="top:ai"
           title={
             !ai.enabled
               ? t('Set up the AI assistant')

@@ -28,7 +28,7 @@ function CodeTools() {
   const hasCode = useScene((s) => !!s.scene.sketch?.text.trim());
   return (
     <div className="tools">
-      <button className="btn small ai" disabled={suggesting} onClick={() => void suggestCode()} title={t('Code for the parts and pins in your drawing, with its source')}>
+      <button className="btn small ai" disabled={suggesting} onClick={() => void suggestCode()} title={t('Code for the parts and pins in your drawing, with its source')} data-where="code:suggest">
         ✦ {suggesting ? t('Thinking…') : t('Suggest code')}
       </button>
       {tplOpen ? (
@@ -36,6 +36,7 @@ function CodeTools() {
       ) : (
         <button
           className="btn small"
+          data-where="code:run"
           onClick={() =>
             log(
               'info',
@@ -153,11 +154,11 @@ export function BottomPanel() {
   return (
     <section className="bottom-panel">
       <div className="tabbar" role="tablist" aria-label={t('Code and log')}>
-        <button role="tab" aria-selected={tab === 'code'} className={`tab ${tab === 'code' ? 'on' : ''}`} onClick={() => l.showBottom('code')}>
+        <button role="tab" aria-selected={tab === 'code'} className={`tab ${tab === 'code' ? 'on' : ''}`} onClick={() => l.showBottom('code')} data-where="bottom:code">
           {t('Code')} <span className="mono small">· {name}</span>
           {findings.length > 0 && <span className={`count ${errs ? 'err' : 'warn'}`}>{findings.length}</span>}
         </button>
-        <button role="tab" aria-selected={tab === 'log'} className={`tab ${tab === 'log' ? 'on' : ''}`} onClick={() => l.showBottom('log')}>
+        <button role="tab" aria-selected={tab === 'log'} className={`tab ${tab === 'log' ? 'on' : ''}`} onClick={() => l.showBottom('log')} data-where="bottom:log">
           {t('Log')}
           {warnCount > 0 && <span className="count warn">{warnCount}</span>}
         </button>

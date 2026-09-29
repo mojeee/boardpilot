@@ -225,6 +225,16 @@ async function runNamedDemo(name: string, scenario: string | null) {
     }
     useProjects.getState().switchTo(useProjects.getState().tabs[0].id);
     void bench;
+  } else if (name === 'action') {
+    // #demo=action[&do=backup_flash]: the assistant runs an app action step by step (as after "back up my board").
+    const { runAction } = await import('./state/appActions');
+    const { useAi } = await import('./state/store');
+    const act = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('do') ?? 'backup_flash';
+    useAi.getState().push({ role: 'user', text: 'I can’t find where to back up my board before flashing.' });
+    await runAction(act, '', 'ai');
+  } else if (name === 'cmdk') {
+    // #demo=cmdk: the "Ask AI or find anything" box open.
+    (await import('./components/CommandBox')).openCommandBox();
   } else if (name === 'project') {
     useScene.getState().openScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

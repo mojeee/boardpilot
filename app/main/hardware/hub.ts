@@ -290,6 +290,33 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     );
   }
 
+  /**
+   * Back up the program on the board now ("back up my board"). Only reads the flash, so no
+   * confirmation is needed; the agent reconnects afterwards when it was running.
+   */
+  backup(): Promise<Result<BackupInfo>> {
+    return this.exclusive(
+      async () => {
+        const { port, chip } = this.st;
+        if (!port || !chip) throw new DriverError('not_identified', t('The board has not been identified yet.'), t('Run “Connect and identify” first.'));
+        if (!canBackupFlash(this.board)) {
+          throw new DriverError('backup_unsupported', t('This board cannot read its program back, so it cannot be backed up.'), t('Keep a copy of your code on this computer instead.'));
+        }
+        const hadAgent = !!this.st.agent;
+        await this.closeLinks();
+        this.log('action', t('Backing up the program currently on the board, so it can be restored with one click.'));
+        const b = await this.driver.backupFlash(port, chip, (pct) => this.emit('progress', { task: t('Backing up your firmware'), pct }));
+        await this.backups.add(b);
+        this.patch({ backups: await this.backups.forMac(chip.mac) });
+        this.log('found', t('Backup saved ({mb} MB).', { mb: (b.sizeBytes / 1024 / 1024).toFixed(1) }), `backup: ${b.path}`);
+        if (hadAgent) await this.connectAgentInner();
+        return b;
+      },
+      8 * 60 * 1000,
+      t('Backing up your firmware'),
+    );
+  }
+
   /** Connect to an agent that is already on the board (no writing). */
   connectAgent(): Promise<Result<HelloReply>> {
     return this.exclusive(() => this.connectAgentInner(), 15000, t('Connecting to the agent'));

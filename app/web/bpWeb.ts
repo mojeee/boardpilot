@@ -139,6 +139,7 @@ const api: BoardPilotApi = {
     connectAgent: wrap(() => hub.connectAgent()),
     agent: wrap((req) => hub.agent(req)),
     agentWrite: wrap((req, token: string) => hub.agentWrite(req, token)),
+    backup: wrap(() => hub.backup()),
     restore: wrap((id: string, token: string) => hub.restore(id, token)),
     flashUser: wrap((token: string, path: string) => hub.flashUser(token, path)),
     openSerial: wrap((baud: number) => hub.openSerial(baud)),

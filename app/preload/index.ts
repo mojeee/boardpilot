@@ -29,6 +29,7 @@ const api: BoardPilotApi = {
     connectAgent: call('hw:connectAgent'),
     agent: call('hw:agent'),
     agentWrite: call('hw:agentWrite'),
+    backup: call('hw:backup'),
     restore: call('hw:restore'),
     flashUser: call('hw:flashUser'),
     openSerial: call('hw:openSerial'),

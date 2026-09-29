@@ -11,6 +11,8 @@ import { handleLayoutKey, useLayout } from './state/layout';
 import { ProjectTabs } from './components/ProjectTabs';
 import { NewProjectDialog } from './components/NewProjectDialog';
 import { nameFirstTab } from './state/projects';
+import { startEventFeed } from './state/events';
+import { CommandBox } from './components/CommandBox';
 import { AssistantPanel } from './components/AssistantPanel';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DevMenu } from './components/DevMenu';
@@ -41,6 +43,7 @@ async function boot() {
   if (booted) return;
   booted = true;
   await wireEvents();
+  startEventFeed();
   await Promise.all([useLicense.getState().refresh(), usePartsLib.getState().load()]);
   if (useApp.getState().conn.mode === 'real') {
     const last = await window.bp.project.last();
@@ -104,7 +107,7 @@ function ProjectRight() {
         <button role="tab" aria-selected={tab === 'assistant'} className={`tab ai ${tab === 'assistant' ? 'on' : ''}`} onClick={() => set('assistant')}>
           <Icon name="ai" size={14} /> {t('Assistant')}
         </button>
-        <button role="tab" aria-selected={tab === 'tools'} className={`tab ${tab === 'tools' ? 'on' : ''}`} onClick={() => set('tools')} title={t('Parts, pins, templates, starter code and calculators')}>
+        <button role="tab" aria-selected={tab === 'tools'} className={`tab ${tab === 'tools' ? 'on' : ''}`} onClick={() => set('tools')} title={t('Parts, pins, templates, starter code and calculators')} data-where="right:tools">
           <Icon name="project" size={14} /> {t('Project tools')}
         </button>
         <span className="grow" />
@@ -209,7 +212,9 @@ export function App() {
 
   return (
     <div className="shell">
-      <TopBar />
+      <TopBar>
+        <CommandBox />
+      </TopBar>
       <ProjectTabs />
       <Work />
       <CodeFindingsLogger />
