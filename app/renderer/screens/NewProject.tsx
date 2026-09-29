@@ -13,6 +13,7 @@ import { CodeCheck } from '../components/CodeCheck';
 import { BomTable } from '../components/BomTable';
 import { PowerBudget } from '../components/PowerBudget';
 import { Calculators } from '../components/Calculators';
+import { PortfolioPanel } from '../components/PortfolioPanel';
 import { PinPlanner } from '../components/PinPlanner';
 import { TemplatePicker, TemplateView } from '../components/TemplatePanel';
 import { useTemplate } from '../state/templateRun';
@@ -106,6 +107,10 @@ export function NewProjectPanel() {
               <PowerBudget />
             </details>
           )}
+          <details className="bom-details">
+            <summary className="label">{t('Portfolio project, stage by stage')}</summary>
+            <PortfolioPanel />
+          </details>
           <details className="bom-details">
             <summary className="label">{t('Calculators: timer, PWM, UART, ADC')}</summary>
             <Calculators />
