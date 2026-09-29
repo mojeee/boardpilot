@@ -4,7 +4,7 @@
 import type { FlowHardware } from '@shared/flow';
 import type { AgentReplyMap, AgentRequest, Result, TargetRef } from '@shared/types';
 import { canBackupFlash, getBoard, pinByGpio, pinById, PARTS } from '@shared/board';
-import { currentBoard, useApp, useConfirm, useLive, useLog, useScene, log } from './store';
+import { currentBoard, markDemoScene, useApp, useConfirm, useLive, useLog, useScene, log } from './store';
 import { t } from '@shared/i18n';
 
 const bp = () => window.bp;
@@ -66,7 +66,10 @@ export async function wireEvents() {
 
   const [conn, ai, scenarios] = await Promise.all([api.hw.state(), api.ai.status(), api.sim.scenarios()]);
   useApp.getState().set({ conn, ai, scenarios });
-  if (conn.mode === 'sim') useScene.getState().openScene(await api.sim.scene());
+  if (conn.mode === 'sim') {
+    useScene.getState().openScene(await api.sim.scene());
+    markDemoScene();
+  }
 
   // The project's board drives the hardware layer (chip tool, pin rules, simulated bench).
   const sync = async (boardId: string) => {

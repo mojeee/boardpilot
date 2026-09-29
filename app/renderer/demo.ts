@@ -172,6 +172,7 @@ async function runNamedDemo(name: string, scenario: string | null) {
   } else if (name === 'code') {
     // #demo=code: the weather station with a sketch that has SDA/SCL reversed and the LED on the wrong pin.
     openTask('newProject');
+    useScene.getState().openScene(await window.bp.sim.scene()); // New project starts empty; the demo needs the bench
     const { loadSketch } = await import('./components/CodeCheck');
     const led = useScene.getState().scene.wires.find((w) => w.to.part.startsWith('led') || w.from.part.startsWith('led'));
     const ledPin = led ? (led.from.part === 'board' ? led.from.pin : led.to.pin).replace(/^D/, '') : '25';

@@ -142,6 +142,14 @@ function withFindings(scene: Scene) {
   return { scene, findings: checkWiring(scene, getBoard(scene.board), PARTS) };
 }
 
+/**
+ * The simulator's demo scene, as loaded at start-up. New project starts empty while the scene is
+ * still exactly this object: any edit makes a new scene object, so the user's own work is never cleared.
+ */
+let demoScene: Scene | null = null;
+export const markDemoScene = () => (demoScene = useScene.getState().scene);
+export const isUntouchedDemo = () => demoScene !== null && useScene.getState().scene === demoScene;
+
 export const useScene = create<SceneStore>((set, get) => ({
   ...withFindings(EMPTY_SCENE),
   selected: null,
