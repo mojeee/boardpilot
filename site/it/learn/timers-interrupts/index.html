@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Timer e interrupt spiegati: prescaler, ARR e ISR | BoardPilot</title>
+    <meta name="description" content="Come conta da solo il timer di un microcontrollore, come scegliere prescaler (PSC) e valore di reload (ARR) e come funzionano interrupt e ISR, a confronto con il polling." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/" />
+    <meta property="og:title" content="Timer e interrupt spiegati: prescaler, ARR e ISR | BoardPilot" />
+    <meta property="og:description" content="Come conta da solo il timer di un microcontrollore, come scegliere prescaler (PSC) e valore di reload (ARR) e come funzionano interrupt e ISR, a confronto con il polling." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/#lesson","headline":"Timer e interrupt","name":"Timer e interrupt","description":"Come conta da solo il timer di un microcontrollore, come scegliere prescaler (PSC) e valore di reload (ARR) e come funzionano interrupt e ISR, a confronto con il polling.","url":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/","inLanguage":"it","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT15M","position":5,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Sistemi embedded da zero","url":"https://boardpilot.agentflowbind.com/it/learn/"},"teaches":["Tabella dei vettori","Timer","Prescaler e auto-reload (PSC, ARR)","Interrupt","ISR (routine di servizio dell’interrupt)","Polling","volatile","STM32"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"Timer e interrupt","item":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/timers-interrupts/" hreflang="en" class="">EN</a><a href="/it/learn/timers-interrupts/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/learn/">Impara</a> / <span>Timer e interrupt</span></nav>
+        <p class="learn-kicker">Fondamenti · Lezione 5 di 11 · circa 15 min</p>
+        <h1>Timer e interrupt</h1>
+        <p class="lead">Tempi esatti senza sprecare la CPU</p>
+        <nav class="learn-toc" aria-label="In questa lezione"><p class="learn-box-h">In questa lezione</p><ol><li><a href="#timer-un-contatore-che-conta-da-solo">Timer: un contatore che conta da solo</a></li><li><a href="#interrupt-lhardware-batte-sulla-spalla-della-cpu">Interrupt: l’hardware batte sulla spalla della CPU</a></li><li><a href="#interview">Domande da colloquio</a></li></ol></nav>
+        <p>Un ciclo di attesa tiene tutta la CPU occupata a non fare nulla, e i suoi tempi sono a occhio. Due funzioni hardware risolvono il problema: timer e interrupt.</p>
+        <h2 id="timer-un-contatore-che-conta-da-solo">Timer: un contatore che conta da solo</h2>
+        <p>Il prescaler (PSC) rallenta il clock, e il contatore riparte da 0 ogni volta che raggiunge il valore di ricarica (ARR). Ogni ripartenza è un evento di update.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Calcolatore del timer.</b> Scegli il clock (16 MHz dopo il reset o 84 MHz), scrivi PSC e ARR e vedi la frequenza dei tick e gli eventi di aggiornamento al secondo. Con valori lenti un LED lampeggia alla frequenza reale.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=timers-interrupts&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <h2 id="interrupt-lhardware-batte-sulla-spalla-della-cpu">Interrupt: l’hardware batte sulla spalla della CPU</h2>
+        <p>Quando succede un evento, la CPU mette in pausa il tuo codice, esegue una breve funzione chiamata routine di servizio dell’interrupt (ISR), poi riprende esattamente da dove si era fermata. Per chi viene dal software: una callback di evento, scatenata dall’hardware.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Un interrupt su una linea del tempo.</b> Il ciclo principale gira, l’overflow di un timer lo mette in pausa, viene eseguita la ISR e il ciclo principale riprende esattamente da dove si era fermato.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=timers-interrupts&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <aside class="learn-box learn-board"><p class="learn-box-h">Sulla scheda 3D</p><p><b>Un pulsante che fa scattare un interrupt, e il LED che la routine accende, su un Raspberry Pi Pico</b></p><p class="fine">Pin: <span class="mono">GP14, GP15</span> · <a href="/it/boards/rpi-pico/">Raspberry Pi Pico</a></p><p class="fine">Nell’app questo apre un’anteprima 3D della scheda Raspberry Pi Pico con questi pin evidenziati. Il tuo progetto non viene mai toccato.</p></aside>
+      </div>
+      <div class="wrap try-wrap learn-try"><div class="try-live" data-src="/demo/#demo=lesson-preview&amp;lesson=timers-interrupts&amp;lang=it" data-title="Demo dal vivo di BoardPilot" data-full="Apri a schermo intero">
+          <img src="/img/learn.jpg?v=6ecc3e7445" width="1800" height="1125" alt="La schermata Impara di BoardPilot: una lezione con l’anteprima della scheda in 3D" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=lesson-preview&amp;lesson=timers-interrupts&amp;lang=it" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Provala dal vivo</a>
+            <p>La vera app, nel tuo browser: questa lezione con la sua anteprima 3D su una scheda Raspberry Pi Pico simulata. Niente da installare, niente da collegare.</p>
+          </div>
+        </div>
+        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+      <div class="wrap narrow">
+        <pre class="code"><code>void TIM2_IRQHandler(void) {           // the name comes from the vector table
+    if (TIM2-&gt;SR &amp; (1 &lt;&lt; 0)) {         // update event flag
+        TIM2-&gt;SR &amp;= ~(1 &lt;&lt; 0);         // clear it, or the ISR runs again forever
+        GPIOA-&gt;ODR ^= (1 &lt;&lt; 5);        // toggle the LED
+    }
+}
+
+// in main(): 16 MHz / 16000 = 1 kHz ticks, 1000 ticks = 1 second
+TIM2-&gt;PSC = 15999;
+TIM2-&gt;ARR = 999;
+TIM2-&gt;DIER |= (1 &lt;&lt; 0);                // interrupt on update
+TIM2-&gt;CR1  |= (1 &lt;&lt; 0);                // start counting
+NVIC_EnableIRQ(TIM2_IRQn);             // let the CPU accept it</code></pre>
+        <ul class="learn-list"><li>Tieni brevi le routine di interrupt: imposta un flag ed esci. Il lavoro pesante va nel ciclo principale.</li><li>Azzera sempre il flag dell’interrupt.</li><li>Dichiara volatile ogni variabile condivisa con un interrupt.</li></ul>
+        <h2 id="interview">Domande da colloquio</h2>
+        <ol class="learn-list learn-questions"><li>Qual è la differenza tra polling e interrupt?</li><li>Perché una routine di interrupt deve essere breve?</li><li>Come si scelgono PSC e ARR per un interrupt ogni secondo?</li></ol>
+        <p class="fine">Qui non ci sono le risposte, apposta: prova prima a rispondere ad alta voce. Nell’app BoardPilot l’allenatore per i colloqui legge la tua risposta e ti dice cosa era giusto, cosa manca e cosa chiederebbe dopo un intervistatore senior (usa il fornitore di IA che scegli nell’app). <a href="/it/learn/interview-questions/">Domande da colloquio sui sistemi embedded →</a></p>
+        <h2>Parole chiave</h2>
+        <p class="link-cloud"><a href="/it/learn/glossary/#vector-table">Tabella dei vettori</a> <a href="/it/learn/glossary/#timer">Timer</a> <a href="/it/learn/glossary/#prescaler">Prescaler e auto-reload (PSC, ARR)</a> <a href="/it/learn/glossary/#interrupt">Interrupt</a> <a href="/it/learn/glossary/#isr">ISR (routine di servizio dell’interrupt)</a> <a href="/it/learn/glossary/#polling">Polling</a> <a href="/it/learn/glossary/#volatile">volatile</a> <a href="/it/learn/glossary/#stm32">STM32</a></p>
+        <div class="cta-box">
+          <h2>Nell’app le lezioni prendono vita</h2>
+          <p>Nell’app le lezioni hanno demo interattive ed esercitazioni pratiche verificate sulla tua scheda. Queste pagine sono la versione da leggere: le demo sono descritte a parole e le esercitazioni richiedono l’app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/it/#download">Scarica BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Prova le lezioni nel browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="Tutte le lezioni">
+          <a class="learn-prev" href="/it/learn/gpio/" rel="prev"><span>← Precedente</span><b>GPIO: pin in ingresso e in uscita</b></a>
+          <a class="learn-all" href="/it/learn/">Tutte le lezioni</a>
+          <a class="learn-next" href="/it/learn/buses/" rel="next"><span>Successiva →</span><b>UART, I2C e SPI</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

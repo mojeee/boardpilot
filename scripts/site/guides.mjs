@@ -592,7 +592,7 @@ function pinText(p, b) {
   return p.gpio !== null && !new RegExp(`(^|\\D)${p.gpio}$`).test(p.label) ? `${p.label} (GPIO ${p.gpio})` : p.label;
 }
 
-export function buildGuides({ lang, boards, parts, site, head, header, footer, IT = {} }) {
+export function buildGuides({ lang, boards, parts, site, head, header, footer, IT = {}, learnLinks = () => '' }) {
   const t = T[lang];
   const tr = (s) => (lang === 'it' && s && IT[s]) || s;
   const pre = lang === 'it' ? '/it' : '';
@@ -713,6 +713,7 @@ ${rows}
         <p class="link-cloud">${others.join(' ')}</p>
         <h2>${esc(fill(t.otherParts, { board: bn }))}</h2>
         <p class="link-cloud">${otherParts.join(' ')}</p>
+        ${learnLinks(part)}
       </div>
     </main>
 ${footer}`,

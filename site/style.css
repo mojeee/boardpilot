@@ -283,3 +283,8 @@ ul.checks li { margin: 6px 0; color: var(--muted); }
 .link-card:hover { border-color: var(--ok); transform: translateY(-2px); }
 .link-card .more { display: inline-block; margin-top: 10px; color: var(--ok); font-weight: 600; font-size: 14px; }
 .start-grid { margin-top: 24px; }
+/* nav with the Learn link: keep each link on one line on narrow desktops */
+.links a { white-space: nowrap; }
+@media (max-width: 1120px) { .links { gap: 14px; font-size: 14px; } .nav-in { gap: 20px; } }
+@media (max-width: 1000px) { .links { display: none; } }
+.nav-in .brand { flex: none; }

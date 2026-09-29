@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Che cos’è un microcontrollore? Sistemi embedded da zero | BoardPilot</title>
+    <meta name="description" content="Che cos’è un microcontrollore (MCU), in cosa è diverso da un microprocessore, dove stanno codice e variabili e cosa succede all’accensione. Lezione gratuita per principianti." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/what-is-mcu/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/what-is-mcu/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/" />
+    <meta property="og:title" content="Che cos’è un microcontrollore? Sistemi embedded da zero | BoardPilot" />
+    <meta property="og:description" content="Che cos’è un microcontrollore (MCU), in cosa è diverso da un microprocessore, dove stanno codice e variabili e cosa succede all’accensione. Lezione gratuita per principianti." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/#lesson","headline":"Che cos’è un microcontrollore?","name":"Che cos’è un microcontrollore?","description":"Che cos’è un microcontrollore (MCU), in cosa è diverso da un microprocessore, dove stanno codice e variabili e cosa succede all’accensione. Lezione gratuita per principianti.","url":"https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/","inLanguage":"it","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT10M","position":1,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Sistemi embedded da zero","url":"https://boardpilot.agentflowbind.com/it/learn/"},"teaches":["Sistema embedded","Microcontrollore (MCU)","MCU e MPU (microprocessore)","Periferica","Memoria flash","RAM (SRAM)","Stack","Registro","Mappa di memoria","Tabella dei vettori"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"Che cos’è un microcontrollore?","item":"https://boardpilot.agentflowbind.com/it/learn/what-is-mcu/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/what-is-mcu/" hreflang="en" class="">EN</a><a href="/it/learn/what-is-mcu/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/learn/">Impara</a> / <span>Che cos’è un microcontrollore?</span></nav>
+        <p class="learn-kicker">Fondamenti · Lezione 1 di 11 · circa 10 min</p>
+        <h1>Che cos’è un microcontrollore?</h1>
+        <p class="lead">Il piccolo computer dentro ogni dispositivo</p>
+        <nav class="learn-toc" aria-label="In questa lezione"><p class="learn-box-h">In questa lezione</p><ol><li><a href="#microcontrollore-o-microprocessore">Microcontrollore o microprocessore?</a></li><li><a href="#tutto-e-un-indirizzo">Tutto è un indirizzo</a></li><li><a href="#che-cosa-succede-allaccensione">Che cosa succede all’accensione</a></li><li><a href="#interview">Domande da colloquio</a></li></ol></nav>
+        <p>Un sistema embedded è un piccolo computer integrato in un dispositivo per fare un solo lavoro: un termostato, una lavatrice, i freni di un’auto. Il suo cuore è un microcontrollore (MCU): un solo chip che contiene un computer intero.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Dentro un microcontrollore.</b> Uno schema di un solo chip che contiene un computer intero: il core della CPU esegue il tuo codice, la flash conserva il programma, la RAM tiene le variabili, i timer misurano il tempo con precisione e le periferiche (GPIO, ADC, UART, I2C, SPI) collegano ingressi come un sensore di temperatura e un pulsante a uscite come un LED e un motore.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <p>Ogni dispositivo segue lo stesso schema: legge gli ingressi, decide nel codice, comanda le uscite.</p>
+        <h2 id="microcontrollore-o-microprocessore">Microcontrollore o microprocessore?</h2>
+        <div class="table-wrap"><table class="pin-table learn-table"><thead><tr><th scope="col"></th><th scope="col">Microcontrollore (MCU)</th><th scope="col">Microprocessore (MPU)</th></tr></thead><tbody><tr><td>Sul chip</td><td>CPU, memoria e periferiche</td><td>Quasi solo la CPU</td></tr><tr><td>Memoria</td><td>Kilobyte</td><td>Gigabyte</td></tr><tr><td>Software</td><td>Il tuo codice C, o un piccolo RTOS</td><td>Un sistema operativo completo come Linux</td></tr><tr><td>Si avvia in</td><td>Microsecondi</td><td>Secondi</td></tr><tr><td>Esempi</td><td>STM32, ESP32, ATmega</td><td>Raspberry Pi, telefoni, portatili</td></tr></tbody></table></div>
+        <h2 id="tutto-e-un-indirizzo">Tutto è un indirizzo</h2>
+        <p>La CPU vede flash, RAM e hardware come un’unica lunga lista di indirizzi numerati. Leggere una variabile e accendere un LED sono la stessa operazione: scrivere un valore a un indirizzo.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Mappa di memoria di un STM32.</b> La flash parte da 0x0800 0000 (qui c’è il main() compilato), la RAM da 0x2000 0000 (variabili e stack) e le periferiche da 0x4000 0000 (GPIO, UART, timer: scrivere 1 nel punto giusto accende il LED).</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <aside class="learn-box learn-board"><p class="learn-box-h">Sulla scheda 3D</p><p><b>PA5 su una NUCLEO-F401RE: il pin dietro l’indirizzo del codice qui sotto, collegato al LED verde</b></p><p class="fine">Pin: <span class="mono">D13</span> · <a href="/it/boards/nucleo-f401re/">ST NUCLEO-F401RE</a></p><p class="fine">Nell’app questo apre un’anteprima 3D della scheda ST NUCLEO-F401RE con questi pin evidenziati. Il tuo progetto non viene mai toccato.</p></aside>
+      </div>
+      <div class="wrap try-wrap learn-try"><div class="try-live" data-src="/demo/#demo=lesson-preview&amp;lesson=what-is-mcu&amp;lang=it" data-title="Demo dal vivo di BoardPilot" data-full="Apri a schermo intero">
+          <img src="/img/learn.jpg?v=6ecc3e7445" width="1800" height="1125" alt="La schermata Impara di BoardPilot: una lezione con l’anteprima della scheda in 3D" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=lesson-preview&amp;lesson=what-is-mcu&amp;lang=it" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Provala dal vivo</a>
+            <p>La vera app, nel tuo browser: questa lezione con la sua anteprima 3D su una scheda ST NUCLEO-F401RE simulata. Niente da installare, niente da collegare.</p>
+          </div>
+        </div>
+        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+      <div class="wrap narrow">
+        <pre class="code"><code>int counter = 5;                              // the compiler picks an address in RAM
+
+*(volatile uint32_t *)0x40020014 = (1 &lt;&lt; 5);  // GPIOA output register: pin PA5 high, LED on</code></pre>
+        <h2 id="che-cosa-succede-allaccensione">Che cosa succede all’accensione</h2>
+        <ol class="learn-list"><li>La CPU legge la tabella dei vettori all’inizio della flash: dove inizia lo stack e dove si trova il codice di avvio.</li><li>Il codice di avvio copia in RAM i valori iniziali delle variabili e imposta il clock.</li><li>Parte il tuo main(), che non ritorna mai: non c’è un sistema operativo a cui tornare.</li></ol>
+        <h2 id="interview">Domande da colloquio</h2>
+        <ol class="learn-list learn-questions"><li>Qual è la differenza tra un microcontrollore e un microprocessore?</li><li>Dove si trovano il codice e le variabili in un MCU?</li><li>Che cosa succede tra il reset e main()?</li></ol>
+        <p class="fine">Qui non ci sono le risposte, apposta: prova prima a rispondere ad alta voce. Nell’app BoardPilot l’allenatore per i colloqui legge la tua risposta e ti dice cosa era giusto, cosa manca e cosa chiederebbe dopo un intervistatore senior (usa il fornitore di IA che scegli nell’app). <a href="/it/learn/interview-questions/">Domande da colloquio sui sistemi embedded →</a></p>
+        <h2>Parole chiave</h2>
+        <p class="link-cloud"><a href="/it/learn/glossary/#embedded-system">Sistema embedded</a> <a href="/it/learn/glossary/#microcontroller">Microcontrollore (MCU)</a> <a href="/it/learn/glossary/#mcu-vs-mpu">MCU e MPU (microprocessore)</a> <a href="/it/learn/glossary/#peripheral">Periferica</a> <a href="/it/learn/glossary/#flash-memory">Memoria flash</a> <a href="/it/learn/glossary/#ram">RAM (SRAM)</a> <a href="/it/learn/glossary/#stack">Stack</a> <a href="/it/learn/glossary/#register">Registro</a> <a href="/it/learn/glossary/#memory-map">Mappa di memoria</a> <a href="/it/learn/glossary/#vector-table">Tabella dei vettori</a></p>
+        <div class="cta-box">
+          <h2>Nell’app le lezioni prendono vita</h2>
+          <p>Nell’app le lezioni hanno demo interattive ed esercitazioni pratiche verificate sulla tua scheda. Queste pagine sono la versione da leggere: le demo sono descritte a parole e le esercitazioni richiedono l’app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/it/#download">Scarica BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Prova le lezioni nel browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="Tutte le lezioni">
+          <span></span>
+          <a class="learn-all" href="/it/learn/">Tutte le lezioni</a>
+          <a class="learn-next" href="/it/learn/hardware-basics/" rel="next"><span>Successiva →</span><b>Basi di hardware per chi viene dal software</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

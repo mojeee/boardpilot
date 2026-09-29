@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Roadmap per sviluppatore software embedded: da principiante a senior | BoardPilot</title>
+    <meta name="description" content="Una roadmap embedded in cinque tappe, dai registri e periferiche a RTOS, test, sicurezza ed Edge AI, più tre progetti da portfolio che mostrano che sei pronto." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/learn/road-to-senior/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/road-to-senior/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/road-to-senior/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/road-to-senior/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/learn/road-to-senior/" />
+    <meta property="og:title" content="Roadmap per sviluppatore software embedded: da principiante a senior | BoardPilot" />
+    <meta property="og:description" content="Una roadmap embedded in cinque tappe, dai registri e periferiche a RTOS, test, sicurezza ed Edge AI, più tre progetti da portfolio che mostrano che sei pronto." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/it/learn/road-to-senior/#lesson","headline":"La strada verso senior","name":"La strada verso senior","description":"Una roadmap embedded in cinque tappe, dai registri e periferiche a RTOS, test, sicurezza ed Edge AI, più tre progetti da portfolio che mostrano che sei pronto.","url":"https://boardpilot.agentflowbind.com/it/learn/road-to-senior/","inLanguage":"it","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Intermediate","learningResourceType":"Lesson","timeRequired":"PT10M","position":11,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Sistemi embedded da zero","url":"https://boardpilot.agentflowbind.com/it/learn/"},"teaches":["Bootloader","Analizzatore logico","Oscilloscopio","Linker script","HAL (hardware abstraction layer)","Hard fault","Aggiornamento OTA (over the air)","Bus CAN"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"La strada verso senior","item":"https://boardpilot.agentflowbind.com/it/learn/road-to-senior/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/road-to-senior/" hreflang="en" class="">EN</a><a href="/it/learn/road-to-senior/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/learn/">Impara</a> / <span>La strada verso senior</span></nav>
+        <p class="learn-kicker">Verso senior · Lezione 11 di 11 · circa 10 min</p>
+        <h1>La strada verso senior</h1>
+        <p class="lead">Cinque tappe e tre progetti per il portfolio</p>
+        
+        <p>Senior nell’embedded di solito significa anni passati a consegnare prodotti reali. L’esperienza nel software conta: architettura, test e la responsabilità di un sistema dall’inizio alla fine si trasferiscono direttamente. La strada più veloce è studiare a fondo, costruire tre progetti seri e sfruttare ciò che ti rende diverso.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Cinque tappe da principiante a senior.</b> Mesi 1–3: basi pratiche. Mesi 3–6: architettura del firmware. Mesi 6–9: pratica professionale. Mesi 9–15: competenze di sistema da senior. Dal mese 9: Edge AI.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=road-to-senior&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <ul class="learn-list"><li>Tappa 1, basi pratiche: le lezioni Fondamenti su una scheda reale, più le basi dell’hardware: legge di Ohm, schemi elettrici, datasheet, analizzatore logico e oscilloscopio.</li><li>Tappa 2, architettura del firmware: livelli di driver, RTOS in profondità (race condition, deadlock, inversione di priorità), organizzazione della memoria e linker script, un bootloader.</li><li>Tappa 3, pratica professionale: test unitari sul computer, integrazione continua, trovare la causa dei crash (hard fault), MISRA C, C++ moderno per l’embedded.</li><li>Tappa 4, competenze di sistema da senior: compromessi tra hardware e software, secure boot, aggiornamenti over-the-air, affidabilità, CAN e Modbus, norme di sicurezza funzionale, Embedded Linux.</li><li>Tappa 5, Edge AI: modelli di machine learning che girano sui microcontrollori (TensorFlow Lite Micro, STM32Cube.AI), quantizzazione, manutenzione predittiva.</li></ul>
+        <h2 id="tre-progetti-per-il-portfolio">Tre progetti per il portfolio</h2>
+        <ol class="learn-list"><li>Monitor intelligente per stanza: sensori, schermo, allarme e log, prima senza e poi con FreeRTOS.</li><li>Nodo sensore industriale: Modbus o CAN, un bootloader con aggiornamenti remoti, test unitari e CI.</li><li>Dispositivo di manutenzione predittiva: un sensore di vibrazioni e un modello di rilevamento anomalie che gira sull’MCU.</li></ol>
+        <aside class="learn-box learn-tip"><p class="learn-box-h">Nei prodotti reali</p><p>I colloqui per ruoli senior misurano la profondità: non che cos’è un interrupt, ma perché un dispositivo si è guastato sul campo e come l’hai dimostrato.</p></aside>
+        <h2 id="interview">Domande da colloquio</h2>
+        <ol class="learn-list learn-questions"><li>Raccontami un bug che si presentava solo sull’hardware reale, e come l’hai trovato.</li><li>Come progetteresti gli aggiornamenti firmware perché un dispositivo non resti mai inutilizzabile?</li></ol>
+        <p class="fine">Qui non ci sono le risposte, apposta: prova prima a rispondere ad alta voce. Nell’app BoardPilot l’allenatore per i colloqui legge la tua risposta e ti dice cosa era giusto, cosa manca e cosa chiederebbe dopo un intervistatore senior (usa il fornitore di IA che scegli nell’app). <a href="/it/learn/interview-questions/">Domande da colloquio sui sistemi embedded →</a></p>
+        <h2>Parole chiave</h2>
+        <p class="link-cloud"><a href="/it/learn/glossary/#bootloader">Bootloader</a> <a href="/it/learn/glossary/#logic-analyser">Analizzatore logico</a> <a href="/it/learn/glossary/#oscilloscope">Oscilloscopio</a> <a href="/it/learn/glossary/#linker-script">Linker script</a> <a href="/it/learn/glossary/#hal">HAL (hardware abstraction layer)</a> <a href="/it/learn/glossary/#hard-fault">Hard fault</a> <a href="/it/learn/glossary/#ota-update">Aggiornamento OTA (over the air)</a> <a href="/it/learn/glossary/#can-bus">Bus CAN</a></p>
+        <div class="cta-box">
+          <h2>Nell’app le lezioni prendono vita</h2>
+          <p>Nell’app le lezioni hanno demo interattive ed esercitazioni pratiche verificate sulla tua scheda. Queste pagine sono la versione da leggere: le demo sono descritte a parole e le esercitazioni richiedono l’app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/it/#download">Scarica BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Prova le lezioni nel browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="Tutte le lezioni">
+          <a class="learn-prev" href="/it/learn/full-picture/" rel="prev"><span>← Precedente</span><b>Il quadro completo</b></a>
+          <a class="learn-all" href="/it/learn/">Tutte le lezioni</a>
+          <span></span>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>
