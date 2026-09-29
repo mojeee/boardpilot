@@ -9,6 +9,7 @@
   "logicVolt": 3.3,
   "flashBytes": 4194304,
   "ramBytes": 532480,
+  "clocks": {"cpuHz": 150000000, "pwmHz": 150000000, "uartHz": 150000000, "adcHz": 48000000, "note": "The Pico SDK starts clk_sys at 150 MHz on the RP2350; PWM uses clk_sys and UART uses clk_peri (the same 150 MHz). The ADC has its own 48 MHz clock.", "source": {"title": "RP2350 Datasheet", "section": "Clocks; PWM; ADC"}},
   "pcbMm": {
     "length": 51.0,
     "width": 21.0,

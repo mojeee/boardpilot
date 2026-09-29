@@ -37,6 +37,11 @@ export function checkBoard(b) {
   const { length, width, thickness } = b.pcbMm ?? {};
   if (!(length > 10 && width > 10 && thickness > 0.5)) e('bad pcbMm');
   if (!(b.layoutPxPerMm > 0)) e('bad layoutPxPerMm');
+  if (b.clocks !== undefined) {
+    const c = b.clocks;
+    for (const k of ['cpuHz', 'pwmHz', 'uartHz', 'adcHz']) if ((k === 'cpuHz' || c[k] !== undefined) && !(Number.isInteger(c[k]) && c[k] > 0)) e(`clocks.${k} must be a whole number of Hz`);
+    if (!c.source?.title || !c.note) e('clocks needs a note and a source title');
+  }
   if (b.power !== undefined) {
     const pw = b.power;
     if (!(typeof pw.typMa === 'number' && pw.typMa >= 0)) e('power.typMa must be a number of mA');
