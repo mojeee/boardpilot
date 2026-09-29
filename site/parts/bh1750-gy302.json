@@ -62,6 +62,15 @@
       }
     }
   ],
+  "current": {
+    "typMa": 0.12,
+    "sleepMa": 0.00001,
+    "note": "120 µA while measuring, 0.01 µA powered down.",
+    "source": {
+      "title": "ROHM BH1750FVI datasheet",
+      "section": "Electrical characteristics: supply current 120 µA typ; power-down current 0.01 µA"
+    }
+  },
   "sources": [
     {
       "title": "ROHM BH1750FVI datasheet",

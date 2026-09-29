@@ -49,6 +49,15 @@
       }
     }
   ],
+  "current": {
+    "typMa": 1.5,
+    "sleepMa": 0.05,
+    "note": "1 to 1.5 mA while measuring, 40 to 50 µA in standby.",
+    "source": {
+      "title": "Aosong AM2302 datasheet",
+      "section": "Electrical characteristics: supply current"
+    }
+  },
   "sources": [
     {
       "title": "Aosong AM2302 datasheet",

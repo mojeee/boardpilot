@@ -3,6 +3,10 @@
 
 export const IT = {
   'nav.parts': 'Componenti',
+  'cta.try': 'Oppure provala prima nel browser, senza installare niente →',
+  'try.eyebrow': 'Senza installare',
+  'try.title': 'Provala nel tuo browser.',
+  'try.lead': 'Questa è la vera app con un ESP32 simulato e una stazione meteo con un errore di cablaggio. Clicca un pin, trascina un componente, disegna un filo, oppure apri “Risolvi un problema” e guarda come trova il guasto.',
   'lib.eyebrow': 'Libreria componenti aperta',
   'lib.title': 'componenti, pronti da collegare alla tua scheda.',
   'lib.lead': 'Sensori, display, driver per motori, radio e altro: pin, tensione, indirizzi I2C, verifica dell’ID del chip, un modello 3D e un collegamento sicuro per ognuno. Riutilizzabili liberamente con licenza CC BY 4.0.',

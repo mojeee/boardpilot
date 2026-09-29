@@ -72,6 +72,15 @@
       }
     }
   ],
+  "current": {
+    "typMa": 19,
+    "sleepMa": 0.005,
+    "note": "Average while ranging; 5 µA in hardware standby.",
+    "source": {
+      "title": "ST VL53L0X datasheet",
+      "section": "Current consumption: active ranging 19 mA; HW standby 5 µA"
+    }
+  },
   "sources": [
     {
       "title": "ST VL53L0X datasheet",

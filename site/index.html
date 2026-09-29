@@ -31,7 +31,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="preload" as="image" href="/img/debug.jpg?v=22903229f1" imagesrcset="/img/debug-900.jpg?v=eebb5d11bc 900w, /img/debug.jpg?v=22903229f1 1800w" imagesizes="(max-width: 920px) 100vw, 640px" />
-    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
+    <link rel="stylesheet" href="/style.css?v=e756ead6d6" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://boardpilot.agentflowbind.com/#website","url":"https://boardpilot.agentflowbind.com/","name":"BoardPilot","inLanguage":["en","it"]},{"@type":"SoftwareApplication","@id":"https://boardpilot.agentflowbind.com/#app","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","description":"Find wiring mistakes on ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52 and Teensy boards: I2C scan, crossed SDA/SCL detection, decoded bus and every pin in 3D. Mac and Windows.","applicationCategory":"DeveloperApplication","applicationSubCategory":"Embedded development, ESP32 debugging","operatingSystem":"macOS 12+, Windows 10, Windows 11","softwareVersion":"0.5.0","inLanguage":["en","it"],"image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624","screenshot":["https://boardpilot.agentflowbind.com/img/debug.jpg?v=22903229f1","https://boardpilot.agentflowbind.com/img/test.jpg?v=cfae0ffac9","https://boardpilot.agentflowbind.com/img/monitor.jpg?v=780c854a51","https://boardpilot.agentflowbind.com/img/library.jpg?v=c572ede034"],"downloadUrl":["https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-x64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-win-x64.exe"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","description":"Free 30-day trial"},"license":"https://github.com/mojeee/boardpilot/blob/main/LICENSE.md","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"sameAs":["https://github.com/mojeee/boardpilot"],"featureList":"Live 3D ESP32 board, guided I2C debugging, SDA/SCL swap test, decoded I2C bus, wiring checker, parts library, live plots, simulator"},{"@type":"WebPage","@id":"https://boardpilot.agentflowbind.com/#page","url":"https://boardpilot.agentflowbind.com/","name":"BoardPilot: debugger for ESP32, Raspberry Pi Pico, Arduino and STM32 with a live 3D board","inLanguage":"en","isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"},"about":{"@id":"https://boardpilot.agentflowbind.com/#app"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is BoardPilot open source?","acceptedAnswer":{"@type":"Answer","text":"It is source-available. All the code is public on GitHub under the BoardPilot License: you can read, study, modify and build it. Using it after the 30-day trial needs a license key. The firmware (diagnostic agent and BoardPilotProbe library) is MIT licensed."}},{"@type":"Question","name":"Which boards does it support?","acceptedAnswer":{"@type":"Answer","text":"ESP32 DevKit, ESP32-S3 and ESP32-C3 DevKits, Raspberry Pi Pico, Pico W and Pico 2, Arduino Uno, Nano and Mega, STM32 Nucleo-F401RE and Black Pill, Nordic nRF52840 DK and Teensy 4.1. Boards are data files, so more are easy to add."}},{"@type":"Question","name":"My computer warns that the app is from an unknown developer.","acceptedAnswer":{"@type":"Answer","text":"The early builds are not signed yet. On Mac, right-click BoardPilot in Applications and choose Open (or System Settings → Privacy & Security → Open Anyway). On Windows, click More info → Run anyway in the SmartScreen window."}},{"@type":"Question","name":"Do I need a board to try it?","acceptedAnswer":{"@type":"Answer","text":"No. Simulator mode runs the whole app with a virtual board and realistic faults: crossed wires, a fake BME280, brownouts, wrong baud rate."}},{"@type":"Question","name":"Does it need the internet or an AI account?","acceptedAnswer":{"@type":"Answer","text":"No. Checks, measurements and the simulator work offline. The AI assistant is optional: try it with the free demo (a limited, older Gemini model, for testing only) or use your own key for Claude, GPT or Gemini."}},{"@type":"Question","name":"What does it install on my board?","acceptedAnswer":{"@type":"Answer","text":"Only when you confirm: a small diagnostic agent that lets the app read pins and run bus tests. Your program is backed up first and comes back with one click."}}]}]}</script>
   </head>
   <body>
@@ -78,6 +78,7 @@
                 <span data-i18n="cta.win">Windows</span>
               </a>
             </div>
+            <p class="try-link"><a href="#try" data-i18n="cta.try">Or try it in your browser first, no install →</a></p>
             <p class="fine" data-i18n="cta.fine">Free for 30 days · macOS 12+ and Windows 10/11 · Works without a board in simulator mode</p>
           </div>
           <div class="hero-shot">
@@ -97,6 +98,21 @@
           <div><b>0</b><span data-i18n="strip.writes">writes to your board without your OK</span></div>
           <div><b>8</b><span data-i18n="strip.sim">simulated faults to learn with</span></div>
           <div><b>EN · IT</b><span data-i18n="strip.lang">English and Italian</span></div>
+        </div>
+      </section>
+
+      <section id="try" class="section try-section">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="try.eyebrow">No install</span>
+          <h2 data-i18n="try.title">Try it in your browser.</h2>
+          <p class="lead try-lead" data-i18n="try.lead">This is the real app with a simulated ESP32 and a weather station that has one wiring mistake. Click a pin, drag a part, draw a wire, or open “Debug a problem” and watch it find the fault.</p>
+          <div class="wrap try-wrap"><div class="try-live" data-src="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=en" data-title="BoardPilot live demo" data-full="Open full screen">
+          <img src="/img/demo/en/esp32-devkitc-30.jpg?v=b1cb4fd9d8" width="1200" height="750" alt="BoardPilot showing the ESP32 DevKit (30 pins) in 3D" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=en" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Try it live</a>
+            <p>The real app with a simulated ESP32 DevKit (30 pins), running in your browser. No install, nothing to plug in.</p>
+          </div>
+        </div></div>
         </div>
       </section>
 
@@ -292,5 +308,6 @@
       </div>
     </footer>
     <script src="/app.js?v=d3ab452f3a" defer></script>
+    <script src="/try-live.js?v=adb7dbf53e" defer></script>
   </body>
 </html>
