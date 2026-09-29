@@ -299,6 +299,9 @@ export interface BoardToolchain {
   uploadNote?: string;
   /** How the flash is reached: over USB serial, the USB bootloader, or an on-board debug probe. */
   link: 'usb-serial' | 'usb-bootloader' | 'debug-probe';
+  /** Pico SDK board name (PICO_BOARD), e.g. "pico", "pico2", "pico_w". RP2040/RP2350 boards only;
+   *  the names are the header files in pico-sdk/src/boards/include/boards/. */
+  picoBoard?: string;
 }
 
 export interface BoardDef {

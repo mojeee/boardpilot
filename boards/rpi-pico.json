@@ -963,6 +963,7 @@
     "imageFormat": "uf2",
     "agent": true,
     "link": "usb-bootloader",
+    "picoBoard": "pico",
     "uploadNote": "If the board is not found, hold the BOOTSEL button while plugging in the USB cable."
   },
   "usb": [
