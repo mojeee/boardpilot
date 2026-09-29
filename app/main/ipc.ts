@@ -1,8 +1,8 @@
 // Typed IPC handlers. Every handler returns data or a Result; nothing throws into the renderer.
 
 import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { basename, join } from 'node:path';
 import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { BUY_URL } from '@shared/brand';
@@ -64,6 +64,20 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
     };
     const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
     return r.canceled ? null : r.filePaths[0] ?? null;
+  });
+  h('session:openSketch', async (): Promise<Result<{ name: string; text: string }>> => {
+    const win = BrowserWindow.getFocusedWindow();
+    const opts: Electron.OpenDialogOptions = { properties: ['openFile'], filters: [{ name: 'Arduino sketch', extensions: ['ino', 'cpp', 'h', 'c', 'txt'] }] };
+    const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
+    const path = r.canceled ? undefined : r.filePaths[0];
+    if (!path) return { ok: false, error: { code: 'cancelled', humanMessage: t('No file chosen.'), hint: '' } };
+    try {
+      const info = await stat(path);
+      if (info.size > 1024 * 1024) return { ok: false, error: { code: 'too_big', humanMessage: t('This file is too big for a sketch.'), hint: t('Pick the .ino file of your project.') } };
+      return { ok: true, value: { name: basename(path), text: await readFile(path, 'utf8') } };
+    } catch {
+      return { ok: false, error: { code: 'read_failed', humanMessage: t('The file could not be read.'), hint: t('Check that the file still exists and try again.') } };
+    }
   });
   h('session:saveFile', async (name: string, content: string): Promise<Result<string>> => {
     try {

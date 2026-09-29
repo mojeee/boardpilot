@@ -150,7 +150,7 @@ Most beginner embedded bugs are one of four kinds. Each item says which week it 
 
 ### A. Code does not match the wiring (the most common cause)
 
-- [ ] **Code vs wiring checker** (week 2, top priority). Read the user's sketch and compare it
+- [x] **Code vs wiring checker** (week 2, top priority; done Sep 29, in New project). Read the user's sketch and compare it
       with the 3D scene. Catches:
       - `Wire.begin(22, 21)` while the scene has SDA on 21
       - `pinMode(34, OUTPUT)` on an input-only pin
@@ -178,7 +178,7 @@ Most beginner embedded bugs are one of four kinds. Each item says which week it 
 
 ### C. Electrical mistakes
 
-- [ ] **I2C address conflict rule** (week 1, small). Two parts on the same address on one bus,
+- [x] **I2C address conflict rule** (week 1, small). Two parts on the same address on one bus,
       for example two BME280s at 0x76; the hint says how to change the address (SDO pin).
 - [ ] **Power budget** (week 2). Adds up each part's current against what the board can supply
       (ESP32 DevKit 3V3 about 600 mA, Uno 3.3 V pin 50 mA) and warns before brown-outs. Needs a
@@ -440,6 +440,24 @@ Each can feed back into BoardPilot (CAN, RTOS monitoring), which strengthens the
   4. IEC 61131-3 programming (licensing question with OpenPLC)
 
   Never write to industrial PLCs. Revisit after the launch if users ask for it.
+
+## Last step · Try it in the browser (your request, Sep 29)
+
+The website shows the real app, running, instead of screenshots: visitors click pins, drag parts,
+draw wires and run the debug demo on a simulated board, with no install.
+
+- [ ] **Web demo build** of the renderer with the simulator in the page (the simulator already
+      implements the same driver interface as the real board, so no hardware and no server are
+      needed). Main-process features that need the computer (serial ports, esptool, files, saved
+      keys) are replaced by the simulator or hidden, with a "Download the app" prompt where they
+      would be.
+- [ ] Embedded on the home page and on every board page (that board, preloaded), lazy-loaded so
+      the pages stay fast; a static screenshot until the visitor clicks "Try it live".
+- [ ] AI in the demo goes through the existing free demo relay only.
+- [ ] Sharper screenshots meanwhile: captured at 2× pixel density.
+
+This is also the first half of the "Web version using WebSerial" backlog item: the same build
+later talks to real boards through Chrome's WebSerial.
 
 ## Backlog (November and December, ordered by what users ask for)
 

@@ -58,6 +58,7 @@ const api: BoardPilotApi = {
   session: {
     append: (entry) => ipcRenderer.send('session:append', entry),
     pickFile: call('session:pickFile'),
+    openSketch: call('session:openSketch'),
     saveFile: call('session:saveFile'),
     exportReport: call('session:exportReport'),
     info: call('session:info'),

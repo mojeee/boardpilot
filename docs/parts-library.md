@@ -31,6 +31,7 @@ BoardPilot ships with an open library of hobby parts in [`parts/`](../parts/), o
 - **voltage**: `"3.3"`, `"5"` or a range `"3.3-5"`. Mention 5 V logic outputs in the pin `notes`.
 - **idCheck**: only when the datasheet documents an ID register; BoardPilot reads it to spot fakes and look-alikes.
 - **model.shape**: `breakout`, `module`, `chip`, `oled`, `led`, `button`, `pot`, `dht`, `motor`, `relay`; **size** is `[width, depth, height]` in mm.
+- **addresses**: every I2C address the part can have, the usual (default) one first; say "address" in the notes of the pin that selects it (ADDR, SDO, AD0), so the address-conflict rule can name it.
 - **sources**: datasheet title and section for pins, addresses and ID values.
 
 The full validator is [`shared/partSchema.ts`](../shared/partSchema.ts); `npm test` checks every file.
