@@ -214,7 +214,7 @@ export function gotchaList(list, lang, tr) {
     .join('')}</ul>`;
 }
 
-export function buildParts({ parts, lang, site, header, footer, IT_MEASURES, head, boardLinks = () => '' }) {
+export function buildParts({ parts, lang, site, header, footer, IT_MEASURES, head, boardLinks = () => '', learnLinks = () => '' }) {
   const t = T[lang];
   const pre = lang === 'it' ? '/it' : '';
   const byId = new Map(parts.map((p) => [p.id, p]));
@@ -371,6 +371,7 @@ ${footer}
         ${p.sources?.length ? `<h2>${esc(t.sourcesH)}</h2><ul class="sources">${p.sources.map((s) => `<li>${esc(s.title)}${s.section ? `, ${esc(s.section)}` : ''}</li>`).join('')}</ul>` : ''}
         <div class="cta-box"><h2>${esc(t.cta)}</h2><p><a class="btn primary" href="${pre}/#download">BoardPilot</a> <a class="btn" href="/parts/${p.id}.json">${esc(t.json)}</a></p></div>
         ${boardLinks(p) ? `<h2>${esc(t.otherBoards(p.name))}</h2><p class="link-cloud">${boardLinks(p)}</p>` : ''}
+        ${learnLinks(p)}
         ${related ? `<h2>${esc(t.related)}</h2><div class="part-grid">${related}</div>` : ''}
         <p class="fine">${esc(t.license)}</p>
       </div>
