@@ -13,12 +13,15 @@ import type {
   TargetRef,
 } from '@shared/types';
 import { PARTS, getBoard } from '@shared/board';
-import { t } from '@shared/i18n';
+import { getLanguage, t } from '@shared/i18n';
+import type { Lesson } from '@shared/lessons';
+import type { CoachFeedback } from '@shared/coach';
 import type { HardwareHub } from '../hardware/hub';
 import { isProviderId, PROVIDER_INFO, type AiModelInfo, type AiProviderId, type AiSettingsInput, type AiStatus } from '@shared/ai';
 import type { AiSettingsStore } from '../settings/settings';
 import { MEASUREMENT_TOOLS, TOOLS, runTool, type ToolTurnState } from './tools';
 import { buildContextBlock, SYSTEM_PROMPT } from './prompt';
+import { buildCoachPrompt, COACH_REPLY_SCHEMA, parseCoachReply } from './coach';
 import {
   createProvider,
   ProviderError,
@@ -457,6 +460,32 @@ export class Assistant {
       return { ok: true, value: { optionId: parsed.optionId ?? null, reason: typeof parsed.reason === 'string' ? parsed.reason : '' } };
     } catch (e) {
       return { ok: false, error: toAiError(e, a.id, model) };
+    }
+  }
+
+  /**
+   * Interview coach: grade a practice answer against the lesson. One request, not part of the
+   * assistant's conversation. The grade is always a suggestion that cites lesson sections.
+   */
+  async coach(lesson: Lesson, question: string, answer: string): Promise<Result<CoachFeedback>> {
+    const a = this.active();
+    if (!a) return aiOff();
+    try {
+      const response = await a.provider.complete({
+        model: a.model,
+        maxTokens: 3000,
+        timeoutMs: 90_000,
+        parts: [{ type: 'text', text: buildCoachPrompt({ lesson, question, answer, lang: getLanguage(), tr: (s) => t(s) }) }],
+        jsonSchema: { name: 'coach_feedback', schema: COACH_REPLY_SCHEMA },
+      });
+      if (response.stop === 'refusal') return refused(t('The assistant could not grade this answer.'), t('Rephrase your answer and try again, or compare it with the key points below.'));
+      const feedback = parseCoachReply(response.text, lesson);
+      if (!feedback) {
+        return { ok: false, error: { code: 'ai_parse', humanMessage: t('The assistant answer could not be read.'), hint: t('Try again, or compare your answer with the key points below.') } };
+      }
+      return { ok: true, value: feedback };
+    } catch (e) {
+      return { ok: false, error: toAiError(e, a.id, a.model) };
     }
   }
 

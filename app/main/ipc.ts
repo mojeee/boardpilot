@@ -16,6 +16,10 @@ import type { Assistant } from './ai/assistant';
 import { grant } from './session/safety';
 import type { SessionLog } from './session/sessionLog';
 import { toAppError } from './hardware/errors';
+import { randomUUID } from 'node:crypto';
+import { LESSONS, type Lesson } from '@shared/lessons';
+import { COACH_MAX_ANSWER, type CoachAttempt } from '@shared/coach';
+import { CoachStore } from './session/coachStore';
 
 export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
@@ -156,6 +160,59 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       return { ok: true, value: scene };
     } catch {
       return { ok: false, error: { code: 'bad_project', humanMessage: t('That file is not a BoardPilot project.'), hint: t('Pick a .boardpilot.json file saved from the app.') } };
+    }
+  });
+
+  // Interview coach (Learn): answers are stored only on this computer, pruned after 90 days.
+  const coach = new CoachStore(join(dataDir, 'coach-answers.json'));
+  const coachLesson = (lessonId: unknown, question: unknown): Lesson | null => {
+    const lesson = LESSONS.find((l) => l.id === lessonId);
+    return lesson && typeof question === 'string' && lesson.interview.includes(question) ? lesson : null;
+  };
+  const noQuestion = <T>(): Result<T> => ({ ok: false, error: { code: 'coach_unknown', humanMessage: t('This interview question was not found.'), hint: t('Open the lesson again and pick the question.') } });
+  const saveFailed = <T>(): Result<T> => ({
+    ok: false,
+    error: { code: 'coach_storage', humanMessage: t('Your saved answers could not be read or changed.'), hint: t('Check that the app data folder is not full or read-only, then try again.') },
+  });
+  h('coach:ask', async (lessonId: string, question: string, answer: string): Promise<Result<{ attempt: CoachAttempt; saved: boolean }>> => {
+    const lesson = coachLesson(lessonId, question);
+    if (!lesson) return noQuestion();
+    const text = typeof answer === 'string' ? answer.trim().slice(0, COACH_MAX_ANSWER) : '';
+    if (!text) return { ok: false, error: { code: 'coach_empty', humanMessage: t('Write your answer first.'), hint: t('A few sentences are enough.') } };
+    const r = await ai.coach(lesson, question, text);
+    if (!r.ok) return r;
+    const attempt: CoachAttempt = { id: randomUUID(), lessonId: lesson.id, question, answer: text, at: Date.now(), feedback: r.value };
+    let saved = true;
+    try {
+      await coach.add(attempt);
+    } catch {
+      saved = false; // the grade is still shown; the renderer says it was not saved
+    }
+    return { ok: true, value: { attempt, saved } };
+  });
+  h('coach:history', async (lessonId: string, question: string): Promise<Result<{ attempts: CoachAttempt[]; total: number }>> => {
+    if (!coachLesson(lessonId, question)) return noQuestion();
+    try {
+      return { ok: true, value: { attempts: await coach.list(lessonId, question), total: await coach.count() } };
+    } catch {
+      return saveFailed();
+    }
+  });
+  h('coach:remove', async (lessonId: string, question: string): Promise<Result<true>> => {
+    if (!coachLesson(lessonId, question)) return noQuestion();
+    try {
+      await coach.removeQuestion(lessonId, question);
+      return { ok: true, value: true };
+    } catch {
+      return saveFailed();
+    }
+  });
+  h('coach:removeAll', async (): Promise<Result<true>> => {
+    try {
+      await coach.removeAll();
+      return { ok: true, value: true };
+    } catch {
+      return saveFailed();
     }
   });
 
