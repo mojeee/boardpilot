@@ -14,6 +14,10 @@
   "pullupsOnBoard": true,
   "model": { "shape": "module", "size": [80, 36, 20], "color": "#2E6FD8" },
   "keywords": ["lcd1602", "lcd", "16x2", "i2c backpack", "pcf8574", "hd44780", "display", "schermo"],
+  "gotchas": [
+    { "text": "The backpack answers at 0x27 (PCF8574) or 0x3F (PCF8574A). If nothing shows up at 0x27, try 0x3F.", "source": { "title": "NXP PCF8574 / PCF8574A datasheet", "section": "Slave address" } },
+    { "text": "Blank screen or only blocks? Turn the contrast potentiometer on the back.", "source": { "title": "Hitachi HD44780 datasheet", "section": "V0: LCD drive voltage (contrast)" } }
+  ],
   "sources": [
     { "title": "NXP PCF8574 / PCF8574A datasheet", "section": "Address 0x20 to 0x27 (PCF8574T) or 0x38 to 0x3F (PCF8574AT) via A0-A2; most backpacks ship as 0x27 or 0x3F" },
     { "title": "Hitachi HD44780U datasheet", "section": "Supply 5 V for standard character LCDs" }

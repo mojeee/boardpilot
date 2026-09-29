@@ -16,6 +16,9 @@
   "voltage": "3.3",
   "model": { "shape": "module", "size": [60, 39, 3], "color": "#1F4FA8" },
   "keywords": ["rc522", "mfrc522", "rfid", "nfc", "card reader", "tag", "lettore rfid", "badge"],
+  "gotchas": [
+    { "text": "It runs on 3.3 V only: 5 V on VCC damages it.", "source": { "title": "NXP MFRC522 datasheet", "section": "Operating conditions: supply voltage 2.5 to 3.6 V" } }
+  ],
   "sources": [
     { "title": "NXP MFRC522 datasheet", "section": "SPI interface; supply 2.5 to 3.6 V" }
   ]

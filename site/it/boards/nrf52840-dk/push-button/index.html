@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"Pulsante con Nordic nRF52840 DK","description":"Come collegare Pulsante a Nordic nRF52840 DK: quali pin usare (1 → P1.03), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/nrf52840-dk/push-button/","tool":[{"@type":"HowToTool","name":"Nordic nRF52840 DK"},{"@type":"HowToTool","name":"Push button"}],"step":[{"@type":"HowToStep","position":1,"name":"1 → P1.03","text":"1 (Uscita del componente) → P1.03"},{"@type":"HowToStep","position":2,"name":"2 → GND","text":"2 (Massa) → GND"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di Nordic nRF52840 DK uso per Pulsante?","acceptedAnswer":{"@type":"Answer","text":"1 → P1.03, 2 → GND."}},{"@type":"Question","name":"Pulsante funziona con Nordic nRF52840 DK a 3,3 V?","acceptedAnswer":{"@type":"Answer","text":"Sì: Pulsante funziona a 3,3 V e Nordic nRF52840 DK usa segnali a 3,3 V, quindi non serve adattare i livelli."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"Nordic nRF52840 DK","item":"https://boardpilot.agentflowbind.com/it/boards/nrf52840-dk/"},{"@type":"ListItem","position":4,"name":"Push button","item":"https://boardpilot.agentflowbind.com/it/boards/nrf52840-dk/push-button/"}]}]}</script>
   </head>
   <body>
@@ -65,6 +65,7 @@
         </table></div>
         <h2>Controlla prima di alimentare</h2>
         <ul class="checks"></ul>
+        <h2>Da sapere</h2><ul class="gotchas"><li>Un ingresso che nessuno tira legge valori casuali. Usa INPUT_PULLUP e collega il pulsante a GND: premuto legge LOW. <span class="fine">(Arduino reference, Digital pins: INPUT_PULLUP)</span></li><li>I contatti rimbalzano per qualche millisecondo, quindi una pressione può contare come più di una. Fai il debounce nel codice. <span class="fine">(Arduino examples, Debounce)</span></li></ul>
         <h2>Codice di prova (Arduino)</h2>
         <p>Il core Arduino di questa scheda numera i pin in modo diverso dai nomi del chip, quindi qui non mostriamo codice. Usa i nomi dei pin del file variant del tuo core.</p>
         <p class="fine">Scheda Arduino: adafruit:nrf52:pca10056. Collega la USB alla porta sul lato corto (MCU di interfaccia, J2) e metti l’interruttore di alimentazione su ON; prima del primo sketch Arduino, scrivi una volta il bootloader Adafruit e il SoftDevice.</p>

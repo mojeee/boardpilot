@@ -35,6 +35,7 @@ const api: BoardPilotApi = {
     closeSerial: call('hw:closeSerial'),
     writeSerial: call('hw:writeSerial'),
     captureSerial: call('hw:captureSerial'),
+    preflight: call('hw:preflight'),
   } as BoardPilotApi['hw'],
   sim: {
     scenarios: call('sim:scenarios'),

@@ -34,6 +34,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('hw:openSerial', (baud: number) => hub.openSerial(baud));
   h('hw:closeSerial', () => hub.closeSerial());
   h('hw:writeSerial', (text: string) => hub.writeSerial(text));
+  h('hw:preflight', (path: string) => hub.preflight(path));
   h('hw:captureSerial', (baud: number, ms: number) => hub.captureSerial(baud, ms));
 
   h('sim:scenarios', () => hub.scenarios());

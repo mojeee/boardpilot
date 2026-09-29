@@ -79,6 +79,15 @@
     "convertitore",
     "analogico"
   ],
+  "gotchas": [
+    {
+      "text": "Each input must stay between GND and VDD, even in differential mode. The default range is ±2.048 V; set the gain for larger signals.",
+      "source": {
+        "title": "TI ADS111x datasheet",
+        "section": "Absolute maximum ratings: analog input; PGA full-scale range (default ±2.048 V)"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Texas Instruments ADS111x datasheet",

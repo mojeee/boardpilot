@@ -20,6 +20,10 @@
   "pullupsOnBoard": true,
   "model": { "shape": "breakout", "size": [11, 13, 1.6], "color": "#5B2A86" },
   "keywords": ["bme280", "bmp280", "gy-bme280", "temperature", "humidity", "pressure", "barometer", "bosch"],
+  "gotchas": [
+    { "text": "Many boards sold as BME280 carry a BMP280, which has no humidity sensor. The chip ID register 0xD0 tells them apart: 0x60 is a BME280, 0x58 a BMP280.", "source": { "title": "Bosch BME280 and BMP280 datasheets", "section": "Register 0xD0 “id”" } },
+    { "text": "Read in normal mode at a high rate, the sensor warms itself and reads high. For weather readings use forced mode, about one reading per minute.", "source": { "title": "Bosch BME280 datasheet", "section": "Recommended modes of operation: weather monitoring" } }
+  ],
   "sources": [
     { "title": "Bosch BME280 datasheet", "section": "5.4.1 Register 0xD0 id" },
     { "title": "Bosch BME280 datasheet", "section": "6.2 I2C interface (address 0x76 when SDO = GND, 0x77 when SDO = VDDIO)" },

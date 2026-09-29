@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"Push button with WeAct Black Pill STM32F411CE","description":"How to connect the Push button to the WeAct Black Pill STM32F411CE: which pins to use (1 → B12), 3.3 V supply, the checks that matter on this board, and Arduino code to test it.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/push-button/","tool":[{"@type":"HowToTool","name":"WeAct Black Pill STM32F411CE"},{"@type":"HowToTool","name":"Push button"}],"step":[{"@type":"HowToStep","position":1,"name":"1 → B12","text":"1 (Output from the part) → B12 (PB12)"},{"@type":"HowToStep","position":2,"name":"2 → G","text":"2 (Ground) → G"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which WeAct Black Pill STM32F411CE pins do I use for the Push button?","acceptedAnswer":{"@type":"Answer","text":"1 → B12 (PB12), 2 → G."}},{"@type":"Question","name":"Does the Push button work with the WeAct Black Pill STM32F411CE at 3.3 V?","acceptedAnswer":{"@type":"Answer","text":"Yes: the Push button runs at 3.3 V and the WeAct Black Pill STM32F411CE uses 3.3 V signals, so no level shifting is needed."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"WeAct Black Pill STM32F411CE","item":"https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/"},{"@type":"ListItem","position":4,"name":"Push button","item":"https://boardpilot.agentflowbind.com/boards/blackpill-f411ce/push-button/"}]}]}</script>
   </head>
   <body>
@@ -65,6 +65,7 @@
         </table></div>
         <h2>Check before you power it on</h2>
         <ul class="checks"></ul>
+        <h2>Good to know</h2><ul class="gotchas"><li>An input with nothing pulling it reads random values. Use INPUT_PULLUP and wire the button to GND: pressed reads LOW. <span class="fine">(Arduino reference, Digital pins: INPUT_PULLUP)</span></li><li>The contacts bounce for a few milliseconds, so one press can count as several. Debounce in code. <span class="fine">(Arduino examples, Debounce)</span></li></ul>
         <h2>Test code (Arduino)</h2>
         <pre class="code"><code>void setup() {
   Serial.begin(115200);

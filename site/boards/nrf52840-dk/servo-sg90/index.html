@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"SG90 servo with Nordic nRF52840 DK","description":"How to connect the SG90 servo to the Nordic nRF52840 DK: which pins to use (SIG → P1.03), 5 V supply, the checks that matter on this board, and Arduino code to test it.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/servo-sg90/","tool":[{"@type":"HowToTool","name":"Nordic nRF52840 DK"},{"@type":"HowToTool","name":"SG90 micro servo"}],"step":[{"@type":"HowToStep","position":1,"name":"GND → GND","text":"GND (Ground) → GND"},{"@type":"HowToStep","position":2,"name":"VCC → 5V","text":"VCC (Power) → 5V"},{"@type":"HowToStep","position":3,"name":"SIG → P1.03","text":"SIG (Input to the part) → P1.03"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which Nordic nRF52840 DK pins do I use for the SG90 servo?","acceptedAnswer":{"@type":"Answer","text":"GND → GND, VCC → 5V, SIG → P1.03."}},{"@type":"Question","name":"Does the SG90 servo work with the Nordic nRF52840 DK at 3.3 V?","acceptedAnswer":{"@type":"Answer","text":"Yes: the SG90 servo runs at 5 V and the Nordic nRF52840 DK uses 3.3 V signals, so no level shifting is needed."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"Nordic nRF52840 DK","item":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"},{"@type":"ListItem","position":4,"name":"SG90 micro servo","item":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/servo-sg90/"}]}]}</script>
   </head>
   <body>
@@ -66,6 +66,7 @@
         </table></div>
         <h2>Check before you power it on</h2>
         <ul class="checks"><li>Supply: 5 V from the 5V pin.</li><li>Motors, servos, relays and LED strips can draw more current than the Nordic nRF52840 DK’s pins or USB can give. Power them separately and connect the grounds together.</li></ul>
+        <h2>Good to know</h2><ul class="gotchas"><li>A moving servo draws current peaks that can reset a USB-powered board. Power servos from a separate 5 V supply and connect the grounds. <span class="fine">(Arduino Servo library reference, Servos draw considerable power; use a separate supply)</span></li></ul>
         <h2>Test code (Arduino)</h2>
         <p>The Arduino core for this board numbers its pins differently from the chip names, so no code is shown here. Use the pin names from your core’s variant file.</p>
         <p class="fine">Arduino board: adafruit:nrf52:pca10056. Plug USB into the port on the short edge (interface MCU, J2) and set the power switch to ON; before the first Arduino sketch, burn the Adafruit bootloader and SoftDevice once.</p>

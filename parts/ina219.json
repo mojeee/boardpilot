@@ -17,6 +17,10 @@
   "pullupsOnBoard": true,
   "model": { "shape": "breakout", "size": [25, 20, 1.6], "color": "#5B2A86" },
   "keywords": ["ina219", "current", "voltage", "power", "corrente", "tensione", "consumo"],
+  "gotchas": [
+    { "text": "With the usual 0.1 Ω shunt it measures up to 3.2 A (±320 mV across the shunt), and the bus voltage up to 26 V.", "source": { "title": "TI INA219 datasheet", "section": "Electrical characteristics: shunt voltage range ±320 mV, bus voltage 0 to 26 V" } },
+    { "text": "Put it in series on the positive side: supply + to VIN+, VIN− to the load.", "source": { "title": "TI INA219 datasheet", "section": "Typical application: high-side sensing" } }
+  ],
   "sources": [
     { "title": "Texas Instruments INA219 datasheet", "section": "Serial bus address: A0/A1 select 0x40 to 0x4F (boards expose 0x40, 0x41, 0x44, 0x45)" },
     { "title": "Texas Instruments INA219 datasheet", "section": "Bus voltage range 0 to 26 V" }

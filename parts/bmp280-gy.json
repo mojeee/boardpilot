@@ -18,6 +18,10 @@
   "pullupsOnBoard": true,
   "model": { "shape": "breakout", "size": [16.2, 15, 1.6], "color": "#5B2A86" },
   "keywords": ["bmp280", "gy-bmp280", "barometer", "pressure", "temperature", "bosch", "pressione", "barometro"],
+  "gotchas": [
+    { "text": "It measures temperature and pressure only, no humidity. If your code asks for humidity, you need a BME280.", "source": { "title": "Bosch BMP280 datasheet", "section": "Product description" } },
+    { "text": "The address is 0x76 with SDO to GND and 0x77 with SDO high. Most GY boards answer at 0x76, while the Adafruit library looks at 0x77 unless you pass 0x76.", "source": { "title": "Bosch BMP280 datasheet", "section": "I²C interface, slave address" } }
+  ],
   "sources": [
     { "title": "Bosch BMP280 datasheet", "section": "Register 0xD0 id (reads 0x58)" },
     { "title": "Bosch BMP280 datasheet", "section": "I2C interface: address 0x76 when SDO = GND, 0x77 when SDO = VDDIO" }

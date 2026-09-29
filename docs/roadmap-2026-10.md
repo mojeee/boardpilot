@@ -190,7 +190,7 @@ Most beginner embedded bugs are one of four kinds. Each item says which week it 
 
 ### D. Process mistakes
 
-- [ ] **Flash pre-flight check** (week 1). Before writing: image format and size fit the board's
+- [x] **Flash pre-flight check** (week 1; done Sep 29, a step in Flash firmware). Before writing: image format and size fit the board's
       flash, the image targets the right chip, the partition table is compatible.
 - [ ] **Project templates with good habits** (week 3): non-blocking loops instead of `delay()`,
       a watchdog, error handling, all explained in comments.
@@ -216,7 +216,7 @@ suggestion with its source, as the honesty rules require). Two are in October; t
         - heap fragmentation from `String`
         - no watchdog
         - I2C read results never checked
-- [ ] **Part "gotchas" database** (week 2, rule, every entry sourced). Known traps for each part,
+- [x] **Part "gotchas" database** (week 2, rule, every entry sourced; done Sep 29 for 27 parts, 44 entries). Known traps for each part,
       shown the moment the part is added. For example:
       - DHT22 needs 2 s between reads
       - HC-SR04 echo is 5 V: dangerous on a 3.3 V board

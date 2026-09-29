@@ -12,6 +12,9 @@
   "voltage": "3.3-5",
   "model": { "shape": "module", "size": [23, 80, 3], "color": "#1A1A1A" },
   "keywords": ["soil moisture", "capacitive", "plant", "garden", "umidità terreno", "terreno", "piante"],
+  "gotchas": [
+    { "text": "The reading depends on your soil and supply voltage. Note the values in dry air and in water, and scale between them.", "source": { "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki", "section": "Calibration" } }
+  ],
   "sources": [
     { "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki", "section": "Supply 3.3 to 5.5 V, analog output 0 to 3.0 V" }
   ]

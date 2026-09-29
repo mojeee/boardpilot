@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"SSD1306 OLED with Nordic nRF52840 DK","description":"How to connect the SSD1306 OLED to the Nordic nRF52840 DK: which pins to use (SCL → P0.27, SDA → P0.26), 3.3-5 V supply, the checks that matter on this board, and Arduino code to test it.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/ssd1306-i2c/","tool":[{"@type":"HowToTool","name":"Nordic nRF52840 DK"},{"@type":"HowToTool","name":"SSD1306 OLED 128x64 (I2C)"}],"step":[{"@type":"HowToStep","position":1,"name":"GND → GND","text":"GND (Ground) → GND"},{"@type":"HowToStep","position":2,"name":"VCC → 5V","text":"VCC (Power) → 5V"},{"@type":"HowToStep","position":3,"name":"SCL → P0.27","text":"SCL (I2C clock (SCL)) → P0.27"},{"@type":"HowToStep","position":4,"name":"SDA → P0.26","text":"SDA (I2C data (SDA)) → P0.26"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which Nordic nRF52840 DK pins do I use for the SSD1306 OLED?","acceptedAnswer":{"@type":"Answer","text":"GND → GND, VCC → 5V, SCL → P0.27, SDA → P0.26."}},{"@type":"Question","name":"Does the SSD1306 OLED work with the Nordic nRF52840 DK at 3.3 V?","acceptedAnswer":{"@type":"Answer","text":"Yes: the SSD1306 OLED runs at 3.3-5 V and the Nordic nRF52840 DK uses 3.3 V signals, so no level shifting is needed."}},{"@type":"Question","name":"What is the I2C address of the SSD1306 OLED?","acceptedAnswer":{"@type":"Answer","text":"0x3C or 0x3D. An I2C scan (BoardPilot does it for you) shows which one your module uses."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"Nordic nRF52840 DK","item":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"},{"@type":"ListItem","position":4,"name":"SSD1306 OLED 128x64 (I2C)","item":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/ssd1306-i2c/"}]}]}</script>
   </head>
   <body>
@@ -67,6 +67,7 @@
         </table></div>
         <h2>Check before you power it on</h2>
         <ul class="checks"><li>Supply: 5 V from the 5V pin.</li><li>I2C uses the board’s default pins P0.26 (SDA) and P0.27 (SCL). Most modules include pull-up resistors; if the part is not found, check them and swap-test SDA/SCL.</li></ul>
+        <h2>Good to know</h2><ul class="gotchas"><li>The address is 0x3C or 0x3D (the jumper on the back). A board printed “0x78” is 0x3C: the print shows the address shifted left by one bit. <span class="fine">(Solomon Systech SSD1306 datasheet, I²C-bus interface: slave address, SA0 bit)</span></li></ul>
         <h2>Test code (Arduino)</h2>
         <pre class="code"><code>#include &lt;Wire.h&gt;
 

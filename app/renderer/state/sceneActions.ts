@@ -1,7 +1,7 @@
 // Editing actions on the project scene. All of them are undoable (Cmd+Z).
 
 import type { ScenePart, TargetRef } from '@shared/types';
-import { BOARDS, PARTS, canOutput, getBoard, groundPins, pinById, powerPinFor } from '@shared/board';
+import { BOARDS, PARTS, canOutput, getBoard, gotchasFor, groundPins, pinById, powerPinFor } from '@shared/board';
 import { t } from '@shared/i18n';
 import { log, useScene } from './store';
 
@@ -28,6 +28,12 @@ export function addPart(partId: string, opts: { confirmed?: boolean; at?: [numbe
     return { ...s, parts: [...s.parts, { id: newId, partId, position: [x, 0, z], label: def.name.split(/[ (]/)[0], confirmed: opts.confirmed ?? true }] };
   });
   log('action', t('Added {name}.', { name: def.name }), { target: `part:${newId}` as TargetRef });
+  // Known traps for this part on this board, the moment it is added (each one sourced).
+  for (const g of gotchasFor(def, getBoard(useScene.getState().scene.board)))
+    log('warning', t('Good to know ({part}): {text}', { part: def.name.split(/[ (]/)[0], text: t(g.text) }), {
+      target: `part:${newId}` as TargetRef,
+      source: `${g.source.title}${g.source.section ? `, ${g.source.section}` : ''}`,
+    });
   useScene.getState().select(`part:${newId}` as TargetRef);
   return newId;
 }

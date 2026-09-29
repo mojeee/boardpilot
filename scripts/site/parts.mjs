@@ -189,6 +189,31 @@ function partSvg(p) {
   return `<svg viewBox="0 0 ${w} ${h}" class="part-svg" style="max-width:${Math.min(560, Math.round(w * 1.25))}px" role="img" aria-label="${esc(p.name)} pins"><rect x="20" y="16" width="${w - 40}" height="112" rx="10" fill="${esc(p.model.color)}" stroke="rgba(255,255,255,.18)"/><rect x="${w / 2 - 20}" y="36" width="40" height="30" rx="4" fill="#15181c" opacity=".85"/>${pins}</svg>`;
 }
 
+/** Which gotchas apply on a board (same rule as gotchasFor in shared/board.ts). */
+export function gotchasOn(p, board) {
+  return (p.gotchas ?? []).filter(
+    (g) =>
+      !g.when ||
+      (g.when === 'logic3v3' && board.logicVolt < 5) ||
+      (g.when === 'logic5v' && board.logicVolt >= 5) ||
+      (g.when === 'avr' && board.family === 'avr') ||
+      (g.when === 'esp32' && ['esp32', 'esp32s3', 'esp32c3'].includes(board.family)),
+  );
+}
+
+/** "Good to know" list: each trap with its source. `tr` translates the text. */
+export function gotchaList(list, lang, tr) {
+  if (!list.length) return '';
+  const WHEN = {
+    en: { logic3v3: 'on 3.3 V boards', logic5v: 'on 5 V boards', avr: 'on Uno, Nano and Mega', esp32: 'on ESP32 boards' },
+    it: { logic3v3: 'sulle schede a 3,3 V', logic5v: 'sulle schede a 5 V', avr: 'su Uno, Nano e Mega', esp32: 'sulle schede ESP32' },
+  }[lang];
+  const h = lang === 'it' ? 'Da sapere' : 'Good to know';
+  return `<h2>${h}</h2><ul class="gotchas">${list
+    .map((g) => `<li>${g.when ? `<b>${esc(WHEN[g.when])}:</b> ` : ''}${esc(tr(g.text))} <span class="fine">(${esc(g.source.title)}${g.source.section ? `, ${esc(g.source.section)}` : ''})</span></li>`)
+    .join('')}</ul>`;
+}
+
 export function buildParts({ parts, lang, site, header, footer, IT_MEASURES, head, boardLinks = () => '' }) {
   const t = T[lang];
   const pre = lang === 'it' ? '/it' : '';
@@ -340,6 +365,7 @@ ${footer}
         <div class="table-wrap"><table class="pin-table"><thead><tr>${t.cols.map((c) => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
         <p class="fine">${esc(t.wiringNote)}</p>
         ${/^5$/.test(p.voltage) ? `<p class="note warn">${esc(t.fivev)}</p>` : ''}
+        ${gotchaList(p.gotchas ?? [], lang, tr)}
         ${p.idCheck ? `<h2>${esc(t.idH)}</h2><p>${esc(t.id(p.idCheck.register, p.idCheck.expect))}</p>` : ''}
         ${code ? `<h2>${esc(t.codeH)}</h2><pre class="code"><code>${esc(code)}</code></pre>` : ''}
         ${p.sources?.length ? `<h2>${esc(t.sourcesH)}</h2><ul class="sources">${p.sources.map((s) => `<li>${esc(s.title)}${s.section ? `, ${esc(s.section)}` : ''}</li>`).join('')}</ul>` : ''}

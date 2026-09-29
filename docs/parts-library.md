@@ -32,6 +32,7 @@ BoardPilot ships with an open library of hobby parts in [`parts/`](../parts/), o
 - **idCheck**: only when the datasheet documents an ID register; BoardPilot reads it to spot fakes and look-alikes.
 - **model.shape**: `breakout`, `module`, `chip`, `oled`, `led`, `button`, `pot`, `dht`, `motor`, `relay`; **size** is `[width, depth, height]` in mm.
 - **addresses**: every I2C address the part can have, the usual (default) one first; say "address" in the notes of the pin that selects it (ADDR, SDO, AD0), so the address-conflict rule can name it.
+- **gotchas** (optional): known traps shown when the part is added, each `{ "text", "source": { "title", "section" }, "when"? }`. `when` limits one to `logic3v3`, `logic5v`, `avr` or `esp32` boards. Add the Italian text to `shared/i18n/it/gotchas.ts`.
 - **sources**: datasheet title and section for pins, addresses and ID values.
 
 The full validator is [`shared/partSchema.ts`](../shared/partSchema.ts); `npm test` checks every file.

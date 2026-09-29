@@ -39,6 +39,15 @@
     "servomotore",
     "motore"
   ],
+  "gotchas": [
+    {
+      "text": "A moving servo draws current peaks that can reset a USB-powered board. Power servos from a separate 5 V supply and connect the grounds.",
+      "source": {
+        "title": "Arduino Servo library reference",
+        "section": "Servos draw considerable power; use a separate supply"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Tower Pro SG90 datasheet",

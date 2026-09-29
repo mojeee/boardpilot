@@ -53,6 +53,15 @@
     "luce",
     "luminosità"
   ],
+  "gotchas": [
+    {
+      "text": "A high-resolution reading takes about 120 ms. Reading faster returns the previous value.",
+      "source": {
+        "title": "ROHM BH1750FVI datasheet",
+        "section": "Measurement time, H-resolution mode"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "ROHM BH1750FVI datasheet",

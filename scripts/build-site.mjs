@@ -183,7 +183,7 @@ write('it/esp32-pinout/index.html', renderPinout({ lang: 'it', board, site: SITE
 /* parts library pages and open dataset */
 const IT_MEASURES = {};
 for (const f of readdirSync(join(root, 'shared/i18n/it'))) {
-  if (/^(partsdata\d*|three)\.ts$/.test(f)) Object.assign(IT_MEASURES, (await import(join(root, 'shared/i18n/it', f))).default);
+  if (/^(partsdata\d*|three|gotchas)\.ts$/.test(f)) Object.assign(IT_MEASURES, (await import(join(root, 'shared/i18n/it', f))).default);
 }
 /** A page's social image: its own when it exists in site/img (e.g. a board's), else the default. */
 function ogImage(image) {

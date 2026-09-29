@@ -4,6 +4,7 @@
 // Everything comes from boards/*.json and parts/*.json, the same data the app uses.
 
 import { boardPath } from './boards.mjs';
+import { gotchaList, gotchasOn } from './parts.mjs';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => String(v[k] ?? ''));
@@ -697,6 +698,7 @@ ${rows}
         </table></div>
         <h2>${esc(t.checksH)}</h2>
         <ul class="checks">${checks.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>
+        ${gotchaList(gotchasOn(part, b), lang, tr)}
         <h2>${esc(t.codeH)}</h2>
         ${code ? `<pre class="code"><code>${esc(code)}</code></pre>` : `<p>${esc(t.noCode)}</p>`}
         <p class="fine">${esc(fill(t.codeNote, { fqbn: b.toolchain.fqbn, upload: b.toolchain.uploadNote ? tr(b.toolchain.uploadNote) : '' }))}</p>

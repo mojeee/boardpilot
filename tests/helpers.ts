@@ -22,6 +22,7 @@ export function hwFor(hub: HardwareHub): FlowHardware {
     agent: (req) => hub.agent(req),
     captureSerial: (b, ms) => hub.captureSerial(b, ms),
     flashUser: (t, f) => hub.flashUser(t, f),
+    preflight: (f) => hub.preflight(f),
   };
 }
 

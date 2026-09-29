@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"NEO-6M GPS con Raspberry Pi Pico W","description":"Come collegare NEO-6M GPS a Raspberry Pi Pico W: quali pin usare (RX → GP15, TX → GP14), alimentazione 3,3-5 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/rpi-pico-w/neo-6m-gps/","tool":[{"@type":"HowToTool","name":"Raspberry Pi Pico W"},{"@type":"HowToTool","name":"NEO-6M GPS module (GY-NEO6MV2)"}],"step":[{"@type":"HowToStep","position":1,"name":"VCC → 3V3(OUT)","text":"VCC (Alimentazione) → 3V3(OUT)"},{"@type":"HowToStep","position":2,"name":"RX → GP15","text":"RX (Ingresso del componente) → GP15"},{"@type":"HowToStep","position":3,"name":"TX → GP14","text":"TX (Uscita del componente) → GP14"},{"@type":"HowToStep","position":4,"name":"GND → GND","text":"GND (Massa) → GND"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di Raspberry Pi Pico W uso per NEO-6M GPS?","acceptedAnswer":{"@type":"Answer","text":"VCC → 3V3(OUT), RX → GP15, TX → GP14, GND → GND."}},{"@type":"Question","name":"NEO-6M GPS funziona con Raspberry Pi Pico W a 3,3 V?","acceptedAnswer":{"@type":"Answer","text":"Sì: NEO-6M GPS funziona a 3,3-5 V e Raspberry Pi Pico W usa segnali a 3,3 V, quindi non serve adattare i livelli."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"Raspberry Pi Pico W","item":"https://boardpilot.agentflowbind.com/it/boards/rpi-pico-w/"},{"@type":"ListItem","position":4,"name":"NEO-6M GPS module (GY-NEO6MV2)","item":"https://boardpilot.agentflowbind.com/it/boards/rpi-pico-w/neo-6m-gps/"}]}]}</script>
   </head>
   <body>
@@ -67,6 +67,7 @@
         </table></div>
         <h2>Controlla prima di alimentare</h2>
         <ul class="checks"><li>Alimentazione: 3,3 V dal pin 3V3(OUT).</li></ul>
+        <h2>Da sapere</h2><ul class="gotchas"><li>Il primo fix vuole la vista del cielo e richiede circa 30 secondi o più. Al chiuso potrebbe non trovarlo mai. <span class="fine">(u-blox NEO-6 datasheet, Time-to-first-fix, cold start 27 s)</span></li><li>Comunica a 9600 baud. Collega il TX del modulo all’RX della scheda. <span class="fine">(u-blox NEO-6 datasheet, UART default 9600 baud)</span></li></ul>
         <h2>Codice di prova (Arduino)</h2>
         <pre class="code"><code>SerialPIO gps(15, 14);  // TX, RX: any pins, through the PIO
 

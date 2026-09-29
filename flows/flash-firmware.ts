@@ -25,6 +25,32 @@ export const flashFirmware: FlowDef = {
       fallbacks: [{ id: 'retry', label: 'Choose again', kind: 'retry' }],
     },
     {
+      id: 'preflight',
+      type: 'auto',
+      title: 'Check the file before writing',
+      body: 'The app reads the file and checks that it is made for this board: format, chip and size. Nothing is written yet.',
+      async run(ctx) {
+        const r = await ctx.hw.preflight(String(ctx.data.file));
+        if (!r.ok) return { status: 'failed', summary: fmtErr(r.error) };
+        const src = 'pre-flight: the file’s own header';
+        for (const it of r.value.items)
+          ctx.log(it.severity === 'blocker' ? 'failed' : it.severity === 'warning' ? 'warning' : 'check', it.text, { source: src });
+        const blockers = r.value.items.filter((i) => i.severity === 'blocker');
+        const warnings = r.value.items.filter((i) => i.severity === 'warning');
+        if (blockers.length) return { status: 'failed', summary: t('Not written: {why}', { why: blockers[0].text }) };
+        if (warnings.length) return { status: 'warning', summary: warnings[0].text };
+        return { status: 'ok', summary: t('The file matches this board.') };
+      },
+      aiHelp: (ctx) =>
+        t('The pre-flight check reads the firmware file’s header. If it says the file is for another chip, pick the right board in your build tool (Arduino: Tools → Board: {board}) and export again.', {
+          board: ctx.board.name,
+        }),
+      fallbacks: [
+        { id: 'other-file', label: 'Choose another file', kind: 'goto', goto: 'file' },
+        { id: 'retry', label: 'Check again', kind: 'retry' },
+      ],
+    },
+    {
       id: 'confirm',
       type: 'confirm',
       title: 'Write to the board?',

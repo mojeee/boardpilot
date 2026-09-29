@@ -13,6 +13,11 @@
   "voltage": "5",
   "model": { "shape": "module", "size": [45, 20, 15], "color": "#1F4FA8" },
   "keywords": ["hc-sr04", "ultrasonic", "distance", "sonar", "ultrasuoni", "distanza", "sensore distanza"],
+  "gotchas": [
+    { "text": "ECHO outputs 5 V. On a 3.3 V board, put a voltage divider (for example 1 kΩ and 2 kΩ) between ECHO and the pin.", "when": "logic3v3", "source": { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Electric parameters: working voltage DC 5 V" } },
+    { "text": "It needs 5 V on VCC. At 3.3 V most modules give no echo or wrong distances.", "source": { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Electric parameters: working voltage DC 5 V" } },
+    { "text": "Leave at least 60 ms between measurements, or the echo of the last one is measured again.", "source": { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Timing diagram: measurement cycle over 60 ms" } }
+  ],
   "sources": [
     { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Pins VCC, Trig, Echo, GND; 10 µs trigger pulse; 5 V supply" }
   ]
