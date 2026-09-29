@@ -15,6 +15,28 @@
     "thickness": 1.0
   },
   "layoutPxPerMm": 10,
+  "holesMm": [
+    [
+      2.0,
+      4.8,
+      2.1
+    ],
+    [
+      2.0,
+      16.2,
+      2.1
+    ],
+    [
+      49.0,
+      4.8,
+      2.1
+    ],
+    [
+      49.0,
+      16.2,
+      2.1
+    ]
+  ],
   "headerStyle": "male-down",
   "pcbColor": "#1B6B3A",
   "summary": "A small, low-cost board with the Raspberry Pi RP2040 chip. 3.3 V logic (not 5 V tolerant), breadboard friendly, and flashed by dragging a file onto it.",

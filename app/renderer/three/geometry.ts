@@ -2,11 +2,13 @@
 // (USB end is -x), z across it (front pin row is +z), y up.
 
 import * as THREE from 'three';
-import type { BoardDef, PartDef, PinMount, Scene, ScenePart, TargetRef } from '@shared/types';
+import type { BoardDef, PartDef, PinMount, Scene, ScenePart, SceneWire, TargetRef } from '@shared/types';
 import { pinById, pinMount, pinPositionMm, PARTS } from '@shared/board';
 
 export const PART_BASE_Y = -3;
 export const FLOOR_Y = -9;
+/** Top of the anti-static mat on the workbench: just under the tips of the header pins. */
+export const DESK_Y = -10.4;
 export const PITCH = 2.54;
 
 /** Height of the wire end above the PCB: top of a socket (Arduino style), tip of an upward pin, or the pad. */
@@ -59,11 +61,30 @@ export function wireEndWorld(board: BoardDef, scene: Scene, end: { part: string;
   return sp ? partPinWorld(sp, end.pin) : null;
 }
 
-export function wireCurve(a: THREE.Vector3, b: THREE.Vector3): THREE.CatmullRomCurve3 {
+/** Length of the plastic plug housing at each end of a jumper wire, mm. */
+export const PLUG_MM = 6;
+
+/**
+ * Fan-out slot of a wire among the wires that run between the same two parts: 0 for a lone wire,
+ * otherwise centred around 0 (-1, 0, 1 for three wires), so parallel wires spread apart.
+ */
+export function wireSpread(scene: Scene, wire: SceneWire): number {
+  const key = (w: SceneWire) => [w.from.part, w.to.part].sort().join('|');
+  const group = scene.wires.filter((w) => key(w) === key(wire));
+  if (group.length < 2) return 0;
+  return group.indexOf(wire) - (group.length - 1) / 2;
+}
+
+export function wireCurve(a: THREE.Vector3, b: THREE.Vector3, spread = 0): THREE.CatmullRomCurve3 {
   const dist = a.distanceTo(b);
-  const lift = 6 + dist * 0.18;
+  // Parallel wires arc at slightly different heights and bow sideways, like a loose bundle.
+  const lift = 6 + dist * 0.18 + spread * 1.3;
   const mid = a.clone().add(b).multiplyScalar(0.5);
   mid.y = Math.max(a.y, b.y) + lift;
+  if (spread) {
+    const side = new THREE.Vector3(b.z - a.z, 0, a.x - b.x);
+    if (side.lengthSq() > 0) mid.add(side.normalize().multiplyScalar(spread * 1.6));
+  }
   return new THREE.CatmullRomCurve3(
     [a, a.clone().add(new THREE.Vector3(0, lift * 0.55, 0)), mid, b.clone().add(new THREE.Vector3(0, lift * 0.55, 0)), b],
     false,
@@ -85,5 +106,5 @@ export function targetPoint(board: BoardDef, scene: Scene, ref: TargetRef): THRE
   const a = wireEndWorld(board, scene, w.from);
   const b = wireEndWorld(board, scene, w.to);
   if (!a || !b) return null;
-  return wireCurve(a, b).getPoint(0.5);
+  return wireCurve(a, b, wireSpread(scene, w)).getPoint(0.5);
 }

@@ -567,3 +567,6 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .board-card-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .board-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
 .board-chips .chip { font-size: 10.5px; padding: 1px 6px; }
+
+/* Screenshots for social images (#demo=…&clean=1): the 3D view without its overlays. */
+.snapshot-clean .vp-toolbar, .snapshot-clean .legend, .snapshot-clean .badges, .snapshot-clean .kbd-hint, .snapshot-clean .wire-hint, .snapshot-clean .info-card { display: none !important; }

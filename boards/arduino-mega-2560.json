@@ -15,6 +15,38 @@
     "thickness": 1.6
   },
   "layoutPxPerMm": 10,
+  "holesMm": [
+    [
+      13.97,
+      50.8,
+      3.2
+    ],
+    [
+      15.24,
+      2.54,
+      3.2
+    ],
+    [
+      66.04,
+      45.72,
+      3.2
+    ],
+    [
+      66.04,
+      17.78,
+      3.2
+    ],
+    [
+      90.17,
+      2.54,
+      3.2
+    ],
+    [
+      96.52,
+      50.8,
+      3.2
+    ]
+  ],
   "headerStyle": "female-up",
   "pcbColor": "#0F7C8C",
   "summary": "A big Arduino with 54 digital pins, 16 analog inputs and 4 serial ports. It uses 5 V logic, so 3.3 V-only sensors need a level shifter.",

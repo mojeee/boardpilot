@@ -18,3 +18,5 @@
 Components (rects) come from the element positions in the same Eagle file: ATmega328P DIP (ZU4), ATmega16U2 (U3), USB-B (X2), DC jack (X1), NCP1117 5 V regulator (U1), RESET button, LEDs ON/L/TX/RX, 16 MHz resonator (Y2), ICSP headers. Body sizes are **estimated** from typical package sizes (DIP-28, QFN-32, SOT-223, 0805, USB-B overhang ≈ 6.3 mm, jack overhang ≈ 1.8 mm).
 
 VIN `supplies` is 0 because VIN is an input: it is not fed from USB (USB 5 V goes through the T1 switch to the 5 V rail; VIN comes from the jack through diode D1). It is excluded from automatic power pin picks.
+
+Mounting holes (`holesMm`): the four holes of the Arduino UNO Rev3 reference design, Ø 3.2 mm (125 mil), at (550, 100), (600, 2000), (2600, 300) and (2600, 1400) mil from the lower-left corner of the Eagle board (`UNO-TH_Rev3e.brd`, Holes layer; the same pattern as the Arduino shield outline). Converted with z = 53.34 − eagle_y.

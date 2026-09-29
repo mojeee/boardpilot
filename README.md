@@ -26,7 +26,9 @@
   <a href="docs/README.md">Docs</a>
 </p>
 
-![BoardPilot finds SDA and SCL crossed on a BME280 connected to an ESP32](docs/img/debug.jpg)
+![BoardPilot finds SDA and SCL crossed on a BME280 connected to an ESP32: the crossed wire is highlighted on the 3D workbench, with the measurements that prove it](docs/img/debug.jpg)
+
+<p align="center"><sub>If BoardPilot helped you find a wiring mistake, a ⭐ helps other makers find it too.</sub></p>
 
 ## Why BoardPilot
 
@@ -79,6 +81,15 @@ Optional. It works out of the box with a **free demo** (an older Gemini model th
 
 Download from the [latest release](https://github.com/mojeee/boardpilot/releases/latest). Early builds are not code-signed yet: on Mac right-click the app → Open; on Windows click *More info → Run anyway*. For real boards install esptool (see [docs/hardware-setup.md](docs/hardware-setup.md)); simulator mode needs nothing.
 
+## Contribute in 30 minutes
+
+No big code changes needed to help:
+
+- **Add a board**: one JSON file and its sources. Guide: [Add your board in 30 minutes](docs/add-a-board.md). Or [request a board](https://github.com/mojeee/boardpilot/issues/new?template=new-board.yml).
+- **Add a part** to the open library: see [docs/parts-library.md](docs/parts-library.md), or [request a part](https://github.com/mojeee/boardpilot/issues/new?template=new-part.yml).
+- **Translate**: every UI string is in `shared/i18n/it/*.ts`; a new language is a new folder next to it.
+- Look for issues labelled [good first issue](https://github.com/mojeee/boardpilot/labels/good%20first%20issue).
+
 ## Develop
 
 ```bash
@@ -89,6 +100,7 @@ npm run build:agent  # rebuild the ESP32 diagnostic agent (arduino-cli + esp32 c
 npm run dist:mac     # .dmg files in dist/
 npm run dist:win     # Windows installer in dist/
 npm run build:site   # regenerate the website and the parts pages
+node scripts/screenshots.mjs  # retake the README and website screenshots (after npm run build)
 ```
 
 Architecture, product rules and conventions: [CLAUDE.md](CLAUDE.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md). Changes: [CHANGELOG.md](CHANGELOG.md).
