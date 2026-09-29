@@ -36,6 +36,10 @@ export function TaskRail() {
           {t(task.label)}
         </button>
       ))}
+      <div className="rail-sep">{t('Learn')}</div>
+      <button className={`rail-item ${screen === 'learn' ? 'on' : ''}`} onClick={() => useApp.getState().setScreen('learn')} title={t('Visual lessons, from zero to senior')}>
+        <Icon name="learn" /> {t('Embedded lessons')}
+      </button>
     </nav>
   );
 }

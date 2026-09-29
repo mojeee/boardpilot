@@ -82,6 +82,15 @@ export function Home() {
           ))}
         </div>
         <DescribeBox />
+        <button className="learn-banner" onClick={() => useApp.getState().setScreen('learn')}>
+          <span className="task-icon">
+            <Icon name="learn" size={22} />
+          </span>
+          <span>
+            <b>{t('New to embedded systems?')}</b>
+            <span>{t('Short visual lessons: microcontrollers, pins, timers, buses, RTOS, and the road to senior.')}</span>
+          </span>
+        </button>
         <div className="home-status">
           <div className="status-card">
             <div className="label">{t('Board')}</div>
