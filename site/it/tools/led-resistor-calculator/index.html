@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calcolo resistenza per LED (con valore E12) | BoardPilot</title>
+    <meta name="description" content="Calcola la resistenza in serie per un LED da tensione di alimentazione, tensione di soglia e corrente: valore esatto, resistenza E12 da comprare, corrente reale e calore. Gratis, con la formula." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/" />
+    <meta property="og:title" content="Calcolo resistenza per LED (con valore E12) | BoardPilot" />
+    <meta property="og:description" content="Calcola la resistenza in serie per un LED da tensione di alimentazione, tensione di soglia e corrente: valore esatto, resistenza E12 da comprare, corrente reale e calore. Gratis, con la formula." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/tools.css?v=6f74802083" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/#app","name":"Calcolo della resistenza per LED","url":"https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/","description":"Calcola la resistenza in serie per un LED da tensione di alimentazione, tensione di soglia e corrente: valore esatto, resistenza E12 da comprare, corrente reale e calore. Gratis, con la formula.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"it","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Calcolatori","item":"https://boardpilot.agentflowbind.com/it/tools/"},{"@type":"ListItem","position":3,"name":"Calcolo della resistenza per LED","item":"https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Perché un LED ha bisogno di una resistenza?","acceptedAnswer":{"@type":"Answer","text":"Appena la tensione supera la soglia del LED, la corrente sale molto in fretta: senza qualcosa che la limiti, il LED assorbe troppa corrente e si rompe, e può danneggiare il pin che lo comanda. Una resistenza in serie prende la tensione in più e fissa la corrente con la legge di Ohm."}},{"@type":"Question","name":"La resistenza va prima o dopo il LED?","acceptedAnswer":{"@type":"Answer","text":"Va bene da entrambi i lati. In un circuito in serie la stessa corrente passa in ogni componente, quindi la resistenza può stare tra l’alimentazione e l’anodo del LED (la gamba lunga) oppure tra il catodo (la gamba corta, lato piatto) e la massa."}},{"@type":"Question","name":"Più LED possono usare una sola resistenza?","acceptedAnswer":{"@type":"Answer","text":"Non se i LED sono in parallelo: le loro tensioni di soglia sono un po’ diverse e il LED con la soglia più bassa si prende quasi tutta la corrente. Metti una resistenza per ogni LED. I LED in serie possono condividere una resistenza, se l’alimentazione supera la somma delle loro tensioni di soglia."}},{"@type":"Question","name":"Di che potenza deve essere la resistenza?","acceptedAnswer":{"@type":"Answer","text":"Calcola il calore con P = (Valim − Vf)² / R e scegli una resistenza che regga almeno il doppio. Per i LED spia sono poche decine di milliwatt, quindi basta la comune resistenza da 1/4 W (250 mW)."}},{"@type":"Question","name":"Quanta corrente può dare un pin del microcontrollore a un LED?","acceptedAnswer":{"@type":"Answer","text":"Dipende dal chip: controlla il suo datasheet. L’ATmega328P di un Arduino Uno ammette al massimo 40 mA per pin (valore massimo assoluto), quindi è sensato restare a 20 mA o meno. I pin dell’RP2040 di un Raspberry Pi Pico sono impostati a 4 mA di forza di pilotaggio (si può scegliere da 2 a 12 mA); se chiedi di più, la tensione del pin cala. Per LED molto luminosi o per tanti LED, usa un transistor."}},{"@type":"Question","name":"Posso alimentare un LED blu o bianco a 3,3 V?","acceptedAnswer":{"@type":"Answer","text":"Appena appena. Con una tensione di soglia intorno ai 3 V, alla resistenza restano pochi decimi di volt, quindi la corrente dipende molto dal LED preciso e dalla sua temperatura. Va bene per una spia debole; per una luminosità stabile usa 5 V con un transistor, oppure un driver per LED a corrente costante."}}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/tools/led-resistor-calculator/" hreflang="en" class="">EN</a><a href="/it/tools/led-resistor-calculator/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article tools-page">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/tools/">Calcolatori</a> / <span>Calcolo della resistenza per LED</span></nav>
+        <h1>Calcolo della resistenza per LED</h1>
+        <p class="lead">Inserisci la tensione di alimentazione, la tensione di soglia del LED e la corrente che vuoi. Ottieni la resistenza esatta, il valore standard (E12) da comprare e la corrente che scorre davvero.</p>
+        <div class="calc">
+        <form class="calc-form" data-tool="led" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Tensione di alimentazione (V)</span><input type="number" name="supply" value="5" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Colore del LED</span><select name="color"><option value="2" selected>Rosso (2,0 V)</option><option value="2.1">Giallo (2,1 V)</option><option value="2.2">Verde (2,2 V)</option><option value="3.1">Blu o bianco (3,1 V)</option></select></label>
+            <label class="calc-field"><span>Tensione di soglia Vf (V)</span><input type="number" name="vf" value="2" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Corrente (mA)</span><input type="number" name="ma" value="10" step="any" inputmode="decimal" min="0"/></label>
+          </div>
+          <dl class="calc-outs">
+            <div class="calc-row big"><dt>Resistenza esatta</dt><dd class="mono" data-out="exact">—</dd></div>
+            <p class="calc-formula mono" data-out="formula"></p>
+            <div class="calc-row big"><dt>Resistenza da comprare (E12, valore successivo)</dt><dd class="mono" data-out="standard">—</dd></div>
+            <div class="calc-row"><dt>Corrente con quella resistenza</dt><dd class="mono" data-out="actual">—</dd></div>
+            <div class="calc-row"><dt>Calore nella resistenza</dt><dd class="mono" data-out="power">—</dd></div>
+          </dl>
+          <p class="calc-note" data-out="note" aria-live="polite"></p>
+        </form>
+        <noscript><p class="calc-noscript">Questo calcolatore richiede JavaScript. Qui sotto trovi la formula e un esempio svolto, così puoi fare il calcolo anche a mano.</p></noscript>
+        </div>
+        <p class="fine calc-honest">I risultati sono calcoli su formule pubblicate, non misure. Verificali sul tuo hardware. <span class="free">Gratis, senza registrazione</span></p>
+        <h2>Perché un LED ha bisogno di una resistenza</h2>
+        <p>Un LED è un diodo. Sotto la sua tensione di soglia non passa quasi corrente; appena sopra, la corrente sale molto in fretta a ogni millivolt in più. Collegato direttamente all’alimentazione, il LED prende tutta la corrente che l’alimentatore o il pin riescono a dare, e si bruciano il LED, il pin o entrambi.</p>
+        <p>Una resistenza in serie risolve il problema. Il LED tiene più o meno la sua tensione di soglia, la resistenza prende il resto e la legge di Ohm fissa la corrente: la tensione rimasta divisa per la resistenza.</p>
+        <h2>Come scegliere i valori</h2>
+        <p><b>La tensione di soglia (Vf)</b> dipende soprattutto dal colore. Valori tipici: rosso circa 1,8–2,2 V, giallo e arancione circa 2,0–2,2 V, verde classico (giallo-verde) circa 2,1–2,2 V, verde brillante, blu e bianco circa 2,8–3,4 V. Il datasheet del LED dà il valore esatto a una corrente indicata.</p>
+        <p><b>Corrente:</b> i comuni LED spia da 3 mm e 5 mm reggono circa 20 mA al massimo. I LED moderni sono già luminosi a 2–10 mA, e così il pin del microcontrollore lavora meno.</p>
+        <p><b>Valore standard:</b> le resistenze si vendono in serie di valori fissi. Il calcolatore arrotonda al valore E12 successivo, così la corrente reale resta un po’ sotto quella voluta, mai sopra.</p>
+        <h2>La formula</h2>
+        <pre class="formula">R = (Valim − Vf) / I
+I(reale) = (Valim − Vf) / R(standard)
+P = (Valim − Vf)² / R(standard)</pre>
+        <p class="fine">Fonte: Legge di Ohm. Valori standard: serie E12, IEC 60063.</p>
+        <h2>Esempio svolto</h2>
+        <p>Un LED rosso (tensione di soglia circa 2,0 V) su un pin a 3,3 V di un ESP32 o di un Raspberry Pi Pico, a 10 mA: R = (3,3 − 2,0) V / 0,010 A = <b>130 Ω</b>. Il valore E12 successivo è <b>150 Ω</b>, che dà 8,67 mA e circa 11,3 mW di calore: basta una comune resistenza da 1/4 W.</p>
+<p>Lo stesso LED su un pin a 5 V di un Arduino Uno: R = (5 − 2,0) V / 0,010 A = 300 Ω, quindi compra <b>330 Ω</b>: 9,09 mA e 27,3 mW.</p>
+        <h2>Domande e risposte</h2>
+        <div class="faq">
+        <details><summary>Perché un LED ha bisogno di una resistenza?</summary><p>Appena la tensione supera la soglia del LED, la corrente sale molto in fretta: senza qualcosa che la limiti, il LED assorbe troppa corrente e si rompe, e può danneggiare il pin che lo comanda. Una resistenza in serie prende la tensione in più e fissa la corrente con la legge di Ohm.</p></details>
+        <details><summary>La resistenza va prima o dopo il LED?</summary><p>Va bene da entrambi i lati. In un circuito in serie la stessa corrente passa in ogni componente, quindi la resistenza può stare tra l’alimentazione e l’anodo del LED (la gamba lunga) oppure tra il catodo (la gamba corta, lato piatto) e la massa.</p></details>
+        <details><summary>Più LED possono usare una sola resistenza?</summary><p>Non se i LED sono in parallelo: le loro tensioni di soglia sono un po’ diverse e il LED con la soglia più bassa si prende quasi tutta la corrente. Metti una resistenza per ogni LED. I LED in serie possono condividere una resistenza, se l’alimentazione supera la somma delle loro tensioni di soglia.</p></details>
+        <details><summary>Di che potenza deve essere la resistenza?</summary><p>Calcola il calore con P = (Valim − Vf)² / R e scegli una resistenza che regga almeno il doppio. Per i LED spia sono poche decine di milliwatt, quindi basta la comune resistenza da 1/4 W (250 mW).</p></details>
+        <details><summary>Quanta corrente può dare un pin del microcontrollore a un LED?</summary><p>Dipende dal chip: controlla il suo datasheet. L’ATmega328P di un Arduino Uno ammette al massimo 40 mA per pin (valore massimo assoluto), quindi è sensato restare a 20 mA o meno. I pin dell’RP2040 di un Raspberry Pi Pico sono impostati a 4 mA di forza di pilotaggio (si può scegliere da 2 a 12 mA); se chiedi di più, la tensione del pin cala. Per LED molto luminosi o per tanti LED, usa un transistor.</p></details>
+        <details><summary>Posso alimentare un LED blu o bianco a 3,3 V?</summary><p>Appena appena. Con una tensione di soglia intorno ai 3 V, alla resistenza restano pochi decimi di volt, quindi la corrente dipende molto dal LED preciso e dalla sua temperatura. Va bene per una spia debole; per una luminosità stabile usa 5 V con un transistor, oppure un driver per LED a corrente costante.</p></details>
+        </div>
+        <h2>Impara le basi</h2>
+        <p>Lezioni gratuite del corso di BoardPilot che spiegano le idee dietro questo calcolatore:</p>
+        <p class="link-cloud"><a href="/it/learn/hardware-basics/">Basi di hardware per chi viene dal software</a><a href="/it/learn/gpio/">GPIO: pin in ingresso e in uscita</a></p>
+        <h2>Altri calcolatori</h2>
+        <p class="link-cloud"><a href="/it/tools/voltage-divider-calculator/">Calcolo del partitore di tensione</a><a href="/it/tools/i2c-pull-up-calculator/">Calcolo delle resistenze di pull-up I2C</a><a href="/it/tools/uart-baud-rate-calculator/">Calcolo del baud rate UART</a><a href="/it/tools/pwm-timer-calculator/">Calcolo di PWM e timer</a><a href="/it/tools/adc-sample-rate-calculator/">Calcolo della frequenza di campionamento ADC</a></p>
+        <div class="cta-box">
+          <h2>Guardalo su una scheda vera</h2>
+          <p>BoardPilot usa questi stessi calcoli dentro l’app, accanto a una vista 3D dal vivo della tua scheda, dei pin e dei fili, con un debug guidato quando qualcosa non funziona. Provalo nel browser o scaricalo per macOS e Windows.</p>
+          <div class="cta"><a class="btn primary" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=it">Provalo nel browser</a><a class="btn" href="/it/#download">Scarica BoardPilot</a></div>
+        </div>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+    <script src="/tools/calc.js?v=a3890e388f" defer></script>
+  </body>
+</html>
