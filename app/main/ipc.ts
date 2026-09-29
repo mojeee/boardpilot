@@ -32,6 +32,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('hw:connectAgent', () => hub.connectAgent());
   h('hw:agent', (req: AgentRequest) => hub.agent(req));
   h('hw:agentWrite', (req: AgentRequest, token: string) => hub.agentWrite(req, token));
+  h('hw:backup', () => hub.backup());
   h('hw:restore', (id: string, token: string) => hub.restore(id, token));
   h('hw:flashUser', (token: string, path: string) => hub.flashUser(token, path));
   h('hw:openSerial', (baud: number) => hub.openSerial(baud));

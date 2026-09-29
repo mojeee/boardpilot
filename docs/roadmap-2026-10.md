@@ -518,22 +518,22 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
    - [x] Build the scene from what was found, every part marked "detected" with its measurement,
          and ask the user to confirm anything that was guessed (honest AI rule).
 5. **AI that sees everything and helps at each step**
-   - [ ] The assistant receives every app event (log, scene changes, code changes, measurements)
+   - [x] The assistant receives every app event (log, scene changes, code changes, measurements)
          and raises warnings by itself when something looks wrong, with the source of each claim.
-   - [ ] Build by writing: "add a BME280 and an OLED on I2C" adds the parts and suggests the wiring;
+   - [x] Build by writing: "add a BME280 and an OLED on I2C" adds the parts and suggests the wiring;
          "make it read the temperature every 2 s" writes the code.
-   - [ ] Before building, it asks several short questions (board, power, what the project must do),
+   - [x] Before building, it asks several short questions (board, power, what the project must do),
          then proposes the parts, pins and wiring for the user to confirm. Nothing is written to the
          board without the usual confirmation.
-   - [ ] **The AI can do everything the app does.** If the user can't find something or doesn't
+   - [x] **The AI can do everything the app does.** If the user can't find something or doesn't
          know how, they ask ("back up my board", "flash my code, then open the monitor") and the
          assistant runs the same app actions, showing each step and a "Show me where it is" link
          so the user learns the way. An "Ask AI or find anything" box (⌘K) sits in the top menu.
          Writes to the board still go through the confirmation dialog.
-   - [ ] **AI code suggestions** in the Code panel: a "Suggest code" button and inline suggestions
+   - [x] **AI code suggestions** in the Code panel: a "Suggest code" button and inline suggestions
          (accept with Tab, explain, dismiss) that use the parts and pins in the drawing, each with
          its source (part library entry, library name).
-   - [ ] New project also offers **"Describe it"**: the assistant asks questions, then suggests
+   - [x] New project also offers **"Describe it"**: the assistant asks questions, then suggests
          parts, wiring and starter code for the user to confirm.
 6. **Warnings as a banner**
    - [ ] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the

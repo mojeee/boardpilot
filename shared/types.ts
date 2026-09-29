@@ -624,6 +624,12 @@ export interface AiReply {
   toolCalls?: { name: string; input: unknown; ok: boolean }[];
   /** a write the model asked for; the UI must show a confirmation dialog */
   pendingWrite?: WriteRequest;
+  /** app actions the model asked the app to run (shared/actions.ts), in order */
+  actions?: { action: string; arg: string }[];
+  /** parts proposed for the user to add ("Add to the project") */
+  proposal?: { partIds: string[]; reason: string };
+  /** a code suggestion the app writes in the Code panel */
+  codeRequest?: string;
 }
 
 export interface WriteRequest {

@@ -370,7 +370,7 @@ export class Assistant {
           results.push({ callId: call.id, name: call.name, content: r.content, isError: r.isError });
         }
         messages.push({ role: 'tool', results });
-        if (turn.ask || turn.pendingWrite) {
+        if (turn.ask || turn.pendingWrite || turn.actions?.length || turn.proposal) {
           // The UI takes over; ask for the final structured reply without more tool calls.
           continue;
         }
@@ -384,7 +384,17 @@ export class Assistant {
       if (!parsed || typeof parsed.message !== 'string') {
         return {
           ok: true,
-          value: { message: text || t('No answer.'), confidence: 'suggestion', sources: [], highlight: turn.highlight, nextOptions: [], toolCalls: turn.calls },
+          value: {
+            message: text || t('No answer.'),
+            confidence: 'suggestion',
+            sources: [],
+            highlight: turn.highlight,
+            nextOptions: [],
+            toolCalls: turn.calls,
+            actions: turn.actions,
+            proposal: turn.proposal,
+            codeRequest: turn.codeRequest,
+          },
         };
       }
       const measuredThisTurn = turn.calls.some((c) => c.ok && MEASUREMENT_TOOLS.has(c.name));
@@ -402,6 +412,9 @@ export class Assistant {
           message: turn.ask && !parsed.message.includes(turn.ask.question) ? `${parsed.message}\n\n${turn.ask.question}` : parsed.message,
           toolCalls: turn.calls,
           pendingWrite: turn.pendingWrite,
+          actions: turn.actions,
+          proposal: turn.proposal,
+          codeRequest: turn.codeRequest,
         },
         measuredThisTurn,
         logHasMeasurements,

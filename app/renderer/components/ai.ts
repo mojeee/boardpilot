@@ -4,6 +4,7 @@ import type { AiContext, AiReply } from '@shared/types';
 import { useAi, useApp, useLive, useLog, useScene, log } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { confirmGpioWrite, confirmInstallAgent } from '../state/hw';
+import { recentEvents } from '../state/events';
 import { t } from '@shared/i18n';
 
 export function aiContext(): AiContext {
@@ -19,6 +20,7 @@ export function aiContext(): AiContext {
     scene: useScene.getState().scene,
     flowId: w.state?.flowId,
     stepId: w.runner?.currentStep?.id,
+    events: recentEvents(),
   };
 }
 
@@ -45,6 +47,17 @@ export async function askAi(question: string): Promise<AiReply | null> {
     const pw = reply.pendingWrite;
     if (pw.kind === 'flash_agent') await confirmInstallAgent(t('The assistant asks to install the diagnostic agent: {reason}', { reason: pw.reason }));
     else if (pw.kind === 'gpio_write' && pw.pin !== undefined) await confirmGpioWrite(pw.pin, pw.level ?? 1, t('The assistant asks: {reason}', { reason: pw.reason }));
+  }
+  // What the assistant was asked to do: the app's own actions, in order, each shown step by step.
+  if (reply.actions?.length) {
+    const { runAction } = await import('../state/appActions');
+    for (const a of reply.actions) if (!(await runAction(a.action, a.arg, 'ai'))) break;
+  }
+  if (reply.codeRequest) {
+    const { suggestCode } = await import('./codeSuggest');
+    const { useLayout } = await import('../state/layout');
+    useLayout.getState().showBottom('code');
+    await suggestCode(reply.codeRequest);
   }
   return reply;
 }

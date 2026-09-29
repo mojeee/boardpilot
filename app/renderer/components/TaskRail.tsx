@@ -47,6 +47,7 @@ export function TopMenu() {
           aria-current={screen === m.screen ? 'page' : undefined}
           onClick={() => (m.screen === 'learn' ? useApp.getState().setScreen('learn') : openTask(m.screen))}
           title={t(m.hint)}
+          data-where={`menu:${m.screen === 'newProject' ? 'project' : m.screen}`}
         >
           <Icon name={m.icon} size={15} />
           <span>{t(m.label)}</span>

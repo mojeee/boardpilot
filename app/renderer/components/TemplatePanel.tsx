@@ -104,6 +104,7 @@ export function RunControls({ compact }: { compact?: boolean }) {
       ) : (
         <button
           className="btn small primary"
+          data-where="code:run"
           onClick={() => {
             st.play();
             // Running the code shows what happens: the Log panel with the story.

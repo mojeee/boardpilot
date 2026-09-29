@@ -386,17 +386,28 @@ export const useConfirm = create<ConfirmStore>((set, get) => ({
 
 /* ---------------- assistant ---------------- */
 
+export interface ActionStep {
+  text: string;
+  status: 'run' | 'ok' | 'fail' | 'skip';
+}
+
 export type ChatItem =
   | { id: number; role: 'user'; text: string }
   | { id: number; role: 'assistant'; reply: AiReply }
-  | { id: number; role: 'error'; text: string; hint: string };
+  | { id: number; role: 'error'; text: string; hint: string }
+  /** an app action the assistant (or the ⌘K box) runs, step by step */
+  | { id: number; role: 'action'; actionId: string; arg: string; title: string; steps: ActionStep[]; state: 'running' | 'done' | 'failed' | 'stopped'; where: string; readOnly: boolean }
+  /** something the app noticed by itself (a check that fired), with its source */
+  | { id: number; role: 'notice'; severity: 'error' | 'warning' | 'info'; text: string; hint: string; source: string; targets: TargetRef[]; line?: number };
 
 type NewChatItem = ChatItem extends infer T ? (T extends ChatItem ? Omit<T, 'id'> : never) : never;
 
 interface AiStore {
   items: ChatItem[];
   busy: boolean;
-  push(i: NewChatItem): void;
+  push(i: NewChatItem): number;
+  /** Change an item in place (an action's steps as they happen). */
+  patch(id: number, fn: (item: ChatItem) => ChatItem): void;
   set(p: Partial<Pick<AiStore, 'busy'>>): void;
   clear(): void;
 }
@@ -405,7 +416,12 @@ let chatId = 1;
 export const useAi = create<AiStore>((set) => ({
   items: [],
   busy: false,
-  push: (i) => set((s) => ({ items: [...s.items, { ...i, id: chatId++ } as ChatItem] })),
+  push: (i) => {
+    const id = chatId++;
+    set((s) => ({ items: [...s.items.slice(-300), { ...i, id } as ChatItem] }));
+    return id;
+  },
+  patch: (id, fn) => set((s) => ({ items: s.items.map((x) => (x.id === id ? fn(x) : x)) })),
   set: (p) => set(p),
   clear: () => set({ items: [] }),
 }));

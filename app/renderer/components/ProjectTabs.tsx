@@ -88,7 +88,7 @@ export function ProjectTabs() {
       {tabs.map((tab) => (
         <Tab key={tab.id} tab={tab} active={tab.id === active} sev={sev} />
       ))}
-      <button className="ptab-new" onClick={() => openNewProject()} title={t('New project')} aria-label={t('New project')}>
+      <button className="ptab-new" onClick={() => openNewProject()} title={t('New project')} aria-label={t('New project')} data-where="tabs:new">
         +
       </button>
     </div>

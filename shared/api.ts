@@ -5,6 +5,7 @@ import type {
   AiCodeSuggestion,
   AiContext,
   AiReply,
+  BackupInfo,
   ChipInfo,
   CodeSuggestionRequest,
   ConnectionState,
@@ -53,6 +54,8 @@ export interface BoardPilotApi {
     connectAgent(): Promise<Result<HelloReply>>;
     agent(req: AgentRequest): Promise<Result<unknown>>;
     agentWrite(req: AgentRequest, token: string): Promise<Result<unknown>>;
+    /** Reads the whole program on the board into a backup (read-only, no confirmation needed). */
+    backup(): Promise<Result<BackupInfo>>;
     restore(backupId: string, token: string): Promise<Result<true>>;
     flashUser(token: string, filePath: string): Promise<Result<{ bytes: number }>>;
     openSerial(baud: number): Promise<Result<true>>;

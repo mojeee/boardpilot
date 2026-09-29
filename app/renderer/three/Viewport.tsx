@@ -130,7 +130,7 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
         </div>
       )}
 
-      <div className="vp-toolbar">
+      <div className="vp-toolbar" data-where="view:toolbar">
         <div className="seg">
           <button className={view === '3d' ? 'on' : ''} onClick={() => useScene.getState().set({ view: '3d' })}>
             3D
