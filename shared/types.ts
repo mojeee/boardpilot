@@ -262,6 +262,8 @@ export interface BoardComponent {
   /** Height above the PCB in mm (defaults per type). */
   heightMm?: number;
   color?: string;
+  /** Chip package when the part number does not say (shared/boardDetail.ts infers it otherwise). */
+  package?: 'qfn' | 'lqfp' | 'soic' | 'dip' | 'sot223' | 'sot23' | 'module' | 'none';
 }
 
 export type BoardFamily = 'esp32' | 'esp32s3' | 'esp32c3' | 'rp2040' | 'rp2350' | 'avr' | 'stm32' | 'nrf52' | 'imxrt';

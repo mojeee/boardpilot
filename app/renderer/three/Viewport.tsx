@@ -18,6 +18,44 @@ import { Icon } from '../components/Icon';
 import { handleSceneKey } from '../state/sceneActions';
 import { log } from '../state/store';
 import { t } from '@shared/i18n';
+import { useView3d, type Detail, type Light } from '../state/view3d';
+
+const LIGHTS: [Light, string][] = [
+  ['studio', 'Studio'],
+  ['bench', 'Bench'],
+  ['contrast', 'High contrast'],
+];
+const DETAILS: [Detail, string, string][] = [
+  ['simple', 'Simple', 'Plain shapes: fastest on slow computers'],
+  ['full', 'Full', 'Chips with legs, small parts, traces, LEDs that light up, glowing pins and wires'],
+  ['labels', 'Labels', 'Full detail with the name of every pin and a tag on each main part'],
+];
+
+/** Light and Detail switches (top right of the 3D view). */
+function LookBar() {
+  const light = useView3d((s) => s.light);
+  const detail = useView3d((s) => s.detail);
+  return (
+    <div className="look-bar">
+      <div className="seg" role="group" aria-label={t('Light')}>
+        <span className="seg-label">{t('Light')}</span>
+        {LIGHTS.map(([id, label]) => (
+          <button key={id} className={light === id ? 'on' : ''} onClick={() => useView3d.getState().setLight(id)}>
+            {t(label)}
+          </button>
+        ))}
+      </div>
+      <div className="seg" role="group" aria-label={t('Detail')}>
+        <span className="seg-label">{t('Detail')}</span>
+        {DETAILS.map(([id, label, hint]) => (
+          <button key={id} className={detail === id ? 'on' : ''} title={t(hint)} onClick={() => useView3d.getState().setDetail(id)}>
+            {t(label)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 async function openProject() {
   const r = await window.bp.project.open();
@@ -100,6 +138,7 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
   const wireFrom = useScene((s) => s.wireFrom);
   const board = getBoard(useScene((s) => s.scene.board));
   const stage = useScene((s) => s.stage);
+  const light = useView3d((s) => s.light);
 
   return (
     <div className="viewport">
@@ -113,7 +152,7 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
           gl={{ preserveDrawingBuffer: true, antialias: true }}
           onPointerMissed={() => !useScene.getState().wireMode && useScene.getState().select(null)}
         >
-          <Stage style={stage} />
+          <Stage style={stage} light={light} />
           <Board3D board={board} />
           <Parts />
           <Wires board={board} />
@@ -160,9 +199,11 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
             </button>
           </div>
         )}
-        <button className={`tb ${labels ? 'on' : ''}`} title={t('Show the name of every pin')} onClick={() => useScene.getState().set({ labels: !labels })}>
-          {t('Labels')}
-        </button>
+        {view !== '3d' && (
+          <button className={`tb ${labels ? 'on' : ''}`} title={t('Show the name of every pin')} onClick={() => useScene.getState().set({ labels: !labels })}>
+            {t('Labels')}
+          </button>
+        )}
         {view === '3d' && (
           <button className={`tb ${wireMode ? 'on ai' : ''}`} title="W" onClick={() => useScene.getState().set({ wireMode: !wireMode, wireFrom: null })}>
             {t('Draw wire')}
@@ -198,6 +239,7 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
         </div>
       )}
 
+      {view === '3d' && !compact && <LookBar />}
       <StatusBadges />
       {wireMode && (
         <div className="wire-hint">{wireFrom ? t('From {pin}: now click a pin on a part.', { pin: wireFrom }) : t('Click a board pin, then a pin on a part.')}</div>

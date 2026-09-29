@@ -7,6 +7,9 @@ import type { BoardComponent, BoardDef } from '@shared/types';
 import { rectToMm } from '@shared/board';
 import { Pins } from './Pins';
 import { Silkscreen } from './Silkscreen';
+import { BoardDetail, PackagedChip } from './BoardDetail';
+import { markingTexture } from './textures';
+import { useView3d } from '../state/view3d';
 
 const COLORS = {
   pcb: '#1F3A5F',
@@ -118,15 +121,38 @@ function Holes({ board }: { board: BoardDef }) {
   );
 }
 
+/** The module's name etched on its metal shield (Full detail). */
+function ShieldLabel({ text, x, z, y, w, d }: { text: string; x: number; z: number; y: number; w: number; d: number }) {
+  const tex = useMemo(() => markingTexture([text], w / d, 'rgba(70,76,84,0.9)'), [text, w, d]);
+  useEffect(() => () => tex.dispose(), [tex]);
+  return (
+    <mesh position={[x, y, z]} rotation-x={-Math.PI / 2}>
+      <planeGeometry args={[w * 0.9, d * 0.6]} />
+      <meshBasicMaterial map={tex} transparent depthWrite={false} />
+    </mesh>
+  );
+}
+
 export function Board3D({ board }: { board: BoardDef }) {
   const { length, width, thickness } = board.pcbMm;
   const top = thickness / 2;
   const pcb = useMemo(() => pcbGeometry(board), [board]);
   useEffect(() => () => pcb.dispose(), [pcb]);
+  const detail = useView3d((s) => s.detail);
+  const detailed = detail !== 'simple';
 
   const comps = board.components.map((c, i) => {
     const r = rectToMm(board, c.rect);
     const h = c.heightMm ?? defaultHeight(c.type, c.label);
+    if (detailed && (c.type === 'mcu' || c.type === 'chip' || c.type === 'bridge' || c.type === 'regulator')) {
+      return (
+        <group key={i} position={[0, top, 0]}>
+          <PackagedChip c={c} board={board} />
+        </group>
+      );
+    }
+    // Board LEDs are drawn by the detail layer (lit by power or by their pin).
+    if (detailed && c.type === 'led') return null;
     switch (c.type) {
       case 'module': {
         const shieldLen = Math.min(18, r.w * 0.7);
@@ -137,6 +163,7 @@ export function Board3D({ board }: { board: BoardDef }) {
           <group key={i}>
             <Box pos={[r.cx, top + 0.4, r.cz]} size={[r.w, 0.8, r.h]} color={COLORS.module} />
             <Box pos={[shieldX, top + 0.8 + 1.2, r.cz]} size={[shieldLen, 2.4, r.h - 1]} color={COLORS.shield} metal={0.9} rough={0.28} />
+            {detailed && c.label && <ShieldLabel text={c.label} x={shieldX} z={r.cz} y={top + 0.8 + 2.4 + 0.02} w={shieldLen} d={r.h - 1} />}
             <Antenna x0={antX0} x1={antX1} z={r.cz} y={top + 0.82} depth={Math.min(11, r.h - 3)} />
           </group>
         );
@@ -194,6 +221,7 @@ export function Board3D({ board }: { board: BoardDef }) {
       <Silkscreen board={board} />
       <Holes board={board} />
       {comps}
+      {detailed && <BoardDetail board={board} top={top} labels={detail === 'labels'} />}
       <Pins board={board} />
     </group>
   );

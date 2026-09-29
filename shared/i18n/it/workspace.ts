@@ -311,6 +311,22 @@ const it: Record<string, string> = {
   'Add the ground wire.': 'Aggiungi il filo di massa.',
   'Add the supply wire.': 'Aggiungi il filo di alimentazione.',
   'Move the wire to a safe pin ({pins}). Update the pin in your code too.': 'Sposta il filo su un pin sicuro ({pins}). Aggiorna il pin anche nel codice.',
+
+  // 3D view: Light and Detail
+  'Power LED on': 'LED di alimentazione acceso',
+  'Power LED off': 'LED di alimentazione spento',
+  'Voltage regulator {label}': 'Regolatore di tensione {label}',
+  'USB-serial chip {label}': 'Chip USB-seriale {label}',
+  Light: 'Luce',
+  Detail: 'Dettaglio',
+  Studio: 'Studio',
+  Bench: 'Banco',
+  'High contrast': 'Alto contrasto',
+  Simple: 'Semplice',
+  Full: 'Completo',
+  'Plain shapes: fastest on slow computers': 'Forme semplici: il più veloce sui computer lenti',
+  'Chips with legs, small parts, traces, LEDs that light up, glowing pins and wires': 'Chip con i piedini, piccoli componenti, piste, LED che si accendono, pin e fili luminosi',
+  'Full detail with the name of every pin and a tag on each main part': 'Dettaglio completo con il nome di ogni pin e un’etichetta su ogni componente principale',
 };
 
 export default it;

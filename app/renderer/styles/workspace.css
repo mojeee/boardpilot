@@ -370,3 +370,10 @@
 @media (max-width: 1300px) {
   .wb-src { display: none; }
 }
+
+/* ---------- 3D: Light and Detail switches, part tags ---------- */
+.look-bar { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.look-bar .seg { background: rgba(18, 23, 28, 0.88); }
+.seg-label { font-size: 11px; color: var(--dim); padding: 4px 8px; border-right: 1px solid var(--line); display: inline-flex; align-items: center; }
+.viewport .badges { top: auto; bottom: 36px; }
+.chip-tag { font-size: 11px; color: var(--text); white-space: nowrap; background: rgba(18, 23, 29, 0.85); border: 1px solid var(--line); border-radius: 5px; padding: 2px 7px; }

@@ -32,6 +32,12 @@ export async function runDemo(name: string, scenario: string | null) {
   // &clean=1 hides the viewport overlays (toolbar, legend, badges) for social images.
   if (hp.get('clean')) document.body.classList.add('snapshot-clean');
   const cam = hp.get('cam');
+  // &light=studio|bench|contrast and &detail=simple|full|labels: the 3D look (screenshots).
+  const { useView3d } = await import('./state/view3d');
+  const light = hp.get('light');
+  const detail = hp.get('detail');
+  if (light === 'studio' || light === 'bench' || light === 'contrast') useView3d.getState().setLight(light);
+  if (detail === 'simple' || detail === 'full' || detail === 'labels') useView3d.getState().setDetail(detail);
   try {
     await runNamedDemo(name, scenario);
     const view = hp.get('view');
