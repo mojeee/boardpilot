@@ -1,6 +1,8 @@
 // Types shared by the Electron main process, the preload bridge and the renderer.
 // No runtime code here except tiny helpers; keep it free of Node and DOM imports.
 
+import type { StateMachine } from './statemachine';
+
 /* ---------- errors ---------- */
 
 /** Every failure that reaches the UI has this shape. Never a raw exception. */
@@ -522,6 +524,8 @@ export interface Scene {
   board: string;
   parts: ScenePart[];
   wires: SceneWire[];
+  /** The project's state machine (New project → State machine designer), saved as it is. */
+  stateMachine?: StateMachine;
 }
 
 export interface WiringFinding {

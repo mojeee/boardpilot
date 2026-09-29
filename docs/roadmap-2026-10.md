@@ -461,7 +461,7 @@ say so if you want it the other way.
 | 7 | Hands-on labs inside lessons, checked live | L | All boards with the agent; simulator scenarios for each | [x] |
 | 8 | Timing view (logic-analyser style) | L | Current stream rate first, labelled "sampled"; fast capture later | [x] |
 | 16 | Guided portfolio projects with checkpoints (builds on the templates) | L | Finished reference code, with hints shown first | [x] |
-| 12 | State machine designer → C code and tests | L | A tool in New project | [ ] |
+| 12 | State machine designer → C code and tests | L | A tool in New project | [x] |
 | 11 | Starter firmware for STM32 HAL, ESP-IDF, Pico SDK | L | Pico SDK first; compile check as a nightly CI job | [ ] |
 | 17 | AI interview coach | M | Answers stored only on this computer, deletable, 90 days | [x] |
 | 22 | Motion graphics for social posts, rendered from the real app (8 clips × 3 formats) | L | Record the real app with CSS/SVG animation (no new dependency); muted, no music | [ ] |
