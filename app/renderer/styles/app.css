@@ -714,3 +714,11 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .bom-table tr.bom-extra td:first-child { box-shadow: inset 2px 0 0 var(--warn); }
 .bom-details summary { cursor: pointer; }
 .report-bom { grid-column: 1 / -1; }
+
+/* Pin planner */
+.planner { display: flex; flex-direction: column; gap: 8px; }
+.planner-needs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; }
+.planner-need { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); }
+.planner-need input[type='number'] { width: 56px; }
+.planner-row { cursor: pointer; }
+.planner-row:hover td { background: var(--raised); }
