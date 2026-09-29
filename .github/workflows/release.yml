@@ -6,7 +6,13 @@ name: Release apps
 on:
   push:
     tags: ['v*']
+  # Or run it by hand with a version (e.g. 0.6.0): the release creates the tag v<version> on the
+  # commit it was run from.
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, without the v (e.g. 0.6.0)'
+        required: true
 
 permissions:
   contents: write
@@ -64,6 +70,9 @@ jobs:
           merge-multiple: true
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref_name }}
+          name: ${{ github.event_name == 'workflow_dispatch' && format('BoardPilot {0}', inputs.version) || github.ref_name }}
+          target_commitish: ${{ github.sha }}
           files: |
             dist/BoardPilot-mac-arm64.dmg
             dist/BoardPilot-mac-x64.dmg
