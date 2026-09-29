@@ -9,6 +9,7 @@
   "logicVolt": 3.3,
   "flashBytes": 8388608,
   "ramBytes": 1048576,
+  "clocks": {"cpuHz": 600000000, "note": "600 MHz. The calculators do not cover the i.MX RT1062 timers yet.", "source": {"title": "PJRC Teensy 4.1 page", "section": "Technical specifications"}},
   "pcbMm": {
     "length": 60.96,
     "width": 17.78,

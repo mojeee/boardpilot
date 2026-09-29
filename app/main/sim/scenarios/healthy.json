@@ -228,7 +228,8 @@
     }
    },
    "27": {
-    "external": "pullup"
+    "external": "pullup",
+    "button": true
    }
   }
  },

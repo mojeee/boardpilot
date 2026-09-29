@@ -9,6 +9,7 @@
   "logicVolt": 3.3,
   "flashBytes": 524288,
   "ramBytes": 98304,
+  "clocks": {"cpuHz": 84000000, "pwmHz": 84000000, "uartHz": 42000000, "adcHz": 84000000, "note": "SYSCLK 84 MHz. Timers on APB1 get 84 MHz (APB1 is 42 MHz, and timer clocks double when APB1 is divided). Serial is USART2 on APB1, 42 MHz. The ADC is fed from PCLK2, 84 MHz, through its own prescaler.", "source": {"title": "RM0368 STM32F401 reference manual; STM32F401xE datasheet", "section": "6.2 Clocks (timer clock x2 when APB prescaler > 1); 84 MHz max"}},
   "pcbMm": {
     "length": 82.5,
     "width": 70,

@@ -254,6 +254,7 @@ function CurrentStep() {
                   body: body ? t(body) : '',
                   details: step.confirm!.details.map((d) => t(d)),
                   confirmLabel: t('Confirm'),
+                  uses: step.confirm!.uses,
                 });
                 useWizard.getState().answer({ kind: 'confirm', confirmed: !!token, token: token ?? undefined });
               }}
@@ -269,6 +270,11 @@ function CurrentStep() {
 
       {state.status === 'waiting' && step.type === 'action' && (
         <div className="row gap">
+          {step.simControl && useApp.getState().conn.mode === 'sim' && (
+            <button className="btn" onClick={() => window.bp.sim.control(step.simControl!)}>
+              {step.simControl === 'pressButton' ? t('Simulator: press the button') : t('Simulator: turn the knob')}
+            </button>
+          )}
           <button className="btn primary" onClick={() => useWizard.getState().answer({ kind: 'done' })}>
             {t('Done, check it')}
           </button>

@@ -324,6 +324,10 @@ export interface BoardDef {
   pcbColor?: string;
   /** Radius of the PCB corners, mm (default 0.8). */
   cornerRadiusMm?: number;
+  /** Current of the chip (or whole board, as the note says), from its datasheet. */
+  power?: CurrentDraw;
+  /** Peripheral clocks as the board's Arduino core sets them up, for the timer, UART and ADC calculators. */
+  clocks?: BoardClocks;
   /** Mounting holes: [x, y, diameter] in mm from the PCB top-left corner, from the board's mechanical drawing. */
   holesMm?: [number, number, number][];
   pins: PinDef[];
@@ -366,11 +370,98 @@ export interface PartPin {
 
 export type PartShape = 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled' | 'chip' | 'module' | 'motor' | 'relay';
 
+/** Supply current from a datasheet: typical in normal use, lowest standby, short peaks (mA). */
+/** Clock frequencies in Hz. Which clock each one is (APB1 timer clock, APB_CLK…) is in the note. */
+export interface BoardClocks {
+  cpuHz: number;
+  /** clock feeding the timer / PWM peripheral */
+  pwmHz?: number;
+  /** clock feeding the UART that Serial (or Serial1) uses */
+  uartHz?: number;
+  /** clock feeding the ADC before its own prescaler */
+  adcHz?: number;
+  note: string;
+  source: { title: string; section?: string };
+}
+
+export interface CurrentDraw {
+  typMa: number;
+  sleepMa?: number;
+  peakMa?: number;
+  note: string;
+  source: { title: string; section?: string };
+}
+
 /** A known trap for a part (DHT22 needs 2 s between reads…). `when` limits it to some boards. */
 export interface PartGotcha {
   text: string;
   when?: 'logic3v3' | 'logic5v' | 'avr' | 'esp32';
   source: { title: string; section?: string };
+}
+
+/* ---------- register maps (datasheet register tables, decoded live) ---------- */
+
+/** r: read-only, rw: read and write, w: write-only (reading it back returns nothing useful). */
+export type RegAccess = 'r' | 'rw' | 'w';
+
+/** A datasheet section that a register, field or command comes from. */
+export interface RegSource {
+  title: string;
+  section: string;
+}
+
+export interface RegisterField {
+  /** [highest bit, lowest bit], inclusive. [6, 6] is a single bit. */
+  bits: [number, number];
+  name: string;
+  /** What the field controls, one plain sentence (English; shown through t()). */
+  text: string;
+  access: RegAccess;
+  /** Meaning of each field value, keyed by the value in decimal ("0", "5"). A missing value is not documented. */
+  values?: Record<string, string>;
+  /** Reserved bits: shown, never interpreted. */
+  reserved?: boolean;
+}
+
+export interface RegisterDef {
+  /** Register address: the byte written to the chip before the read, e.g. "0xF4". */
+  addr: string;
+  /** Datasheet name, e.g. "ctrl_meas". */
+  name: string;
+  /** What the register is for, one plain sentence. */
+  text: string;
+  access: RegAccess;
+  /** Bytes read from addr upward and combined high byte first (default 1). */
+  len?: number;
+  /** Right shift applied to the combined bytes (BME280 20-bit results: 4). */
+  shift?: number;
+  /** The combined value is a two's complement number. */
+  signed?: boolean;
+  /** Value after power-on reset, from the datasheet. */
+  reset?: string;
+  fields?: RegisterField[];
+  /** Meaning of whole values (chip ids, "no measurement yet"), keyed by hex value. Missing value = not documented. */
+  values?: Record<string, string>;
+  source: RegSource;
+}
+
+/** A command for chips that are driven by command bytes instead of registers (SSD1306). Never read back. */
+export interface CommandDef {
+  /** "0xAE", or a range "0xB0-0xB7". */
+  code: string;
+  name: string;
+  text: string;
+  /** Parameter bytes that follow the command. */
+  params?: number;
+  source: RegSource;
+}
+
+export interface RegisterMapDef {
+  /** How this chip is read, one or two plain sentences. */
+  note?: string;
+  registers: RegisterDef[];
+  /** Documented commands (write-only chips). Shown as a reference table, never read. */
+  commands?: CommandDef[];
 }
 
 export interface PartDef {
@@ -395,8 +486,14 @@ export interface PartDef {
   keywords: string[];
   /** Known traps, shown when the part is added. Each one is sourced. */
   gotchas?: PartGotcha[];
+  /** Supply current, only when a datasheet gives it (the power budget lists others as unknown). */
+  current?: CurrentDraw;
   sources: { title: string; section?: string }[];
   starterSketch?: string;
+  /** The chip's register map from the datasheet, for the live register viewer. */
+  registers?: RegisterMapDef;
+  /** Id of another part with the same chip whose register map applies (a smaller SSD1306 module). */
+  registersFrom?: string;
 }
 
 /* ---------- scene ---------- */

@@ -19,6 +19,7 @@ export function hwFor(hub: HardwareHub): FlowHardware {
     state: () => hub.state,
     agentReady: () => !!hub.state.agent,
     installAgent: (t) => hub.installAgent(t),
+    agentWrite: (req, t) => hub.agentWrite(req, t),
     agent: (req) => hub.agent(req),
     captureSerial: (b, ms) => hub.captureSerial(b, ms),
     flashUser: (t, f) => hub.flashUser(t, f),

@@ -6,6 +6,7 @@ import { PARTS, boardPinFor, getBoard, pinById, pinByGpio } from '@shared/board'
 import { currentBoard, useApp, useLive, useScene, log } from '../state/store';
 import { agent, confirmGpioWrite, confirmInstallAgent } from '../state/hw';
 import { openTask } from '../components/TaskRail';
+import { RegisterMap, partsWithRegisters } from '../components/RegisterMap';
 import { t } from '@shared/i18n';
 
 function Gate() {
@@ -561,6 +562,36 @@ function OutputTests() {
   );
 }
 
+/* ---------------- registers ---------------- */
+
+function RegistersCard() {
+  const scene = useScene((s) => s.scene);
+  const parts = partsWithRegisters(scene);
+  const [pick, setPick] = useState<string | null>(null);
+  const current = parts.find((p) => p.id === pick) ?? parts[0];
+  return (
+    <div className="card wide">
+      <div className="card-title">{t('Registers, decoded live')}</div>
+      {!current ? (
+        <p className="dim small">{t('None of your I2C parts has a register map yet. Maps exist for the BME280, MPU6050 and SSD1306.')}</p>
+      ) : (
+        <>
+          {parts.length > 1 && (
+            <div className="regmap-tabs">
+              {parts.map((p) => (
+                <button key={p.id} className={`btn small ${p.id === current.id ? 'on' : ''}`} onClick={() => setPick(p.id)}>
+                  {p.label ?? PARTS[p.partId].name}
+                </button>
+              ))}
+            </div>
+          )}
+          <RegisterMap key={current.id} partId={current.id} />
+        </>
+      )}
+    </div>
+  );
+}
+
 export function TestHardware() {
   const [pullups, setPullups] = useState<Record<string, boolean> | null>(null);
   const merge = (p: Record<string, boolean>) => setPullups((old) => ({ ...(old ?? {}), ...p }));
@@ -575,6 +606,7 @@ export function TestHardware() {
         <I2cCard onPullups={merge} />
         <BusDiagram pullups={pullups} />
         <DecodedBus />
+        <RegistersCard />
         <PinChecks onPullups={merge} />
         <OutputTests />
       </div>

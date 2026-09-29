@@ -19,5 +19,44 @@
     { "text": "A 128×64 display needs a 1 KB screen buffer in RAM. On a board with 2 KB of RAM (Uno, Nano) that leaves little for the rest of the sketch.", "when": "avr", "source": { "title": "Adafruit SSD1306 library", "section": "Buffer of width × height / 8 bytes; ATmega328P datasheet: 2 KB SRAM" } }
   ],
   "sources": [{ "title": "Solomon Systech SSD1306 datasheet", "section": "8.1.5 I2C-bus interface (slave address 0111 10 SA0)" }],
-  "starterSketch": "ssd1306"
+  "starterSketch": "ssd1306",
+  "registers": {
+    "note": "The SSD1306 is driven by commands. Only the status byte can be read back; the command table shows what each command does, not what the chip is set to now. Every I2C write starts with a control byte: 0x00 means commands follow, 0x40 means pixel data follows.",
+    "registers": [
+      {
+        "addr": "0x00", "name": "status", "access": "r",
+        "text": "Status byte. The app sends the control byte 0x00 (commands follow, but none is sent), then reads one byte.",
+        "fields": [
+          { "bits": [6, 6], "name": "ON/OFF", "access": "r", "text": "Whether the display is switched on.",
+            "values": { "0": "Display ON.", "1": "Display OFF (sleep mode). Your code must send 0xAF to switch it on." } }
+        ],
+        "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "8.1 MCU interface: read status byte (D6 = display ON/OFF); 8.1.5.1 control byte" }
+      }
+    ],
+    "commands": [
+      { "code": "0x81", "name": "Set contrast", "params": 1, "text": "Brightness from 0 to 255 (reset 0x7F).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 1. Fundamental" } },
+      { "code": "0xA4-0xA5", "name": "Entire display ON", "text": "0xA4 shows the picture in memory; 0xA5 lights every pixel (a quick test).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 1. Fundamental" } },
+      { "code": "0xA6-0xA7", "name": "Normal / inverse", "text": "0xA6 normal; 0xA7 swaps lit and dark pixels.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 1. Fundamental" } },
+      { "code": "0xAE-0xAF", "name": "Display OFF / ON", "text": "0xAE switches the display off (sleep, the reset state); 0xAF switches it on.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 1. Fundamental" } },
+      { "code": "0x26-0x27", "name": "Horizontal scroll setup", "params": 6, "text": "Sets up scrolling to the right (0x26) or left (0x27).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 2. Scrolling" } },
+      { "code": "0x2E-0x2F", "name": "Stop / start scroll", "text": "0x2E stops scrolling; 0x2F starts it.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 2. Scrolling" } },
+      { "code": "0x00-0x0F", "name": "Lower column start", "text": "Low 4 bits of the start column (page addressing mode).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 3. Addressing setting" } },
+      { "code": "0x10-0x1F", "name": "Higher column start", "text": "High 4 bits of the start column (page addressing mode).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 3. Addressing setting" } },
+      { "code": "0x20", "name": "Memory addressing mode", "params": 1, "text": "0 horizontal, 1 vertical, 2 page (the reset state).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 3. Addressing setting" } },
+      { "code": "0x21", "name": "Column address", "params": 2, "text": "First and last column written (horizontal or vertical mode).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 3. Addressing setting" } },
+      { "code": "0x22", "name": "Page address", "params": 2, "text": "First and last page written (horizontal or vertical mode).", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 3. Addressing setting" } },
+      { "code": "0xB0-0xB7", "name": "Page start", "text": "Picks the page (a band of 8 pixel rows) to write in page addressing mode.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 3. Addressing setting" } },
+      { "code": "0x40-0x7F", "name": "Display start line", "text": "Which memory row is shown at the top of the screen.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 4. Hardware configuration" } },
+      { "code": "0xA0-0xA1", "name": "Segment re-map", "text": "Mirrors the picture left to right.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 4. Hardware configuration" } },
+      { "code": "0xA8", "name": "Multiplex ratio", "params": 1, "text": "Number of rows driven, minus one: 63 for 128×64, 31 for 128×32.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 4. Hardware configuration" } },
+      { "code": "0xC0, 0xC8", "name": "COM scan direction", "text": "0xC0 or 0xC8: flips the picture upside down.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 4. Hardware configuration" } },
+      { "code": "0xD3", "name": "Display offset", "params": 1, "text": "Shifts the picture up or down by rows.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 4. Hardware configuration" } },
+      { "code": "0xDA", "name": "COM pins configuration", "params": 1, "text": "Must match the module's wiring: 0x12 on most 128×64 modules, 0x02 on 128×32. A wrong value shows every other line.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 4. Hardware configuration" } },
+      { "code": "0xD5", "name": "Clock divide / oscillator", "params": 1, "text": "Display clock: sets the refresh rate.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 5. Timing and driving scheme" } },
+      { "code": "0xD9", "name": "Pre-charge period", "params": 1, "text": "Pixel charge timing; affects brightness.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 5. Timing and driving scheme" } },
+      { "code": "0xDB", "name": "VCOMH deselect level", "params": 1, "text": "A drive voltage level; affects brightness.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 5. Timing and driving scheme" } },
+      { "code": "0xE3", "name": "No operation", "text": "Does nothing.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Table 9-1 Command table: 5. Timing and driving scheme" } },
+      { "code": "0x8D", "name": "Charge pump", "params": 1, "text": "0x14 turns the built-in charge pump on, 0x10 off. Most modules need it on before 0xAF, or the screen stays dark.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "Appendix: charge pump regulator (command 8Dh)" } }
+    ]
+  }
 }

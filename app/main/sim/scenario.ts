@@ -16,7 +16,16 @@ export interface SimI2cDevice {
 
 export interface SimPhysical {
   i2c: SimI2cDevice[];
-  pins: Record<string, { external?: 'pullup' | 'pulldown'; analog?: { mv: number; noise: number } }>;
+  pins: Record<
+    string,
+    {
+      external?: 'pullup' | 'pulldown';
+      /** stuck: the knob does not change the reading (an outer leg of the potentiometer is loose) */
+      analog?: { mv: number; noise: number; stuck?: boolean };
+      /** a push button from this pin to GND; with no pull-up the released pin floats */
+      button?: boolean;
+    }
+  >;
 }
 
 export interface Scenario {

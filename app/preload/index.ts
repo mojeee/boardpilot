@@ -61,6 +61,7 @@ const api: BoardPilotApi = {
     pickFile: call('session:pickFile'),
     openSketch: call('session:openSketch'),
     saveFile: call('session:saveFile'),
+    savePng: call('session:savePng'),
     exportReport: call('session:exportReport'),
     info: call('session:info'),
   } as BoardPilotApi['session'],
@@ -77,6 +78,12 @@ const api: BoardPilotApi = {
     open: call('project:open'),
   } as BoardPilotApi['project'],
   mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult') } as BoardPilotApi['mcp'],
+  coach: {
+    ask: call('coach:ask'),
+    history: call('coach:history'),
+    remove: call('coach:remove'),
+    removeAll: call('coach:removeAll'),
+  } as BoardPilotApi['coach'],
   license: {
     status: call('license:status'),
     activate: call('license:activate'),

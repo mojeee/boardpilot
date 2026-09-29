@@ -16,6 +16,10 @@ import type { Assistant } from './ai/assistant';
 import { grant } from './session/safety';
 import type { SessionLog } from './session/sessionLog';
 import { toAppError } from './hardware/errors';
+import { randomUUID } from 'node:crypto';
+import { LESSONS, type Lesson } from '@shared/lessons';
+import { COACH_MAX_ANSWER, type CoachAttempt } from '@shared/coach';
+import { CoachStore } from './session/coachStore';
 
 export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
@@ -40,9 +44,9 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('sim:scenarios', () => hub.scenarios());
   h('sim:load', (id: string) => hub.loadScenario(id));
   h('sim:scene', () => hub.scenarioScene());
-  h('sim:control', (a: 'fixWiring' | 'turnKnob') => hub.simControl(a));
+  h('sim:control', (a: 'fixWiring' | 'turnKnob' | 'pressButton') => hub.simControl(a));
 
-  h('safety:grant', (kind: WriteRequest['kind'] | 'restore') => grant(kind));
+  h('safety:grant', (kind: WriteRequest['kind'] | 'restore', uses?: number) => grant(kind, typeof uses === 'number' ? uses : 1));
 
   h('ai:status', () => ai.status());
   h('ai:getSettings', () => ai.getSettings());
@@ -87,6 +91,21 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       const r = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
       if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Not saved.'), hint: '' } };
       await writeFile(r.filePath, content);
+      return { ok: true, value: r.filePath };
+    } catch (e) {
+      return { ok: false, error: toAppError(e) };
+    }
+  });
+  h('session:savePng', async (name: string, dataUrl: string): Promise<Result<string>> => {
+    const prefix = 'data:image/png;base64,';
+    if (typeof dataUrl !== 'string' || !dataUrl.startsWith(prefix) || dataUrl.length > 40 * 1024 * 1024)
+      return { ok: false, error: { code: 'bad_image', humanMessage: t('The picture could not be saved.'), hint: t('Try the export again.') } };
+    try {
+      const win = BrowserWindow.getFocusedWindow();
+      const opts: Electron.SaveDialogOptions = { defaultPath: String(name), filters: [{ name: 'PNG', extensions: ['png'] }] };
+      const r = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
+      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Not saved.'), hint: '' } };
+      await writeFile(r.filePath, Buffer.from(dataUrl.slice(prefix.length), 'base64'));
       return { ok: true, value: r.filePath };
     } catch (e) {
       return { ok: false, error: toAppError(e) };
@@ -156,6 +175,59 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       return { ok: true, value: scene };
     } catch {
       return { ok: false, error: { code: 'bad_project', humanMessage: t('That file is not a BoardPilot project.'), hint: t('Pick a .boardpilot.json file saved from the app.') } };
+    }
+  });
+
+  // Interview coach (Learn): answers are stored only on this computer, pruned after 90 days.
+  const coach = new CoachStore(join(dataDir, 'coach-answers.json'));
+  const coachLesson = (lessonId: unknown, question: unknown): Lesson | null => {
+    const lesson = LESSONS.find((l) => l.id === lessonId);
+    return lesson && typeof question === 'string' && lesson.interview.includes(question) ? lesson : null;
+  };
+  const noQuestion = <T>(): Result<T> => ({ ok: false, error: { code: 'coach_unknown', humanMessage: t('This interview question was not found.'), hint: t('Open the lesson again and pick the question.') } });
+  const saveFailed = <T>(): Result<T> => ({
+    ok: false,
+    error: { code: 'coach_storage', humanMessage: t('Your saved answers could not be read or changed.'), hint: t('Check that the app data folder is not full or read-only, then try again.') },
+  });
+  h('coach:ask', async (lessonId: string, question: string, answer: string): Promise<Result<{ attempt: CoachAttempt; saved: boolean }>> => {
+    const lesson = coachLesson(lessonId, question);
+    if (!lesson) return noQuestion();
+    const text = typeof answer === 'string' ? answer.trim().slice(0, COACH_MAX_ANSWER) : '';
+    if (!text) return { ok: false, error: { code: 'coach_empty', humanMessage: t('Write your answer first.'), hint: t('A few sentences are enough.') } };
+    const r = await ai.coach(lesson, question, text);
+    if (!r.ok) return r;
+    const attempt: CoachAttempt = { id: randomUUID(), lessonId: lesson.id, question, answer: text, at: Date.now(), feedback: r.value };
+    let saved = true;
+    try {
+      await coach.add(attempt);
+    } catch {
+      saved = false; // the grade is still shown; the renderer says it was not saved
+    }
+    return { ok: true, value: { attempt, saved } };
+  });
+  h('coach:history', async (lessonId: string, question: string): Promise<Result<{ attempts: CoachAttempt[]; total: number }>> => {
+    if (!coachLesson(lessonId, question)) return noQuestion();
+    try {
+      return { ok: true, value: { attempts: await coach.list(lessonId, question), total: await coach.count() } };
+    } catch {
+      return saveFailed();
+    }
+  });
+  h('coach:remove', async (lessonId: string, question: string): Promise<Result<true>> => {
+    if (!coachLesson(lessonId, question)) return noQuestion();
+    try {
+      await coach.removeQuestion(lessonId, question);
+      return { ok: true, value: true };
+    } catch {
+      return saveFailed();
+    }
+  });
+  h('coach:removeAll', async (): Promise<Result<true>> => {
+    try {
+      await coach.removeAll();
+      return { ok: true, value: true };
+    } catch {
+      return saveFailed();
     }
   });
 

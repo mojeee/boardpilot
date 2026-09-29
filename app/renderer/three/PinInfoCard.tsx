@@ -1,5 +1,6 @@
 // Floating card for the selected pin, part or wire.
 
+import { useState } from 'react';
 import type { BoardDef, PinFlag, TargetRef } from '@shared/types';
 import { PARTS, ROLE_HEX, ROLE_VAR, canOutput, getBoard, gotchasFor, partRoleColor, pinById, pinRoleInScene, targetLabel } from '@shared/board';
 import { useApp, useLive, useScene } from '../state/store';
@@ -8,6 +9,8 @@ import { duplicateSelected, removeTarget, renamePart, rotateSelected } from '../
 import { isBuiltin } from '../state/partsLib';
 import { usePartEditor } from '../components/PartEditor';
 import { Icon } from '../components/Icon';
+import { RegisterMapDialog } from '../components/RegisterMap';
+import { registerMapFor } from '@shared/regmap';
 import { t } from '@shared/i18n';
 
 const FLAG_TEXT: Partial<Record<PinFlag, { text: string; sev: 'warn' | 'info' }>> = {
@@ -112,7 +115,9 @@ function PartCard({ id }: { id: string }) {
   const findings = allFindings.filter((f) => f.targets.includes(`part:${id}` as TargetRef));
   const sp = scene.parts.find((p) => p.id === id);
   const def = sp && PARTS[sp.partId];
+  const [regsOpen, setRegsOpen] = useState(false);
   if (!sp || !def) return null;
+  const hasRegisters = def.bus === 'i2c' && !!registerMapFor(def, PARTS);
   const wires = scene.wires.filter((w) => w.from.part === id || w.to.part === id);
   return (
     <>
@@ -159,6 +164,16 @@ function PartCard({ id }: { id: string }) {
               </span>
             </p>
           ))}
+        </div>
+      )}
+      {hasRegisters && (
+        <div className="card-section">
+          <div className="label">{t('Registers')}</div>
+          <p className="card-note small">{t('See the chip’s register table from the datasheet, and read the live values bit by bit.')}</p>
+          <button className="btn small" onClick={() => setRegsOpen(true)}>
+            {t('Open register map')}
+          </button>
+          {regsOpen && <RegisterMapDialog partId={id} onClose={() => setRegsOpen(false)} />}
         </div>
       )}
       <div className="card-section">

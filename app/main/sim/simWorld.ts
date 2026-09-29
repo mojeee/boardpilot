@@ -8,6 +8,7 @@ import { DriverError } from '../hardware/errors';
 import { t } from '@shared/i18n';
 import { agentErrorText } from '@shared/protocol';
 import type { Scenario, SimPhysical, SimI2cDevice } from './scenario';
+import { simRegister } from './registers';
 
 import swapped from './scenarios/weather-station-swapped.json';
 import healthy from './scenarios/healthy.json';
@@ -17,9 +18,12 @@ import noBoard from './scenarios/no-board.json';
 import portBusy from './scenarios/port-busy.json';
 import resetting from './scenarios/keeps-resetting.json';
 import garbage from './scenarios/garbage-serial.json';
+import labMistakes from './scenarios/lab-mistakes.json';
+import imuAsleep from './scenarios/imu-asleep.json';
+import roomMonitor from './scenarios/room-monitor.json';
 
 /** Hand-written benches for the ESP32 DevKit. Other boards get generated benches (see bench.ts). */
-export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage].map(
+export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage, labMistakes, imuAsleep, roomMonitor].map(
   (s) => s as unknown as Scenario,
 );
 
@@ -41,6 +45,7 @@ export class SimWorld {
   fixed = false;
   private driven = new Map<number, AgentPinState>();
   private knobSweepStart = 0;
+  private buttonDownUntil = 0;
   private readonly bootTime = Date.now();
 
   constructor(scenarioId: string = DEFAULT_SCENARIO, board: BoardDef = getBoard()) {
@@ -92,6 +97,11 @@ export class SimWorld {
     this.knobSweepStart = Date.now();
   }
 
+  /** "Press the button" demo: every simulated button is held down for 4 s. */
+  pressButton() {
+    this.buttonDownUntil = Date.now() + 4000;
+  }
+
   agentBoot() {
     this.firmware = 'agent';
     this.driven.clear();
@@ -120,7 +130,7 @@ export class SimWorld {
     if (!a) return null;
     let mv = a.mv;
     const since = Date.now() - this.knobSweepStart;
-    if (since < 8000) {
+    if (since < 8000 && !a.stuck) {
       // "Turn the knob" demo: sweep 0 → full scale → 0 over 8 s
       const phase = since / 8000;
       mv = Math.round(this.adcMax * (phase < 0.5 ? phase * 2 : (1 - phase) * 2));
@@ -131,10 +141,23 @@ export class SimWorld {
   levelOf(gpio: number): 0 | 1 {
     const d = this.driven.get(gpio);
     if (d?.mode === 'out') return d.level ?? 0;
-    if (d?.mode === 'pwm') return Math.random() * 100 < (d.duty ?? 0) ? 1 : 0;
+    if (d?.mode === 'pwm') {
+      // A real square wave: the level follows the PWM phase at the moment of the sample, so slow PWM
+      // shows its period in the timing view and fast PWM aliases the way a real sampled signal does.
+      const hz = d.hz ?? 0;
+      if (!(hz > 0)) return (d.duty ?? 0) >= 100 ? 1 : 0;
+      const phase = ((performance.now() / 1000) * hz) % 1;
+      return phase * 100 < (d.duty ?? 0) ? 1 : 0;
+    }
     const mv = this.analogMv(gpio);
     if (mv !== null) return mv > this.adcMax / 2 ? 1 : 0;
-    return this.externalPull(gpio) === 'pullup' ? 1 : 0;
+    const pull = this.externalPull(gpio);
+    if (this.physical.pins[String(gpio)]?.button) {
+      if (Date.now() < this.buttonDownUntil) return 0;
+      // Released with no pull-up or pull-down: the pin floats and reads at random.
+      if (!pull) return Math.random() < 0.5 ? 1 : 0;
+    }
+    return pull === 'pullup' ? 1 : 0;
   }
 
   pinState(gpio: number): AgentPinState {
@@ -233,8 +256,7 @@ export class SimWorld {
         const regNum = parseInt(r.reg, 16);
         for (let i = 0; i < Math.min(r.len, 32); i++) {
           const key = '0x' + (regNum + i).toString(16).toUpperCase().padStart(2, '0');
-          const v = dev.registers[key] ?? '0x00';
-          data.push(v);
+          data.push(simRegister(dev, key));
         }
         trace.push({ t: 'data', v: r.reg, dir: 'w', ack: true }, { t: 'restart' }, { t: 'addr', v: r.addr, rw: 'r', ack: true });
         data.forEach((v, i) => trace.push({ t: 'data', v, dir: 'r', ack: i < data.length - 1 }));

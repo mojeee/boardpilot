@@ -29,6 +29,7 @@ export type LessonBlock =
   | { kind: 'widget'; id: WidgetId }
   /** "In real products": what goes wrong outside the classroom */
   | { kind: 'tip'; text: string }
+  | LabBlock
   /**
    * "Show on the 3D board": a temporary preview with these pins highlighted, optionally with parts
    * wired to them. The user's project is never touched.
@@ -41,6 +42,9 @@ export type LessonBlock =
       parts?: { id: string; partId: string; position: [number, number, number] }[];
       wires?: { pin: string; part: string; partPin: string }[];
     };
+
+/** A hands-on lab at the end of a lesson: runs a lab flow (flows/labs.ts), checked with live data. */
+export type LabBlock = { kind: 'lab'; flow: 'lab-blink' | 'lab-button' | 'lab-adc' | 'lab-i2c'; text: string };
 
 export type TrackId = 'foundations' | 'senior';
 
@@ -278,6 +282,8 @@ while (1) {                            // 3. read the button, drive the LED
       },
       { kind: 'tip', text: 'Real buttons bounce: for a few milliseconds the contact flickers between 0 and 1. Filter it in software (debounce), or one press counts as several.' },
       { kind: 'p', text: 'In BoardPilot, Test hardware reads and drives real pins, and the 3D board shows every pin you use.' },
+      { kind: 'lab', flow: 'lab-blink', text: 'Blink an LED on your board: the app switches the pin, reads it back and asks what the LED did.' },
+      { kind: 'lab', flow: 'lab-button', text: 'Read a button: the app checks the pull-up, then watches the pin go from 1 to 0 while you press.' },
     ],
     interview: [
       'What is a pull-up resistor and why does a button need one?',
@@ -380,6 +386,7 @@ NVIC_EnableIRQ(TIM2_IRQn);             // let the CPU accept it`,
       },
       { kind: 'p', text: 'Each bus is a peripheral inside the MCU: you write a byte into its data register and the hardware sends it bit by bit. When a byte arrives, it can raise an interrupt. Same pattern as always: registers and interrupts.' },
       { kind: 'tip', text: 'The most common I2C problems are SDA and SCL swapped, missing pull-up resistors and the wrong address. The BoardPilot Debug wizard checks all three.' },
+      { kind: 'lab', flow: 'lab-i2c', text: 'Scan the I2C bus and read your sensor’s chip-ID register.' },
     ],
     interview: [
       'When would you choose SPI instead of I2C?',
@@ -410,6 +417,7 @@ float volts = raw * 3.3f / 4095;           // 2048 -> 1.65 V
 // volts -> temperature, light, pressure: the formula is in the sensor's datasheet`,
       },
       { kind: 'tip', text: 'Every sensor maps voltage to a value in its own way, and the formula is in its datasheet. Reading datasheets is a core embedded skill.' },
+      { kind: 'lab', flow: 'lab-adc', text: 'Turn a potentiometer end to end while the app reads the ADC.' },
     ],
     interview: [
       'What limits the accuracy of an ADC reading?',
@@ -596,7 +604,7 @@ switch (state) {
 export function lessonTexts(l: Lesson): string[] {
   const out = [l.title, l.summary, ...l.interview];
   for (const b of l.blocks) {
-    if (b.kind === 'p' || b.kind === 'h' || b.kind === 'tip') out.push(b.text);
+    if (b.kind === 'p' || b.kind === 'h' || b.kind === 'tip' || b.kind === 'lab') out.push(b.text);
     else if (b.kind === 'board') out.push(b.label);
     else if (b.kind === 'list') out.push(...b.items);
     else if (b.kind === 'table') {
