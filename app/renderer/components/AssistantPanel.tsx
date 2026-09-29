@@ -177,9 +177,11 @@ function NoticeCard({ item }: { item: Extract<ChatItem, { role: 'notice' }> }) {
             {t('Show in the code')}
           </button>
         ) : null}
-        <button className="btn small ghost" onClick={() => void askAi(t('Why is this a problem, and how do I fix it? {text}', { text: item.text }))}>
-          ✦ {t('Ask why')}
-        </button>
+        {(item.targets.length > 0 || item.line || item.severity !== 'info') && (
+          <button className="btn small ghost" onClick={() => void askAi(t('Why is this a problem, and how do I fix it? {text}', { text: item.text }))}>
+            ✦ {t('Ask why')}
+          </button>
+        )}
       </div>
     </div>
   );

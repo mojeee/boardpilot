@@ -536,7 +536,7 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
    - [x] New project also offers **"Describe it"**: the assistant asks questions, then suggests
          parts, wiring and starter code for the user to confirm.
 6. **Warnings as a banner**
-   - [ ] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the
+   - [x] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the
          project page: plain text, the source, and buttons Fix, Show on the board, Ask why, with
          "1 of N" to step through them. They stay in the log too.
 7. **Better 3D view**

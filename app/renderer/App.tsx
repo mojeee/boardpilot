@@ -13,6 +13,7 @@ import { NewProjectDialog } from './components/NewProjectDialog';
 import { nameFirstTab } from './state/projects';
 import { startEventFeed } from './state/events';
 import { CommandBox } from './components/CommandBox';
+import { WarningBanner } from './components/WarningBanner';
 import { AssistantPanel } from './components/AssistantPanel';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DevMenu } from './components/DevMenu';
@@ -216,6 +217,7 @@ export function App() {
         <CommandBox />
       </TopBar>
       <ProjectTabs />
+      <WarningBanner />
       <Work />
       <CodeFindingsLogger />
       <DevMenu />

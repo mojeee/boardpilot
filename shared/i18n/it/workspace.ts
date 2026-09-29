@@ -290,6 +290,27 @@ const it: Record<string, string> = {
   'Create a report': 'Crea un rapporto',
   'A summary of this session to share.': 'Un riepilogo di questa sessione da condividere.',
   'Pick the AI provider and add your key.': 'Scegli il fornitore di AI e aggiungi la tua chiave.',
+
+  // Warnings banner and one-click fixes
+  'Code and drawing disagree.': 'Codice e disegno non corrispondono.',
+  'Check the code.': 'Controlla il codice.',
+  'code check · line {line}': 'controllo del codice · riga {line}',
+  'code check': 'controllo del codice',
+  'Fix the code': 'Correggi il codice',
+  'Fix the wiring': 'Correggi i collegamenti',
+  'Fixed line {line}: {code}': 'Corretta la riga {line}: {code}',
+  'Wiring check.': 'Controllo dei collegamenti.',
+  '{fix} ⌘Z undoes it.': '{fix} ⌘Z annulla.',
+  'The board reports a problem.': 'La scheda segnala un problema.',
+  '{i} of {n}': '{i} di {n}',
+  'Previous warning': 'Avviso precedente',
+  'Next warning': 'Avviso successivo',
+  'Hide the warnings until something new comes up': 'Nascondi gli avvisi finché non ne arriva uno nuovo',
+  '1 more thing to check.': 'Un’altra cosa da controllare.',
+  'Swap the two wires at the part, so SDA and SCL match the board.': 'Scambia i due fili sul componente, così SDA e SCL corrispondono alla scheda.',
+  'Add the ground wire.': 'Aggiungi il filo di massa.',
+  'Add the supply wire.': 'Aggiungi il filo di alimentazione.',
+  'Move the wire to a safe pin ({pins}). Update the pin in your code too.': 'Sposta il filo su un pin sicuro ({pins}). Aggiorna il pin anche nel codice.',
 };
 
 export default it;

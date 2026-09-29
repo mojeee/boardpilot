@@ -114,7 +114,7 @@ function flush() {
     useAi.getState().push({
       role: 'notice',
       severity: 'info',
-      text: t('{n} more things to check.', { n: list.length - 2 }),
+      text: list.length - 2 === 1 ? t('1 more thing to check.') : t('{n} more things to check.', { n: list.length - 2 }),
       hint: t('They are in the warnings banner and the log.'),
       source: t('the app’s checks'),
       targets: [],
