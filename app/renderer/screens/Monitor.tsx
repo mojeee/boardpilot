@@ -196,7 +196,8 @@ export function Monitor() {
   const paused = useLive((s) => s.paused);
   const recording = useLive((s) => s.recording);
   const [windowS, setWindowS] = useState(30);
-  const [baud, setBaud] = useState(115200);
+  const baud = useLive((st) => st.baud);
+  const setBaud = (b: number) => useLive.getState().set({ baud: b });
   const [keys, setKeys] = useState<string[]>([]);
 
   // Pick up new series as they appear.

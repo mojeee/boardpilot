@@ -380,6 +380,63 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
     }
   }
 
+  /* ---- I2C: two parts that can answer at the same address on one bus ---- */
+  // Parts on one bus share the SDA pin. The library lists every address a part can have, the usual
+  // (default) one first; an address-select pin (ADDR, SDO, AD0…) says "address" in its pin notes.
+  const onBus = new Map<string, { inst: (typeof i2cParts)[number]; def: PartDef; wire: string }[]>();
+  for (const inst of i2cParts) {
+    const def = parts[inst.partId];
+    const sda = conns.find((c) => c.partInstance === inst.id && c.role === 'i2c_sda');
+    if (!def?.addresses?.length || !sda) continue;
+    onBus.set(sda.boardPinId, [...(onBus.get(sda.boardPinId) ?? []), { inst, def, wire: sda.wire.id }]);
+  }
+  for (const list of onBus.values()) {
+    for (let i = 0; i < list.length; i++)
+      for (let j = i + 1; j < list.length; j++) {
+        const a = list[i];
+        const b = list[j];
+        const aAddr = (a.def.addresses ?? []).map((x) => x.toLowerCase());
+        const bAddr = (b.def.addresses ?? []).map((x) => x.toLowerCase());
+        // Only a clash at the default (first listed) address matters: parts with different defaults
+        // work as delivered.
+        if (aAddr[0] !== bAddr[0]) continue;
+        const addr = aAddr[0];
+        const nameA = a.inst.label ?? a.def.name;
+        const nameB = b.inst.label ?? b.def.name;
+        const targets: TargetRef[] = [`part:${a.inst.id}`, `part:${b.inst.id}`, `wire:${a.wire}`, `wire:${b.wire}`];
+        const source = `library: ${a.def.id === b.def.id ? a.def.id : `${a.def.id}, ${b.def.id}`}`;
+        // The part that can move (the second one if both can), the address it moves to, the pin that selects it.
+        const movable = [b, a].find((x) => (x.def.addresses ?? []).length > 1);
+        if (!movable) {
+          add({
+            rule: 'i2c_address_conflict',
+            severity: 'error',
+            message: t('{a} and {b} both use I2C address {addr} on the same bus. Only one of them can answer.', { a: nameA, b: nameB, addr }),
+            hint: t('Neither part can change its address. Put one of them on a second I2C bus, or use an I2C multiplexer.'),
+            targets,
+            source,
+          });
+          continue;
+        }
+        const other = (movable.def.addresses ?? []).find((ad) => ad.toLowerCase() !== addr) ?? '';
+        const addrPin = movable.def.pins.find((p) => /address/i.test(p.notes ?? ''))?.name;
+        add({
+          rule: 'i2c_address_conflict',
+          severity: 'warning',
+          message: t('{a} and {b} both answer at I2C address {addr} by default, on the same bus. Set to the same address, neither reads correctly.', {
+            a: nameA,
+            b: nameB,
+            addr,
+          }),
+          hint: addrPin
+            ? t('Set {part} to address {other} with its {pin} pin, so each part has its own address.', { part: movable.inst.label ?? movable.def.name, other, pin: addrPin })
+            : t('Set {part} to address {other} (see its address jumper or pads), so each part has its own address.', { part: movable.inst.label ?? movable.def.name, other }),
+          targets,
+          source,
+        });
+      }
+  }
+
   /* ---- missing ground / power ---- */
   for (const inst of scene.parts) {
     const def = parts[inst.partId];
