@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BoardPilot PDF export</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#161B21;font-family:'IBM Plex Sans',sans-serif;color:#E9EDF1}
+a{color:#9ADCF7}a:hover{color:#E9EDF1}
+button{font-family:inherit;cursor:pointer}
+.mono{font-family:'IBM Plex Mono',monospace}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; display: flex; background: radial-gradient(ellipse 70% 70% at 62% 40%, #26303B 0%, #151B22 60%, #0B0E12 100%); overflow: hidden">
+
+<aside style="width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; padding: 28px 24px; background: #1C232B; border-right: 1px solid #2C3540; box-sizing: border-box">
+<div style="display: flex; align-items: flex-start; gap: 10px">
+<div style="flex-grow: 1">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700">Electrical design (PDF)</h1>
+<p style="margin: 6px 0 0; font-size: 13px; line-height: 19px; color: #A7B3BF">A technical drawing set of this project, ready to print or send to someone who builds or checks it.</p>
+</div>
+<a href="Main.dc.html" aria-label="Close" style="color: #7D8997; text-decoration: none; font-size: 22px">×</a>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #7D8997">SHEETS</div>
+<label style="display: flex; gap: 10px; align-items: center; font-size: 13px"><span style="width: 16px; height: 16px; border-radius: 4px; background: #5CCB8F; color: #0D1115; font-size: 11px; display: flex; align-items: center; justify-content: center">✓</span>1 · Schematic</label>
+<label style="display: flex; gap: 10px; align-items: center; font-size: 13px"><span style="width: 16px; height: 16px; border-radius: 4px; background: #5CCB8F; color: #0D1115; font-size: 11px; display: flex; align-items: center; justify-content: center">✓</span>2 · Wiring diagram and pin map</label>
+<label style="display: flex; gap: 10px; align-items: center; font-size: 13px"><span style="width: 16px; height: 16px; border-radius: 4px; background: #5CCB8F; color: #0D1115; font-size: 11px; display: flex; align-items: center; justify-content: center">✓</span>3 · Bill of materials</label>
+<label style="display: flex; gap: 10px; align-items: center; font-size: 13px"><span style="width: 16px; height: 16px; border-radius: 4px; background: #5CCB8F; color: #0D1115; font-size: 11px; display: flex; align-items: center; justify-content: center">✓</span>4 · Checks, power budget, measurements</label>
+<label style="display: flex; gap: 10px; align-items: center; font-size: 13px; color: #A7B3BF"><span style="width: 14px; height: 14px; border-radius: 4px; border: 1px solid #3A4552"></span>5 · Source code listing</label>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #7D8997">SYMBOLS</div>
+<div style="display: flex; gap: 2px; padding: 3px; background: #12171C; border: 1px solid #2C3540; border-radius: 8px; font-size: 12px; width: fit-content">
+<button style="background: #2C3541; color: #E9EDF1; border: none; border-radius: 5px; padding: 5px 12px">IEC 60617</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 5px 12px">ANSI / IEEE 315</button>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #7D8997">PAPER</div>
+<div style="display: flex; gap: 2px; padding: 3px; background: #12171C; border: 1px solid #2C3540; border-radius: 8px; font-size: 12px; width: fit-content">
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 5px 12px">A4</button>
+<button style="background: #2C3541; color: #E9EDF1; border: none; border-radius: 5px; padding: 5px 12px">A3</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 5px 12px">Letter</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 5px 12px">Tabloid</button>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #7D8997">TITLE BLOCK</div>
+<div style="display: grid; grid-template-columns: 76px 1fr; gap: 6px 10px; align-items: center; font-size: 12.5px">
+<span style="color: #A7B3BF">Project</span><span style="padding: 6px 9px; background: #12171C; border: 1px solid #2C3540; border-radius: 6px">Weather station</span>
+<span style="color: #A7B3BF">Drawn by</span><span style="padding: 6px 9px; background: #12171C; border: 1px solid #2C3540; border-radius: 6px; color: #7D8997">Your name</span>
+<span style="color: #A7B3BF">Revision</span><span style="padding: 6px 9px; background: #12171C; border: 1px solid #2C3540; border-radius: 6px">A</span>
+</div>
+</div>
+
+<div style="padding: 10px 12px; background: #231F38; border: 1px solid #3B3463; border-radius: 10px; font-size: 12px; line-height: 17px; color: #D8DEE4">
+<span style="color: #C9BEFF; font-weight: 600">✦ Before you export:</span> 1 open warning (code swaps SDA and SCL). It is listed on sheet 4. <a href="Main.dc.html">Fix it first</a>
+</div>
+
+<div style="flex-grow: 1"></div>
+<div style="display: flex; gap: 8px">
+<a href="Main.dc.html" style="flex-grow: 1; text-align: center; color: #A7B3BF; border: 1px solid #2C3540; border-radius: 8px; padding: 11px 0; font-size: 13px; text-decoration: none">Cancel</a>
+<button style="flex-grow: 2; background: #5CCB8F; color: #0D1115; border: none; border-radius: 8px; padding: 11px 0; font-size: 13px; font-weight: 600">Save PDF · 4 sheets</button>
+</div>
+</aside>
+
+<main style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px">
+<div style="width: 980px; height: 693px; background: #FBFBF8; border-radius: 2px; box-shadow: 0 2px 0 rgba(255,255,255,0.1) inset, 0 30px 70px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4)">
+<svg width="980" height="693" viewBox="0 0 1190 842" font-family="IBM Plex Mono, monospace" fill="none" stroke="#1B1F24">
+<rect x="20" y="20" width="1150" height="802" stroke-width="2"></rect>
+<rect x="40" y="40" width="1110" height="762" stroke-width="1"></rect>
+<g font-size="11" fill="#555" stroke="none">
+<text x="125" y="34">1</text><text x="310" y="34">2</text><text x="495" y="34">3</text><text x="680" y="34">4</text><text x="865" y="34">5</text><text x="1050" y="34">6</text>
+<text x="26" y="140">A</text><text x="26" y="330">B</text><text x="26" y="520">C</text><text x="26" y="710">D</text>
+</g>
+<g stroke-width="0.6" stroke="#888"><path d="M225 20v20M410 20v20M595 20v20M780 20v20M965 20v20M20 230h20M20 420h20M20 610h20"></path></g>
+
+<text x="60" y="72" font-family="IBM Plex Sans, sans-serif" font-size="16" font-weight="700" fill="#1B1F24" stroke="none">SCHEMATIC · WEATHER STATION</text>
+
+<g stroke-width="1.6">
+<path d="M200 160H700"></path>
+<path d="M200 160V135M188 135H212"></path>
+<path d="M250 230H200V300M186 300H214M186 310H214M200 310V340"></path>
+<path d="M188 340H212M193 346H207M198 352H202"></path>
+<path d="M200 230V160"></path>
+<path d="M250 430H220V460M208 460H232M213 466H227M218 472H222"></path>
+<path d="M470 230H600V300H700"></path>
+<path d="M470 260H560V270H700"></path>
+<path d="M650 160V175M650 211V270"></path>
+<path d="M675 160V175M675 211V300"></path>
+<path d="M700 160V230"></path>
+<path d="M700 330V370M688 370H712M693 376H707M698 382H702"></path>
+</g>
+<g stroke-width="1.4"><rect x="644" y="175" width="12" height="36"></rect><rect x="669" y="175" width="12" height="36"></rect></g>
+<g fill="#1B1F24" stroke="none"><circle cx="200" cy="230" r="3.5"></circle><circle cx="200" cy="160" r="3.5"></circle><circle cx="650" cy="160" r="3.5"></circle><circle cx="675" cy="160" r="3.5"></circle><circle cx="650" cy="270" r="3.5"></circle><circle cx="675" cy="300" r="3.5"></circle></g>
+
+<rect x="280" y="200" width="160" height="260" stroke-width="1.8"></rect>
+<g stroke-width="1.4"><path d="M250 230H280M250 430H280M440 230H470M440 260H470M440 320H470M440 350H470M440 390H470"></path></g>
+<g font-size="11" fill="#1B1F24" stroke="none">
+<text x="288" y="234">3V3</text><text x="288" y="434">GND</text>
+<text x="394" y="234">D21</text><text x="394" y="264">D22</text><text x="394" y="324">TX0</text><text x="394" y="354">RX0</text><text x="400" y="394">D2</text>
+<text x="256" y="226" font-size="9" fill="#666">1</text><text x="256" y="426" font-size="9" fill="#666">2</text>
+<text x="452" y="226" font-size="9" fill="#666">6</text><text x="452" y="256" font-size="9" fill="#666">3</text>
+<text x="300" y="192" font-weight="600">A1</text>
+<text x="300" y="480">ESP32 DevKit (30 pins)</text><text x="300" y="494" fill="#666">ESP32-WROOM-32</text>
+<text x="296" y="300" fill="#888" font-size="10">USB on board</text>
+</g>
+<g stroke="#1B1F24" stroke-width="1.2"><path d="M466 316l8 8M474 316l-8 8M466 346l8 8M474 346l-8 8M466 386l8 8M474 386l-8 8"></path></g>
+
+<rect x="630" y="120" width="250" height="290" stroke-width="1" stroke-dasharray="6 4" stroke="#777"></rect>
+<rect x="730" y="210" width="120" height="140" stroke-width="1.8"></rect>
+<g stroke-width="1.4"><path d="M700 230H730M700 270H730M700 300H730M700 330H730"></path></g>
+<g font-size="11" fill="#1B1F24" stroke="none">
+<text x="738" y="234">VIN</text><text x="738" y="274">SCL</text><text x="738" y="304">SDA</text><text x="738" y="334">GND</text>
+<text x="740" y="202" font-weight="600">U1</text><text x="740" y="368">BME280</text><text x="740" y="382" fill="#666">I2C 0x76 · ID 0x60</text>
+<text x="600" y="192">R1</text><text x="600" y="206" fill="#666">4.7k</text>
+<text x="686" y="188">R2</text><text x="686" y="202" fill="#666">4.7k</text>
+<text x="640" y="400" fill="#777" font-size="10">GY-BME280 breakout</text>
+<text x="176" y="128" font-weight="600">+3V3</text>
+<text x="222" y="306">C1</text><text x="222" y="320" fill="#666">100n</text>
+</g>
+<g font-size="11" font-weight="600" stroke="none">
+<rect x="498" y="216" width="40" height="17" fill="#E5F4FB" stroke="#3FB6E8"></rect><text x="505" y="229" fill="#0F6E97">SDA</text>
+<rect x="498" y="246" width="40" height="17" fill="#EEF8FC" stroke="#7CCBEA"></rect><text x="505" y="259" fill="#0F6E97">SCL</text>
+</g>
+
+<rect x="60" y="560" width="420" height="190" stroke-width="1"></rect>
+<g font-size="10.5" fill="#1B1F24" stroke="none">
+<text x="72" y="580" font-weight="600">NOTES</text>
+<text x="72" y="600">1. R1, R2 are the I2C pull-ups on the GY-BME280 breakout.</text>
+<text x="72" y="617">2. C1 is on the DevKit. Values from the part library.</text>
+<text x="72" y="634">3. I2C at 100 kHz. Wire length under 20 cm.</text>
+<text x="72" y="651">4. Pins marked × are not connected in this project.</text>
+<text x="72" y="668">5. Power from USB (5 V) through the DevKit regulator.</text>
+<text x="72" y="700" fill="#666">Sources: Bosch BME280 datasheet 5.4.1 ·</text>
+<text x="72" y="715" fill="#666">Espressif ESP32 datasheet 2.2 · parts/bme280-gy.json</text>
+</g>
+
+<rect x="500" y="560" width="260" height="190" stroke-width="1"></rect>
+<g font-size="10.5" fill="#1B1F24" stroke="none">
+<text x="512" y="580" font-weight="600">CHECKS · rule checker</text>
+<text x="512" y="602" fill="#1E8A55">✓ No flash pins (GPIO 6–11)</text>
+<text x="512" y="619" fill="#1E8A55">✓ No strapping pins used</text>
+<text x="512" y="636" fill="#1E8A55">✓ 3.3 V part on 3.3 V rail</text>
+<text x="512" y="653" fill="#1E8A55">✓ Ground shared</text>
+<text x="512" y="670" fill="#1E8A55">✓ Measured: 0x76 answers</text>
+<text x="512" y="687" fill="#B36B00">! Code line 6 swaps SDA/SCL</text>
+<text x="512" y="720" fill="#666">Measured 2026-09-29 on the board</text>
+<text x="512" y="735" fill="#666">(session log, see sheet 4)</text>
+</g>
+
+<g stroke-width="1.2">
+<rect x="780" y="660" width="370" height="142"></rect>
+<path d="M780 700H1150M780 730H1150M780 760H1150M965 700V802M1060 730V760"></path>
+</g>
+<g fill="#1B1F24" stroke="none">
+<text x="792" y="686" font-family="IBM Plex Sans, sans-serif" font-size="15" font-weight="700">Weather station</text>
+<text x="1050" y="686" font-size="10" fill="#666">BoardPilot</text>
+<text x="792" y="712" font-size="8" fill="#777">TITLE</text><text x="792" y="724" font-size="11">Schematic</text>
+<text x="977" y="712" font-size="8" fill="#777">SHEET</text><text x="977" y="724" font-size="11">1 of 4</text>
+<text x="792" y="742" font-size="8" fill="#777">DRAWN BY</text><text x="792" y="754" font-size="11">Your name</text>
+<text x="977" y="742" font-size="8" fill="#777">DATE</text><text x="977" y="754" font-size="11">2026-09-29</text>
+<text x="1072" y="742" font-size="8" fill="#777">REV</text><text x="1072" y="754" font-size="11">A</text>
+<text x="792" y="776" font-size="8" fill="#777">SYMBOLS</text><text x="792" y="790" font-size="11">IEC 60617</text>
+<text x="977" y="776" font-size="8" fill="#777">PAPER</text><text x="977" y="790" font-size="11">A3 landscape</text>
+</g>
+</svg>
+</div>
+
+<div style="display: flex; gap: 14px; align-items: flex-end">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: #E9EDF1">
+<div style="width: 96px; height: 68px; background: #FBFBF8; border: 2px solid #5CCB8F; border-radius: 2px; display: flex; align-items: center; justify-content: center"><svg width="70" height="40" viewBox="0 0 70 40" fill="none" stroke="#333" stroke-width="1"><rect x="8" y="8" width="16" height="24"></rect><rect x="44" y="12" width="14" height="16"></rect><path d="M24 14H44M24 18H44"></path></svg></div>1 Schematic</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: #A7B3BF">
+<div style="width: 96px; height: 68px; background: #FBFBF8; border: 1px solid #2C3540; border-radius: 2px; display: flex; align-items: center; justify-content: center"><svg width="70" height="40" viewBox="0 0 70 40" fill="none" stroke-width="1.6"><rect x="6" y="10" width="30" height="18" fill="#1F3A5F"></rect><path d="M30 10C40 0 52 4 58 16" stroke="#3FB6E8"></path><path d="M26 10C38 -2 54 6 62 16" stroke="#9ADCF7"></path><rect x="52" y="16" width="14" height="12" fill="#6B3FA0"></rect></svg></div>2 Wiring</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: #A7B3BF">
+<div style="width: 96px; height: 68px; background: #FBFBF8; border: 1px solid #2C3540; border-radius: 2px; display: flex; align-items: center; justify-content: center"><svg width="70" height="40" viewBox="0 0 70 40" fill="none" stroke="#999" stroke-width="1"><path d="M6 6H64M6 14H64M6 22H64M6 30H64M26 6V34M50 6V34"></path></svg></div>3 Materials</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: #A7B3BF">
+<div style="width: 96px; height: 68px; background: #FBFBF8; border: 1px solid #2C3540; border-radius: 2px; display: flex; align-items: center; justify-content: center"><svg width="70" height="40" viewBox="0 0 70 40" fill="none" stroke-width="1.4"><path d="M8 10h4M8 18h4M8 26h4" stroke="#1E8A55"></path><path d="M16 10H50M16 18H44M16 26H56" stroke="#999"></path><path d="M8 34h4" stroke="#B36B00"></path><path d="M16 34H40" stroke="#999"></path></svg></div>4 Checks</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
