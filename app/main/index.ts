@@ -82,10 +82,15 @@ function createWindow() {
         // BP_SNAPSHOT_RECT=x,y,w,h captures only that part of the window (e.g. the 3D viewport).
         const r = process.env.BP_SNAPSHOT_RECT?.split(',').map(Number);
         const img = await win.webContents.capturePage(r?.length === 4 ? { x: r[0], y: r[1], width: r[2], height: r[3] } : undefined);
-        await writeFile(out, out.endsWith('.jpg') ? img.toJPEG(86) : img.toPNG());
-        // BP_SNAPSHOT_SMALL=/path-900.jpg also writes a 900 px wide copy for the website.
-        const small = process.env.BP_SNAPSHOT_SMALL;
-        if (small) await writeFile(small, img.resize({ width: 900, quality: 'best' }).toJPEG(84));
+        // BP_SNAPSHOT_WIDTH scales the image (e.g. a 2x capture down to a sharp 2400 px).
+        const w = Number(process.env.BP_SNAPSHOT_WIDTH ?? 0);
+        const main = w ? img.resize({ width: w, quality: 'best' }) : img;
+        await writeFile(out, out.endsWith('.jpg') ? main.toJPEG(86) : main.toPNG());
+        // BP_SNAPSHOT_COPIES=/a.jpg:1800,/b.jpg:900 also writes resized JPEG copies (website sizes).
+        for (const spec of (process.env.BP_SNAPSHOT_COPIES ?? '').split(',').filter(Boolean)) {
+          const i = spec.lastIndexOf(':');
+          await writeFile(spec.slice(0, i), img.resize({ width: Number(spec.slice(i + 1)), quality: 'best' }).toJPEG(85));
+        }
         app.quit();
       }, delay);
     });
