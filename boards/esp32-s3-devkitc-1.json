@@ -1053,6 +1053,7 @@
     "core": "esp32:esp32",
     "coreUrl": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
     "esptoolChip": "esp32s3",
+    "idfTarget": "esp32s3",
     "imageFormat": "bin",
     "agent": true,
     "link": "usb-serial",

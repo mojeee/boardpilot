@@ -3,6 +3,11 @@ name: Nightly firmware
 # Builds the starter firmware that New project generates, with the real vendor toolchains.
 # Nightly instead of on every PR, because installing the SDKs and compilers takes minutes.
 # Pico SDK: every template on every RP2040/RP2350 board (rpi-pico, rpi-pico-2, rpi-pico-w).
+# ESP-IDF: every template on every ESP32 board (esp32, esp32s3, esp32c3 targets), in Espressif's
+# container, with the oldest supported ESP-IDF (IDF_MIN_VERSION in shared/starter/espIdf.ts) and
+# the current release.
+# STM32 HAL: every template on every STM32 board, with arm-none-eabi-gcc and ST's HAL and CMSIS
+# repositories at the tags the projects pin (shared/starter/stm32Hal.ts, STM32_REPOS).
 
 on:
   schedule:
@@ -67,5 +72,90 @@ jobs:
             ${{ runner.temp }}/starters/*/*/README.md
             ${{ runner.temp }}/starters/*/*/build.log
             ${{ runner.temp }}/starters/*/*/build/*.uf2
+          retention-days: 7
+          if-no-files-found: ignore
+
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Generate the ESP-IDF and STM32 HAL starter projects
+        run: |
+          node scripts/gen-starters.mjs "$RUNNER_TEMP/projects/esp-idf" --toolchain esp-idf
+          node scripts/gen-starters.mjs "$RUNNER_TEMP/projects/stm32-hal" --toolchain stm32-hal
+      - uses: actions/upload-artifact@v4
+        with:
+          name: starter-projects
+          path: ${{ runner.temp }}/projects
+          retention-days: 7
+
+  esp-idf:
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        # The oldest ESP-IDF the starters need (driver/i2c_master.h and the esp_driver_* components)
+        # and the current release.
+        idf: ['v5.3.6', 'v5.5.5']
+    container: espressif/idf:${{ matrix.idf }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: starter-projects
+          path: projects
+      - name: Build every project
+        shell: bash
+        env:
+          IDF_CCACHE_ENABLE: 1
+        run: |
+          . "$IDF_PATH/export.sh"
+          idf.py --version
+          bash scripts/build-starters-esp-idf.sh projects/esp-idf
+      - name: Keep the build logs and .bin files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp-idf-starters-${{ matrix.idf }}
+          path: |
+            projects/esp-idf/*/*/build.log
+            projects/esp-idf/*/*/build/boardpilot_starter.bin
+          retention-days: 7
+          if-no-files-found: ignore
+
+  stm32-hal:
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: starter-projects
+          path: projects
+      - name: Install the Arm compiler, CMake and Ninja
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc-arm-none-eabi libnewlib-arm-none-eabi cmake ninja-build
+          arm-none-eabi-gcc --version | head -n 1
+      - name: Build every project
+        run: bash scripts/build-starters-stm32.sh projects/stm32-hal
+      - name: Keep the build logs and firmware files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stm32-hal-starters
+          path: |
+            projects/stm32-hal/*/*/build.log
+            projects/stm32-hal/*/*/build/boardpilot_starter.bin
+            projects/stm32-hal/*/*/build/boardpilot_starter.hex
           retention-days: 7
           if-no-files-found: ignore

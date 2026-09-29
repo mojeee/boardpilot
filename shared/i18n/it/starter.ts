@@ -27,5 +27,25 @@ const it: Record<string, string> = {
     'I pin SPI di {part} non appartengono a un solo blocco SPI su questo chip, quindi il progetto iniziale non avvia l’SPI per questo componente.',
   '{part}: {pin} is not an analog pin, so the starter reads it as a digital level. Move the wire to {pins} for a real reading.':
     '{part}: {pin} non è un pin analogico, quindi il progetto iniziale legge solo il livello digitale. Sposta il filo su {pins} per una lettura vera.',
+  // ESP-IDF and STM32 HAL starters (shared/starter/espIdf.ts, stm32Hal.ts)
+  'Generate {toolchain} project': 'Genera progetto {toolchain}',
+  'Generated a {toolchain} project for {board}.': 'Generato un progetto {toolchain} per {board}.',
+  "An ESP-IDF project (idf.py) for Espressif's official framework, with only the pins in your drawing. The README says how to build and flash it.":
+    'Un progetto ESP-IDF (idf.py) per il framework ufficiale di Espressif, con solo i pin del tuo disegno. Il README spiega come compilarlo e caricarlo.',
+  "A CMake project with ST's official HAL drivers (downloaded when you build), with only the pins in your drawing. The README says how to build and flash it.":
+    'Un progetto CMake con i driver HAL ufficiali di ST (scaricati quando compili), con solo i pin del tuo disegno. Il README spiega come compilarlo e caricarlo.',
+  '{pin} is connected to the flash or PSRAM chip, so the starter does not use it for {part}. Move the wire to a free pin.':
+    '{pin} è collegato al chip di flash o PSRAM, quindi il progetto iniziale non lo usa per {part}. Sposta il filo su un pin libero.',
+  '{pin} can only be an input, so the starter cannot drive {part} there. Move the wire to an output-capable pin.':
+    '{pin} può essere solo un ingresso, quindi il progetto iniziale non può comandare {part} lì. Sposta il filo su un pin che può fare da uscita.',
+  '{part}: SCK is not wired, so the starter does not start SPI for it.': '{part}: SCK non è collegato, quindi il progetto iniziale non avvia l’SPI per questo componente.',
+  '{part}: {pin} has no internal pull-up, so the button needs a 10 kΩ resistor from {pin} to 3.3 V.':
+    '{part}: {pin} non ha una resistenza di pull-up interna, quindi il pulsante ha bisogno di una resistenza da 10 kΩ tra {pin} e 3,3 V.',
+  'The board file has no alternate function number for {fn} on {pin}, so the starter does not set it up.':
+    'Il file della scheda non indica il numero di funzione alternativa per {fn} su {pin}, quindi il progetto iniziale non la configura.',
+  '{pin} carries the printf output ({uart}) on this board, so the starter does not use it for {part}. Move the wire to a free pin.':
+    'Su questa scheda {pin} porta l’uscita di printf ({uart}), quindi il progetto iniziale non lo usa per {part}. Sposta il filo su un pin libero.',
+  '{pin} is a debug (SWD) pin that programs the board, so the starter does not use it for {part}. Move the wire to a free pin.':
+    '{pin} è un pin di debug (SWD) che programma la scheda, quindi il progetto iniziale non lo usa per {part}. Sposta il filo su un pin libero.',
 };
 export default it;

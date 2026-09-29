@@ -11,7 +11,7 @@ import type { BoardDef, PartDef, Scene } from '../types';
 import { pinById } from '../board';
 import { t } from '../i18n';
 import { PICO_SDK_IMPORT_CMAKE } from './picoSdkImport';
-import { boardSource, cIdent, cStr, oneLine, partSource, sceneParts, sceneSignals, sceneTag, slug, type Signal, type StarterProject } from './common';
+import { boardSource, cIdent, cStr, isButton, isLed, oneLine, partSource, sceneParts, sceneSignals, sceneTag, slug, type Signal, type StarterProject } from './common';
 
 export const isRpBoard = (b: BoardDef) => b.family === 'rp2040' || b.family === 'rp2350';
 
@@ -28,9 +28,6 @@ const PWM_HZ = 1000;
 /** Main loop period and how often values are printed. */
 const TICK_MS = 20;
 const REPORT_TICKS = 50;
-
-const isLed = (d: PartDef) => d.model.shape === 'led' || d.starterSketch === 'led';
-const isButton = (d: PartDef) => d.model.shape === 'button' || d.starterSketch === 'button';
 
 /** Block number of a peripheral function on this pin, e.g. I2C0_SDA → 0, SPI1_SCK → 1. */
 function fnIndex(p: { functions: string[] }, re: RegExp): number | null {
