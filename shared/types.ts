@@ -373,6 +373,71 @@ export interface PartGotcha {
   source: { title: string; section?: string };
 }
 
+/* ---------- register maps (datasheet register tables, decoded live) ---------- */
+
+/** r: read-only, rw: read and write, w: write-only (reading it back returns nothing useful). */
+export type RegAccess = 'r' | 'rw' | 'w';
+
+/** A datasheet section that a register, field or command comes from. */
+export interface RegSource {
+  title: string;
+  section: string;
+}
+
+export interface RegisterField {
+  /** [highest bit, lowest bit], inclusive. [6, 6] is a single bit. */
+  bits: [number, number];
+  name: string;
+  /** What the field controls, one plain sentence (English; shown through t()). */
+  text: string;
+  access: RegAccess;
+  /** Meaning of each field value, keyed by the value in decimal ("0", "5"). A missing value is not documented. */
+  values?: Record<string, string>;
+  /** Reserved bits: shown, never interpreted. */
+  reserved?: boolean;
+}
+
+export interface RegisterDef {
+  /** Register address: the byte written to the chip before the read, e.g. "0xF4". */
+  addr: string;
+  /** Datasheet name, e.g. "ctrl_meas". */
+  name: string;
+  /** What the register is for, one plain sentence. */
+  text: string;
+  access: RegAccess;
+  /** Bytes read from addr upward and combined high byte first (default 1). */
+  len?: number;
+  /** Right shift applied to the combined bytes (BME280 20-bit results: 4). */
+  shift?: number;
+  /** The combined value is a two's complement number. */
+  signed?: boolean;
+  /** Value after power-on reset, from the datasheet. */
+  reset?: string;
+  fields?: RegisterField[];
+  /** Meaning of whole values (chip ids, "no measurement yet"), keyed by hex value. Missing value = not documented. */
+  values?: Record<string, string>;
+  source: RegSource;
+}
+
+/** A command for chips that are driven by command bytes instead of registers (SSD1306). Never read back. */
+export interface CommandDef {
+  /** "0xAE", or a range "0xB0-0xB7". */
+  code: string;
+  name: string;
+  text: string;
+  /** Parameter bytes that follow the command. */
+  params?: number;
+  source: RegSource;
+}
+
+export interface RegisterMapDef {
+  /** How this chip is read, one or two plain sentences. */
+  note?: string;
+  registers: RegisterDef[];
+  /** Documented commands (write-only chips). Shown as a reference table, never read. */
+  commands?: CommandDef[];
+}
+
 export interface PartDef {
   id: string;
   name: string;
@@ -397,6 +462,10 @@ export interface PartDef {
   gotchas?: PartGotcha[];
   sources: { title: string; section?: string }[];
   starterSketch?: string;
+  /** The chip's register map from the datasheet, for the live register viewer. */
+  registers?: RegisterMapDef;
+  /** Id of another part with the same chip whose register map applies (a smaller SSD1306 module). */
+  registersFrom?: string;
 }
 
 /* ---------- scene ---------- */
