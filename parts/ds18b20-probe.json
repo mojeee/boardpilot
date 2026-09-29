@@ -16,6 +16,7 @@
     { "text": "It needs a 4.7 kΩ pull-up resistor between DATA and VCC. Without it the sensor is not found.", "source": { "title": "Maxim DS18B20 datasheet", "section": "Powering the DS18B20; 1-Wire bus pull-up" } },
     { "text": "A 12-bit reading takes up to 750 ms. Code that waits less gets the last value, or 85 °C (the power-on value).", "source": { "title": "Maxim DS18B20 datasheet", "section": "Temperature conversion time 750 ms max; power-on reset value +85 °C" } }
   ],
+  "current": { "typMa": 1.0, "sleepMa": 0.00075, "peakMa": 1.5, "note": "1 mA during a conversion, 750 nA standby.", "source": { "title": "Maxim DS18B20 datasheet", "section": "DC electrical characteristics: IDD active 1 mA typ (1.5 mA max); IDDS 750 nA" } },
   "sources": [
     { "title": "Maxim DS18B20 datasheet", "section": "Pin description: GND, DQ, VDD; DQ needs a pull-up of about 4.7 kΩ" },
     { "title": "Maxim DS18B20 datasheet", "section": "Supply 3.0 to 5.5 V" }

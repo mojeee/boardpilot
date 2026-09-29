@@ -1,0 +1,109 @@
+{
+  "id": "vibration-monitor",
+  "name": "Predictive-maintenance vibration monitor",
+  "summary": "An MPU6050 on a machine learns its normal vibration when you press a button, then lights a fault LED and beeps when vibration grows.",
+  "difficulty": "medium",
+  "minutes": 120,
+  "learn": [
+    "Talk to a sensor through its registers, without a library",
+    "Turn many samples into one number (RMS)",
+    "Learn a baseline and detect a change"
+  ],
+  "parts": [
+    { "id": "imu1", "partId": "mpu6050", "label": "Vibration sensor" },
+    { "id": "led1", "partId": "led-resistor", "label": "Fault LED" },
+    { "id": "buzz1", "partId": "buzzer-active", "label": "Buzzer" },
+    { "id": "btn1", "partId": "push-button", "label": "Learn button" }
+  ],
+  "pins": {
+    "SDA": { "part": "imu1", "pin": "SDA" },
+    "SCL": { "part": "imu1", "pin": "SCL" },
+    "LED": { "part": "led1", "pin": "A" },
+    "BUZZER": { "part": "buzz1", "pin": "+" },
+    "BUTTON": { "part": "btn1", "pin": "1" }
+  },
+  "code": {
+    "includes": ["#include <Wire.h>"],
+    "globals": [
+      "const int LED_PIN = {LED};",
+      "const int BUZZER_PIN = {BUZZER};",
+      "const int BUTTON_PIN = {BUTTON};",
+      "const uint8_t MPU = 0x68;  // AD0 to GND",
+      "float baseline = 0;",
+      "",
+      "// Acceleration magnitude in g. MPU-6050 register map: 0x3B ACCEL_XOUT_H, 16384 LSB/g at ±2 g.",
+      "float readG() {",
+      "  Wire.beginTransmission(MPU);",
+      "  Wire.write(0x3B);",
+      "  Wire.endTransmission(false);",
+      "  Wire.requestFrom(MPU, (uint8_t)6);",
+      "  int16_t x = (Wire.read() << 8) | Wire.read();",
+      "  int16_t y = (Wire.read() << 8) | Wire.read();",
+      "  int16_t z = (Wire.read() << 8) | Wire.read();",
+      "  return sqrt((float)x * x + (float)y * y + (float)z * z) / 16384.0;",
+      "}",
+      "",
+      "// RMS of the change from 1 g over 100 samples: how much the machine shakes.",
+      "float vibrationRms() {",
+      "  float sum = 0;",
+      "  for (int i = 0; i < 100; i++) {",
+      "    float d = readG() - 1.0;",
+      "    sum += d * d;",
+      "    delay(2);",
+      "  }",
+      "  return sqrt(sum / 100);",
+      "}"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(LED_PIN, OUTPUT);",
+      "  pinMode(BUZZER_PIN, OUTPUT);",
+      "  pinMode(BUTTON_PIN, INPUT_PULLUP);",
+      "{I2C_BEGIN}",
+      "  Wire.beginTransmission(MPU);",
+      "  Wire.write(0x6B);  // PWR_MGMT_1",
+      "  Wire.write(0);     // clear SLEEP (bit 6): the chip starts asleep",
+      "  if (Wire.endTransmission() != 0) probe.event(\"MPU6050 not found at 0x68\");"
+    ],
+    "loop": [
+      "  probe.step(\"Measure vibration\");",
+      "  float rms = vibrationRms();",
+      "  probe.value(\"rms\", rms);",
+      "  if (digitalRead(BUTTON_PIN) == LOW) {",
+      "    probe.step(\"Learn the normal vibration\");",
+      "    baseline = rms;",
+      "    probe.event(\"Baseline learned\");",
+      "  }",
+      "  probe.step(\"Compare with the baseline\");",
+      "  bool fault = baseline > 0 && rms > baseline * 2;",
+      "  digitalWrite(LED_PIN, fault ? HIGH : LOW);",
+      "  digitalWrite(BUZZER_PIN, fault ? HIGH : LOW);",
+      "  if (fault) probe.event(\"Vibration doubled: check the machine\");",
+      "  Serial.print(\"rms=\"); Serial.print(rms, 3);",
+      "  Serial.print(\" g baseline=\"); Serial.print(baseline, 3);",
+      "  Serial.print(\" fault=\"); Serial.println(fault ? 1 : 0);",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 1000,
+    "vars": { "baseline": 0 },
+    "inputs": {
+      "rms": { "level": { "start": 0.01, "perSecond": 0.0012, "min": 0.008, "max": 0.08 } },
+      "BUTTON": { "pulses": { "everyS": 600, "highS": 1, "offsetS": 3 } }
+    },
+    "loop": [
+      { "step": "Measure vibration" },
+      { "read": "rms", "as": "rms", "unit": "g", "digits": 3 },
+      { "read": "BUTTON", "as": "learn", "digits": 0 },
+      { "if": "learn", "then": [{ "step": "Learn the normal vibration" }, { "event": "Baseline learned" }] },
+      { "step": "Compare with the baseline" },
+      { "if": "rms > 0.03", "then": [{ "write": "LED", "level": 1 }, { "write": "BUZZER", "level": 1 }], "else": [{ "write": "LED", "level": 0 }, { "write": "BUZZER", "level": 0 }] }
+    ]
+  },
+  "sources": [
+    { "title": "InvenSense MPU-6000/6050 register map", "section": "4.17 ACCEL_XOUT_H (0x3B); 4.28 PWR_MGMT_1 (0x6B), SLEEP bit" },
+    { "title": "InvenSense MPU-6050 product specification", "section": "Accelerometer sensitivity 16384 LSB/g at ±2 g" }
+  ]
+}

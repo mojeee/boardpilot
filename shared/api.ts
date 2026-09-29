@@ -23,6 +23,7 @@ import type {
 } from './types';
 import type { AiModelInfo, AiProviderId, AiSettingsInput, AiSettingsView, AiStatus } from './ai';
 import type { PreflightReport } from './preflight';
+import type { CoachAttempt } from './coach';
 
 export type Unsubscribe = () => void;
 
@@ -58,11 +59,11 @@ export interface BoardPilotApi {
     scenarios(): Promise<ScenarioInfo[]>;
     load(id: string): Promise<Result<ConnectionState>>;
     scene(): Promise<Scene>;
-    control(action: 'fixWiring' | 'turnKnob'): Promise<Result<true>>;
+    control(action: 'fixWiring' | 'turnKnob' | 'pressButton'): Promise<Result<true>>;
   };
   safety: {
     /** Call only from a user click on a Confirm button. */
-    grant(kind: WriteRequest['kind'] | 'restore'): Promise<string>;
+    grant(kind: WriteRequest['kind'] | 'restore', uses?: number): Promise<string>;
   };
   ai: {
     status(): Promise<AiStatus>;
@@ -86,6 +87,8 @@ export interface BoardPilotApi {
     openSketch(): Promise<Result<{ name: string; text: string }>>;
     /** Shows a save dialog and writes text (CSV recordings, generated sketches). */
     saveFile(suggestedName: string, content: string): Promise<Result<string>>;
+    /** Shows a save dialog and writes a PNG given as a data:image/png;base64 URL (timing view export). */
+    savePng(suggestedName: string, dataUrl: string): Promise<Result<string>>;
     exportReport(markdown: string, html: string, suggestedName: string): Promise<Result<{ markdownPath: string; pdfPath: string }>>;
     info(): Promise<{ dataDir: string; logPath: string; version: string }>;
   };
@@ -107,6 +110,17 @@ export interface BoardPilotApi {
     setEnabled(on: boolean): Promise<McpStatus>;
     /** Answer to an MCP write request, after the user's click. */
     writeResult(id: string, status: 'approved' | 'refused'): Promise<void>;
+  };
+  /** Interview coach on the Learn screen. Answers are kept only on this computer, 90 days at most. */
+  coach: {
+    /** Grades an answer (always a suggestion citing lesson sections) and saves the attempt. */
+    ask(lessonId: string, question: string, answer: string): Promise<Result<{ attempt: CoachAttempt; saved: boolean }>>;
+    /** Past attempts for one question, newest first, and how many answers are saved in total. */
+    history(lessonId: string, question: string): Promise<Result<{ attempts: CoachAttempt[]; total: number }>>;
+    /** Deletes the saved answers of one question. */
+    remove(lessonId: string, question: string): Promise<Result<true>>;
+    /** Deletes every saved answer. */
+    removeAll(): Promise<Result<true>>;
   };
   license: {
     status(): Promise<LicenseStatus>;

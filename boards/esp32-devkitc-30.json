@@ -9,6 +9,17 @@
   "logicVolt": 3.3,
   "flashBytes": 4194304,
   "ramBytes": 532480,
+  "power": {
+    "typMa": 40,
+    "sleepMa": 0.01,
+    "peakMa": 240,
+    "note": "ESP32 chip only: about 20 to 68 mA running with Wi-Fi off (modem-sleep, by CPU speed), 240 mA peaks while Wi-Fi transmits, 10 µA in deep sleep. The DevKit's USB chip, regulator and LED add more, so a bare module is better on batteries.",
+    "source": {
+      "title": "Espressif ESP32 Series Datasheet",
+      "section": "Power consumption by power modes; RF current consumption"
+    }
+  },
+  "clocks": {"cpuHz": 240000000, "pwmHz": 80000000, "uartHz": 80000000, "note": "CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.", "source": {"title": "ESP32 Technical Reference Manual", "section": "Reset and Clock: CPU_CLK and APB_CLK; LED_PWM; UART"}},
   "pcbMm": {
     "length": 51.5,
     "width": 28.5,

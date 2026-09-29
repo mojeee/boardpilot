@@ -6,13 +6,16 @@ import { useEffect, useRef, useState } from 'react';
 import { create } from 'zustand';
 import { LESSONS, TRACKS, type Lesson, type LessonBlock } from '@shared/lessons';
 import { t } from '@shared/i18n';
-import { useApp, useScene } from '../state/store';
+import { log, useApp, useScene } from '../state/store';
+import { useWizard } from '../wizard/session';
+import { FLOWS } from '@flows/index';
 import { Viewport } from '../three/Viewport';
 import { PARTS, ROLE_HEX, partRoleColor } from '@shared/board';
 import type { Scene, TargetRef } from '@shared/types';
 import { askAi } from '../components/ai';
 import { Icon } from '../components/Icon';
 import { LessonWidget } from './LearnWidgets';
+import { InterviewCoach } from '../components/InterviewCoach';
 
 const KEY = 'bp.learn';
 
@@ -35,6 +38,10 @@ interface LearnStore {
   done: string[];
   open(id: string): void;
   toggleDone(id: string): void;
+  markDone(id: string): void;
+  /** the lesson whose lab is running: a passed lab marks it done */
+  labLesson: string | null;
+  startLab(lesson: string, flow: string): void;
 }
 
 function save(s: { current: string; done: string[] }) {
@@ -56,7 +63,32 @@ export const useLearn = create<LearnStore>((set, get) => ({
     set({ done });
     save({ current: get().current, done });
   },
+  markDone: (id) => {
+    if (get().done.includes(id)) return;
+    const done = [...get().done, id];
+    set({ done });
+    save({ current: get().current, done });
+  },
+  labLesson: null,
+  startLab: (lesson, flow) => {
+    set({ labLesson: lesson });
+    if (useScene.getState().preview) useScene.getState().endPreview();
+    useApp.getState().setScreen('test');
+    useWizard.getState().start(flow);
+  },
 }));
+
+// A lab that passes marks its lesson done; the result is already in the session log for the report.
+useWizard.subscribe((s, prev) => {
+  const lesson = useLearn.getState().labLesson;
+  if (!lesson || !s.state?.flowId.startsWith('lab-') || s.state.status !== 'done' || prev.state?.status === 'done') return;
+  if (s.state.result?.passed) {
+    useLearn.getState().markDone(lesson);
+    const title = LESSONS.find((l) => l.id === lesson)?.title ?? lesson;
+    log('found', t('Lesson “{lesson}” marked as done: its lab passed.', { lesson: t(title) }));
+  }
+  useLearn.setState({ labLesson: null });
+});
 
 function CodeBlock({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -119,6 +151,8 @@ function Block({ b }: { b: LessonBlock }) {
           <p>{t(b.text)}</p>
         </div>
       );
+    case 'lab':
+      return <LabCard b={b} />;
     case 'board':
       return (
         <div className="learn-board">
@@ -129,6 +163,23 @@ function Block({ b }: { b: LessonBlock }) {
         </div>
       );
   }
+}
+
+function LabCard({ b }: { b: Extract<LessonBlock, { kind: 'lab' }> }) {
+  const lesson = useLearn((s) => s.current);
+  const flow = FLOWS[b.flow];
+  return (
+    <div className="learn-lab">
+      <div>
+        <b>{t('Hands-on lab')}</b>
+        <p>{t(b.text)}</p>
+        <span className="small dim">{t('Works on a real board with the diagnostic agent, or in the simulator. Nothing is written without your confirmation, and your program is backed up first.')}</span>
+      </div>
+      <button className="btn primary small" onClick={() => useLearn.getState().startLab(lesson, b.flow)}>
+        <Icon name="test" size={14} /> {flow ? t(flow.title) : t('Start the lab')}
+      </button>
+    </div>
+  );
 }
 
 /** Opens the lesson's preview scene next to the lesson. The user's project is set aside, not changed. */
@@ -241,7 +292,9 @@ export function Learn() {
               <p className="dim">{t('Answer out loud before you look anything up. Senior interviews ask why, not what.')}</p>
               <ol>
                 {lesson.interview.map((q) => (
-                  <li key={q}>{t(q)}</li>
+                  <li key={q}>
+                    {t(q)} <InterviewCoach lesson={lesson} question={q} />
+                  </li>
                 ))}
               </ol>
             </section>

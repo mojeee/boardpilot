@@ -9,6 +9,7 @@
   "logicVolt": 3.3,
   "flashBytes": 8388608,
   "ramBytes": 524288,
+  "clocks": {"cpuHz": 240000000, "pwmHz": 80000000, "uartHz": 80000000, "note": "CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.", "source": {"title": "ESP32-S3 Technical Reference Manual", "section": "Reset and Clock; LED PWM Controller; UART Controller"}},
   "pcbMm": {
     "length": 62.87,
     "width": 25.4,
