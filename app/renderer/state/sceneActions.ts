@@ -10,7 +10,7 @@ const SLOTS: [number, number][] = [
   [70, 20], [-70, 20], [70, -30], [-70, -30], [12, 76], [-30, 76], [40, -76], [-10, -76],
 ];
 
-function freeSpot(parts: ScenePart[]): [number, number] {
+export function freeSpot(parts: ScenePart[]): [number, number] {
   const free = SLOTS.find(([x, z]) => !parts.some((p) => Math.abs(p.position[0] - x) < 14 && Math.abs(p.position[2] - z) < 14));
   return free ?? [90 + (parts.length % 4) * 22, -60 + Math.floor(parts.length / 4) * 24];
 }

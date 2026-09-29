@@ -330,6 +330,7 @@ function PartModel({ sp }: { sp: ScenePart }) {
         <div className={`part-label ${finding ? `sev-${finding.severity}` : ''}`}>
           {sp.label ?? def.name}
           {sp.confirmed === false && <span className="tag-suggestion">{t('suggestion')}</span>}
+          {sp.detected && sp.confirmed !== false && <span className="tag-detected">{t('detected')}</span>}
           {shown && <span className="part-live mono">{shown}</span>}
         </div>
       </Html>

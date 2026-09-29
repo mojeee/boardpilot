@@ -508,14 +508,14 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
    - [x] A debugger view for the code: run in the simulator, step, the running line highlighted
          (builds on the template live run view and the BoardPilotProbe step markers).
 3. **Many projects**
-   - [ ] Project tabs above the 3D view, so several projects are open at once.
-   - [ ] "+" on the tab bar opens a new project with three choices: **Blank**, **Read from port**,
+   - [x] Project tabs above the 3D view, so several projects are open at once.
+   - [x] "+" on the tab bar opens a new project with three choices: **Blank**, **Read from port**,
          **Template**.
 4. **Read from port** (the hardest part)
-   - [ ] Find the board on USB automatically (port scan, chip identify, USB ids), set the board,
+   - [x] Find the board on USB automatically (port scan, chip identify, USB ids), set the board,
          then look for what is connected: I2C scan on the default bus with the swap test, known
          chip IDs from the parts library, pull-ups, ADC pins that read a real voltage.
-   - [ ] Build the scene from what was found, every part marked "detected" with its measurement,
+   - [x] Build the scene from what was found, every part marked "detected" with its measurement,
          and ask the user to confirm anything that was guessed (honest AI rule).
 5. **AI that sees everything and helps at each step**
    - [ ] The assistant receives every app event (log, scene changes, code changes, measurements)

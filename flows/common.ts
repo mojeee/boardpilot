@@ -1,8 +1,8 @@
 // Building blocks shared by several flows.
 
 import type { StepDef, FlowContext, StepOutcome } from '@shared/flow';
-import type { BoardDef, PartDef, ScenePart, TargetRef, PortInfo } from '@shared/types';
-import { BOARDS, boardPinFor, chipMatchesBoard, pinById, wireFor } from '@shared/board';
+import type { PartDef, ScenePart, TargetRef, PortInfo } from '@shared/types';
+import { BOARDS, boardForChip, boardPinFor, chipMatchesBoard, pinById, wireFor } from '@shared/board';
 import { t } from '@shared/i18n';
 
 export const fmtErr = (e: { humanMessage: string; hint: string }) => `${e.humanMessage} ${e.hint}`.trim();
@@ -63,27 +63,14 @@ export function checkPortBoard(ctx: FlowContext, port: PortInfo) {
  * selected board, switch the project to the board that fits (USB ids break ties, e.g. Pico vs Pico W).
  * A project that already has parts is never changed; checkChipBoard warns instead.
  */
-const FAMILY_NAME: Record<BoardDef['family'], RegExp> = {
-  esp32: /ESP32/,
-  esp32s3: /ESP32-S3/,
-  esp32c3: /ESP32-C3/,
-  rp2040: /RP2040/,
-  rp2350: /RP2350/,
-  avr: /ATMEGA/,
-  stm32: /STM32/,
-  nrf52: /NRF52/,
-  imxrt: /IMXRT|MIMXRT|TEENSY/,
-};
-
 export async function adoptDetectedBoard(ctx: FlowContext, chip: string): Promise<boolean> {
   if (ctx.scene().parts.length) return false;
   // chipMatchesBoard is lenient on purpose (it only warns); switching needs the chip to name the family.
-  const fits = Object.values(BOARDS).filter((b) => chipMatchesBoard(chip, b) && FAMILY_NAME[b.family].test(chip.toUpperCase()));
-  if (!fits.length || fits.some((b) => b.id === ctx.board.id)) return false;
+  if (boardForChip(chip, [], ctx.board.id)?.id === ctx.board.id) return false;
   const ports = await ctx.hw.listPorts();
   const ids = ports.ok ? (ports.value.find((p) => p.path === ctx.data.port)?.boardIds ?? []) : [];
-  const pick = fits.find((b) => ids.includes(b.id)) ?? (fits.length === 1 ? fits[0] : undefined);
-  if (!pick) return false;
+  const pick = boardForChip(chip, ids);
+  if (!pick || pick.id === ctx.board.id) return false;
   ctx.updateScene((s) => ({ ...s, board: pick.id }));
   ctx.log('found', t('Your project now uses the {board}, the board that answered on USB.', { board: pick.name }), { source: 'measured: chip identity', target: 'part:board' });
   return true;

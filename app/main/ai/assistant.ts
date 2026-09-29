@@ -10,6 +10,8 @@ import type {
   CodeSuggestionRequest,
   AiSource,
   Confidence,
+  DescribeReply,
+  DescribeRequest,
   PhotoRecognition,
   Result,
   TargetRef,
@@ -233,6 +235,47 @@ const CODE_SCHEMA = {
   additionalProperties: false,
 };
 
+const DESCRIBE_SCHEMA = {
+  type: 'object',
+  properties: {
+    kind: { type: 'string', enum: ['questions', 'proposal'] },
+    questions: {
+      type: 'array',
+      description: 'with kind "questions": 1 to 3 short questions, each with 2 to 4 short answer options',
+      items: {
+        type: 'object',
+        properties: { question: { type: 'string' }, options: { type: 'array', items: { type: 'string' } } },
+        required: ['question', 'options'],
+        additionalProperties: false,
+      },
+    },
+    name: { type: 'string', description: 'short project name, e.g. "Plant waterer"' },
+    summary: { type: 'string', description: 'one or two plain sentences: what it does' },
+    parts: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: { partId: { type: 'string', description: 'an id from the parts library list' }, why: { type: 'string' } },
+        required: ['partId', 'why'],
+        additionalProperties: false,
+      },
+    },
+    code: { type: 'string', description: 'a complete Arduino sketch for these parts; use #define for every pin so they can be changed' },
+    notes: { type: 'array', items: { type: 'string' }, description: 'things the user must know: power, level shifters, safety' },
+    sources: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: { kind: { type: 'string', enum: ['datasheet', 'library', 'user'] }, label: { type: 'string' } },
+        required: ['kind', 'label'],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ['kind', 'questions', 'name', 'summary', 'parts', 'code', 'notes', 'sources'],
+  additionalProperties: false,
+};
+
 const CLASSIFY_SCHEMA = {
   type: 'object',
   properties: {
@@ -415,6 +458,77 @@ export class Assistant {
           replace: p.replace === true,
           text: p.text.replace(/\s+$/, ''),
           explanation: typeof p.explanation === 'string' ? p.explanation : '',
+          sources,
+        },
+      };
+    } catch (e) {
+      return { ok: false, error: toAiError(e, a.id, a.model) };
+    }
+  }
+
+  /**
+   * New project → "Describe it": the first turn may ask up to three short questions (power, what
+   * the project must do, which display…); with the answers, it proposes parts from the library and
+   * starter code. The app builds the wiring with its safe-pin rules; the user confirms everything.
+   */
+  async describeProject(req: DescribeRequest): Promise<Result<DescribeReply>> {
+    const a = this.active();
+    if (!a) return aiOff();
+    const board = getBoard(req.boardId);
+    const library = Object.values(PARTS).map((p) => `${p.id}: ${p.name}`);
+    const mayAsk = req.answers.length === 0;
+    try {
+      const response = await a.provider.complete({
+        model: a.model,
+        maxTokens: 8000,
+        timeoutMs: 120_000,
+        parts: [
+          {
+            type: 'text',
+            text:
+              `A beginner wants to build this on a ${board.name} (${board.chip}, ${board.logicVolt} V logic): "${req.text.trim()}"\n` +
+              (req.answers.length ? `Their answers to your questions: ${JSON.stringify(req.answers)}\n` : '') +
+              `Reply language: ${getLanguage() === 'it' ? 'Italian (keep part names and code as they are)' : 'English'}.\n` +
+              (mayAsk
+                ? 'If something important is missing (how it is powered, what it must do exactly, which display or sensor), set kind "questions" and ask 1 to 3 short questions with 2 to 4 answer options each. If the description is clear enough, propose directly.\n'
+                : 'Now set kind "proposal". Do not ask more questions.\n') +
+              'A proposal lists the parts, only with ids from this parts library, the fewest parts that do the job (a pump or motor needs a relay or driver and its own supply: say so in notes). ' +
+              'The code is a complete Arduino sketch with #define for each pin; the app wires the parts with its safe-pin rules and checks your code against that wiring before the user accepts it. ' +
+              'Sources: name the library entries you used (kind "library", label "parts library · <part id>"). Everything you propose is a suggestion the user confirms.\n' +
+              `Parts library:\n${library.join('\n')}`,
+          },
+        ],
+        jsonSchema: { name: 'describe_project', schema: DESCRIBE_SCHEMA },
+      });
+      if (response.stop === 'refusal') return refused(t('The assistant could not help with that project.'), t('Describe what the project should do in other words.'));
+      const p = parseJson<Record<string, unknown>>(response.text);
+      if (!p) return { ok: false, error: { code: 'ai_parse', humanMessage: t('The assistant answer could not be read.'), hint: t('Try again, or pick a template.') } };
+      const str = (v: unknown) => (typeof v === 'string' ? v : '');
+      const arr = (v: unknown) => (Array.isArray(v) ? v : []);
+      if (p.kind === 'questions' && mayAsk) {
+        const questions = arr(p.questions)
+          .map((q) => q as Record<string, unknown>)
+          .filter((q) => typeof q.question === 'string' && q.question.trim())
+          .slice(0, 3)
+          .map((q) => ({ question: str(q.question), options: arr(q.options).filter((o): o is string => typeof o === 'string').slice(0, 4) }));
+        if (questions.length) return { ok: true, value: { kind: 'questions', questions } };
+      }
+      const parts = arr(p.parts)
+        .map((x) => x as Record<string, unknown>)
+        .filter((x) => typeof x.partId === 'string' && PARTS[x.partId])
+        .map((x) => ({ partId: str(x.partId), why: str(x.why) }));
+      const sources = arr(p.sources).filter(
+        (x): x is AiSource => typeof x === 'object' && x !== null && ['datasheet', 'library', 'user'].includes((x as AiSource).kind) && typeof (x as AiSource).label === 'string',
+      );
+      return {
+        ok: true,
+        value: {
+          kind: 'proposal',
+          name: str(p.name) || t('New project'),
+          summary: str(p.summary),
+          parts,
+          code: str(p.code),
+          notes: arr(p.notes).filter((n): n is string => typeof n === 'string'),
           sources,
         },
       };

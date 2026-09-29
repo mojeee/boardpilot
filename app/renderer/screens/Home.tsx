@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DEBUG_SYMPTOMS } from '@flows/index';
 import { useApp, useLog, useScene, log } from '../state/store';
 import { TASKS, openTask } from '../components/TaskRail';
+import { openNewProject } from '../state/projects';
 import { Icon } from '../components/Icon';
 import { useWizard } from '../wizard/session';
 import { t } from '@shared/i18n';
@@ -71,7 +72,7 @@ export function Home() {
         <p className="lead">{t('Pick a task. The app checks what it can by itself and asks you only for what it cannot see.')}</p>
         <div className="task-grid">
           {TASKS.map((task, i) => (
-            <button key={task.screen} className="task-card" onClick={() => openTask(task.screen)}>
+            <button key={task.screen} className="task-card" onClick={() => (task.screen === 'newProject' ? openNewProject() : openTask(task.screen))}>
               <span className="task-icon">
                 <Icon name={task.icon} size={22} />
               </span>
