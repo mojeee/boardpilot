@@ -19,6 +19,7 @@
   "gotchas": [
     { "text": "A high-resolution reading takes about 120 ms. Reading faster returns the previous value.", "source": { "title": "ROHM BH1750FVI datasheet", "section": "Measurement time, H-resolution mode" } }
   ],
+  "current": { "typMa": 0.12, "sleepMa": 1e-05, "note": "120 µA while measuring, 0.01 µA powered down.", "source": { "title": "ROHM BH1750FVI datasheet", "section": "Electrical characteristics: supply current 120 µA typ; power-down current 0.01 µA" } },
   "sources": [
     { "title": "ROHM BH1750FVI datasheet", "section": "I2C slave address: ADDR = L gives 0x23, ADDR = H gives 0x5C" }
   ]

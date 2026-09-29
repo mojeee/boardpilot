@@ -324,6 +324,8 @@ export interface BoardDef {
   pcbColor?: string;
   /** Radius of the PCB corners, mm (default 0.8). */
   cornerRadiusMm?: number;
+  /** Current of the chip (or whole board, as the note says), from its datasheet. */
+  power?: CurrentDraw;
   /** Mounting holes: [x, y, diameter] in mm from the PCB top-left corner, from the board's mechanical drawing. */
   holesMm?: [number, number, number][];
   pins: PinDef[];
@@ -366,6 +368,15 @@ export interface PartPin {
 
 export type PartShape = 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled' | 'chip' | 'module' | 'motor' | 'relay';
 
+/** Supply current from a datasheet: typical in normal use, lowest standby, short peaks (mA). */
+export interface CurrentDraw {
+  typMa: number;
+  sleepMa?: number;
+  peakMa?: number;
+  note: string;
+  source: { title: string; section?: string };
+}
+
 /** A known trap for a part (DHT22 needs 2 s between reads…). `when` limits it to some boards. */
 export interface PartGotcha {
   text: string;
@@ -395,6 +406,8 @@ export interface PartDef {
   keywords: string[];
   /** Known traps, shown when the part is added. Each one is sourced. */
   gotchas?: PartGotcha[];
+  /** Supply current, only when a datasheet gives it (the power budget lists others as unknown). */
+  current?: CurrentDraw;
   sources: { title: string; section?: string }[];
   starterSketch?: string;
 }

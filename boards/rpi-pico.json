@@ -9,6 +9,15 @@
   "logicVolt": 3.3,
   "flashBytes": 2097152,
   "ramBytes": 270336,
+  "power": {
+    "typMa": 25,
+    "sleepMa": 0.8,
+    "note": "Whole Pico board: about 25 mA running a busy loop, 0.8 mA in dormant mode (datasheet figures at 5 V on VSYS).",
+    "source": {
+      "title": "Raspberry Pi Pico Datasheet",
+      "section": "Power consumption"
+    }
+  },
   "pcbMm": {
     "length": 51.0,
     "width": 21.0,

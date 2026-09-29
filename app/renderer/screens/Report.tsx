@@ -9,6 +9,7 @@ import { useAi, useApp, useLog, useScene, log } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { Viewport } from '../three/Viewport';
 import { BomTable } from '../components/BomTable';
+import { PowerBudget } from '../components/PowerBudget';
 import { billOfMaterials, bomToMarkdown } from '@shared/bom';
 import { t, getLanguage } from '@shared/i18n';
 
@@ -169,6 +170,10 @@ export function Report() {
         <div className="card report-bom">
           <div className="label">{t('Shopping list')}</div>
           <BomTable />
+        </div>
+        <div className="card report-bom">
+          <div className="label">{t('Power and battery life')}</div>
+          <PowerBudget />
         </div>
         <div className="card report-preview">
           {snapshot && <img src={snapshot} alt={t('3D snapshot')} className="snap" />}

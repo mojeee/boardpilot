@@ -103,6 +103,16 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
       .slice(0, 8);
     if (g.length) def.gotchas = g;
   }
+  const cur = o.current as Record<string, unknown> | undefined;
+  if (cur && typeof cur.typMa === 'number' && cur.typMa >= 0 && cur.typMa < 10000) {
+    const src = (typeof cur.source === 'object' && cur.source !== null ? cur.source : {}) as Record<string, unknown>;
+    const n = (v: unknown) => (typeof v === 'number' && v >= 0 && v < 10000 ? v : undefined);
+    if (str(src.title)) {
+      def.current = { typMa: cur.typMa, note: str(cur.note, 300), source: { title: str(src.title, 120), section: str(src.section, 200) || undefined } };
+      if (n(cur.sleepMa) !== undefined) def.current.sleepMa = n(cur.sleepMa);
+      if (n(cur.peakMa) !== undefined) def.current.peakMa = n(cur.peakMa);
+    }
+  }
   if (bus) def.bus = bus;
   if (addresses?.length) def.addresses = addresses;
   if (Array.isArray(o.measures)) def.measures = o.measures.map((x) => str(x, 30)).filter(Boolean).slice(0, 8);
