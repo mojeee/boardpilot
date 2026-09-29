@@ -134,6 +134,9 @@ export function checkBoard(b) {
   if (typeof tc.agent !== 'boolean') e('toolchain.agent must be boolean');
   if (tc.flasher === 'esptool' && !tc.esptoolChip) e('esptool boards need toolchain.esptoolChip');
   if (tc.flasher === 'avrdude' && !tc.avrdude) e('avrdude boards need toolchain.avrdude');
+  const rp = b.family === 'rp2040' || b.family === 'rp2350';
+  if (rp && !/^[a-z0-9_]+$/.test(tc.picoBoard ?? '')) e('RP2040/RP2350 boards need toolchain.picoBoard (the Pico SDK PICO_BOARD name, e.g. "pico")');
+  if (!rp && tc.picoBoard !== undefined) e('toolchain.picoBoard is only for RP2040/RP2350 boards');
   if (!Array.isArray(b.usb) || !b.usb.length) e('usb ids missing');
   for (const u of b.usb ?? []) if (!/^[0-9a-f]{4}$/.test(u.vid) || (u.pid !== undefined && !/^[0-9a-f]{4}$/.test(u.pid))) e(`usb id ${u.vid}:${u.pid} must be 4 lower-case hex digits`);
   const s = b.layoutPxPerMm;

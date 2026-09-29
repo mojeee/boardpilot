@@ -2,7 +2,7 @@
 
 import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
-import { basename, join } from 'node:path';
+import { basename, join, resolve, sep } from 'node:path';
 import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { BUY_URL } from '@shared/brand';
@@ -20,6 +20,7 @@ import { randomUUID } from 'node:crypto';
 import { LESSONS, type Lesson } from '@shared/lessons';
 import { COACH_MAX_ANSWER, type CoachAttempt } from '@shared/coach';
 import { CoachStore } from './session/coachStore';
+import { isSafeProjectName, type StarterFile } from '@shared/starter/common';
 
 export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
@@ -107,6 +108,46 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Not saved.'), hint: '' } };
       await writeFile(r.filePath, Buffer.from(dataUrl.slice(prefix.length), 'base64'));
       return { ok: true, value: r.filePath };
+    } catch (e) {
+      return { ok: false, error: toAppError(e) };
+    }
+  });
+  h('session:saveProject', async (folder: string, files: StarterFile[]): Promise<Result<string>> => {
+    // Only plain names (no separators, no ".."), at most 16 files of 1 MB: everything lands inside
+    // the new folder, which is created inside the place the user picked.
+    const valid =
+      isSafeProjectName(folder) &&
+      Array.isArray(files) &&
+      files.length > 0 &&
+      files.length <= 16 &&
+      files.every((f) => f && isSafeProjectName(f.name) && typeof f.text === 'string' && f.text.length <= 1024 * 1024) &&
+      new Set(files.map((f) => f.name.toLowerCase())).size === files.length;
+    if (!valid) return { ok: false, error: { code: 'bad_project', humanMessage: t('The project files are not valid, so nothing was saved.'), hint: t('Generate the project again, then save it.') } };
+    try {
+      const win = BrowserWindow.getFocusedWindow();
+      const opts: Electron.OpenDialogOptions = { title: t('Choose where to create the project folder'), buttonLabel: t('Create folder here'), properties: ['openDirectory', 'createDirectory'] };
+      const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
+      const parent = r.canceled ? undefined : r.filePaths[0];
+      if (!parent) return { ok: false, error: { code: 'cancelled', humanMessage: t('Not saved.'), hint: '' } };
+      // A new folder: never write into (or over) an existing one.
+      let dir = '';
+      for (let i = 1; i <= 99 && !dir; i++) {
+        const candidate = join(parent, i === 1 ? folder : `${folder}-${i}`);
+        try {
+          await mkdir(candidate);
+          dir = candidate;
+        } catch (e) {
+          if ((e as NodeJS.ErrnoException).code !== 'EEXIST') throw e;
+        }
+      }
+      if (!dir) return { ok: false, error: { code: 'folder_exists', humanMessage: t('There are already too many folders with this name here.'), hint: t('Pick another place, or remove old copies.') } };
+      const root = resolve(dir) + sep;
+      for (const f of files) {
+        const target = resolve(dir, f.name);
+        if (!target.startsWith(root)) throw new Error(`refused to write outside the project folder: ${f.name}`);
+        await writeFile(target, f.text, { flag: 'wx' });
+      }
+      return { ok: true, value: dir };
     } catch (e) {
       return { ok: false, error: toAppError(e) };
     }
