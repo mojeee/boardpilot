@@ -703,7 +703,6 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .dg-wire { cursor: pointer; }
 .dg-mark { cursor: pointer; }
 .dg-mark-text { fill: #12171D; font: 700 11px var(--font-ui); pointer-events: none; }
-.dg-export { position: absolute; right: 0; bottom: 0; }
 .dg-empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; }
 
 /* Shopping list */
