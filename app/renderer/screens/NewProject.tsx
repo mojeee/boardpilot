@@ -10,6 +10,7 @@ import { PartsLibrary } from '../components/PartsLibrary';
 import { addPart } from '../state/sceneActions';
 import { AssistantPanel } from '../components/AssistantPanel';
 import { CodeCheck } from '../components/CodeCheck';
+import { BomTable } from '../components/BomTable';
 import { TemplatePicker, TemplateView } from '../components/TemplatePanel';
 import { useTemplate } from '../state/templateRun';
 import { TEMPLATES } from '@shared/templates';
@@ -85,6 +86,12 @@ export function NewProjectPanel() {
                 </button>
               ))}
             </div>
+          )}
+          {scene.parts.length > 0 && (
+            <details className="bom-details">
+              <summary className="label">{t('Shopping list')}</summary>
+              <BomTable />
+            </details>
           )}
           <div className="label">{t('3. Starter code')}</div>
           <div className="row gap wrap">
