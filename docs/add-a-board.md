@@ -33,8 +33,11 @@ One entry per header pin, in any order (this is the Raspberry Pi Pico's GP4):
 - `kind` is `gpio`, `power`, `ground` or `enable`. Power pins say what they `supplies` (volts, 0 for inputs such as VIN).
 - `flags` carry the facts the wiring rules use: `input_only`, `flash`, `strapping`, `strapping_critical`, `adc`, `adc1`, `adc2`, `five_volt_tolerant`, `usb`, `swd`, `onboard_led`, `no_internal_pull`, `reserved`… (the full list is at the top of [`scripts/check-boards.mjs`](../scripts/check-boards.mjs)).
 - `notes` is one plain sentence a beginner can act on ("Strapping pin: keep it LOW at reset or the board may not boot.").
+- STM32 pins also carry `af`: the alternate function number of each timer, I2C, SPI and UART function, from the datasheet's "Alternate function mapping" table (`"af": {"I2C1_SDA": 4, "TIM4_CH4": 2}`). The STM32 HAL starter never guesses them.
 
 Then `rules` (default I2C and SPI pins, safe pins in order of preference, ADC pins), `toolchain` (flasher, arduino-cli FQBN and core, image format) and `usb` (vendor and product ids, from the core's `boards.txt`).
+
+The vendor SDK starter projects in New project need one more `toolchain` field per family: `picoBoard` (Pico SDK `PICO_BOARD`) on RP2040/RP2350, `idfTarget` (`idf.py set-target`) on ESP32 boards, and `stm32Hal` on STM32 boards (CMSIS device, PLL and bus prescalers, flash wait states, the UART that `printf` uses). `check-boards` checks that the `stm32Hal` clock tree gives the board's `clocks`.
 
 `components` are optional boxes for the 3D view (chip, USB connector, buttons, LEDs): `rect` is `[x, y, w, h]` in layout pixels (`layoutPxPerMm` pixels per mm).
 

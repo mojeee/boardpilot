@@ -2,7 +2,7 @@
 
 import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
-import { basename, join, resolve, sep } from 'node:path';
+import { basename, dirname, join, resolve, sep } from 'node:path';
 import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { BUY_URL } from '@shared/brand';
@@ -17,7 +17,7 @@ import { grant } from './session/safety';
 import type { SessionLog } from './session/sessionLog';
 import { toAppError } from './hardware/errors';
 import { CoachStore } from './session/coachStore';
-import { isSafeProjectName, type StarterFile } from '@shared/starter/common';
+import { isSafeProjectName, isSafeProjectPath, type StarterFile } from '@shared/starter/common';
 import { makeCoachApi } from './session/coachApi';
 
 export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
@@ -111,14 +111,15 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
     }
   });
   h('session:saveProject', async (folder: string, files: StarterFile[]): Promise<Result<string>> => {
-    // Only plain names (no separators, no ".."), at most 16 files of 1 MB: everything lands inside
-    // the new folder, which is created inside the place the user picked.
+    // Only plain names, or up to three of them joined by "/" (main/main.c, Core/Src/main.c; never
+    // "..", "\\" or an absolute path), at most 16 files of 1 MB: everything lands inside the new
+    // folder, which is created inside the place the user picked.
     const valid =
       isSafeProjectName(folder) &&
       Array.isArray(files) &&
       files.length > 0 &&
       files.length <= 16 &&
-      files.every((f) => f && isSafeProjectName(f.name) && typeof f.text === 'string' && f.text.length <= 1024 * 1024) &&
+      files.every((f) => f && isSafeProjectPath(f.name) && typeof f.text === 'string' && f.text.length <= 1024 * 1024) &&
       new Set(files.map((f) => f.name.toLowerCase())).size === files.length;
     if (!valid) return { ok: false, error: { code: 'bad_project', humanMessage: t('The project files are not valid, so nothing was saved.'), hint: t('Generate the project again, then save it.') } };
     try {
@@ -143,6 +144,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       for (const f of files) {
         const target = resolve(dir, f.name);
         if (!target.startsWith(root)) throw new Error(`refused to write outside the project folder: ${f.name}`);
+        await mkdir(dirname(target), { recursive: true });
         await writeFile(target, f.text, { flag: 'wx' });
       }
       return { ok: true, value: dir };

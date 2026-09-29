@@ -4,6 +4,7 @@ import { wireEvents } from './state/hw';
 import { TopBar } from './components/TopBar';
 import { TaskRail, TASKS, openTask } from './components/TaskRail';
 import { LogPanel } from './components/LogPanel';
+import { Splitter } from './components/Splitter';
 import { AssistantPanel } from './components/AssistantPanel';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DevMenu } from './components/DevMenu';
@@ -70,6 +71,7 @@ function FlowStarter({ screen }: { screen: string }) {
         </div>
       </div>
       <div className="right-bottom">
+        <Splitter kind="assistant" />
         <AssistantPanel />
       </div>
     </div>
@@ -124,9 +126,11 @@ export function App() {
         <Center />
       </main>
       <aside className="right">
+        <Splitter kind="right" />
         <RightPanel />
       </aside>
       <div className="bottom">
+        <Splitter kind="log" />
         <LogPanel />
       </div>
       <DevMenu />

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles/tokens.css';
 import './styles/app.css';
 import { App } from './App';
+import { initLayoutSizes } from './components/Splitter';
 import { initLanguage, useLang } from './state/lang';
 
 initLanguage();
@@ -16,6 +17,7 @@ function Root() {
   return <App key={lang} />;
 }
 
+initLayoutSizes();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Root />
