@@ -9,5 +9,6 @@
 - [Add a board](add-a-board.md): a new board in 30 minutes, as one JSON file.
 - [October roadmap](roadmap-2026-10.md): what is done and what comes next.
 - [YouTube plan](youtube/README.md) and [publishing workflow](launch/publishing.md): the channel plan, video scripts and outreach drafts.
+- [Motion clips](motion.md): short social clips rendered from the real app in simulator mode (`npm run motion`).
 
 Website: <https://boardpilot.agentflowbind.com> · ESP32 pinout reference: <https://boardpilot.agentflowbind.com/esp32-pinout/>

@@ -464,7 +464,7 @@ say so if you want it the other way.
 | 12 | State machine designer → C code and tests | L | A tool in New project | [x] |
 | 11 | Starter firmware for STM32 HAL, ESP-IDF, Pico SDK | L | Pico SDK first; compile check as a nightly CI job | [~] Pico SDK done (compiled nightly on Pico, Pico 2, Pico W); ESP-IDF and STM32 HAL next |
 | 17 | AI interview coach | M | Answers stored only on this computer, deletable, 90 days | [x] |
-| 22 | Motion graphics for social posts, rendered from the real app (8 clips × 3 formats) | L | Record the real app with CSS/SVG animation (no new dependency); muted, no music | [ ] |
+| 22 | Motion graphics for social posts, rendered from the real app (8 clips × 3 formats) | L | Record the real app with CSS/SVG animation (no new dependency); muted, no music | [x] |
 | 23 | YouTube channel plan: research, format, first 6 videos ready to record | M | Decided Sep 29: voice and hands only; one English channel with Italian subtitles; 1 long video every 2 weeks + 2 Shorts a week | [x] |
 | 24 | Publishing and outreach workflow with Claude in Chrome (you always click Post) | S | The workflow and tracking files are written here; the browser part runs on your computer | [x] |
 

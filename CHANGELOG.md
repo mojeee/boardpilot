@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Motion clips for social posts (issue #22): `npm run motion` records 8 short muted clips from the real app in simulator mode, in 16:9, 1:1 and 9:16, with captions, highlight rings and arrows on top. A frame-by-frame clock makes every render the same on any machine. ffmpeg, when installed, turns the frames into MP4 and GIF. Each clip also gets English and Italian subtitle files and a post text in `docs/launch/motion-posts.md`.
 - Try it in the browser (the October plan's last step): the website runs the real app with a simulated board, on the home page and on every board page with that board preselected. It loads only when you press "Try it live"; on phones it opens full-screen in a new tab. Saving files becomes a browser download, and the assistant uses the free demo AI. Real boards, your own AI key and AI agents (MCP) show a short "Download the app" prompt. `npm run build:web` builds it into `site/demo/`.
 - Website: three new feature cards (plan the whole project, learn embedded checked on your board, your AI coding agent sees the board), marked "New · next release"; four new screenshot tabs (schematic, timing view, lessons, code check); two new FAQ answers (AI agents, learning), in English and Italian.
 - Fixed: New project went blank (the portfolio panel re-rendered forever when a project had no saved progress). The template button now shows the real number of templates (8).
