@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-<p align="center"><b>See inside your board.</b> A desktop app that finds wiring mistakes, decodes I2C and shows every pin, wire and bus transaction on a live 3D board: ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52 and Teensy.<br>English and Italian · macOS and Windows · works without hardware in simulator mode.</p>
+<p align="center"><b>See inside your board.</b> A desktop app that finds wiring mistakes, decodes I2C and shows every pin, wire and bus transaction on a live 3D board: ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52 and Teensy. It also plans your project (pins, schematic, shopping list, starter firmware), teaches embedded with hands-on labs checked on the board, and lets AI coding agents use the real board through MCP.<br>English and Italian · macOS and Windows · works without hardware in simulator mode.</p>
 
 <p align="center">
   <a href="https://github.com/mojeee/boardpilot/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/mojeee/boardpilot?label=download&color=5CCB8F"></a>
@@ -14,6 +14,7 @@
   <a href="parts/LICENSE"><img alt="Parts data CC BY 4.0" src="https://img.shields.io/badge/parts%20data-CC%20BY%204.0-C9BEFF"></a>
   <img alt="Platforms" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-8A96A3">
   <img alt="Languages" src="https://img.shields.io/badge/lang-EN%20%7C%20IT-F2A93B">
+  <a href="docs/mcp.md"><img alt="MCP server" src="https://img.shields.io/badge/MCP-server-C9BEFF"></a>
 </p>
 
 <p align="center">
@@ -60,6 +61,38 @@ Boards are data files in [`boards/`](boards/) (pins with positions, flags and so
 
 Also: connect and identify (esptool v4/v5), safe flashing with automatic backup, new-project pin assignment with a starter sketch, reports as Markdown and PDF, English and Italian UI, 30-day free trial.
 
+### New since 0.5.0
+
+These are in `main` and ship in the next release (build from source to try them today; see [CHANGELOG.md](CHANGELOG.md)).
+
+| | |
+|---|---|
+| ![Schematic view](docs/img/schematic.jpg) **Wiring diagram and schematic** A flat wiring view and a real schematic from your 3D drawing, with net labels, power symbols and the pull-ups the rules suggest drawn dashed. Both export as SVG and go into the report. | ![Timing view](docs/img/timing.jpg) **Timing view** Logic-analyser rows for every streamed pin with the decoded I2C transaction under SDA/SCL, cursors, and period, frequency and duty with their uncertainty. Labelled "sampled", with the real sample rate. |
+| ![Lesson with a 3D preview](docs/img/learn.jpg) **Embedded lessons** 11 visual lessons from zero to senior, with interactive demos, "Show on the 3D board" previews, hands-on labs checked on your board, and an interview coach. | ![Code vs wiring checker](docs/img/code.jpg) **Code vs wiring checker** Compares your Arduino sketch with the drawing: swapped `Wire.begin` pins, outputs on input-only pins, the LED on another pin, the wrong baud rate. |
+
+**Build a project**
+- **8 template projects** that build themselves on any of the 13 boards (parts, wires from the board's own pin rules, and code), run in the simulator with a live story of what the program does.
+- **Pin planner**: say what you need (I2C, SPI, UARTs, analog inputs, PWM) and get pins with the reason for each.
+- **Shopping list** with the extras the wiring rules imply (pull-ups, dividers, level shifters), as CSV or Markdown.
+- **Power budget and battery life** from datasheet currents; parts without a figure are listed as unknown, never guessed.
+- **Clock-aware calculators** for timers/PWM, UART baud and ADC rate, with register values and ready-to-paste code for each toolchain.
+- **State machine designer**: draw states and events, get a diagram, C code, a unit test for every transition and an Arduino sketch.
+- **Starter firmware** as an Arduino sketch or a **Pico SDK** project (built every night with the real SDK).
+- **Portfolio projects**: a Smart room monitor, an Industrial sensor node and a Predictive-maintenance device, each built in checked stages, with hints first and a README for GitHub at the end.
+
+**Debug and measure**
+- **Register maps, decoded live** for the BME280, MPU6050 and SSD1306 (read-only, every register with its datasheet section).
+- **Flash pre-flight check**: the file is checked against the board (chip, flash size, UF2 family, HEX checksums, STM32 vector table) before anything is written.
+- **Part gotchas**: 44 known traps for the 27 most used parts, with sources, shown the moment you add the part.
+- A new wiring rule for two I2C parts at the same address.
+
+**Learn**
+- **Hands-on labs** (blink, button, knob, I2C sensor) checked with live data through the diagnostic agent; a passed lab marks its lesson done.
+- **Interview coach**: practise the answer to every lesson's interview questions; feedback cites the lesson section, and your answers stay on your computer.
+
+**For AI coding agents**
+- **BoardPilot as an MCP server**: Claude Code, Cursor or Claude Desktop can scan the I2C bus, read pins and check wiring and code on your real board. Every result says whether it was measured or documented, and writes only happen after your click in the app. Setup: [docs/mcp.md](docs/mcp.md).
+
 ## The open parts library
 
 **380+ sensors, displays, drivers, radios and modules**, each with its pins and roles, supply voltage, I2C addresses, chip-ID register, 3D shape and sources. The data is **free to reuse under [CC BY 4.0](parts/LICENSE)**:
@@ -87,6 +120,7 @@ No big code changes needed to help:
 
 - **Add a board**: one JSON file and its sources. Guide: [Add your board in 30 minutes](docs/add-a-board.md). Or [request a board](https://github.com/mojeee/boardpilot/issues/new?template=new-board.yml).
 - **Add a part** to the open library: see [docs/parts-library.md](docs/parts-library.md), or [request a part](https://github.com/mojeee/boardpilot/issues/new?template=new-part.yml).
+- **Add a template project**: one JSON file, see [docs/templates.md](docs/templates.md).
 - **Translate**: every UI string is in `shared/i18n/it/*.ts`; a new language is a new folder next to it.
 - Look for issues labelled [good first issue](https://github.com/mojeee/boardpilot/labels/good%20first%20issue).
 
@@ -95,12 +129,14 @@ No big code changes needed to help:
 ```bash
 npm install
 npm run dev          # the app, in simulator mode
-npm test             # 2000+ tests (Vitest); npm run typecheck
+npm test             # 2800+ tests (Vitest); npm run typecheck
 npm run build:agent  # rebuild the ESP32 diagnostic agent (arduino-cli + esp32 core)
 npm run dist:mac     # .dmg files in dist/
 npm run dist:win     # Windows installer in dist/
-npm run build:site   # regenerate the website and the parts pages
+npm run build:web    # the browser demo ("Try it live") in site/demo/, simulator only
+npm run build:site   # build:web, then regenerate the website and the parts pages
 node scripts/screenshots.mjs  # retake the README and website screenshots (after npm run build)
+node scripts/gen-starters.mjs out && PICO_SDK_PATH=~/pico-sdk bash scripts/build-starters.sh out  # compile the starters
 ```
 
 Architecture, product rules and conventions: [CLAUDE.md](CLAUDE.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md). Changes: [CHANGELOG.md](CHANGELOG.md).

@@ -36,6 +36,8 @@ export interface TraceEvent {
 }
 
 export interface BoardPilotApi {
+  /** True only in the browser demo (app/web/bpWeb.ts): simulator only, nothing on the computer. */
+  readonly web?: boolean;
   hw: {
     state(): Promise<ConnectionState>;
     setMode(mode: HardwareMode): Promise<Result<ConnectionState>>;
@@ -166,4 +168,8 @@ export interface McpWriteAsk {
   req: WriteRequest;
 }
 
-export const EVENT_CHANNELS = ['state', 'live', 'serial', 'probe', 'log', 'progress', 'trace'] as const;
+/** Browser demo: a window event asking the page to show the "Download the app" prompt.
+ *  `detail.reason` says, in plain words, what needs the app. */
+export const NEEDS_APP_EVENT = 'bp:needs-app';
+
+export const EVENT_CHANNELS =['state', 'live', 'serial', 'probe', 'log', 'progress', 'trace'] as const;

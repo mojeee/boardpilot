@@ -8,6 +8,10 @@ const CAPTIONS = {
     monitor: 'Your firmware, live: plots colored like their source pin, serial console and memory.',
     library: 'Add, move, rotate and remove parts in 3D. Every part shows its pins and connections.',
     import: 'Paste a link: BoardPilot drafts the pins and 3D model, and you confirm before saving.',
+    schematic: 'The project as a schematic: only the pins in use, net labels, power symbols, and the parts the rules suggest drawn dashed.',
+    timing: 'Timing view: sampled pin levels and the decoded I2C transaction, with period, frequency and duty measured between cursors.',
+    learn: 'A lesson with its example on the 3D board. Labs at the end are checked with live measurements.',
+    code: 'Your sketch checked against the drawing: swapped I2C pins, the wrong baud rate, the LED on another pin.',
     home: 'Pick a task, or describe the problem in your own words.',
   },
   it: {
@@ -16,6 +20,10 @@ const CAPTIONS = {
     monitor: 'Il tuo firmware in diretta: grafici colorati come il pin di origine, console seriale e memoria.',
     library: 'Aggiungi, sposta, ruota e rimuovi componenti in 3D. Ogni componente mostra pin e collegamenti.',
     import: 'Incolla un link: BoardPilot prepara pin e modello 3D, tu confermi prima di salvare.',
+    schematic: 'Il progetto come schema elettrico: solo i pin usati, etichette di rete, simboli di alimentazione e i componenti suggeriti dalle regole tratteggiati.',
+    timing: 'Vista temporale: livelli dei pin campionati e transazione I2C decodificata, con periodo, frequenza e duty misurati tra i cursori.',
+    learn: 'Una lezione con il suo esempio sulla scheda 3D. I laboratori finali sono verificati con misure dal vivo.',
+    code: 'Il tuo sketch confrontato con il disegno: pin I2C scambiati, baud rate sbagliato, LED su un altro pin.',
     home: 'Scegli un’attività, o descrivi il problema con parole tue.',
   },
 };

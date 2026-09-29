@@ -83,6 +83,15 @@
       }
     }
   ],
+  "current": {
+    "typMa": 0.0027,
+    "sleepMa": 0.0001,
+    "note": "At 1 reading per second in ultra-low-power mode; chip only.",
+    "source": {
+      "title": "Bosch BMP280 datasheet",
+      "section": "Current consumption (2.7 µA at 1 Hz; sleep 0.1 µA)"
+    }
+  },
   "sources": [
     {
       "title": "Bosch BMP280 datasheet",

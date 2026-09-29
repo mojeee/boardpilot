@@ -1,7 +1,7 @@
 // Electron main process entry.
 
 import { app, BrowserWindow, safeStorage, shell } from 'electron';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { writeFile } from 'node:fs/promises';
 import { HardwareHub } from './hardware/hub';
@@ -13,6 +13,7 @@ import { License } from './license/license';
 import { AiSettingsStore } from './settings/settings';
 import { baseDeps, setupMcp } from './mcp';
 import { runStdio } from './mcp/server';
+import { motionHash, motionJob, motionWindowOptions, runMotion } from './motion';
 import type { PartDef } from '@shared/types';
 
 /** Minimal .env.local reader (KEY=value lines). Keys stay in this process only; they are the
@@ -33,6 +34,14 @@ loadEnvLocal();
 // Sent to the free demo relay as "X-BoardPilot-Client: BoardPilot/<version>" (see ai/providers/demo.ts).
 process.env.BOARDPILOT_VERSION ||= app.getVersion();
 
+// BP_MOTION=<job.json>: record a social clip (scripts/render-motion.mjs). A fresh profile every
+// time, so each render starts from the same state (new trial, no saved project, English).
+const MOTION = motionJob();
+if (MOTION) {
+  const profile = join(app.getPath('temp'), 'boardpilot-motion-profile');
+  rmSync(profile, { recursive: true, force: true });
+  app.setPath('userData', profile);
+}
 const dataDir = app.getPath('userData');
 // `BoardPilot --mcp-stdio`: an MCP client started us. No window; talk MCP on stdin/stdout. Use a
 // separate Chromium profile so this process never locks the app's, but read the app's data.
@@ -63,6 +72,7 @@ function createWindow() {
       : { autoHideMenuBar: true }),
     title: 'BoardPilot',
     show: false,
+    ...(MOTION ? motionWindowOptions(MOTION) : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,
@@ -72,16 +82,21 @@ function createWindow() {
   });
 
   win.once('ready-to-show', () => {
-    if (!process.env.BP_SNAPSHOT) win.show();
+    if (!process.env.BP_SNAPSHOT && !MOTION) win.show();
   });
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('https://')) void shell.openExternal(url);
     return { action: 'deny' };
   });
 
-  const hash = process.env.BP_SNAPSHOT_HASH ?? '';
-  if (process.env.ELECTRON_RENDERER_URL) void win.loadURL(process.env.ELECTRON_RENDERER_URL + hash);
-  else void win.loadFile(join(__dirname, '../renderer/index.html'), { hash: hash.replace(/^#/, '') });
+  const hash = MOTION ? motionHash(MOTION) : (process.env.BP_SNAPSHOT_HASH ?? '');
+  const load = () => {
+    if (process.env.ELECTRON_RENDERER_URL) void win.loadURL(process.env.ELECTRON_RENDERER_URL + hash);
+    else void win.loadFile(join(__dirname, '../renderer/index.html'), { hash: hash.replace(/^#/, '') });
+  };
+  // The motion capture injects its clock before the page loads, then loads it.
+  if (MOTION) void runMotion(win, MOTION, load);
+  else load();
 
   // Developer aid: BP_SNAPSHOT=/path.png captures the window after a delay and quits.
   if (process.env.BP_SNAPSHOT) {
@@ -105,7 +120,7 @@ function createWindow() {
       }, delay);
     });
     win.showInactive();
-  }
+  } else if (MOTION) win.showInactive();
 }
 
 let userPartList: PartDef[] = [];
@@ -140,5 +155,5 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   void hub.shutdown();
-  if (process.platform !== 'darwin' || process.env.BP_SNAPSHOT) app.quit();
+  if (process.platform !== 'darwin' || process.env.BP_SNAPSHOT || MOTION) app.quit();
 });
