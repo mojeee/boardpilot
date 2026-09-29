@@ -245,6 +245,12 @@ export interface PinDef {
   maxVolt: number;
   /** voltage this pin supplies, for power pins */
   supplies?: number;
+  /**
+   * STM32 only: alternate function number (the AFRL/AFRH value) of each peripheral function in
+   * `functions` that goes through the GPIO alternate function mux, e.g. { "I2C1_SDA": 4 }. From the
+   * datasheet's "Alternate function mapping" table (cited in the board's sources).
+   */
+  af?: Record<string, number>;
   notes?: string;
 }
 
@@ -304,6 +310,38 @@ export interface BoardToolchain {
   /** Pico SDK board name (PICO_BOARD), e.g. "pico", "pico2", "pico_w". RP2040/RP2350 boards only;
    *  the names are the header files in pico-sdk/src/boards/include/boards/. */
   picoBoard?: string;
+  /** ESP-IDF target (idf.py set-target), e.g. "esp32", "esp32s3", "esp32c3". ESP32 family boards only. */
+  idfTarget?: 'esp32' | 'esp32s3' | 'esp32c3';
+  /** STM32 HAL starter project: device, clock tree and the UART that printf uses. STM32 boards only. */
+  stm32Hal?: Stm32HalConfig;
+}
+
+/**
+ * What the STM32 HAL starter needs to know about a board. The PLL values give the board's
+ * `clocks` (checked by scripts/check-boards.mjs): SYSCLK = input / pllM × pllN / pllP.
+ */
+export interface Stm32HalConfig {
+  /** CMSIS device define, e.g. "STM32F401xE" (selects the header in cmsis-device-f4). */
+  device: string;
+  /** Frequency of the board's HSE source in Hz (crystal, or the ST-LINK MCO on Nucleo boards), for HSE_VALUE. */
+  hseHz: number;
+  /** PLL input: the internal 16 MHz HSI or the board's HSE. */
+  pllSource: 'hsi' | 'hse';
+  pllM: number;
+  pllN: number;
+  /** 2, 4, 6 or 8 */
+  pllP: number;
+  pllQ: number;
+  /** APB1 and APB2 prescalers (1, 2, 4, 8, 16). AHB runs at SYSCLK. */
+  apb1Div: number;
+  apb2Div: number;
+  /** Flash wait states for HCLK at 3.3 V. */
+  flashLatency: number;
+  /** Regulator voltage scale (1, 2 or 3) for PWR_CR VOS. */
+  vos: number;
+  /** The UART that printf goes to: peripheral name as in the pin functions ("UART2") and pin ids. */
+  stdio: { uart: string; tx: string; rx: string; baud: number; note: string };
+  source: { title: string; section?: string };
 }
 
 export interface BoardDef {

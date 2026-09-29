@@ -23,7 +23,7 @@ BoardPilot starts in **simulator mode**, with a virtual ESP32 and a weather stat
 ## The seven tasks
 
 1. **Connect and identify**: finds the USB port, reads chip, flash size, MAC and USB bridge.
-2. **New project**: add parts from the library, let BoardPilot pick safe pins, get a starter sketch.
+2. **New project**: add parts from the library, let BoardPilot pick safe pins, get a starter sketch (Arduino) or a vendor SDK project (Pico SDK, ESP-IDF or STM32 HAL, depending on the board).
 3. **Flash firmware**: writes a `.bin`, after a full backup of the flash.
 4. **Debug a problem**: sensor not responding, board not detected, keeps resetting, garbage on serial.
 5. **Monitor**: serial console, live plots, CSV recording, memory.
