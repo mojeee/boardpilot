@@ -86,6 +86,8 @@ export interface BoardPilotApi {
     openSketch(): Promise<Result<{ name: string; text: string }>>;
     /** Shows a save dialog and writes text (CSV recordings, generated sketches). */
     saveFile(suggestedName: string, content: string): Promise<Result<string>>;
+    /** Shows a save dialog and writes a PNG given as a data:image/png;base64 URL (timing view export). */
+    savePng(suggestedName: string, dataUrl: string): Promise<Result<string>>;
     exportReport(markdown: string, html: string, suggestedName: string): Promise<Result<{ markdownPath: string; pdfPath: string }>>;
     info(): Promise<{ dataDir: string; logPath: string; version: string }>;
   };

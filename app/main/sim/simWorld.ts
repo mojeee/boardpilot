@@ -131,7 +131,14 @@ export class SimWorld {
   levelOf(gpio: number): 0 | 1 {
     const d = this.driven.get(gpio);
     if (d?.mode === 'out') return d.level ?? 0;
-    if (d?.mode === 'pwm') return Math.random() * 100 < (d.duty ?? 0) ? 1 : 0;
+    if (d?.mode === 'pwm') {
+      // A real square wave: the level follows the PWM phase at the moment of the sample, so slow PWM
+      // shows its period in the timing view and fast PWM aliases the way a real sampled signal does.
+      const hz = d.hz ?? 0;
+      if (!(hz > 0)) return (d.duty ?? 0) >= 100 ? 1 : 0;
+      const phase = ((performance.now() / 1000) * hz) % 1;
+      return phase * 100 < (d.duty ?? 0) ? 1 : 0;
+    }
     const mv = this.analogMv(gpio);
     if (mv !== null) return mv > this.adcMax / 2 ? 1 : 0;
     return this.externalPull(gpio) === 'pullup' ? 1 : 0;

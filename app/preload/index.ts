@@ -61,6 +61,7 @@ const api: BoardPilotApi = {
     pickFile: call('session:pickFile'),
     openSketch: call('session:openSketch'),
     saveFile: call('session:saveFile'),
+    savePng: call('session:savePng'),
     exportReport: call('session:exportReport'),
     info: call('session:info'),
   } as BoardPilotApi['session'],
