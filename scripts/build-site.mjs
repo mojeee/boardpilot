@@ -3,7 +3,7 @@
 // sitemap.xml and robots.txt. Run `npm run build:site` after editing scripts/site/*.
 // Output is committed, because Cloudflare Pages serves site/ as it is (no build step).
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { IT } from './site/i18n-it.mjs';
@@ -53,7 +53,7 @@ function hashOf(rel) {
   return hashCache.get(rel);
 }
 function bust(html) {
-  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/[\w.-]+|style\.css|app\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
+  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/(?:boards\/)?[\w.-]+|style\.css|app\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
     const h = hashOf(rel);
     return h ? `${url}?v=${h}` : m;
   });
@@ -185,7 +185,12 @@ const IT_MEASURES = {};
 for (const f of readdirSync(join(root, 'shared/i18n/it'))) {
   if (/^(partsdata\d*|three)\.ts$/.test(f)) Object.assign(IT_MEASURES, (await import(join(root, 'shared/i18n/it', f))).default);
 }
-function head({ lang, title, description, url, alt, ld, body }) {
+/** A page's social image: its own when it exists in site/img (e.g. a board's), else the default. */
+function ogImage(image) {
+  return image && existsSync(join(root, 'site', image.replace(/^\//, ''))) ? image : '/img/og.jpg';
+}
+
+function head({ lang, title, description, url, alt, ld, body, image }) {
   return `<!doctype html>
 <html lang="${lang}">
   <head>
@@ -203,7 +208,7 @@ function head({ lang, title, description, url, alt, ld, body }) {
     <meta property="og:url" content="${url}" />
     <meta property="og:title" content="${esc(title)}" />
     <meta property="og:description" content="${esc(description)}" />
-    <meta property="og:image" content="${SITE}/img/og.jpg" />
+    <meta property="og:image" content="${SITE}${ogImage(image)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#12171C" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

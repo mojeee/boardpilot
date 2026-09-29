@@ -17,3 +17,5 @@
 Components come from Eagle element positions: ATmega2560 TQFP-100 (IC3), ATmega16U2 (IC4), USB-B (X2), DC jack (X1), NCP1117 regulator (IC1), RESET button, LEDs ON/L/TX/RX, 16 MHz resonator (Y1), ICSP headers. Body sizes are **estimated** from typical package sizes.
 
 VIN `supplies` is 0 because VIN is an input and is not fed from USB (jack → diode D1 → VIN → regulator).
+
+Mounting holes (`holesMm`): the six holes of the Arduino MEGA 2560 Rev3 reference design, Ø 3.2 mm (125 mil): the four UNO holes at (550, 100), (600, 2000), (2600, 300), (2600, 1400) mil plus (3550, 2000) and (3800, 100) mil from the lower-left corner (`Arduino_MEGA_2560-Rev3.brd`, Holes layer). Converted with z = 53.34 − eagle_y.

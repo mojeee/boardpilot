@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Grid } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { getBoard } from '@shared/board';
 import { useApp, useLive, useScene } from '../state/store';
 import { Board3D } from './Board3D';
@@ -11,7 +11,7 @@ import { Wires } from './Wires';
 import { CameraRig } from './CameraRig';
 import { PinoutView2D } from './PinoutView2D';
 import { PinInfoCard } from './PinInfoCard';
-import { FLOOR_Y } from './geometry';
+import { Stage } from './Stage';
 import { PartsLibrary } from '../components/PartsLibrary';
 import { Icon } from '../components/Icon';
 import { handleSceneKey } from '../state/sceneActions';
@@ -21,7 +21,7 @@ import { t } from '@shared/i18n';
 async function openProject() {
   const r = await window.bp.project.open();
   if (r.ok) {
-    useScene.getState().setScene(r.value, true);
+    useScene.getState().openScene(r.value, true);
     log('info', t('Project opened.'));
   } else if (r.error.code !== 'cancelled') log('failed', t(r.error.humanMessage));
 }
@@ -98,30 +98,18 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
   const wireMode = useScene((s) => s.wireMode);
   const wireFrom = useScene((s) => s.wireFrom);
   const board = getBoard(useScene((s) => s.scene.board));
+  const stage = useScene((s) => s.stage);
 
   return (
     <div className="viewport">
       {view === '3d' ? (
         <Canvas
-          camera={{ position: [-38, 72, 96], fov: 35, near: 1, far: 2000 }}
+          camera={{ position: [-38, 72, 96], fov: 35, near: 1, far: 4000 }}
           dpr={[1, 2]}
           gl={{ preserveDrawingBuffer: true, antialias: true }}
           onPointerMissed={() => !useScene.getState().wireMode && useScene.getState().select(null)}
         >
-          <color attach="background" args={['#12171D']} />
-          <hemisphereLight args={['#dfe8f5', '#1a2028', 0.9]} />
-          <directionalLight position={[40, 90, 60]} intensity={1.4} />
-          <directionalLight position={[-60, 40, -40]} intensity={0.4} />
-          <Grid
-            position={[0, FLOOR_Y, 0]}
-            args={[400, 400]}
-            cellSize={2.54}
-            sectionSize={25.4}
-            cellColor="#1d252e"
-            sectionColor="#27313c"
-            fadeDistance={260}
-            infiniteGrid
-          />
+          <Stage style={stage} />
           <Board3D board={board} />
           <Parts />
           <Wires board={board} />
@@ -151,7 +139,17 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
             <button onClick={() => useScene.getState().preset('module')}>{t('Module')}</button>
           </div>
         )}
-        <button className={`tb ${labels ? 'on' : ''}`} onClick={() => useScene.getState().set({ labels: !labels })}>
+        {view === '3d' && (
+          <div className="seg" title={t('Floor style: a workbench or a plain grid')}>
+            <button className={stage === 'desk' ? 'on' : ''} onClick={() => useScene.getState().setStage('desk')}>
+              {t('Desk')}
+            </button>
+            <button className={stage === 'plain' ? 'on' : ''} onClick={() => useScene.getState().setStage('plain')}>
+              {t('Plain')}
+            </button>
+          </div>
+        )}
+        <button className={`tb ${labels ? 'on' : ''}`} title={t('Show the name of every pin')} onClick={() => useScene.getState().set({ labels: !labels })}>
           {t('Labels')}
         </button>
         {view === '3d' && (

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- 3D view, week 1 of the October plan: studio lighting built in code (works offline) with silver shields, pins and USB; a soft contact shadow under the board and parts, redrawn only when the scene changes; a darker floor that fades out with a quieter grid.
+- New "Desk / Plain" switch in the 3D toolbar: a workbench with a wooden desk, an anti-static mat under the board and shelves of parts bins, drawers, reels, wire spools, spare boards and a soldering station, all built from simple shapes and generated textures. The choice is remembered; slow computers start with Plain.
+- The camera frames the board and every part when a scene opens, when the board changes and on "Overview", tighter than before so the board no longer looks small.
+- Pin names and the board name are printed on the PCB like real silkscreen. Floating tags now appear only for pins that are wired, hovered, selected, highlighted or have a warning; "Labels" still shows every tag.
+- Wires look like jumper wires: thinner cables, black plug housings at both ends, parallel wires fan out, and the other wires fade while one is selected (the thin cable stays easy to click).
+- Rounded PCB corners, and mounting holes with plated rings on the Arduino Uno and Mega and the three Raspberry Pi Pico boards (new optional `holesMm` and `cornerRadiusMm` in board files, checked by `scripts/check-boards.mjs`, sources in each `boards/<id>.sources.md`).
+- Screenshots: demo links accept `&stage=desk|plain`, `&cam=top|side|module|home` and `&clean=1`; `node scripts/screenshots.mjs` retakes every README and website screenshot from the real app in simulator mode (JPEG, with a 900 px copy for the site).
+- New screenshots everywhere with the 3D workbench, and a new social preview ("See inside your board", 13 boards) for the website and GitHub.
+- A social image per board (`site/img/boards/<id>.jpg`: the board's 3D view with its name, pin count, logic voltage and chip), used by its pinout page, its 30 wiring guides and its comparison pages in both languages.
+- Easier to contribute: an "Add your board in 30 minutes" guide (`docs/add-a-board.md`), a "Request a board" issue form, and a "Contribute in 30 minutes" section in the README.
 - Website SEO: 360 wiring guides per language (the 30 most searched parts on 12 boards, e.g. "BME280 with Raspberry Pi Pico": board-specific pins, voltage checks such as 5 V echo on 3.3 V boards, library-based Arduino test code, HowTo and FAQ structured data), 12 board comparison pages ("ESP32 DevKit vs Raspberry Pi Pico"), questions and answers with FAQ markup on every board page, and links between parts, boards, guides and comparisons. 1,542 URLs in the sitemap.
 
 ## 0.5.0 (2026-09-28)

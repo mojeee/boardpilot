@@ -79,8 +79,13 @@ function createWindow() {
     const delay = Number(process.env.BP_SNAPSHOT_DELAY ?? 5000);
     win.webContents.once('did-finish-load', () => {
       setTimeout(async () => {
-        const img = await win.webContents.capturePage();
-        await writeFile(out, img.toPNG());
+        // BP_SNAPSHOT_RECT=x,y,w,h captures only that part of the window (e.g. the 3D viewport).
+        const r = process.env.BP_SNAPSHOT_RECT?.split(',').map(Number);
+        const img = await win.webContents.capturePage(r?.length === 4 ? { x: r[0], y: r[1], width: r[2], height: r[3] } : undefined);
+        await writeFile(out, out.endsWith('.jpg') ? img.toJPEG(86) : img.toPNG());
+        // BP_SNAPSHOT_SMALL=/path-900.jpg also writes a 900 px wide copy for the website.
+        const small = process.env.BP_SNAPSHOT_SMALL;
+        if (small) await writeFile(small, img.resize({ width: 900, quality: 'best' }).toJPEG(84));
         app.quit();
       }, delay);
     });

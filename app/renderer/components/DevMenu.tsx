@@ -10,7 +10,7 @@ export function DevMenu() {
   if (!open) return null;
   const load = async (id: string) => {
     const r = await window.bp.sim.load(id);
-    if (r.ok) useScene.getState().setScene(await window.bp.sim.scene());
+    if (r.ok) useScene.getState().openScene(await window.bp.sim.scene());
   };
   return (
     <div className="devmenu">
@@ -61,7 +61,7 @@ export function DevMenu() {
         <button
           className="btn small"
           onClick={() => {
-            useScene.getState().setScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
+            useScene.getState().openScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
             log('info', t('Started an empty project.'));
           }}
         >

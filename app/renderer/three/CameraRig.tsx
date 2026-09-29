@@ -6,7 +6,8 @@ import * as THREE from 'three';
 import type { BoardDef } from '@shared/types';
 import { useScene } from '../state/store';
 import { targetPoint } from './geometry';
-import { rectToMm } from '@shared/board';
+import { PARTS, rectToMm } from '@shared/board';
+import { fitCamera, sceneBounds } from './framing';
 
 interface Controls {
   target: THREE.Vector3;
@@ -39,6 +40,8 @@ export function CameraRig({ board }: { board: BoardDef }) {
   const controls = useThree((s) => s.controls) as unknown as Controls | null;
   const focus = useScene((s) => s.focus);
   const preset = useScene((s) => s.cameraPreset);
+  const loadNonce = useScene((s) => s.loadNonce);
+  const size = useThree((s) => s.size);
   const anim = useRef<{ fromPos: THREE.Vector3; toPos: THREE.Vector3; fromT: THREE.Vector3; toT: THREE.Vector3; t: number } | null>(null);
 
   const flyTo = (pos: THREE.Vector3, target: THREE.Vector3) => {
@@ -46,11 +49,35 @@ export function CameraRig({ board }: { board: BoardDef }) {
     anim.current = { fromPos: camera.position.clone(), toPos: pos, fromT: controls.target.clone(), toT: target, t: 0 };
   };
 
+  /** Overview: the board and every part, as large as the view allows. */
+  const frameAll = (instant: boolean) => {
+    if (!controls) return;
+    const fov = (camera as THREE.PerspectiveCamera).fov ?? 35;
+    const f = fitCamera(sceneBounds(board, useScene.getState().scene, PARTS), fov, size.width / Math.max(1, size.height));
+    if (instant) {
+      anim.current = null;
+      camera.position.copy(f.pos);
+      controls.target.copy(f.target);
+      controls.update();
+    } else flyTo(f.pos, f.target);
+  };
+
+  // A scene was opened or the board changed: frame everything (instantly the first time).
+  const framedOnce = useRef(false);
   useEffect(() => {
+    if (!controls) return;
+    frameAll(!framedOnce.current);
+    framedOnce.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [controls, board.id, loadNonce]);
+
+  useEffect(() => {
+    if (!preset.nonce) return;
+    if (preset.name === 'home') return frameAll(false);
     const p = presetsFor(board)[preset.name];
     if (p) flyTo(new THREE.Vector3(...p.pos), new THREE.Vector3(...p.target));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preset.nonce, controls, board.id]);
+  }, [preset.nonce]);
 
   useEffect(() => {
     if (!focus.nonce || !controls) return;

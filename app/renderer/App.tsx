@@ -34,7 +34,7 @@ async function boot() {
   await Promise.all([useLicense.getState().refresh(), usePartsLib.getState().load()]);
   if (useApp.getState().conn.mode === 'real') {
     const last = await window.bp.project.last();
-    if (last) useScene.getState().setScene(last);
+    if (last) useScene.getState().openScene(last);
   }
   let timer: ReturnType<typeof setTimeout> | null = null;
   useScene.subscribe((s, prev) => {
