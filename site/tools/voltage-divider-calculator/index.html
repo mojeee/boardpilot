@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Voltage divider calculator (Vout, R2 for 3.3 V) | BoardPilot</title>
+    <meta name="description" content="Calculate a voltage divider’s output from Vin, R1 and R2, with an optional load, or find R2 for a target voltage such as 5 V to 3.3 V for an ESP32 or Raspberry Pi Pico input. Free, with the formula." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/" />
+    <meta property="og:title" content="Voltage divider calculator (Vout, R2 for 3.3 V) | BoardPilot" />
+    <meta property="og:description" content="Calculate a voltage divider’s output from Vin, R1 and R2, with an optional load, or find R2 for a target voltage such as 5 V to 3.3 V for an ESP32 or Raspberry Pi Pico input. Free, with the formula." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/tools.css?v=6f74802083" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/#app","name":"Voltage divider calculator","url":"https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/","description":"Calculate a voltage divider’s output from Vin, R1 and R2, with an optional load, or find R2 for a target voltage such as 5 V to 3.3 V for an ESP32 or Raspberry Pi Pico input. Free, with the formula.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"en","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://boardpilot.agentflowbind.com/tools/"},{"@type":"ListItem","position":3,"name":"Voltage divider calculator","item":"https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I power a sensor or module from a voltage divider?","acceptedAnswer":{"@type":"Answer","text":"No. The output voltage drops as soon as the module draws current, and it changes whenever that current changes. Dividers are for signals and measurements; for power, use a voltage regulator."}},{"@type":"Question","name":"Can I use a divider to connect a 5 V output to a 3.3 V input?","acceptedAnswer":{"@type":"Answer","text":"Yes, for one-way signals that are not too fast, such as an ultrasonic sensor’s echo pin or a 5 V device’s serial TX at usual baud rates. Put the divider on the line going into the 3.3 V board. For two-way lines such as I2C, use a level shifter instead."}},{"@type":"Question","name":"Why is my measured output lower than calculated?","acceptedAnswer":{"@type":"Answer","text":"Whatever is connected to the output (a multimeter, an ADC input, a module) sits in parallel with R2 and lowers it. Resistor tolerance (±1 % or ±5 %) adds a small error too. Use the load field to see the effect, or pick smaller resistors so the load matters less."}},{"@type":"Question","name":"Which resistor is R1 and which is R2?","acceptedAnswer":{"@type":"Answer","text":"R1 goes from the input voltage to the output point; R2 goes from the output point to ground. The output is the voltage across R2."}},{"@type":"Question","name":"What resistor values are best for an ADC input?","acceptedAnswer":{"@type":"Answer","text":"The ADC sees R1 and R2 in parallel as its source, and its sampling capacitor must charge through them. Keep that resistance low: the ATmega328P datasheet, for example, is written for sources of about 10 kΩ or less. With larger resistors, add a small capacitor (for example 100 nF) from the ADC pin to ground for slow signals, or give the ADC a longer sample time."}}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/tools/voltage-divider-calculator/" hreflang="en" class="on">EN</a><a href="/it/tools/voltage-divider-calculator/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article tools-page">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/tools/">Calculators</a> / <span>Voltage divider calculator</span></nav>
+        <h1>Voltage divider calculator</h1>
+        <p class="lead">Two resistors in series make a smaller voltage out of a bigger one. Enter Vin, R1 and R2 to get the output, or let the calculator find R2 for the voltage you need.</p>
+        <div class="calc">
+        <form class="calc-form" data-tool="divider" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Input voltage Vin (V)</span><input type="number" name="vin" value="5" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>R1, to Vin (Ω)</span><input type="number" name="r1" value="10000" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>R2, to ground (Ω)</span><input type="number" name="r2" value="20000" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Load on the output (Ω, optional)</span><input type="number" name="load" value="" step="any" inputmode="decimal" min="0" placeholder="none"/></label>
+          </div>
+          <dl class="calc-outs">
+            <div class="calc-row big"><dt>Output voltage Vout</dt><dd class="mono" data-out="vout">—</dd></div>
+            <p class="calc-formula mono" data-out="formula"></p>
+            <p class="calc-formula" data-out="loadnote"></p>
+            <div class="calc-row"><dt>Current drawn from Vin</dt><dd class="mono" data-out="current">—</dd></div>
+          </dl>
+          <p class="calc-note" data-out="note" aria-live="polite"></p>
+        </form>
+      </div>
+      <h2 id="r2">Find R2 for a target voltage</h2>
+      <div class="calc">
+        <form class="calc-form" data-tool="divr2" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Input voltage Vin (V)</span><input type="number" name="vin" value="5" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Target output (V)</span><input type="number" name="target" value="3.3" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>R1 (Ω)</span><input type="number" name="r1" value="10000" step="any" inputmode="decimal" min="0"/></label>
+          </div>
+          <dl class="calc-outs">
+            <div class="calc-row"><dt>Exact R2</dt><dd class="mono" data-out="r2exact">—</dd></div>
+            <div class="calc-row big"><dt>Nearest standard value (E12)</dt><dd class="mono" data-out="r2std">—</dd></div>
+            <div class="calc-row"><dt>Output and current with it</dt><dd class="mono" data-out="r2vout">—</dd></div>
+          </dl>
+          <p class="calc-note" data-out="note" aria-live="polite"></p>
+        </form>
+        <noscript><p class="calc-noscript">This calculator needs JavaScript. The formula and a worked example are below, so you can also work it out by hand.</p></noscript>
+        </div>
+        <p class="fine calc-honest">Results are arithmetic on published formulas, not measurements. Check them on your hardware. <span class="free">Free, no sign-up</span></p>
+        <h2>How a voltage divider works</h2>
+        <p>The same current flows through R1 and R2, so each one takes a share of the voltage in proportion to its resistance. The output is taken across R2, the resistor to ground: the bigger R2 is compared with R1, the higher the output.</p>
+        <h2>Good uses and bad uses</h2>
+        <p><b>Good:</b> bringing a slow 5 V signal down to 3.3 V for an ESP32 or Raspberry Pi Pico input (the echo pin of an HC-SR04 ultrasonic sensor, for example), and scaling a battery or supply voltage into the range of an ADC pin.</p>
+        <p><b>Bad:</b> powering a module. As soon as the load draws current the output drops, and the divider wastes current all the time. Use a voltage regulator instead.</p>
+        <p><b>Not for two-way lines</b> such as I2C: a divider only works in one direction. Use a level shifter.</p>
+        <h2>Choosing resistor sizes</h2>
+        <p>The ratio sets the voltage; the size sets the current. Small values (hundreds of ohms) waste current. Very large values (megaohms) make the output weak: whatever it feeds, even an ADC input, pulls on it and the reading drops. For signals and ADC inputs, values between about 10 kΩ and 100 kΩ are a common compromise.</p>
+        <h2>The formula</h2>
+        <pre class="formula">Vout = Vin × R2 / (R1 + R2)
+I    = Vin / (R1 + R2)
+R2   = R1 × Vout / (Vin − Vout)
+With a load RL on the output, use R2 × RL / (R2 + RL) in place of R2.</pre>
+        <p class="fine">Source: Ohm’s law; resistors in series and in parallel. Standard values: E12 series, IEC 60063.</p>
+        <h2>Worked example</h2>
+        <p>5 V down to about 3.3 V for an ESP32 input, with R1 = 10 kΩ: R2 = 10 kΩ × 3.3 V / (5 − 3.3) V = <b>19.4 kΩ</b>. The nearest E12 value is <b>18 kΩ</b>, which gives <b>3.21 V</b> and draws 0.179 mA from the 5 V line.</p>
+<p>The popular 1 kΩ / 2 kΩ pair for an HC-SR04 echo pin gives 5 × 2 / (1 + 2) = 3.33 V and draws 1.67 mA.</p>
+        <h2>Questions and answers</h2>
+        <div class="faq">
+        <details><summary>Can I power a sensor or module from a voltage divider?</summary><p>No. The output voltage drops as soon as the module draws current, and it changes whenever that current changes. Dividers are for signals and measurements; for power, use a voltage regulator.</p></details>
+        <details><summary>Can I use a divider to connect a 5 V output to a 3.3 V input?</summary><p>Yes, for one-way signals that are not too fast, such as an ultrasonic sensor’s echo pin or a 5 V device’s serial TX at usual baud rates. Put the divider on the line going into the 3.3 V board. For two-way lines such as I2C, use a level shifter instead.</p></details>
+        <details><summary>Why is my measured output lower than calculated?</summary><p>Whatever is connected to the output (a multimeter, an ADC input, a module) sits in parallel with R2 and lowers it. Resistor tolerance (±1 % or ±5 %) adds a small error too. Use the load field to see the effect, or pick smaller resistors so the load matters less.</p></details>
+        <details><summary>Which resistor is R1 and which is R2?</summary><p>R1 goes from the input voltage to the output point; R2 goes from the output point to ground. The output is the voltage across R2.</p></details>
+        <details><summary>What resistor values are best for an ADC input?</summary><p>The ADC sees R1 and R2 in parallel as its source, and its sampling capacitor must charge through them. Keep that resistance low: the ATmega328P datasheet, for example, is written for sources of about 10 kΩ or less. With larger resistors, add a small capacitor (for example 100 nF) from the ADC pin to ground for slow signals, or give the ADC a longer sample time.</p></details>
+        </div>
+        <h2>Learn the background</h2>
+        <p>Free lessons of the BoardPilot course that explain the ideas behind this calculator:</p>
+        <p class="link-cloud"><a href="/learn/hardware-basics/">Hardware basics for software developers</a><a href="/learn/adc/">ADC: reading the analog world</a></p>
+        <h2>Other calculators</h2>
+        <p class="link-cloud"><a href="/tools/led-resistor-calculator/">LED resistor calculator</a><a href="/tools/i2c-pull-up-calculator/">I2C pull-up resistor calculator</a><a href="/tools/uart-baud-rate-calculator/">UART baud rate calculator</a><a href="/tools/pwm-timer-calculator/">PWM and timer calculator</a><a href="/tools/adc-sample-rate-calculator/">ADC sample rate calculator</a></p>
+        <div class="cta-box">
+          <h2>See it on a real board</h2>
+          <p>BoardPilot uses these same calculations inside the app, next to a live 3D view of your board, its pins and wires, with guided debugging when something does not work. Try it in your browser, or download it for macOS and Windows.</p>
+          <div class="cta"><a class="btn primary" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=en">Try it in your browser</a><a class="btn" href="/#download">Download BoardPilot</a></div>
+        </div>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+    <script src="/tools/calc.js?v=a3890e388f" defer></script>
+  </body>
+</html>

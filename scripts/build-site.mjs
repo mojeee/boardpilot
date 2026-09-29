@@ -13,6 +13,7 @@ import { buildBoards, boardCards } from './site/boards.mjs';
 import { buildCompare, buildGuides, compareLinks, partBoardLinks } from './site/guides.mjs';
 import { tryLive } from './site/demo.mjs';
 import { buildLearn, learnLinks, learnNavLabel, learnPath } from './site/learn.mjs';
+import { buildTools } from './site/tools.mjs';
 import { readdirSync } from 'node:fs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -57,7 +58,7 @@ function hashOf(rel) {
   return hashCache.get(rel);
 }
 function bust(html) {
-  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/(?:boards\/|demo\/(?:en|it)\/)?[\w.-]+|style\.css|learn\.css|app\.js|try-live\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
+  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/(?:boards\/|demo\/(?:en|it)\/)?[\w.-]+|style\.css|learn\.css|tools\.css|tools\/calc\.js|app\.js|try-live\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
     const h = hashOf(rel);
     return h ? `${url}?v=${h}` : m;
   });
@@ -299,6 +300,15 @@ for (const [lang, html] of [['en', en], ['it', it]]) {
   for (const [rel, content] of Object.entries(compare.pages)) write(rel, content);
   extraPages.push(...guides.sitemap, ...compare.sitemap);
 }
+// Free calculators (/tools/): pages from scripts/site/tools.mjs, script from `npm run build:tools`.
+const toolPages = [];
+for (const [lang, html] of [['en', en], ['it', it]]) {
+  const built = buildTools({ lang, boards, site: SITE, head, chromeFor: (paths) => chrome(html, lang, paths) });
+  for (const [rel, content] of Object.entries(built.pages)) write(rel, content);
+  toolPages.push(...built.sitemap);
+}
+if (!existsSync(join(root, 'site/tools/calc.js'))) console.warn('site/tools/calc.js is missing: run `npm run build:tools` so the calculators work.');
+
 // The hand-written ESP32 page links to its comparisons too.
 for (const [rel, lang] of [['esp32-pinout/index.html', 'en'], ['it/esp32-pinout/index.html', 'it']]) {
   const file = join(root, 'site', rel);
@@ -333,6 +343,7 @@ const pages = [
   { en: '/esp32-pinout/', it: '/it/esp32-pinout/', priority: '0.8' },
   { en: '/boards/', it: '/it/boards/', priority: '0.9' },
   ...learnPages,
+  ...toolPages,
   ...boards.filter((b) => b.id !== 'esp32-devkitc-30').map((b) => ({ en: `/boards/${b.id}/`, it: `/it/boards/${b.id}/`, priority: '0.8' })),
   ...extraPages.map((p) => ({ ...p, priority: '0.6' })),
   ...parts.map((p) => ({ en: `/parts/${p.id}/`, it: `/it/parts/${p.id}/`, priority: '0.6' })),

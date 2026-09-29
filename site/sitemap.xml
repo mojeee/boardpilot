@@ -289,6 +289,118 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/interview-questions/"/>
   </url>
   <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/led-resistor-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/led-resistor-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/i2c-pull-up-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/i2c-pull-up-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/i2c-pull-up-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/uart-baud-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/uart-baud-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/uart-baud-rate-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/pwm-timer-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/pwm-timer-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/pwm-timer-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+  </url>
+  <url>
+    <loc>https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/"/>
+  </url>
+  <url>
     <loc>https://boardpilot.agentflowbind.com/boards/arduino-mega-2560/</loc>
     <lastmod>2026-09-29</lastmod>
     <priority>0.8</priority>
