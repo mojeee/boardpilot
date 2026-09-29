@@ -267,3 +267,19 @@ describe('lesson labs on the simulator', () => {
     expect(s.result).toMatchObject({ passed: false, title: 'SDA and SCL are crossed' });
   }, 30000);
 });
+
+describe('connect and identify on an empty project', () => {
+  it('switches the project to the board that answered, and leaves a project with parts alone', async () => {
+    const { adoptDetectedBoard } = await import('@flows/common');
+    const { hub, ready } = makeHub('healthy');
+    await ready;
+    const empty = makeCtx(hub, { board: 'rpi-pico', parts: [], wires: [] });
+    const ports = await hub.listPorts();
+    empty.ctx.data.port = ports.ok ? ports.value[0].path : undefined;
+    expect(await adoptDetectedBoard(empty.ctx, 'ESP32-D0WD-V3')).toBe(true);
+    expect(empty.ctx.scene().board).toBe('esp32-devkitc-30');
+    const withParts = makeCtx(hub, { board: 'rpi-pico', parts: [{ id: 'led1', partId: 'led-resistor', position: [0, 0, 0] }], wires: [] });
+    expect(await adoptDetectedBoard(withParts.ctx, 'ESP32-D0WD-V3')).toBe(false);
+    expect(withParts.ctx.scene().board).toBe('rpi-pico');
+  });
+});

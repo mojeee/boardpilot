@@ -158,6 +158,11 @@ const it: Record<string, string> = {
   'Thank you for trying BoardPilot for {total} days. To keep using it, enter a license key. Your projects, backups and parts library are safe on this Mac.':
     'Grazie per aver provato BoardPilot per {total} giorni. Per continuare a usarlo, inserisci una chiave di licenza. I tuoi progetti, i backup e la libreria dei componenti restano al sicuro su questo Mac.',
   'Drag to resize. Double-click to reset.': 'Trascina per ridimensionare. Doppio clic per ripristinare.',
+  "New empty project. Add parts, start from a template, or detect the board on your USB port.": "Nuovo progetto vuoto. Aggiungi componenti, parti da un modello o rileva la scheda sulla porta USB.",
+  "New empty project. Undo brings the previous one back.": "Nuovo progetto vuoto. Annulla riporta quello precedente.",
+  "Detect my board": "Rileva la mia scheda",
+  "Start empty": "Inizia vuoto",
+  "Finds the board on USB, reads its chip and sets it as the project board. Only reads.": "Trova la scheda sulla USB, legge il suo chip e la imposta come scheda del progetto. Legge soltanto.",
 };
 
 export default it;

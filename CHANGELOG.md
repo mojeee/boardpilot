@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.6.1 (2026-09-29)
+
+- New project starts empty instead of on the simulator's demo bench (Undo brings the demo back; a project you have worked on is never cleared). A "Start empty" button clears a project with parts, again with Undo.
+- "Detect my board" in New project runs Connect and identify. When the project is still empty and the chip that answers names another board family, the project switches to that board (USB ids decide between look-alikes such as Pico and Pico W). A project with parts is never changed; you get the usual warning instead.
+
 ## 0.6.0 (2026-09-29)
 
 The October plan: design your project (templates, pin planner, wiring diagram and schematic, shopping list, power budget, calculators, state machines, Arduino and Pico SDK starters), learn embedded (11 lessons with labs checked on the board, portfolio projects, interview coach), new debugging tools (timing view, register maps, flash pre-flight, part gotchas), a 3D workbench, BoardPilot as an MCP server for AI coding agents, and a browser demo on the website.

@@ -6,6 +6,7 @@ import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
 import { generateStarter, starterToolchains, TOOLCHAIN_NAME, type StarterProject, type StarterToolchain } from '@shared/starter';
 import { useScene, log } from '../state/store';
+import { openTask } from '../components/TaskRail';
 import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
 import { addPart } from '../state/sceneActions';
@@ -85,6 +86,22 @@ export function NewProjectPanel() {
             <TemplateView />
           ) : (
             <>
+          <div className="row gap wrap">
+            <button className="btn small" onClick={() => openTask('connect')} title={t('Finds the board on USB, reads its chip and sets it as the project board. Only reads.')}>
+              {t('Detect my board')}
+            </button>
+            {scene.parts.length > 0 && (
+              <button
+                className="btn small ghost"
+                onClick={() => {
+                  useScene.getState().openScene({ board: scene.board, parts: [], wires: [] }, true);
+                  log('info', t('New empty project. Undo brings the previous one back.'));
+                }}
+              >
+                {t('Start empty')}
+              </button>
+            )}
+          </div>
           <div className="row between">
             <div className="label">{t('Start from a template')}</div>
             <button className="btn small ghost" onClick={() => setShowTemplates(!showTemplates)}>
