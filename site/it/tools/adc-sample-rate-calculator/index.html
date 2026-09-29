@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calcolo frequenza di campionamento ADC (tempo di conversione) | BoardPilot</title>
+    <meta name="description" content="Quante letture ADC al secondo può fare la tua scheda? Tempo di conversione e frequenza di campionamento massima per Arduino (ATmega), STM32, Raspberry Pi Pico (RP2040, RP2350) e nRF52 da clock dell’ADC e tempo di campionamento, dai datasheet." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/adc-sample-rate-calculator/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/" />
+    <meta property="og:title" content="Calcolo frequenza di campionamento ADC (tempo di conversione) | BoardPilot" />
+    <meta property="og:description" content="Quante letture ADC al secondo può fare la tua scheda? Tempo di conversione e frequenza di campionamento massima per Arduino (ATmega), STM32, Raspberry Pi Pico (RP2040, RP2350) e nRF52 da clock dell’ADC e tempo di campionamento, dai datasheet." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/tools.css?v=6f74802083" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/#app","name":"Calcolo della frequenza di campionamento ADC","url":"https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/","description":"Quante letture ADC al secondo può fare la tua scheda? Tempo di conversione e frequenza di campionamento massima per Arduino (ATmega), STM32, Raspberry Pi Pico (RP2040, RP2350) e nRF52 da clock dell’ADC e tempo di campionamento, dai datasheet.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"it","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Calcolatori","item":"https://boardpilot.agentflowbind.com/it/tools/"},{"@type":"ListItem","position":3,"name":"Calcolo della frequenza di campionamento ADC","item":"https://boardpilot.agentflowbind.com/it/tools/adc-sample-rate-calculator/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quanto è veloce analogRead() su un Arduino Uno?","acceptedAnswer":{"@type":"Answer","text":"Una conversione dura 104 µs con il prescaler predefinito di 128 (13 cicli di clock dell’ADC a 125 kHz), quindi l’hardware fa al massimo circa 9600 letture al secondo. Con il lavoro in più di analogRead() stessa, di solito una chiamata dura poco più di 100 µs, cioè circa 9000 letture al secondo in un loop stretto."}},{"@type":"Question","name":"Posso rendere più veloce l’ADC di Arduino?","acceptedAnswer":{"@type":"Answer","text":"Sì, con un prescaler più piccolo (i bit ADPS nel registro ADCSRA). Il prescaler 64 dà un clock dell’ADC di 250 kHz e circa 19200 letture al secondo; prescaler più piccoli sono ancora più veloci. Sopra i 200 kHz il datasheet non garantisce più la piena precisione a 10 bit, quindi gli ultimi bit diventano più rumorosi."}},{"@type":"Question","name":"Perché non c’è un numero per l’ESP32?","acceptedAnswer":{"@type":"Answer","text":"Espressif non pubblica un tempo di conversione fisso per analogRead() sulla famiglia ESP32, e il tempo dipende dalla versione del core e dalle impostazioni. Invece di tirare a indovinare, misuralo: chiama analogRead() qualche centinaio di volte, cronometra il loop con micros() e dividi."}},{"@type":"Question","name":"Che frequenza di campionamento mi serve?","acceptedAnswer":{"@type":"Answer","text":"Più del doppio della frequenza più alta nel segnale (la frequenza di Nyquist), e meglio da cinque a dieci volte. Cose lente come una temperatura o un potenziometro richiedono solo poche letture al secondo; l’audio decine di migliaia."}},{"@type":"Question","name":"Perché le letture ADC sono sbagliate o rumorose ad alta velocità?","acceptedAnswer":{"@type":"Answer","text":"A frequenze di campionamento alte il condensatore interno ha meno tempo per caricarsi. Se la sorgente ha una resistenza alta, per esempio un partitore fatto con resistenze da 100 kΩ, non si carica del tutto e le letture escono basse o rumorose. Usa una resistenza di sorgente più bassa (il datasheet dell’ATmega328P è pensato per circa 10 kΩ o meno), un tempo di campionamento più lungo dove il chip lo permette (STM32, nRF52), oppure un piccolo condensatore sul pin per segnali lenti."}}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/tools/adc-sample-rate-calculator/" hreflang="en" class="">EN</a><a href="/it/tools/adc-sample-rate-calculator/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article tools-page">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/tools/">Calcolatori</a> / <span>Calcolo della frequenza di campionamento ADC</span></nav>
+        <h1>Calcolo della frequenza di campionamento ADC</h1>
+        <p class="lead">Ogni lettura ADC richiede un numero fisso di cicli del clock dell’ADC. Scegli la tua scheda e l’impostazione dell’ADC per vedere quanto dura una conversione e quante letture al secondo può fare l’hardware.</p>
+        <div class="calc">
+        <form class="calc-form" data-tool="adc" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Scheda</span><select name="board"><option value="arduino-mega-2560">Arduino Mega 2560 R3</option><option value="arduino-nano">Arduino Nano</option><option value="arduino-uno-r3" selected>Arduino Uno R3</option><option value="esp32-devkitc-30">ESP32 DevKit (30 pins)</option><option value="esp32-c3-devkitm-1">ESP32-C3-DevKitM-1</option><option value="esp32-s3-devkitc-1">ESP32-S3-DevKitC-1</option><option value="nrf52840-dk">Nordic nRF52840 DK</option><option value="rpi-pico">Raspberry Pi Pico</option><option value="rpi-pico-2">Raspberry Pi Pico 2</option><option value="rpi-pico-w">Raspberry Pi Pico W</option><option value="nucleo-f401re">ST NUCLEO-F401RE</option><option value="teensy-41">Teensy 4.1</option><option value="blackpill-f411ce">WeAct Black Pill STM32F411CE</option></select></label>
+            <label class="calc-field" data-needs-calc><span>Clock di ingresso dell’ADC (Hz)</span><input type="number" name="clock" value="16000000" step="any" inputmode="decimal" min="1"/><small class="mono" data-out="clockHz"></small></label>
+            <label class="calc-field" data-needs-calc><span>Impostazione</span><select name="setting"><option value="128">Prescaler 128</option></select></label>
+          </div>
+          <div class="calc-result" data-out="result" aria-live="polite"></div>
+        </form>
+        <noscript><p class="calc-noscript">Questo calcolatore richiede JavaScript. Qui sotto trovi la formula e un esempio svolto, così puoi fare il calcolo anche a mano.</p></noscript>
+        </div>
+        <p class="fine calc-honest">I risultati sono calcoli su formule pubblicate, non misure. Verificali sul tuo hardware. <span class="free">Gratis, senza registrazione</span></p>
+        <h2>Perché una conversione ADC richiede tempo</h2>
+        <p>Prima l’ADC campiona: collega al pin un piccolo condensatore interno e lo lascia caricare alla tensione di ingresso. Poi converte: confronta quella tensione memorizzata un bit alla volta. Entrambe le fasi usano il clock dell’ADC, che il chip ricava dal clock principale con un prescaler, quindi il tempo di conversione è un numero fisso di cicli di clock dell’ADC.</p>
+        <h2>La frequenza di campionamento non è la velocità di analogRead()</h2>
+        <p>Questo calcolatore dà il limite dell’hardware. Una chiamata come analogRead() aggiunge il suo lavoro (scegliere il canale, avviare, aspettare, restituire) e il tuo loop ne aggiunge altro. Leggere alla velocità piena di solito richiede la modalità continua dell’ADC, il DMA o una FIFO.</p>
+        <h2>Quanto veloce ti serve?</h2>
+        <p>Per catturare un segnale, campiona a più del doppio della sua frequenza più alta (la frequenza di Nyquist); da cinque a dieci volte è più comodo. Una temperatura cambia in secondi e bastano poche letture al secondo; l’audio ne richiede decine di migliaia.</p>
+        <h2>E l’ESP32?</h2>
+        <p>Espressif non pubblica un tempo di conversione fisso per analogRead() su ESP32, ESP32-S3 o ESP32-C3, quindi questo calcolatore non ne inventa uno. Misuralo nel tuo sketch: cronometra qualche centinaio di chiamate a analogRead() con micros() e dividi.</p>
+        <h2>La formula</h2>
+        <pre class="formula">frequenza = fADC / cicli per conversione
+AVR (ATmega328P, ATmega2560):  fADC = fCPU / prescaler, 13 cicli (25 per la prima conversione)
+STM32F4:          Tconv = tempo di campionamento + 12 cicli, fADC al massimo 36 MHz
+RP2040, RP2350:   96 cicli a 48 MHz, al massimo 500000 campioni al secondo
+nRF52840 SAADC:   un campione = TACQ + tCONV (meno di 2 µs)</pre>
+        <p class="fine">Fonte: Datasheet ATmega328P, ADC “Prescaling and Conversion Timing”; RM0368 11.5 “Channel-wise programmable sampling time” e datasheet STM32F401 (fADC); RP2040 Datasheet 4.9 ADC; nRF52840 Product Specification, SAADC.</p>
+        <h2>Esempio svolto</h2>
+        <p>Arduino Uno con il prescaler predefinito di Arduino, 128: il clock dell’ADC è 16 MHz / 128 = 125 kHz, una conversione dura 13 cicli = <b>104 µs</b>, quindi l’hardware può fare circa <b>9615 letture al secondo</b>.</p>
+<p>Con prescaler 16 il clock dell’ADC sarebbe 1 MHz, circa 76900 letture al secondo, ma il datasheet chiede da 50 a 200 kHz per la piena precisione a 10 bit. Un Raspberry Pi Pico converte in 96 cicli a 48 MHz: 2 µs, 500000 letture al secondo.</p>
+        <h2>Domande e risposte</h2>
+        <div class="faq">
+        <details><summary>Quanto è veloce analogRead() su un Arduino Uno?</summary><p>Una conversione dura 104 µs con il prescaler predefinito di 128 (13 cicli di clock dell’ADC a 125 kHz), quindi l’hardware fa al massimo circa 9600 letture al secondo. Con il lavoro in più di analogRead() stessa, di solito una chiamata dura poco più di 100 µs, cioè circa 9000 letture al secondo in un loop stretto.</p></details>
+        <details><summary>Posso rendere più veloce l’ADC di Arduino?</summary><p>Sì, con un prescaler più piccolo (i bit ADPS nel registro ADCSRA). Il prescaler 64 dà un clock dell’ADC di 250 kHz e circa 19200 letture al secondo; prescaler più piccoli sono ancora più veloci. Sopra i 200 kHz il datasheet non garantisce più la piena precisione a 10 bit, quindi gli ultimi bit diventano più rumorosi.</p></details>
+        <details><summary>Perché non c’è un numero per l’ESP32?</summary><p>Espressif non pubblica un tempo di conversione fisso per analogRead() sulla famiglia ESP32, e il tempo dipende dalla versione del core e dalle impostazioni. Invece di tirare a indovinare, misuralo: chiama analogRead() qualche centinaio di volte, cronometra il loop con micros() e dividi.</p></details>
+        <details><summary>Che frequenza di campionamento mi serve?</summary><p>Più del doppio della frequenza più alta nel segnale (la frequenza di Nyquist), e meglio da cinque a dieci volte. Cose lente come una temperatura o un potenziometro richiedono solo poche letture al secondo; l’audio decine di migliaia.</p></details>
+        <details><summary>Perché le letture ADC sono sbagliate o rumorose ad alta velocità?</summary><p>A frequenze di campionamento alte il condensatore interno ha meno tempo per caricarsi. Se la sorgente ha una resistenza alta, per esempio un partitore fatto con resistenze da 100 kΩ, non si carica del tutto e le letture escono basse o rumorose. Usa una resistenza di sorgente più bassa (il datasheet dell’ATmega328P è pensato per circa 10 kΩ o meno), un tempo di campionamento più lungo dove il chip lo permette (STM32, nRF52), oppure un piccolo condensatore sul pin per segnali lenti.</p></details>
+        </div>
+        <h2>Impara le basi</h2>
+        <p>Lezioni gratuite del corso di BoardPilot che spiegano le idee dietro questo calcolatore:</p>
+        <p class="link-cloud"><a href="/it/learn/adc/">ADC: leggere il mondo analogico</a><a href="/it/learn/timers-interrupts/">Timer e interrupt</a></p>
+        <h2>Altri calcolatori</h2>
+        <p class="link-cloud"><a href="/it/tools/led-resistor-calculator/">Calcolo della resistenza per LED</a><a href="/it/tools/voltage-divider-calculator/">Calcolo del partitore di tensione</a><a href="/it/tools/i2c-pull-up-calculator/">Calcolo delle resistenze di pull-up I2C</a><a href="/it/tools/uart-baud-rate-calculator/">Calcolo del baud rate UART</a><a href="/it/tools/pwm-timer-calculator/">Calcolo di PWM e timer</a></p>
+        <div class="cta-box">
+          <h2>Guardalo su una scheda vera</h2>
+          <p>BoardPilot usa questi stessi calcoli dentro l’app, accanto a una vista 3D dal vivo della tua scheda, dei pin e dei fili, con un debug guidato quando qualcosa non funziona. Provalo nel browser o scaricalo per macOS e Windows.</p>
+          <div class="cta"><a class="btn primary" href="/demo/#demo=board&amp;board=arduino-uno-r3&amp;lang=it">Provalo nel browser</a><a class="btn" href="/it/#download">Scarica BoardPilot</a></div>
+        </div>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+    <script type="application/json" id="bp-boards">[{"id":"arduino-mega-2560","name":"Arduino Mega 2560 R3","family":"avr","module":"ATmega2560","clocks":{"cpuHz":16000000,"pwmHz":16000000,"uartHz":16000000,"adcHz":16000000,"note":"16 MHz crystal. Timers, UART and ADC run from the CPU clock and have their own prescalers.","source":{"title":"Arduino Mega 2560 Rev3 tech specs; ATmega2560 datasheet","section":"Clock speed 16 MHz; System Clock and Clock Options"}}},{"id":"arduino-nano","name":"Arduino Nano","family":"avr","module":"ATmega328P","clocks":{"cpuHz":16000000,"pwmHz":16000000,"uartHz":16000000,"adcHz":16000000,"note":"16 MHz. Timers, UART and ADC run from the CPU clock and have their own prescalers.","source":{"title":"Arduino Nano tech specs; ATmega328P datasheet","section":"Clock speed 16 MHz; System Clock and Clock Options"}}},{"id":"arduino-uno-r3","name":"Arduino Uno R3","family":"avr","module":"ATmega328P","clocks":{"cpuHz":16000000,"pwmHz":16000000,"uartHz":16000000,"adcHz":16000000,"note":"16 MHz crystal. Timers, UART and ADC run from the CPU clock and have their own prescalers.","source":{"title":"Arduino Uno Rev3 tech specs; ATmega328P datasheet","section":"Clock speed 16 MHz; System Clock and Clock Options"}}},{"id":"esp32-devkitc-30","name":"ESP32 DevKit (30 pins)","family":"esp32","module":"ESP32-WROOM-32","clocks":{"cpuHz":240000000,"pwmHz":80000000,"uartHz":80000000,"note":"CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.","source":{"title":"ESP32 Technical Reference Manual","section":"Reset and Clock: CPU_CLK and APB_CLK; LED_PWM; UART"}}},{"id":"esp32-c3-devkitm-1","name":"ESP32-C3-DevKitM-1","family":"esp32c3","module":"ESP32-C3-MINI-1","clocks":{"cpuHz":160000000,"pwmHz":80000000,"uartHz":80000000,"note":"CPU at 160 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.","source":{"title":"ESP32-C3 Technical Reference Manual","section":"Reset and Clock; LED PWM Controller; UART Controller"}}},{"id":"esp32-s3-devkitc-1","name":"ESP32-S3-DevKitC-1","family":"esp32s3","module":"ESP32-S3-WROOM-1-N8R8","clocks":{"cpuHz":240000000,"pwmHz":80000000,"uartHz":80000000,"note":"CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.","source":{"title":"ESP32-S3 Technical Reference Manual","section":"Reset and Clock; LED PWM Controller; UART Controller"}}},{"id":"nrf52840-dk","name":"Nordic nRF52840 DK","family":"nrf52","module":"nRF52840","clocks":{"cpuHz":64000000,"pwmHz":16000000,"uartHz":16000000,"note":"CPU at 64 MHz. The PWM peripheral counts a 16 MHz clock through a prescaler; the UART only offers a fixed list of rates.","source":{"title":"nRF52840 Product Specification","section":"PWM: PRESCALER; UARTE: BAUDRATE"}}},{"id":"rpi-pico","name":"Raspberry Pi Pico","family":"rp2040","module":"RP2040","clocks":{"cpuHz":125000000,"pwmHz":125000000,"uartHz":125000000,"adcHz":48000000,"note":"The Pico SDK starts clk_sys at 125 MHz; PWM uses clk_sys and UART uses clk_peri (the same 125 MHz). The Arduino core may run at another speed (Tools → CPU Speed); change the clock above if so. The ADC has its own 48 MHz clock.","source":{"title":"RP2040 Datasheet","section":"2.15 Clocks; 4.5 PWM; 4.9 ADC"}}},{"id":"rpi-pico-2","name":"Raspberry Pi Pico 2","family":"rp2350","module":"RP2350A","clocks":{"cpuHz":150000000,"pwmHz":150000000,"uartHz":150000000,"adcHz":48000000,"note":"The Pico SDK starts clk_sys at 150 MHz on the RP2350; PWM uses clk_sys and UART uses clk_peri (the same 150 MHz). The ADC has its own 48 MHz clock.","source":{"title":"RP2350 Datasheet","section":"Clocks; PWM; ADC"}}},{"id":"rpi-pico-w","name":"Raspberry Pi Pico W","family":"rp2040","module":"RP2040","clocks":{"cpuHz":125000000,"pwmHz":125000000,"uartHz":125000000,"adcHz":48000000,"note":"The Pico SDK starts clk_sys at 125 MHz; PWM uses clk_sys and UART uses clk_peri (the same 125 MHz). The Arduino core may run at another speed (Tools → CPU Speed); change the clock above if so. The ADC has its own 48 MHz clock.","source":{"title":"RP2040 Datasheet","section":"2.15 Clocks; 4.5 PWM; 4.9 ADC"}}},{"id":"nucleo-f401re","name":"ST NUCLEO-F401RE","family":"stm32","module":"STM32F401RET6","clocks":{"cpuHz":84000000,"pwmHz":84000000,"uartHz":42000000,"adcHz":84000000,"note":"SYSCLK 84 MHz. Timers on APB1 get 84 MHz (APB1 is 42 MHz, and timer clocks double when APB1 is divided). Serial is USART2 on APB1, 42 MHz. The ADC is fed from PCLK2, 84 MHz, through its own prescaler.","source":{"title":"RM0368 STM32F401 reference manual; STM32F401xE datasheet","section":"6.2 Clocks (timer clock x2 when APB prescaler > 1); 84 MHz max"}}},{"id":"teensy-41","name":"Teensy 4.1","family":"imxrt","module":"i.MX RT1062","clocks":{"cpuHz":600000000,"note":"600 MHz. The calculators do not cover the i.MX RT1062 timers yet.","source":{"title":"PJRC Teensy 4.1 page","section":"Technical specifications"}}},{"id":"blackpill-f411ce","name":"WeAct Black Pill STM32F411CE","family":"stm32","module":"STM32F411CEU6","clocks":{"cpuHz":96000000,"pwmHz":96000000,"uartHz":96000000,"adcHz":96000000,"note":"The STM32 Arduino core runs the Black Pill at 96 MHz so USB gets its 48 MHz (print F_CPU to check). Timers get 96 MHz; Serial1 is USART1 on APB2, 96 MHz; the ADC is fed from PCLK2, 96 MHz.","source":{"title":"RM0383 STM32F411 reference manual","section":"6.2 Clocks (timer clock x2 when APB prescaler > 1)"}}}]</script>
+    <script src="/tools/calc.js?v=a3890e388f" defer></script>
+  </body>
+</html>

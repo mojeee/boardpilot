@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Nordic nRF52840 DK pinout","description":"Nordic nRF52840 DK pinout (nRF52840-QIAA): all 57 pins with functions, the pins to avoid, default I2C/SPI pins and how to flash it. 3.3 V logic.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/","image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"},"about":{"@type":"Product","name":"Nordic nRF52840 DK","brand":"Nordic Semiconductor","description":"Nordic's official development kit for the nRF52840 Bluetooth chip, with a built-in J-Link debugger, 4 buttons, 4 LEDs and Arduino-style headers. Pins run at 3.0 V and are not 5 V tolerant."}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"Nordic nRF52840 DK","item":"https://boardpilot.agentflowbind.com/boards/nrf52840-dk/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which pins are I2C on the Nordic nRF52840 DK?","acceptedAnswer":{"@type":"Answer","text":"SDA is P0.26 and SCL is P0.27 (the defaults of the Arduino Wire library). Only certain pins support I2C in hardware, so use these unless you know your core allows others."}},{"@type":"Question","name":"Which Nordic nRF52840 DK pins should I avoid?","acceptedAnswer":{"@type":"Answer","text":"P0.17, P0.19, P0.21, P0.23, P0.20, P0.22 (flash memory); P0.08, P0.06 (USB serial link); P0.10, P0.09, P0.08, P0.07, P0.06, P0.05, P0.01, P0.00, P0.11, P0.17, P0.19, P0.21, P0.23, P0.25, P0.12, P0.18, P0.20, P0.22, P0.24, P1.00 (used on the board)."}},{"@type":"Question","name":"Is the Nordic nRF52840 DK 5 V tolerant?","acceptedAnswer":{"@type":"Answer","text":"No. The pins take at most 3.3 V. Use a level shifter or a voltage divider for 5 V signals."}},{"@type":"Question","name":"Which pins can read analog voltage on the Nordic nRF52840 DK?","acceptedAnswer":{"@type":"Answer","text":"P0.03 (A0), P0.04, P0.28, P0.29, P0.30, P0.31, from 0 to 3.6 V."}},{"@type":"Question","name":"How do I upload code to the Nordic nRF52840 DK?","acceptedAnswer":{"@type":"Answer","text":"In the Arduino IDE pick the board adafruit:nrf52:pca10056 (core adafruit:nrf52). Plug USB into the port on the short edge (interface MCU, J2) and set the power switch to ON; before the first Arduino sketch, burn the Adafruit bootloader and SoftDevice once."}}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/#features" data-i18n="nav.features">Features</a>
-          <a href="/#how" data-i18n="nav.how">How it works</a>
-          <a href="/#safety" data-i18n="nav.safety">Safety</a>
-          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
-          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
           <a href="/parts/" data-i18n="nav.parts">Parts library</a>
           <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -156,6 +156,7 @@
         <details><summary>How do I upload code to the Nordic nRF52840 DK?</summary><p>In the Arduino IDE pick the board adafruit:nrf52:pca10056 (core adafruit:nrf52). Plug USB into the port on the short edge (interface MCU, J2) and set the power switch to ON; before the first Arduino sketch, burn the Adafruit bootloader and SoftDevice once.</p></details>
         <h2>Wiring guides for the Nordic nRF52840 DK</h2><p>Step-by-step wiring, voltage checks and test code for the most used parts:</p><p class="link-cloud"><a href="/boards/nrf52840-dk/bme280-gy/">BME280</a> <a href="/boards/nrf52840-dk/bmp280-gy/">BMP280</a> <a href="/boards/nrf52840-dk/dht22/">DHT22</a> <a href="/boards/nrf52840-dk/dht11/">DHT11</a> <a href="/boards/nrf52840-dk/hc-sr04/">HC-SR04</a> <a href="/boards/nrf52840-dk/ssd1306-i2c/">SSD1306 OLED</a> <a href="/boards/nrf52840-dk/mpu6050/">MPU6050</a> <a href="/boards/nrf52840-dk/ds18b20-probe/">DS18B20</a> <a href="/boards/nrf52840-dk/ws2812b-strip/">WS2812B LED strip</a> <a href="/boards/nrf52840-dk/servo-sg90/">SG90 servo</a> <a href="/boards/nrf52840-dk/relay-1ch/">Relay module</a> <a href="/boards/nrf52840-dk/hc-sr501/">HC-SR501 PIR</a> <a href="/boards/nrf52840-dk/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/boards/nrf52840-dk/ina219/">INA219</a> <a href="/boards/nrf52840-dk/vl53l0x/">VL53L0X</a> <a href="/boards/nrf52840-dk/bh1750-gy302/">BH1750</a> <a href="/boards/nrf52840-dk/max30102/">MAX30102</a> <a href="/boards/nrf52840-dk/rc522-rfid/">RC522 RFID</a> <a href="/boards/nrf52840-dk/neo-6m-gps/">NEO-6M GPS</a> <a href="/boards/nrf52840-dk/soil-moisture-capacitive/">Capacitive soil moisture sensor</a> <a href="/boards/nrf52840-dk/ads1115/">ADS1115</a> <a href="/boards/nrf52840-dk/tm1637-4digit/">TM1637</a> <a href="/boards/nrf52840-dk/stepper-28byj48-uln2003/">28BYJ-48 stepper</a> <a href="/boards/nrf52840-dk/l298n-driver/">L298N</a> <a href="/boards/nrf52840-dk/potentiometer/">Potentiometer</a> <a href="/boards/nrf52840-dk/push-button/">Push button</a> <a href="/boards/nrf52840-dk/led-resistor/">LED</a> <a href="/boards/nrf52840-dk/joystick-ky023/">Joystick module</a> <a href="/boards/nrf52840-dk/sd-card-module/">SD card module</a> <a href="/boards/nrf52840-dk/aht20/">AHT20</a></p>
         
+        <h2>Learn the basics</h2><p class="link-cloud"><a href="/learn/what-is-mcu/">Lesson: What is a microcontroller?</a> <a href="/learn/hardware-basics/">Lesson: Hardware basics for software developers</a> <a href="/learn/gpio/">Lesson: GPIO: pins in and out</a> <a href="/learn/glossary/#pinout">Pinout</a> <a href="/learn/glossary/#gpio">GPIO</a> <a href="/learn/glossary/#logic-level">Logic level (HIGH and LOW)</a> <a href="/learn/glossary/#jtag-swd">JTAG and SWD</a> <a href="/learn/glossary/#debugger">Debugger</a></p>
         <div class="cta-box">
           <h2>Check your wiring with BoardPilot</h2>
           <p>BoardPilot shows this board in 3D, flags risky pins as you wire, and flashes it safely with a backup first.</p>
@@ -176,6 +177,7 @@
           <a href="/parts/" data-i18n="nav.parts">Parts library</a>
           <a href="/boards/" data-i18n="nav.pinout">Boards</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>

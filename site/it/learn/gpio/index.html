@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GPIO spiegato ai principianti: pin di ingresso e di uscita | BoardPilot</title>
+    <meta name="description" content="Che cos’è il GPIO, come un pin di uscita accende un LED e uno di ingresso legge un pulsante, perché servono pull-up e debounce, con il codice dei registri di un STM32." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/learn/gpio/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/gpio/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/gpio/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/gpio/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/learn/gpio/" />
+    <meta property="og:title" content="GPIO spiegato ai principianti: pin di ingresso e di uscita | BoardPilot" />
+    <meta property="og:description" content="Che cos’è il GPIO, come un pin di uscita accende un LED e uno di ingresso legge un pulsante, perché servono pull-up e debounce, con il codice dei registri di un STM32." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/it/learn/gpio/#lesson","headline":"GPIO: pin in ingresso e in uscita","name":"GPIO: pin in ingresso e in uscita","description":"Che cos’è il GPIO, come un pin di uscita accende un LED e uno di ingresso legge un pulsante, perché servono pull-up e debounce, con il codice dei registri di un STM32.","url":"https://boardpilot.agentflowbind.com/it/learn/gpio/","inLanguage":"it","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT15M","position":4,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Sistemi embedded da zero","url":"https://boardpilot.agentflowbind.com/it/learn/"},"teaches":["GPIO","Resistenza di pull-up","Ingresso flottante","Debounce (antirimbalzo)","Clock della periferica","Piedinatura (pinout)","STM32"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"GPIO: pin in ingresso e in uscita","item":"https://boardpilot.agentflowbind.com/it/learn/gpio/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/gpio/" hreflang="en" class="">EN</a><a href="/it/learn/gpio/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/learn/">Impara</a> / <span>GPIO: pin in ingresso e in uscita</span></nav>
+        <p class="learn-kicker">Fondamenti · Lezione 4 di 11 · circa 15 min</p>
+        <h1>GPIO: pin in ingresso e in uscita</h1>
+        <p class="lead">Accendi un LED, leggi un pulsante</p>
+        
+        <p>GPIO significa ingresso/uscita di uso generale. Un pin configurato come uscita mette 3,3 V o 0 V sul filo. Un pin configurato come ingresso legge la tensione che arriva dall’esterno.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Un pin di uscita e un pin di ingresso.</b> PA5 comanda un LED attraverso una resistenza; PC13 legge un pulsante con una pull-up. Inverti il bit di uscita per accendere il LED, premi il pulsante per vedere il bit di ingresso passare da 1 (rilasciato) a 0 (premuto), con il codice dei registri per ciascuno.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=gpio&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <aside class="learn-box learn-board"><p class="learn-box-h">Sulla scheda 3D</p><p><b>Un LED su un pin di uscita e un pulsante su un pin di ingresso, su un ESP32</b></p><p class="fine">Pin: <span class="mono">D25, D26</span> · <a href="/it/esp32-pinout/">ESP32 DevKit (30 pins)</a></p><p class="fine">Nell’app questo apre un’anteprima 3D della scheda ESP32 DevKit (30 pins) con questi pin evidenziati. Il tuo progetto non viene mai toccato.</p></aside>
+      </div>
+      <div class="wrap try-wrap learn-try"><div class="try-live" data-src="/demo/#demo=lesson-preview&amp;lesson=gpio&amp;lang=it" data-title="Demo dal vivo di BoardPilot" data-full="Apri a schermo intero">
+          <img src="/img/learn.jpg?v=6ecc3e7445" width="1800" height="1125" alt="La schermata Impara di BoardPilot: una lezione con l’anteprima della scheda in 3D" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=lesson-preview&amp;lesson=gpio&amp;lang=it" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Provala dal vivo</a>
+            <p>La vera app, nel tuo browser: questa lezione con la sua anteprima 3D su una scheda ESP32 DevKit (30 pins) simulata. Niente da installare, niente da collegare.</p>
+          </div>
+        </div>
+        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+      <div class="wrap narrow">
+        <p>Con una resistenza di pull-up il pin legge 1 quando nessuno tocca il pulsante. Premendolo il pin va a massa, quindi premuto legge 0. All’inizio sembra al contrario, ma è il modo standard di collegare un pulsante.</p>
+        <h2 id="tre-passi-per-qualsiasi-pin">Tre passi per qualsiasi pin</h2>
+        <ol class="learn-list"><li>Accendi il clock della porta. Le periferiche partono spente per risparmiare energia; dimenticarlo è l’errore più comune dei principianti.</li><li>Imposta la modalità del pin: ingresso, uscita, funzione alternativa (UART, I2C e altre) o analogico.</li><li>Scrivi il registro di uscita, oppure leggi il registro di ingresso.</li></ol>
+        <pre class="code"><code>// NUCLEO-F401RE: green LED on PA5, blue button on PC13
+RCC-&gt;AHB1ENR |= (1 &lt;&lt; 0) | (1 &lt;&lt; 2);   // 1. clock on for ports A and C
+GPIOA-&gt;MODER &amp;= ~(3 &lt;&lt; (5 * 2));       // 2. PA5: clear its two mode bits
+GPIOA-&gt;MODER |=  (1 &lt;&lt; (5 * 2));       //    01 = output
+
+while (1) {                            // 3. read the button, drive the LED
+    if ((GPIOC-&gt;IDR &amp; (1 &lt;&lt; 13)) == 0) GPIOA-&gt;ODR |=  (1 &lt;&lt; 5);
+    else                               GPIOA-&gt;ODR &amp;= ~(1 &lt;&lt; 5);
+}</code></pre>
+        <aside class="learn-box learn-tip"><p class="learn-box-h">Nei prodotti reali</p><p>I pulsanti veri rimbalzano: per qualche millisecondo il contatto oscilla tra 0 e 1. Filtralo via software (debounce), altrimenti una pressione conta come diverse.</p></aside>
+        <p>In BoardPilot, Testa l’hardware legge e comanda i pin reali, e la scheda 3D mostra ogni pin che usi.</p>
+        <aside class="learn-box learn-lab"><p class="learn-box-h">Esercitazione pratica (nell’app)</p><p><b>Fai lampeggiare un LED sulla tua scheda: l’app commuta il pin, lo rilegge e ti chiede cosa ha fatto il LED.</b></p><p class="fine">Le esercitazioni girano nell’app BoardPilot sulla tua scheda, o su quella simulata: l’app verifica ogni passo con letture dal vivo. Non possono girare in questa pagina.</p><p class="learn-box-link"><a href="/it/#download">Scarica BoardPilot →</a></p></aside>
+        <aside class="learn-box learn-lab"><p class="learn-box-h">Esercitazione pratica (nell’app)</p><p><b>Leggi un pulsante: l’app controlla il pull-up, poi guarda il pin passare da 1 a 0 mentre premi.</b></p><p class="fine">Le esercitazioni girano nell’app BoardPilot sulla tua scheda, o su quella simulata: l’app verifica ogni passo con letture dal vivo. Non possono girare in questa pagina.</p><p class="learn-box-link"><a href="/it/#download">Scarica BoardPilot →</a></p></aside>
+        <h2 id="interview">Domande da colloquio</h2>
+        <ol class="learn-list learn-questions"><li>Che cos’è una resistenza di pull-up e perché serve a un pulsante?</li><li>Che cos’è il rimbalzo dei contatti e come si gestisce?</li><li>Perché bisogna attivare il clock di una periferica prima di usarla?</li></ol>
+        <p class="fine">Qui non ci sono le risposte, apposta: prova prima a rispondere ad alta voce. Nell’app BoardPilot l’allenatore per i colloqui legge la tua risposta e ti dice cosa era giusto, cosa manca e cosa chiederebbe dopo un intervistatore senior (usa il fornitore di IA che scegli nell’app). <a href="/it/learn/interview-questions/">Domande da colloquio sui sistemi embedded →</a></p>
+        <h2>Parole chiave</h2>
+        <p class="link-cloud"><a href="/it/learn/glossary/#gpio">GPIO</a> <a href="/it/learn/glossary/#pull-up">Resistenza di pull-up</a> <a href="/it/learn/glossary/#floating-input">Ingresso flottante</a> <a href="/it/learn/glossary/#debounce">Debounce (antirimbalzo)</a> <a href="/it/learn/glossary/#peripheral-clock">Clock della periferica</a> <a href="/it/learn/glossary/#pinout">Piedinatura (pinout)</a> <a href="/it/learn/glossary/#stm32">STM32</a></p>
+        <div class="cta-box">
+          <h2>Nell’app le lezioni prendono vita</h2>
+          <p>Nell’app le lezioni hanno demo interattive ed esercitazioni pratiche verificate sulla tua scheda. Queste pagine sono la versione da leggere: le demo sono descritte a parole e le esercitazioni richiedono l’app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/it/#download">Scarica BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Prova le lezioni nel browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="Tutte le lezioni">
+          <a class="learn-prev" href="/it/learn/c-bits/" rel="prev"><span>← Precedente</span><b>Il C per l’embedded</b></a>
+          <a class="learn-all" href="/it/learn/">Tutte le lezioni</a>
+          <a class="learn-next" href="/it/learn/timers-interrupts/" rel="next"><span>Successiva →</span><b>Timer e interrupt</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

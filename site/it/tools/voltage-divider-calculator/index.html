@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calcolo partitore di tensione (Vout, R2 per 3,3 V) | BoardPilot</title>
+    <meta name="description" content="Calcola l’uscita di un partitore di tensione da Vin, R1 e R2, anche con un carico, oppure trova R2 per una tensione voluta, come da 5 V a 3,3 V per un ingresso di ESP32 o Raspberry Pi Pico. Gratis, con la formula." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/tools/voltage-divider-calculator/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/" />
+    <meta property="og:title" content="Calcolo partitore di tensione (Vout, R2 per 3,3 V) | BoardPilot" />
+    <meta property="og:description" content="Calcola l’uscita di un partitore di tensione da Vin, R1 e R2, anche con un carico, oppure trova R2 per una tensione voluta, come da 5 V a 3,3 V per un ingresso di ESP32 o Raspberry Pi Pico. Gratis, con la formula." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/tools.css?v=6f74802083" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/#app","name":"Calcolo del partitore di tensione","url":"https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/","description":"Calcola l’uscita di un partitore di tensione da Vin, R1 e R2, anche con un carico, oppure trova R2 per una tensione voluta, come da 5 V a 3,3 V per un ingresso di ESP32 o Raspberry Pi Pico. Gratis, con la formula.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":"it","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Calcolatori","item":"https://boardpilot.agentflowbind.com/it/tools/"},{"@type":"ListItem","position":3,"name":"Calcolo del partitore di tensione","item":"https://boardpilot.agentflowbind.com/it/tools/voltage-divider-calculator/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Posso alimentare un sensore o un modulo con un partitore di tensione?","acceptedAnswer":{"@type":"Answer","text":"No. La tensione di uscita cala appena il modulo assorbe corrente, e cambia ogni volta che quella corrente cambia. I partitori servono per segnali e misure; per l’alimentazione usa un regolatore di tensione."}},{"@type":"Question","name":"Posso usare un partitore per collegare un’uscita a 5 V a un ingresso a 3,3 V?","acceptedAnswer":{"@type":"Answer","text":"Sì, per segnali in un solo verso e non troppo veloci, come il pin echo di un sensore a ultrasuoni o il TX seriale di un dispositivo a 5 V alle velocità più comuni. Metti il partitore sulla linea che entra nella scheda a 3,3 V. Per linee bidirezionali come l’I2C usa invece un traslatore di livello."}},{"@type":"Question","name":"Perché l’uscita che misuro è più bassa di quella calcolata?","acceptedAnswer":{"@type":"Answer","text":"Qualunque cosa colleghi all’uscita (un multimetro, un ingresso ADC, un modulo) è in parallelo a R2 e la abbassa. Anche la tolleranza delle resistenze (±1 % o ±5 %) aggiunge un piccolo errore. Usa il campo del carico per vederne l’effetto, oppure scegli resistenze più piccole, così il carico conta meno."}},{"@type":"Question","name":"Quale resistenza è R1 e quale R2?","acceptedAnswer":{"@type":"Answer","text":"R1 va dalla tensione di ingresso al punto di uscita; R2 va dal punto di uscita a massa. L’uscita è la tensione ai capi di R2."}},{"@type":"Question","name":"Quali valori di resistenza sono migliori per un ingresso ADC?","acceptedAnswer":{"@type":"Answer","text":"L’ADC vede R1 e R2 in parallelo come sorgente, e il suo condensatore di campionamento deve caricarsi attraverso di loro. Tieni bassa quella resistenza: il datasheet dell’ATmega328P, per esempio, è pensato per sorgenti di circa 10 kΩ o meno. Con resistenze più grandi, per segnali lenti aggiungi un piccolo condensatore (per esempio 100 nF) tra il pin ADC e massa, oppure dai all’ADC un tempo di campionamento più lungo."}}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/tools/voltage-divider-calculator/" hreflang="en" class="">EN</a><a href="/it/tools/voltage-divider-calculator/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article tools-page">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/tools/">Calcolatori</a> / <span>Calcolo del partitore di tensione</span></nav>
+        <h1>Calcolo del partitore di tensione</h1>
+        <p class="lead">Due resistenze in serie ricavano una tensione più piccola da una più grande. Inserisci Vin, R1 e R2 per avere l’uscita, oppure lascia che il calcolatore trovi R2 per la tensione che ti serve.</p>
+        <div class="calc">
+        <form class="calc-form" data-tool="divider" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Tensione di ingresso Vin (V)</span><input type="number" name="vin" value="5" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>R1, verso Vin (Ω)</span><input type="number" name="r1" value="10000" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>R2, verso massa (Ω)</span><input type="number" name="r2" value="20000" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Carico sull’uscita (Ω, facoltativo)</span><input type="number" name="load" value="" step="any" inputmode="decimal" min="0" placeholder="nessuno"/></label>
+          </div>
+          <dl class="calc-outs">
+            <div class="calc-row big"><dt>Tensione di uscita Vout</dt><dd class="mono" data-out="vout">—</dd></div>
+            <p class="calc-formula mono" data-out="formula"></p>
+            <p class="calc-formula" data-out="loadnote"></p>
+            <div class="calc-row"><dt>Corrente presa da Vin</dt><dd class="mono" data-out="current">—</dd></div>
+          </dl>
+          <p class="calc-note" data-out="note" aria-live="polite"></p>
+        </form>
+      </div>
+      <h2 id="r2">Trova R2 per una tensione voluta</h2>
+      <div class="calc">
+        <form class="calc-form" data-tool="divr2" autocomplete="off">
+          <div class="calc-fields">
+            <label class="calc-field"><span>Tensione di ingresso Vin (V)</span><input type="number" name="vin" value="5" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>Uscita voluta (V)</span><input type="number" name="target" value="3.3" step="any" inputmode="decimal" min="0"/></label>
+            <label class="calc-field"><span>R1 (Ω)</span><input type="number" name="r1" value="10000" step="any" inputmode="decimal" min="0"/></label>
+          </div>
+          <dl class="calc-outs">
+            <div class="calc-row"><dt>R2 esatta</dt><dd class="mono" data-out="r2exact">—</dd></div>
+            <div class="calc-row big"><dt>Valore standard più vicino (E12)</dt><dd class="mono" data-out="r2std">—</dd></div>
+            <div class="calc-row"><dt>Uscita e corrente con quel valore</dt><dd class="mono" data-out="r2vout">—</dd></div>
+          </dl>
+          <p class="calc-note" data-out="note" aria-live="polite"></p>
+        </form>
+        <noscript><p class="calc-noscript">Questo calcolatore richiede JavaScript. Qui sotto trovi la formula e un esempio svolto, così puoi fare il calcolo anche a mano.</p></noscript>
+        </div>
+        <p class="fine calc-honest">I risultati sono calcoli su formule pubblicate, non misure. Verificali sul tuo hardware. <span class="free">Gratis, senza registrazione</span></p>
+        <h2>Come funziona un partitore di tensione</h2>
+        <p>In R1 e R2 passa la stessa corrente, quindi ognuna prende una parte della tensione in proporzione alla sua resistenza. L’uscita si prende ai capi di R2, la resistenza verso massa: più R2 è grande rispetto a R1, più alta è l’uscita.</p>
+        <h2>Usi giusti e usi sbagliati</h2>
+        <p><b>Giusto:</b> abbassare un segnale lento da 5 V a 3,3 V per un ingresso di un ESP32 o di un Raspberry Pi Pico (per esempio il pin echo di un sensore a ultrasuoni HC-SR04), e ridurre la tensione di una batteria o di un’alimentazione nel campo di un pin ADC.</p>
+        <p><b>Sbagliato:</b> alimentare un modulo. Appena il carico assorbe corrente l’uscita cala, e il partitore spreca corrente di continuo. Usa un regolatore di tensione.</p>
+        <p><b>Non per linee bidirezionali</b> come l’I2C: un partitore funziona in un solo verso. Usa un traslatore di livello.</p>
+        <h2>Come scegliere la grandezza delle resistenze</h2>
+        <p>Il rapporto fissa la tensione; la grandezza fissa la corrente. Valori piccoli (centinaia di ohm) sprecano corrente. Valori molto grandi (megaohm) rendono l’uscita debole: qualunque cosa colleghi, anche un ingresso ADC, la carica e la lettura scende. Per segnali e ingressi ADC, valori tra circa 10 kΩ e 100 kΩ sono un compromesso comune.</p>
+        <h2>La formula</h2>
+        <pre class="formula">Vout = Vin × R2 / (R1 + R2)
+I    = Vin / (R1 + R2)
+R2   = R1 × Vout / (Vin − Vout)
+Con un carico RL sull’uscita, al posto di R2 usa R2 × RL / (R2 + RL).</pre>
+        <p class="fine">Fonte: Legge di Ohm; resistenze in serie e in parallelo. Valori standard: serie E12, IEC 60063.</p>
+        <h2>Esempio svolto</h2>
+        <p>Da 5 V a circa 3,3 V per un ingresso di un ESP32, con R1 = 10 kΩ: R2 = 10 kΩ × 3,3 V / (5 − 3,3) V = <b>19,4 kΩ</b>. Il valore E12 più vicino è <b>18 kΩ</b>, che dà <b>3,21 V</b> e assorbe 0,179 mA dalla linea a 5 V.</p>
+<p>La classica coppia 1 kΩ / 2 kΩ per il pin echo di un HC-SR04 dà 5 × 2 / (1 + 2) = 3,33 V e assorbe 1,67 mA.</p>
+        <h2>Domande e risposte</h2>
+        <div class="faq">
+        <details><summary>Posso alimentare un sensore o un modulo con un partitore di tensione?</summary><p>No. La tensione di uscita cala appena il modulo assorbe corrente, e cambia ogni volta che quella corrente cambia. I partitori servono per segnali e misure; per l’alimentazione usa un regolatore di tensione.</p></details>
+        <details><summary>Posso usare un partitore per collegare un’uscita a 5 V a un ingresso a 3,3 V?</summary><p>Sì, per segnali in un solo verso e non troppo veloci, come il pin echo di un sensore a ultrasuoni o il TX seriale di un dispositivo a 5 V alle velocità più comuni. Metti il partitore sulla linea che entra nella scheda a 3,3 V. Per linee bidirezionali come l’I2C usa invece un traslatore di livello.</p></details>
+        <details><summary>Perché l’uscita che misuro è più bassa di quella calcolata?</summary><p>Qualunque cosa colleghi all’uscita (un multimetro, un ingresso ADC, un modulo) è in parallelo a R2 e la abbassa. Anche la tolleranza delle resistenze (±1 % o ±5 %) aggiunge un piccolo errore. Usa il campo del carico per vederne l’effetto, oppure scegli resistenze più piccole, così il carico conta meno.</p></details>
+        <details><summary>Quale resistenza è R1 e quale R2?</summary><p>R1 va dalla tensione di ingresso al punto di uscita; R2 va dal punto di uscita a massa. L’uscita è la tensione ai capi di R2.</p></details>
+        <details><summary>Quali valori di resistenza sono migliori per un ingresso ADC?</summary><p>L’ADC vede R1 e R2 in parallelo come sorgente, e il suo condensatore di campionamento deve caricarsi attraverso di loro. Tieni bassa quella resistenza: il datasheet dell’ATmega328P, per esempio, è pensato per sorgenti di circa 10 kΩ o meno. Con resistenze più grandi, per segnali lenti aggiungi un piccolo condensatore (per esempio 100 nF) tra il pin ADC e massa, oppure dai all’ADC un tempo di campionamento più lungo.</p></details>
+        </div>
+        <h2>Impara le basi</h2>
+        <p>Lezioni gratuite del corso di BoardPilot che spiegano le idee dietro questo calcolatore:</p>
+        <p class="link-cloud"><a href="/it/learn/hardware-basics/">Basi di hardware per chi viene dal software</a><a href="/it/learn/adc/">ADC: leggere il mondo analogico</a></p>
+        <h2>Altri calcolatori</h2>
+        <p class="link-cloud"><a href="/it/tools/led-resistor-calculator/">Calcolo della resistenza per LED</a><a href="/it/tools/i2c-pull-up-calculator/">Calcolo delle resistenze di pull-up I2C</a><a href="/it/tools/uart-baud-rate-calculator/">Calcolo del baud rate UART</a><a href="/it/tools/pwm-timer-calculator/">Calcolo di PWM e timer</a><a href="/it/tools/adc-sample-rate-calculator/">Calcolo della frequenza di campionamento ADC</a></p>
+        <div class="cta-box">
+          <h2>Guardalo su una scheda vera</h2>
+          <p>BoardPilot usa questi stessi calcoli dentro l’app, accanto a una vista 3D dal vivo della tua scheda, dei pin e dei fili, con un debug guidato quando qualcosa non funziona. Provalo nel browser o scaricalo per macOS e Windows.</p>
+          <div class="cta"><a class="btn primary" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=it">Provalo nel browser</a><a class="btn" href="/it/#download">Scarica BoardPilot</a></div>
+        </div>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+    <script src="/tools/calc.js?v=a3890e388f" defer></script>
+  </body>
+</html>

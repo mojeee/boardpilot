@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PWM, macchine a stati, DMA e watchdog spiegati | BoardPilot</title>
+    <meta name="description" content="Cinque idee che ogni sviluppatore firmware usa: PWM e duty cycle, macchine a stati in C, DMA, watchdog e basso consumo, spiegate ai principianti." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/learn/essentials/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/essentials/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/essentials/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/essentials/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/learn/essentials/" />
+    <meta property="og:title" content="PWM, macchine a stati, DMA e watchdog spiegati | BoardPilot" />
+    <meta property="og:description" content="Cinque idee che ogni sviluppatore firmware usa: PWM e duty cycle, macchine a stati in C, DMA, watchdog e basso consumo, spiegate ai principianti." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/it/learn/essentials/#lesson","headline":"PWM, macchine a stati e altro","name":"PWM, macchine a stati e altro","description":"Cinque idee che ogni sviluppatore firmware usa: PWM e duty cycle, macchine a stati in C, DMA, watchdog e basso consumo, spiegate ai principianti.","url":"https://boardpilot.agentflowbind.com/it/learn/essentials/","inLanguage":"it","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT15M","position":9,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Sistemi embedded da zero","url":"https://boardpilot.agentflowbind.com/it/learn/"},"teaches":["PWM (modulazione a larghezza di impulso)","Duty cycle","DMA (accesso diretto alla memoria)","Watchdog","Basso consumo e deep sleep","Macchina a stati"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"PWM, macchine a stati e altro","item":"https://boardpilot.agentflowbind.com/it/learn/essentials/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/essentials/" hreflang="en" class="">EN</a><a href="/it/learn/essentials/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/learn/">Impara</a> / <span>PWM, macchine a stati e altro</span></nav>
+        <p class="learn-kicker">Fondamenti · Lezione 9 di 11 · circa 15 min</p>
+        <h1>PWM, macchine a stati e altro</h1>
+        <p class="lead">Cinque idee che ogni sviluppatore firmware usa</p>
+        <nav class="learn-toc" aria-label="In questa lezione"><p class="learn-box-h">In questa lezione</p><ol><li><a href="#pwm-regolare-con-commutazioni-rapide">PWM: regolare con commutazioni rapide</a></li><li><a href="#macchine-a-stati-come-si-progetta-la-logica-di-un-dispositiv">Macchine a stati: come si progetta la logica di un dispositivo</a></li><li><a href="#dma-watchdog-e-basso-consumo">DMA, watchdog e basso consumo</a></li><li><a href="#interview">Domande da colloquio</a></li></ol></nav>
+        <h2 id="pwm-regolare-con-commutazioni-rapide">PWM: regolare con commutazioni rapide</h2>
+        <p>Un pin è o tutto acceso o tutto spento. Commutandolo molto in fretta, e scegliendo per quale quota di tempo resta acceso (il duty cycle), un LED o un motore sentono la media. La commutazione la fa un timer, non la CPU.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Il PWM e la sua media.</b> Sposta il duty cycle da 0 a 100% e guarda seguire l’onda quadra, la tensione media, la luminosità del LED e la velocità del motore.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=essentials&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <h2 id="macchine-a-stati-come-si-progetta-la-logica-di-un-dispositiv">Macchine a stati: come si progetta la logica di un dispositivo</h2>
+        <p>Il dispositivo è sempre in un solo stato, e gli eventi lo portano in un altro stato. Prima disegna il diagramma, poi scrivi il codice.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>La macchina a stati di un termostato.</b> Da Inattivo (riscaldamento spento) si passa a Riscaldamento quando fa troppo freddo e si torna a Inattivo quando si raggiunge la temperatura. Da entrambi gli stati un guasto del sensore porta a Errore (riscaldamento spento, LED lampeggiante) e un reset riporta a Inattivo.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=essentials&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <pre class="code"><code>typedef enum { IDLE, HEATING, ERROR } State;
+
+switch (state) {
+    case IDLE:    if (temp &lt; target)  { heater_on();  state = HEATING; } break;
+    case HEATING: if (temp &gt;= target) { heater_off(); state = IDLE;    } break;
+    case ERROR:   if (button_pressed)  {               state = IDLE;    } break;
+}</code></pre>
+        <p>Provalo: in Nuovo progetto, il Progettista di macchine a stati disegna la tua macchina, la controlla e scrive il codice C con un test unitario per ogni transizione. Il termostato qui sopra è uno dei suoi esempi.</p>
+        <h2 id="dma-watchdog-e-basso-consumo">DMA, watchdog e basso consumo</h2>
+        <ul class="learn-list"><li>Il DMA sposta dati (campioni ADC, byte UART, pixel dello schermo) in background mentre la CPU fa altro, poi genera un interrupt quando ha finito.</li><li>Un watchdog è un timer che riavvia il chip se il codice smette di alimentarlo. Un dispositivo bloccato si riprende da solo.</li><li>Basso consumo: l’MCU dorme quasi sempre e si sveglia solo con un interrupt. È così che una batteria dura anni.</li></ul>
+        <h2 id="interview">Domande da colloquio</h2>
+        <ol class="learn-list learn-questions"><li>Come controlla il PWM la velocità di un motore?</li><li>Perché progettare il firmware come una macchina a stati?</li><li>Come si alimenta in sicurezza un watchdog quando girano più task?</li></ol>
+        <p class="fine">Qui non ci sono le risposte, apposta: prova prima a rispondere ad alta voce. Nell’app BoardPilot l’allenatore per i colloqui legge la tua risposta e ti dice cosa era giusto, cosa manca e cosa chiederebbe dopo un intervistatore senior (usa il fornitore di IA che scegli nell’app). <a href="/it/learn/interview-questions/">Domande da colloquio sui sistemi embedded →</a></p>
+        <h2>Parole chiave</h2>
+        <p class="link-cloud"><a href="/it/learn/glossary/#pwm">PWM (modulazione a larghezza di impulso)</a> <a href="/it/learn/glossary/#duty-cycle">Duty cycle</a> <a href="/it/learn/glossary/#dma">DMA (accesso diretto alla memoria)</a> <a href="/it/learn/glossary/#watchdog">Watchdog</a> <a href="/it/learn/glossary/#low-power">Basso consumo e deep sleep</a> <a href="/it/learn/glossary/#state-machine">Macchina a stati</a></p>
+        <div class="cta-box">
+          <h2>Nell’app le lezioni prendono vita</h2>
+          <p>Nell’app le lezioni hanno demo interattive ed esercitazioni pratiche verificate sulla tua scheda. Queste pagine sono la versione da leggere: le demo sono descritte a parole e le esercitazioni richiedono l’app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/it/#download">Scarica BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Prova le lezioni nel browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="Tutte le lezioni">
+          <a class="learn-prev" href="/it/learn/rtos/" rel="prev"><span>← Precedente</span><b>RTOS: tanti lavori su un solo chip</b></a>
+          <a class="learn-all" href="/it/learn/">Tutte le lezioni</a>
+          <a class="learn-next" href="/it/learn/full-picture/" rel="next"><span>Successiva →</span><b>Il quadro completo</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

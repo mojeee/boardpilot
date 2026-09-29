@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"BMP280 con Arduino Mega 2560 R3","description":"Come collegare BMP280 a Arduino Mega 2560 R3: quali pin usare (SCL → SCL 21, SDA → SDA 20), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/bmp280-gy/","tool":[{"@type":"HowToTool","name":"Arduino Mega 2560 R3"},{"@type":"HowToTool","name":"GY-BMP280 pressure + temperature"}],"step":[{"@type":"HowToStep","position":1,"name":"VCC → 3.3V","text":"VCC (Alimentazione) → 3.3V"},{"@type":"HowToStep","position":2,"name":"GND → GND","text":"GND (Massa) → GND"},{"@type":"HowToStep","position":3,"name":"SCL → SCL 21","text":"SCL (Clock I2C (SCL)) → SCL 21 (PD0)"},{"@type":"HowToStep","position":4,"name":"SDA → SDA 20","text":"SDA (Dati I2C (SDA)) → SDA 20 (PD1)"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di Arduino Mega 2560 R3 uso per BMP280?","acceptedAnswer":{"@type":"Answer","text":"VCC → 3.3V, GND → GND, SCL → SCL 21 (PD0), SDA → SDA 20 (PD1)."}},{"@type":"Question","name":"BMP280 funziona con Arduino Mega 2560 R3 a 5 V?","acceptedAnswer":{"@type":"Answer","text":"BMP280 funziona a 3,3 V e Arduino Mega 2560 R3 usa segnali a 5 V. Alimentalo a 3,3 V e metti un traslatore di livello sui fili dei segnali, oppure compra la versione del modulo a 5 V."}},{"@type":"Question","name":"Qual è l’indirizzo I2C di BMP280?","acceptedAnswer":{"@type":"Answer","text":"0x76 o 0x77. Una scansione I2C (BoardPilot la fa per te) mostra quale usa il tuo modulo."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"Arduino Mega 2560 R3","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/"},{"@type":"ListItem","position":4,"name":"GY-BMP280 pressure + temperature","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/bmp280-gy/"}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
@@ -96,6 +96,7 @@ void loop() {}</code></pre>
         <p class="link-cloud"><a href="/it/parts/bmp280-gy/">ESP32 DevKit</a> <a href="/it/boards/arduino-nano/bmp280-gy/">Arduino Nano</a> <a href="/it/boards/arduino-uno-r3/bmp280-gy/">Arduino Uno R3</a> <a href="/it/boards/blackpill-f411ce/bmp280-gy/">WeAct Black Pill STM32F411CE</a> <a href="/it/boards/esp32-c3-devkitm-1/bmp280-gy/">ESP32-C3-DevKitM-1</a> <a href="/it/boards/esp32-s3-devkitc-1/bmp280-gy/">ESP32-S3-DevKitC-1</a> <a href="/it/boards/nrf52840-dk/bmp280-gy/">Nordic nRF52840 DK</a> <a href="/it/boards/nucleo-f401re/bmp280-gy/">NUCLEO-F401RE</a> <a href="/it/boards/rpi-pico-2/bmp280-gy/">Raspberry Pi Pico 2</a> <a href="/it/boards/rpi-pico-w/bmp280-gy/">Raspberry Pi Pico W</a> <a href="/it/boards/rpi-pico/bmp280-gy/">Raspberry Pi Pico</a> <a href="/it/boards/teensy-41/bmp280-gy/">Teensy 4.1</a></p>
         <h2>Altri componenti su Arduino Mega 2560 R3</h2>
         <p class="link-cloud"><a href="/it/boards/arduino-mega-2560/bme280-gy/">BME280</a> <a href="/it/boards/arduino-mega-2560/dht22/">DHT22</a> <a href="/it/boards/arduino-mega-2560/dht11/">DHT11</a> <a href="/it/boards/arduino-mega-2560/hc-sr04/">HC-SR04</a> <a href="/it/boards/arduino-mega-2560/ssd1306-i2c/">SSD1306 OLED</a> <a href="/it/boards/arduino-mega-2560/mpu6050/">MPU6050</a> <a href="/it/boards/arduino-mega-2560/ds18b20-probe/">DS18B20</a> <a href="/it/boards/arduino-mega-2560/ws2812b-strip/">Striscia LED WS2812B</a> <a href="/it/boards/arduino-mega-2560/servo-sg90/">Servo SG90</a> <a href="/it/boards/arduino-mega-2560/relay-1ch/">Modulo relè</a> <a href="/it/boards/arduino-mega-2560/hc-sr501/">HC-SR501 PIR</a> <a href="/it/boards/arduino-mega-2560/lcd1602-i2c/">LCD 1602 I2C</a> <a href="/it/boards/arduino-mega-2560/ina219/">INA219</a> <a href="/it/boards/arduino-mega-2560/vl53l0x/">VL53L0X</a> <a href="/it/boards/arduino-mega-2560/bh1750-gy302/">BH1750</a> <a href="/it/boards/arduino-mega-2560/max30102/">MAX30102</a> <a href="/it/boards/arduino-mega-2560/rc522-rfid/">RC522 RFID</a> <a href="/it/boards/arduino-mega-2560/neo-6m-gps/">NEO-6M GPS</a> <a href="/it/boards/arduino-mega-2560/soil-moisture-capacitive/">Sensore di umidità del terreno capacitivo</a> <a href="/it/boards/arduino-mega-2560/ads1115/">ADS1115</a> <a href="/it/boards/arduino-mega-2560/tm1637-4digit/">TM1637</a> <a href="/it/boards/arduino-mega-2560/stepper-28byj48-uln2003/">Motore passo-passo 28BYJ-48</a> <a href="/it/boards/arduino-mega-2560/l298n-driver/">L298N</a> <a href="/it/boards/arduino-mega-2560/potentiometer/">Potenziometro</a> <a href="/it/boards/arduino-mega-2560/push-button/">Pulsante</a> <a href="/it/boards/arduino-mega-2560/led-resistor/">LED</a> <a href="/it/boards/arduino-mega-2560/joystick-ky023/">Modulo joystick</a> <a href="/it/boards/arduino-mega-2560/sd-card-module/">Modulo scheda SD</a> <a href="/it/boards/arduino-mega-2560/aht20/">AHT20</a></p>
+        <h2>Le basi, spiegate</h2><p class="link-cloud"><a href="/it/learn/buses/">Lezione: UART, I2C e SPI</a> <a href="/it/learn/glossary/#i2c">I2C</a> <a href="/it/learn/glossary/#i2c-address">Indirizzo I2C</a> <a href="/it/learn/glossary/#sda-scl">SDA e SCL</a> <a href="/it/learn/glossary/#pull-up">Resistenza di pull-up</a></p>
       </div>
     </main>
 <footer class="footer">
@@ -108,6 +109,7 @@ void loop() {}</code></pre>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
           <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
         </div>
         <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
       </div>
