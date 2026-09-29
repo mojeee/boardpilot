@@ -39,10 +39,26 @@ export function silkscreenLayout(board: BoardDef): Label[] {
     const [x, , z] = pinPositionMm(board, p);
     return { p, x: x + length / 2, y: z + width / 2 };
   });
+  // Chips, buttons and connectors sit on top of the print: keep labels out from under them.
+  const comps: Rect[] = board.components.map((c) => {
+    const m = rectToMm(board, c.rect);
+    const cx = m.cx + length / 2;
+    const cy = m.cz + width / 2;
+    return { x0: cx - m.w / 2 - 0.4, y0: cy - m.h / 2 - 0.4, x1: cx + m.w / 2 + 0.4, y1: cy + m.h / 2 + 0.4 };
+  });
   const size = 1.25;
   const out: Label[] = [];
   const holes: Rect[] = (board.holesMm ?? []).map(([hx, hy, d]) => ({ x0: hx - d / 2 - 1, y0: hy - d / 2 - 1, x1: hx + d / 2 + 1, y1: hy + d / 2 + 1 }));
   const taken: Rect[] = [...holes];
+  /** On the board, clear of every other pin's pad and of labels already placed. */
+  const fits = (r: Rect, p: BoardDef['pins'][number]) =>
+    r.x0 >= 0.3 &&
+    r.y0 >= 0.3 &&
+    r.x1 <= length - 0.3 &&
+    r.y1 <= width - 0.3 &&
+    !pins.some((q) => q.p !== p && overlaps(r, { x0: q.x - 1.2, y0: q.y - 1.2, x1: q.x + 1.2, y1: q.y + 1.2 })) &&
+    !taken.some((t) => overlaps(r, t));
+  const spots: { l: Label; r: Rect; x: number; y: number; dist: number; p: BoardDef['pins'][number] }[] = [];
   for (const { p, x, y } of pins) {
     const [ox, oz] = pinOutward(board, p);
     const housing = pinMount(board, p) === 'male-down' ? 0.9 : 1.35;
@@ -54,23 +70,33 @@ export function silkscreenLayout(board: BoardDef): Label[] {
     for (const [ix, iy] of dirs) {
       const l: Label = { text, x: x + ix * dist, y: y + iy * dist, size, vertical: ix === 0 };
       const r = labelRect(l);
-      // Stay on the board, away from every other pin's pad and from labels already placed.
-      if (r.x0 < 0.3 || r.y0 < 0.3 || r.x1 > length - 0.3 || r.y1 > width - 0.3) continue;
-      const hitsPin = pins.some((q) => q.p !== p && overlaps(r, { x0: q.x - 1.2, y0: q.y - 1.2, x1: q.x + 1.2, y1: q.y + 1.2 }));
-      if (hitsPin || taken.some((t) => overlaps(r, t))) continue;
+      if (!fits(r, p)) continue;
       out.push(l);
       taken.push(r);
+      spots.push({ l, r, x, y, dist, p });
       break;
     }
   }
+  // Second pass: a label that ended up under a chip or button moves to another free side, if any.
+  const underPart = (r: Rect) => comps.some((c) => overlaps(r, { x0: c.x0 + 0.4, y0: c.y0 + 0.4, x1: c.x1 - 0.4, y1: c.y1 - 0.4 }));
+  for (const s of spots) {
+    if (!underPart(s.r)) continue;
+    const i = out.indexOf(s.l);
+    taken.splice(taken.indexOf(s.r), 1); // free its own spot while looking for a better one
+    let moved = false;
+    for (const [ix, iy] of [[0, 1], [0, -1], [1, 0], [-1, 0]] as [number, number][]) {
+      const l: Label = { ...s.l, x: s.x + ix * s.dist, y: s.y + iy * s.dist, vertical: ix === 0 };
+      const r = labelRect(l);
+      if (!fits(r, s.p) || underPart(r)) continue;
+      out[i] = l;
+      taken.push(r);
+      moved = true;
+      break;
+    }
+    if (!moved) taken.push(s.r);
+  }
 
   // The board name: the free spot closest to the middle, as large as fits (down to 1.2 mm).
-  const comps: Rect[] = board.components.map((c) => {
-    const m = rectToMm(board, c.rect);
-    const cx = m.cx + length / 2;
-    const cy = m.cz + width / 2;
-    return { x0: cx - m.w / 2 - 0.4, y0: cy - m.h / 2 - 0.4, x1: cx + m.w / 2 + 0.4, y1: cy + m.h / 2 + 0.4 };
-  });
   const obstacles = [...comps, ...taken, ...pins.map((q) => ({ x0: q.x - 1.5, y0: q.y - 1.5, x1: q.x + 1.5, y1: q.y + 1.5 }))];
   for (const text of [board.name, board.name.replace(/\s*\(.*\)$/, '')]) {
     for (let s = Math.min(2.4, width * 0.09); s >= 1.2; s -= 0.3) {

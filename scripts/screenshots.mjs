@@ -4,11 +4,12 @@
 //   node scripts/screenshots.mjs            every shot
 //   node scripts/screenshots.mjs live test  some shots
 //   node scripts/screenshots.mjs boards     the 3D view of every board, for the social images
-// Writes docs/img/<name>.jpg (1600 × 1000), site/img/<name>.jpg and site/img/<name>-900.jpg;
+// Captures at 2x pixel density, then writes docs/img/<name>.jpg (2400 px wide, for the README),
+// site/img/<name>.jpg (1800 px) and site/img/<name>-900.jpg (900 px), all sharp on retina screens;
 // "boards" writes site/img/boards/<id>-3d.png (then run: npx electron scripts/render-social.cjs boards).
 
 import { spawnSync } from 'node:child_process';
-import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -31,9 +32,9 @@ const want = process.argv.slice(2);
 const headless = process.platform === 'linux' && !process.env.DISPLAY;
 
 function run(env, delay) {
-  const electron = ['electron', '.', '--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
+  const electron = ['electron', '.', '--no-sandbox', '--force-device-scale-factor=2', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
   const cmd = headless ? 'xvfb-run' : 'npx';
-  const args = headless ? ['-a', '-s', '-screen 0 1600x1000x24', 'npx', ...electron] : electron;
+  const args = headless ? ['-a', '-s', '-screen 0 3300x2100x24', 'npx', ...electron] : electron;
   spawnSync(cmd, args, { cwd: root, env: { ...process.env, ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });
 }
 
@@ -43,7 +44,7 @@ if (want[0] === 'boards') {
   for (const id of ids) {
     const out = join(root, 'site/img/boards', `${id}-3d.png`);
     process.stdout.write(`${id}… `);
-    run({ BP_SNAPSHOT: out, BP_SNAPSHOT_RECT: VIEWPORT, BP_SNAPSHOT_HASH: `#demo=board&board=${id}&stage=desk&clean=1` }, 24000);
+    run({ BP_SNAPSHOT: out, BP_SNAPSHOT_RECT: VIEWPORT, BP_SNAPSHOT_HASH: `#demo=board&board=${id}&stage=desk&clean=1&bare=1` }, 24000);
     console.log(existsSync(out) ? 'ok' : 'failed');
   }
   process.exit(0);
@@ -59,11 +60,18 @@ for (const name of names) {
   }
   const out = join(root, 'docs/img', `${name}.jpg`);
   process.stdout.write(`${name}… `);
-  run({ BP_SNAPSHOT: out, BP_SNAPSHOT_SMALL: join(root, 'site/img', `${name}-900.jpg`), BP_SNAPSHOT_HASH: shot.hash }, shot.delay);
+  run(
+    {
+      BP_SNAPSHOT: out,
+      BP_SNAPSHOT_WIDTH: '2400',
+      BP_SNAPSHOT_COPIES: `${join(root, 'site/img', `${name}.jpg`)}:1800,${join(root, 'site/img', `${name}-900.jpg`)}:900`,
+      BP_SNAPSHOT_HASH: shot.hash,
+    },
+    shot.delay,
+  );
   if (!existsSync(out)) {
     console.log('failed');
     continue;
   }
-  copyFileSync(out, join(root, 'site/img', `${name}.jpg`));
   console.log('ok');
 }
