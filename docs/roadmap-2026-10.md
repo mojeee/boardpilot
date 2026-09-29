@@ -178,7 +178,7 @@ Most beginner embedded bugs are one of four kinds. Each item says which week it 
 
 ### C. Electrical mistakes
 
-- [ ] **I2C address conflict rule** (week 1, small). Two parts on the same address on one bus,
+- [x] **I2C address conflict rule** (week 1, small). Two parts on the same address on one bus,
       for example two BME280s at 0x76; the hint says how to change the address (SDO pin).
 - [ ] **Power budget** (week 2). Adds up each part's current against what the board can supply
       (ESP32 DevKit 3V3 about 600 mA, Uno 3.3 V pin 50 mA) and warns before brown-outs. Needs a

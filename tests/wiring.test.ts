@@ -91,3 +91,50 @@ describe('wiring rule checker', () => {
     });
   });
 });
+
+describe('I2C address conflicts', () => {
+  const twoOnBus = (a: string, b: string): Scene => ({
+    board: board.id,
+    parts: [
+      { id: 'p1', partId: a, position: [-60, 0, 60] },
+      { id: 'p2', partId: b, position: [60, 0, 60] },
+    ],
+    wires: ['p1', 'p2'].flatMap((id, k) => {
+      const def = PARTS[id === 'p1' ? a : b];
+      const pin = (role: string) => def.pins.find((p) => p.role === role)?.name ?? '';
+      return [
+        { id: `${id}sda`, from: { part: 'board', pin: 'D21' }, to: { part: id, pin: pin('i2c_sda') }, color: '#fff' },
+        { id: `${id}scl`, from: { part: 'board', pin: 'D22' }, to: { part: id, pin: pin('i2c_scl') }, color: '#fff' },
+        { id: `${id}v`, from: { part: 'board', pin: '3V3' }, to: { part: id, pin: pin('power') }, color: '#fff' },
+        { id: `${id}g${k}`, from: { part: 'board', pin: 'GND1' }, to: { part: id, pin: pin('ground') }, color: '#fff' },
+      ];
+    }),
+  });
+
+  it('is an error when neither part can change its address', () => {
+    const f = checkWiring(twoOnBus('aht20', 'dht20'), board, PARTS).filter((x) => x.rule === 'i2c_address_conflict');
+    expect(f).toHaveLength(1);
+    expect(f[0]).toMatchObject({ severity: 'error' });
+    expect(f[0].message).toContain('0x38');
+    expect(f[0].targets).toEqual(expect.arrayContaining(['part:p1', 'part:p2']));
+  });
+
+  it('is a warning that names the address pin when a part can move', () => {
+    // Two BH1750 light sensors: both default to 0x23; ADDR HIGH moves one to 0x5C.
+    const f = checkWiring(twoOnBus('bh1750-gy302', 'bh1750-gy302'), board, PARTS).find((x) => x.rule === 'i2c_address_conflict');
+    expect(f?.severity).toBe('warning');
+    expect(f?.message).toMatch(/0x23/);
+    expect(f?.hint).toMatch(/0x5C/);
+    expect(f?.hint).toMatch(/ADDR/);
+  });
+
+  it('points to the jumper when the address pin is not in the library', () => {
+    const f = checkWiring(twoOnBus('mpu6050', 'mpu6050'), board, PARTS).find((x) => x.rule === 'i2c_address_conflict');
+    expect(f?.severity).toBe('warning');
+    expect(f?.hint).toMatch(/0x69/);
+  });
+
+  it('stays quiet for parts on different addresses', () => {
+    expect(rules(twoOnBus('aht20', 'bmp180-gy68'))).not.toContain('i2c_address_conflict');
+  });
+});
