@@ -82,6 +82,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"I2C2_SCL": 4, "SPI2_SCK": 5, "TIM2_CH3": 1},
       "maxVolt": 5
     },
     {
@@ -124,6 +125,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"TIM3_CH4": 2, "TIM1_CH3N": 1},
       "maxVolt": 3.3,
       "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -147,6 +149,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"TIM3_CH3": 2, "TIM1_CH2N": 1},
       "maxVolt": 3.3,
       "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -172,6 +175,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"SPI1_MOSI": 5, "TIM1_CH1N": 1, "TIM3_CH2": 2},
       "maxVolt": 3.3,
       "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -196,6 +200,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"SPI1_MISO": 5, "TIM3_CH1": 2},
       "maxVolt": 3.3,
       "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -220,6 +225,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"SPI1_SCK": 5, "TIM2_CH1": 1},
       "maxVolt": 3.3,
       "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -243,6 +249,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"SPI1_NSS": 5, "SPI3_NSS": 6},
       "maxVolt": 3.3,
       "notes": "Also wired to the empty SPI flash footprint U3 on the back (only matters if you solder a flash chip). 5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -268,6 +275,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"UART2_RX": 7, "TIM2_CH4": 1, "TIM5_CH4": 2, "TIM9_CH2": 3},
       "maxVolt": 3.3,
       "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -293,6 +301,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"UART2_TX": 7, "TIM2_CH3": 1, "TIM5_CH3": 2, "TIM9_CH1": 3},
       "maxVolt": 3.3,
       "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -317,6 +326,7 @@
         "adc",
         "five_volt_tolerant"
       ],
+      "af": {"TIM2_CH2": 1, "TIM5_CH2": 2, "UART2_RTS": 7},
       "maxVolt": 3.3,
       "notes": "5 V tolerant only as a digital input. As an analog input keep it between 0 and 3.3 V."
     },
@@ -342,6 +352,7 @@
         "reserved",
         "adc"
       ],
+      "af": {"TIM2_CH1": 1, "TIM5_CH1": 2, "UART2_CTS": 7},
       "maxVolt": 3.3,
       "notes": "KEY button is on this pin (to GND through 330 ohm): use INPUT_PULLUP, pressed = LOW. Not 5 V tolerant."
     },
@@ -451,6 +462,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"SPI2_NSS": 5},
       "maxVolt": 5
     },
     {
@@ -471,6 +483,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"SPI2_SCK": 5, "TIM1_CH1N": 1},
       "maxVolt": 5
     },
     {
@@ -491,6 +504,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"SPI2_MISO": 5, "TIM1_CH2N": 1},
       "maxVolt": 5
     },
     {
@@ -511,6 +525,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"SPI2_MOSI": 5, "TIM1_CH3N": 1},
       "maxVolt": 5
     },
     {
@@ -533,6 +548,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"TIM1_CH1": 1, "I2C3_SCL": 4, "UART1_CK": 7},
       "maxVolt": 5
     },
     {
@@ -554,6 +570,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"UART1_TX": 7, "TIM1_CH2": 1},
       "maxVolt": 5
     },
     {
@@ -575,6 +592,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"UART1_RX": 7, "TIM1_CH3": 1},
       "maxVolt": 5
     },
     {
@@ -598,6 +616,7 @@
         "usb",
         "five_volt_tolerant"
       ],
+      "af": {"UART1_CTS": 7, "UART6_TX": 8, "TIM1_CH4": 1},
       "maxVolt": 5,
       "notes": "USB D- to the USB-C port. Used for USB serial and upload."
     },
@@ -621,6 +640,7 @@
         "usb",
         "five_volt_tolerant"
       ],
+      "af": {"UART1_RTS": 7, "UART6_RX": 8},
       "maxVolt": 5,
       "notes": "USB D+ to the USB-C port. Used for USB serial and upload."
     },
@@ -644,6 +664,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"TIM2_CH1": 1, "SPI1_NSS": 5, "SPI3_NSS": 6},
       "maxVolt": 5,
       "notes": "JTAG JTDI after reset; works as a normal pin in Arduino."
     },
@@ -668,6 +689,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"TIM2_CH2": 1, "SPI1_SCK": 5, "SPI3_SCK": 6, "I2C2_SDA": 9},
       "maxVolt": 5,
       "notes": "JTAG SWO after reset; works as a normal pin in Arduino."
     },
@@ -691,6 +713,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"TIM3_CH1": 2, "SPI1_MISO": 5, "SPI3_MISO": 6, "I2C3_SDA": 9},
       "maxVolt": 5,
       "notes": "JTAG NJTRST after reset; works as a normal pin in Arduino."
     },
@@ -711,6 +734,7 @@
         "PWM"
       ],
       "flags": [],
+      "af": {"TIM3_CH2": 2, "SPI1_MOSI": 5, "SPI3_MOSI": 6},
       "maxVolt": 3.3,
       "notes": "Not 5 V tolerant on the F411 (keep it at 3.3 V or below)."
     },
@@ -734,6 +758,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"I2C1_SCL": 4, "UART1_TX": 7, "TIM4_CH1": 2},
       "maxVolt": 5
     },
     {
@@ -756,6 +781,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"I2C1_SDA": 4, "UART1_RX": 7, "TIM4_CH2": 2},
       "maxVolt": 5
     },
     {
@@ -777,6 +803,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"I2C1_SCL": 4, "TIM4_CH3": 2, "TIM10_CH1": 3},
       "maxVolt": 5
     },
     {
@@ -799,6 +826,7 @@
       "flags": [
         "five_volt_tolerant"
       ],
+      "af": {"I2C1_SDA": 4, "TIM4_CH4": 2, "TIM11_CH1": 3, "SPI2_NSS": 5},
       "maxVolt": 5
     },
     {
@@ -1090,7 +1118,31 @@
     "imageFormat": "bin",
     "agent": true,
     "link": "usb-bootloader",
-    "uploadNote": "To upload over USB, hold BOOT0, press and release NRST, then release BOOT0 (DFU mode). An ST-LINK on the SWD pins also works."
+    "uploadNote": "To upload over USB, hold BOOT0, press and release NRST, then release BOOT0 (DFU mode). An ST-LINK on the SWD pins also works.",
+    "stm32Hal": {
+      "device": "STM32F411xE",
+      "hseHz": 25000000,
+      "pllSource": "hse",
+      "pllM": 25,
+      "pllN": 192,
+      "pllP": 2,
+      "pllQ": 4,
+      "apb1Div": 2,
+      "apb2Div": 1,
+      "flashLatency": 3,
+      "vos": 1,
+      "stdio": {
+        "uart": "UART1",
+        "tx": "PA9",
+        "rx": "PA10",
+        "baud": 115200,
+        "note": "USART1 on A9 (TX) and A10 (RX). The USB-C port is the chip's own USB, so printf needs a USB-serial adapter on A9/A10 (adapter RX to A9)."
+      },
+      "source": {
+        "title": "RM0383 STM32F411xC/E reference manual",
+        "section": "6.3.2 RCC PLL configuration register (PLLM, PLLN, PLLP, PLLQ); 3.4 Table 5 flash wait states (3 WS up to 100 MHz); 5.4.1 PWR_CR VOS (scale 1 above 84 MHz)"
+      }
+    }
   },
   "usb": [
     {
@@ -1138,6 +1190,10 @@
       "title": "stm32duino Arduino_Core_STM32",
       "section": "variants/STM32F4xx/F411C(C-E)(U-Y)/variant_BLACKPILL_F411CE.h (PIN_WIRE_SDA PB7, PIN_WIRE_SCL PB6, SPI PA7/PA6/PA5/PA4, LED PC13, USER_BTN PA0); boards.txt GenF4; platform.txt USB ids",
       "url": "https://github.com/stm32duino/Arduino_Core_STM32"
+    },
+    {
+      "title": "ST STM32F411xC/xE datasheet DS10314",
+      "section": "Table 9 Alternate function mapping (AF numbers in pin af)"
     }
   ]
 }

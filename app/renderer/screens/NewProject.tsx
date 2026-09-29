@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { PARTS, getBoard } from '@shared/board';
 import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
-import { generateStarter, starterToolchains, type StarterProject, type StarterToolchain } from '@shared/starter';
+import { generateStarter, starterToolchains, TOOLCHAIN_NAME, type StarterProject, type StarterToolchain } from '@shared/starter';
 import { useScene, log } from '../state/store';
 import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
@@ -47,8 +47,9 @@ export function NewProjectPanel() {
     }
     const p = generateStarter(toolchain, scene, board, PARTS);
     setProject(p);
-    setOpenFile('main.c');
-    log('action', t('Generated a Pico SDK project for {board}.', { board: board.name }), { source: 'starter generator' });
+    // Open main.c first (it is main/main.c in ESP-IDF, Core/Src/main.c in the STM32 project).
+    setOpenFile(p.files.find((f) => /(^|\/)main\.c$/.test(f.name))?.name ?? p.files[0]?.name ?? '');
+    log('action', t('Generated a {toolchain} project for {board}.', { toolchain: TOOLCHAIN_NAME[toolchain], board: board.name }), { source: 'starter generator' });
     for (const n of p.notes) log('warning', n, { source: 'starter generator' });
   };
 
@@ -160,16 +161,18 @@ export function NewProjectPanel() {
               <div className="seg" role="group" aria-label={t('Toolchain')}>
                 {toolchains.map((tc) => (
                   <button key={tc} className={toolchain === tc ? 'on' : ''} onClick={() => setToolchain(tc)}>
-                    {tc === 'arduino' ? t('Arduino') : t('Pico SDK')}
+                    {TOOLCHAIN_NAME[tc]}
                   </button>
                 ))}
               </div>
             </div>
           )}
           {toolchain === 'pico-sdk' && <p className="small dim">{t('A CMake project for the official Raspberry Pi Pico SDK, with only the pins in your drawing. The README says how to build it.')}</p>}
+          {toolchain === 'esp-idf' && <p className="small dim">{t('An ESP-IDF project (idf.py) for Espressif\'s official framework, with only the pins in your drawing. The README says how to build and flash it.')}</p>}
+          {toolchain === 'stm32-hal' && <p className="small dim">{t('A CMake project with ST\'s official HAL drivers (downloaded when you build), with only the pins in your drawing. The README says how to build and flash it.')}</p>}
           <div className="row gap wrap">
             <button className="btn small" disabled={!scene.parts.length} onClick={generate}>
-              {toolchain === 'arduino' ? t('Generate sketch') : t('Generate Pico SDK project')}
+              {toolchain === 'arduino' ? t('Generate sketch') : t('Generate {toolchain} project', { toolchain: TOOLCHAIN_NAME[toolchain] })}
             </button>
             {toolchain === 'arduino' && sketch && (
               <button className="btn small ghost" onClick={() => window.bp.session.saveFile('BoardPilotProject.ino', sketch)}>
