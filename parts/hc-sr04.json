@@ -18,6 +18,7 @@
     { "text": "It needs 5 V on VCC. At 3.3 V most modules give no echo or wrong distances.", "source": { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Electric parameters: working voltage DC 5 V" } },
     { "text": "Leave at least 60 ms between measurements, or the echo of the last one is measured again.", "source": { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Timing diagram: measurement cycle over 60 ms" } }
   ],
+  "current": { "typMa": 15, "sleepMa": 2, "note": "15 mA while working; under 2 mA quiescent.", "source": { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Electric parameters: working current 15 mA" } },
   "sources": [
     { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Pins VCC, Trig, Echo, GND; 10 µs trigger pulse; 5 V supply" }
   ]

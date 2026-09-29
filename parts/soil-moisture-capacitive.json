@@ -15,6 +15,7 @@
   "gotchas": [
     { "text": "The reading depends on your soil and supply voltage. Note the values in dry air and in water, and scale between them.", "source": { "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki", "section": "Calibration" } }
   ],
+  "current": { "typMa": 5, "note": "Operating current.", "source": { "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki", "section": "Specification: operating current 5 mA" } },
   "sources": [
     { "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki", "section": "Supply 3.3 to 5.5 V, analog output 0 to 3.0 V" }
   ]

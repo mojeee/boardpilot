@@ -21,6 +21,7 @@
   "gotchas": [
     { "text": "Every sensor starts at address 0x29. To use two on one bus, hold one in reset with XSHUT and give the other a new address at start-up; the new address is lost at power-off.", "source": { "title": "ST VL53L0X datasheet", "section": "I²C interface: device address 0x52 (8-bit), change of address" } }
   ],
+  "current": { "typMa": 19, "sleepMa": 0.005, "note": "Average while ranging; 5 µA in hardware standby.", "source": { "title": "ST VL53L0X datasheet", "section": "Current consumption: active ranging 19 mA; HW standby 5 µA" } },
   "sources": [
     { "title": "ST VL53L0X datasheet", "section": "Default I2C address 0x29 (0x52 8-bit)" },
     { "title": "ST VL53L0X API user manual", "section": "Reference register 0xC0 reads 0xEE" }

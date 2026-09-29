@@ -24,6 +24,7 @@
   "gotchas": [
     { "text": "Each input must stay between GND and VDD, even in differential mode. The default range is ±2.048 V; set the gain for larger signals.", "source": { "title": "TI ADS111x datasheet", "section": "Absolute maximum ratings: analog input; PGA full-scale range (default ±2.048 V)" } }
   ],
+  "current": { "typMa": 0.15, "sleepMa": 0.0005, "note": "150 µA converting continuously, 0.5 µA powered down.", "source": { "title": "TI ADS111x datasheet", "section": "Electrical characteristics: supply current 150 µA (continuous); power-down 0.5 µA" } },
   "sources": [
     { "title": "Texas Instruments ADS111x datasheet", "section": "ADDR pin connection and corresponding slave address (0x48 to 0x4B)" }
   ]
