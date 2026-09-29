@@ -1,7 +1,7 @@
 import type { FlowDef } from '@shared/flow';
 import type { PortInfo } from '@shared/types';
 import { t } from '@shared/i18n';
-import { checkChipBoard, checkPortBoard, fmtErr, pickPort } from './common';
+import { checkChipBoard, checkPortBoard, fmtErr, pickPort, adoptDetectedBoard } from './common';
 
 const NO_PORT_BODY = [
   'The Mac does not see a board on USB yet. Try these one at a time, then press Done:',
@@ -105,7 +105,7 @@ export const connectIdentify: FlowDef = {
         const src = `measured: ${c.toolVersion ?? 'chip tool'}`;
         ctx.log('found', c.revision ? t('Chip {chip} (revision {rev})', { chip: c.chip, rev: c.revision }) : t('Chip {chip}', { chip: c.chip }), { source: src });
         ctx.log('found', t('Flash {flash}, ID {mac}, USB chip {chip}', { flash: c.flashSize, mac: c.mac, chip: c.bridge }), { source: src });
-        checkChipBoard(ctx, c.chip);
+        if (!(await adoptDetectedBoard(ctx, c.chip))) checkChipBoard(ctx, c.chip);
         return { status: 'ok', summary: t('{chip}, {flash} flash.', { chip: c.chip, flash: c.flashSize }), goto: 'result' };
       },
       aiHelp: (ctx) => `Identifying my ${ctx.board.name} failed with error code ${String(ctx.data.identifyError)}. What does it mean and what should I do?`,
@@ -130,7 +130,7 @@ export const connectIdentify: FlowDef = {
         ctx.log('found', t('Chip {chip}, flash {flash}, ID {mac}', { chip: r.value.chip, flash: r.value.flashSize, mac: r.value.mac }), {
           source: `measured: ${r.value.toolVersion ?? 'chip tool'}`,
         });
-        checkChipBoard(ctx, r.value.chip);
+        if (!(await adoptDetectedBoard(ctx, r.value.chip))) checkChipBoard(ctx, r.value.chip);
         return { status: 'ok', summary: t('{chip}, {flash} flash.', { chip: r.value.chip, flash: r.value.flashSize }), goto: 'result' };
       },
       fallbacks: [{ id: 'retry', label: 'Try again', kind: 'retry' }],

@@ -511,6 +511,7 @@ const it: Record<string, string> = {
 
   /* ---------- shared/assign.ts ---------- */
   'No free pin left for {part} {pin}.': 'Non ci sono più pin liberi per {part} {pin}.',
+  'Your project now uses the {board}, the board that answered on USB.': 'Il tuo progetto ora usa la {board}, la scheda che ha risposto sulla USB.',
 };
 
 export default it;
