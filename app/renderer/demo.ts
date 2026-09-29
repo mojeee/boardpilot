@@ -238,6 +238,17 @@ async function runNamedDemo(name: string, scenario: string | null) {
     const act = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('do') ?? 'backup_flash';
     useAi.getState().push({ role: 'user', text: 'I can’t find where to back up my board before flashing.' });
     await runAction(act, '', 'ai');
+  } else if (name === 'export') {
+    // #demo=export[&id=weather-station]: a template project and the Export PDF dialog.
+    const { useTemplate } = await import('./state/templateRun');
+    useTemplate.getState().open(new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('id') ?? 'weather-station');
+    await sleep(500);
+    (await import('./components/ExportDialog')).openExport();
+    // &save=1: press "Save PDF" (with BP_SAVE_DIR set, the app saves without a dialog).
+    if (new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('save')) {
+      await sleep(1500);
+      document.querySelector<HTMLButtonElement>('.ex-actions .btn.primary')?.click();
+    }
   } else if (name === 'cmdk') {
     // #demo=cmdk: the "Ask AI or find anything" box open.
     (await import('./components/CommandBox')).openCommandBox();

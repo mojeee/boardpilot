@@ -67,6 +67,7 @@ const api: BoardPilotApi = {
     savePng: call('session:savePng'),
     saveProject: call('session:saveProject'),
     exportReport: call('session:exportReport'),
+    exportPdf: call('session:exportPdf'),
     info: call('session:info'),
   } as BoardPilotApi['session'],
   parts: {

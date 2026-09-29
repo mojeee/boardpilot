@@ -177,6 +177,21 @@ function zigzag(x: number, y0: number, y1: number, amp = 5, n = 6): Pt[] {
   return pts;
 }
 
+/** Symbol standard for resistors: ANSI/IEEE 315 zigzag (the default) or IEC 60617 rectangle. */
+export type SymbolStyle = 'ansi' | 'iec';
+let symbols: SymbolStyle = 'ansi';
+
+/** A resistor along a vertical lead from y0 to y1, in the current symbol style. */
+function resistor(x: number, y0: number, y1: number, stroke: string = C.sym, o: Partial<Extract<SchPrim, { k: 'line' }>> = {}): SchPrim[] {
+  if (symbols === 'ansi') return [line(zigzag(x, y0, y1), stroke, o)];
+  const lead = Math.min(4, (y1 - y0) / 6);
+  return [
+    line([[x, y0], [x, y0 + lead]], stroke, o),
+    { k: 'rect', x: x - 5, y: y0 + lead, w: 10, h: y1 - y0 - 2 * lead, stroke, fill: 'none', dash: !!o.dash, target: o.target },
+    line([[x, y1 - lead], [x, y1]], stroke, o),
+  ];
+}
+
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
 /* ---------- nets ---------- */
@@ -508,7 +523,7 @@ function ledSymbol(o: SymArgs & { value?: string; a: string; k: string }): Built
   const tg = o.target;
   const prims: SchPrim[] = [line([[o.xT, yA], [cx, yA], [cx, yA + 8]])];
   if (o.value) {
-    prims.push(line(zigzag(cx, yA + 8, yA + 36)), line([[cx, yA + 36], [cx, yA + 46]]), txt(cx + 10, yA + 26, o.value));
+    prims.push(...resistor(cx, yA + 8, yA + 36), line([[cx, yA + 36], [cx, yA + 46]]), txt(cx + 10, yA + 26, o.value));
   } else prims.push(line([[cx, yA + 8], [cx, yA + 46]]));
   const yT = yA + 46;
   prims.push(
@@ -565,7 +580,7 @@ function potSymbol(o: SymArgs & { value?: string; top: string; wiper: string; bo
   const ym = y + 30;
   const prims: SchPrim[] = [
     line([[cx, y], [cx, y + 14]]),
-    line(zigzag(cx, y + 14, y + 46)),
+    ...resistor(cx, y + 14, y + 46),
     line([[cx, y + 46], [cx, y + 60]]),
     line([[o.xT, ym], [cx - 10, ym]]),
     line([[cx - 5, ym], [cx - 12, ym - 4], [cx - 12, ym + 4]], C.sym, { closed: true, fill: C.sym }),
@@ -720,7 +735,7 @@ function suggestions(
       txt(cx, top + 10, rail, { font: 'ui', weight: 600, fill: ROLE_HEX.power, anchor: 'middle', target }),
       line([[cx - 9, top + 14], [cx + 9, top + 14]], ROLE_HEX.power, { width: 2, target }),
       line([[cx, top + 14], [cx, top + 22]], S, { dash: true, target }),
-      line(zigzag(cx, top + 22, top + 52), S, { dash: 'fine', target }),
+      ...resistor(cx, top + 22, top + 52, S, { dash: 'fine', target }),
       line([[cx, top + 52], [cx, top + 62]], S, { dash: true, target }),
       { k: 'rect', x: cx - tw / 2 - 6, y: top + 62, w: tw + 12, h: 14, stroke: S, fill: C.bg, rx: 3, dash: true, target },
       txt(cx, top + 72.5, net, { fill: S, anchor: 'middle', target }),
@@ -767,14 +782,14 @@ function suggestions(
       { k: 'rect', x: cx - fw / 2 - 6, y: 18, w: fw + 12, h: 14, stroke: S, fill: C.bg, rx: 3, dash: true, target },
       txt(cx, 28.5, from, { fill: S, anchor: 'middle', target }),
       line([[cx, 32], [cx, 42]], S, { dash: true, target }),
-      line(zigzag(cx, 42, 72), S, { dash: 'fine', target }),
+      ...resistor(cx, 42, 72, S, { dash: 'fine', target }),
       txt(cx + 9, 60, '1 kΩ', { size: 9, fill: S, target }),
       line([[cx, 72], [cx, 110]], S, { dash: true, target }),
       { k: 'circle', x: cx, y: node, r: 2.5, fill: S, target },
       line([[cx, node], [cx + 40, node]], S, { dash: true, target }),
       { k: 'rect', x: cx + 40, y: node - 7, w: tw + 12, h: 14, stroke: S, fill: C.bg, rx: 3, dash: true, target },
       txt(cx + 46, node + 3.5, to, { fill: S, target }),
-      line(zigzag(cx, 110, 140), S, { dash: 'fine', target }),
+      ...resistor(cx, 110, 140, S, { dash: 'fine', target }),
       txt(cx + 9, 128, '2 kΩ', { size: 9, fill: S, target }),
       line([[cx, 140], [cx, 148]], S, { dash: true, target }),
       ...groundItem('g', [cx, 148], 'down', target).prims,
@@ -809,7 +824,16 @@ function suggestions(
 
 /* ---------- the schematic ---------- */
 
-export function sceneToSchematic(scene: Scene, board: BoardDef, parts: Record<string, PartDef>, findings: WiringFinding[] = []): Schematic {
+export function sceneToSchematic(scene: Scene, board: BoardDef, parts: Record<string, PartDef>, findings: WiringFinding[] = [], opts: { symbols?: SymbolStyle } = {}): Schematic {
+  symbols = opts.symbols ?? 'ansi';
+  try {
+    return buildSchematic(scene, board, parts, findings);
+  } finally {
+    symbols = 'ansi';
+  }
+}
+
+function buildSchematic(scene: Scene, board: BoardDef, parts: Record<string, PartDef>, findings: WiringFinding[]): Schematic {
   const nets = buildNets(scene, board, parts);
   const netByKey = new Map<string, Net>();
   for (const n of nets) for (const e of n.ends) netByKey.set(e.key, n);

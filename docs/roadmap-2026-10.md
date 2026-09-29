@@ -549,7 +549,7 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
          breakouts with their own chips and labels. A Detail switch (Simple / Full / Labels) keeps
          slow computers fast. Every detail stays generated from the board and part JSON files.
 8. **Electrical design export (PDF)**
-   - [ ] "Export PDF" makes a technical drawing set: 1 schematic (IEC 60617 or ANSI symbols),
+   - [x] "Export PDF" makes a technical drawing set: 1 schematic (IEC 60617 or ANSI symbols),
          2 wiring diagram and pin map, 3 bill of materials, 4 checks, power budget and the
          measurements from this session (optional 5: code listing). A3, A4, Letter or Tabloid,
          a title block (project, drawn by, date, revision, sheet n of m), notes with datasheet

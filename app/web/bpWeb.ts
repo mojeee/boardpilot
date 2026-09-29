@@ -218,6 +218,15 @@ const api: BoardPilotApi = {
       download(`${name}.html`, html, 'text/html;charset=utf-8');
       return { ok: true, value: { markdownPath: inDownloads(`${name}.md`), pdfPath: inDownloads(`${name}.html`) } };
     },
+    // The browser prints the drawing set itself: it opens in a new tab with the print dialog ("Save as PDF").
+    exportPdf: async (html: string, name: string) => {
+      const printable = html.replace('</body>', '<script>addEventListener("load", () => setTimeout(() => print(), 300));</script></body>');
+      const url = URL.createObjectURL(new Blob([printable], { type: 'text/html;charset=utf-8' }));
+      const w = window.open(url, '_blank');
+      if (!w) download(`${name}.html`, html, 'text/html;charset=utf-8');
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      return { ok: true as const, value: w ? t('a new tab (choose “Save as PDF” in the print dialog)') : inDownloads(`${name}.html`) };
+    },
     info: async () => ({ dataDir: t('This browser tab (nothing is kept after you close it)'), logPath: '', version: __BP_VERSION__ }),
   },
   parts: {

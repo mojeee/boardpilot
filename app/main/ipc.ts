@@ -175,6 +175,25 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
     }
   });
 
+  h('session:exportPdf', async (html: string, name: string, paper: 'A4' | 'A3' | 'Letter' | 'Tabloid'): Promise<Result<string>> => {
+    try {
+      // BP_SAVE_DIR (end-to-end tests): save there without asking.
+      const auto = process.env.BP_SAVE_DIR ? join(process.env.BP_SAVE_DIR, `${name.replace(/[\\/:*?"<>|]+/g, '')}.pdf`) : null;
+      const win = BrowserWindow.getFocusedWindow();
+      const opts: Electron.SaveDialogOptions = { defaultPath: `${name}.pdf`, filters: [{ name: 'PDF', extensions: ['pdf'] }] };
+      const r = auto ? { canceled: false, filePath: auto } : win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
+      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Export cancelled.'), hint: '' } };
+      const pdfWin = new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false } });
+      await pdfWin.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+      const pdf = await pdfWin.webContents.printToPDF({ printBackground: true, landscape: true, pageSize: ['A4', 'A3', 'Letter', 'Tabloid'].includes(paper) ? paper : 'A4', margins: { top: 0, bottom: 0, left: 0, right: 0 }, preferCSSPageSize: true });
+      pdfWin.destroy();
+      await writeFile(r.filePath, pdf);
+      return { ok: true, value: r.filePath };
+    } catch (e) {
+      return { ok: false, error: toAppError(e) };
+    }
+  });
+
   h('parts:list', () => parts.load());
   h('parts:save', (def: PartDef, replaceId?: string) => parts.save(def, replaceId));
   h('parts:remove', (id: string) => parts.remove(id));
