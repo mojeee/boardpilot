@@ -1,7 +1,7 @@
 {
   "name": "boardpilot",
   "productName": "BoardPilot",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Guided embedded software work on a real ESP32 board, with a live 3D view.",
   "private": true,
   "main": "out/main/index.js",

@@ -1,4 +1,4 @@
-import { useApp, type Screen } from '../state/store';
+import { isUntouchedDemo, log, useApp, useScene, type Screen } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
@@ -16,6 +16,12 @@ export const TASKS: { screen: Screen; label: string; icon: string; flow?: string
 export function openTask(screen: Screen) {
   const task = TASKS.find((x) => x.screen === screen);
   useApp.getState().setScreen(screen);
+  // A new project starts empty, not on the simulator's demo bench (Undo brings the demo back).
+  if (screen === 'newProject' && isUntouchedDemo()) {
+    const s = useScene.getState();
+    s.openScene({ board: s.scene.board, parts: [], wires: [] }, true);
+    log('info', t('New empty project. Add parts, start from a template, or detect the board on your USB port.'));
+  }
   const w = useWizard.getState();
   if (task?.flow && w.state?.flowId !== task.flow) w.start(task.flow);
   if (screen === 'debug' && w.state && !w.state.flowId.startsWith('debug-')) w.cancel();
