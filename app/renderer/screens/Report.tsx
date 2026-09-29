@@ -3,6 +3,7 @@
 
 import { useMemo, useState } from 'react';
 import { PARTS, getBoard, targetLabel } from '@shared/board';
+import { diagramToSvg, sceneToDiagram } from '@shared/diagram';
 import type { ResultData } from '@shared/flow';
 import { useAi, useApp, useLog, useScene, log } from '../state/store';
 import { useWizard } from '../wizard/session';
@@ -39,6 +40,11 @@ function buildMarkdown(snapshot: string | null, result: ResultData | undefined) 
     if (result.sources.length) L.push('', t('Sources: {list}', { list: result.sources.join('; ') }));
   }
   if (snapshot) L.push('', `## ${t('3D snapshot')}`, '', `![${t('3D view')}](${snapshot})`);
+  if (scene.wires.length) {
+    // The wiring diagram, generated from the project (same drawing as the Diagram view).
+    const svg = diagramToSvg(sceneToDiagram(scene, board, PARTS, findings));
+    L.push('', `## ${t('Wiring diagram')}`, '', `![${t('Wiring diagram')}](data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))})`);
+  }
   L.push('', `## ${t('Wiring check')}`, '');
   if (!findings.length) L.push(t('No rule found a problem in the wiring drawing.'));
   for (const f of findings) L.push(`- **${t(f.severity)}**: ${f.message} ${f.hint}${f.source ? ` _(${f.source})_` : ''}`);
@@ -159,7 +165,7 @@ export function Report() {
         </div>
         <div className="card report-preview">
           {snapshot && <img src={snapshot} alt={t('3D snapshot')} className="snap" />}
-          <pre className="md">{md.replace(/\(data:image[^)]+\)/, '(snapshot.png)')}</pre>
+          <pre className="md">{md.replace(/\(data:image\/png[^)]+\)/, '(snapshot.png)').replace(/\(data:image\/svg[^)]+\)/, '(wiring-diagram.svg)')}</pre>
         </div>
       </div>
     </div>

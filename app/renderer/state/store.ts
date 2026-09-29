@@ -86,7 +86,7 @@ interface SceneStore {
   selected: TargetRef | null;
   highlight: TargetRef[];
   focus: { targets: TargetRef[]; nonce: number };
-  view: '3d' | '2d';
+  view: '3d' | '2d' | 'diagram';
   labels: boolean;
   wireMode: boolean;
   wireFrom: string | null;

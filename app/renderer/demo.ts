@@ -34,6 +34,8 @@ export async function runDemo(name: string, scenario: string | null) {
   const cam = hp.get('cam');
   try {
     await runNamedDemo(name, scenario);
+    const view = hp.get('view');
+    if (view === '3d' || view === '2d' || view === 'diagram') useScene.getState().set({ view });
   } finally {
     if (cam === 'top' || cam === 'side' || cam === 'module' || cam === 'home') useScene.getState().preset(cam);
   }
