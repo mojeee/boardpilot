@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Analog joystick (KY-023) with ESP32","description":"How to wire the Analog joystick (KY-023) to an ESP32: pins, suggested GPIO, 3.3 V supply. Free part data from BoardPilot.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/parts/joystick-ky023/","about":"Analog joystick (KY-023)","keywords":"joystick, ky-023, thumbstick, analog, levetta, controller","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Parts library","item":"https://boardpilot.agentflowbind.com/parts/"},{"@type":"ListItem","position":3,"name":"Analog joystick (KY-023)","item":"https://boardpilot.agentflowbind.com/parts/joystick-ky023/"}]}]}</script>
   </head>
   <body>
@@ -64,6 +64,7 @@
         <h2>Pins and ESP32 wiring</h2>
         <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Role</th><th>ESP32 pin</th><th>Notes</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td>Ground</td><td class="mono">GND</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>+5V</td><td>Power</td><td class="mono">3V3</td><td>Connect to 3V3 anyway, so the outputs stay within the ADC range</td></tr><tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>VRX</td><td>Analog output</td><td class="mono">D34</td><td>To an ADC pin (prefer ADC1: GPIO 32 to 39)</td></tr><tr><td class="mono"><span class="dot" style="background:#E8D24A"></span>VRY</td><td>Analog output</td><td class="mono">D35</td><td>To an ADC pin (prefer ADC1: GPIO 32 to 39)</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>SW</td><td>Output (the part drives it)</td><td class="mono">D25</td><td>Button: LOW when pressed. Use INPUT_PULLUP</td></tr></tbody></table></div>
         <p class="fine">Suggested wiring for the 30-pin ESP32 DevKit, avoiding flash, input-only and strapping pins. BoardPilot checks it for you as you wire.</p>
+        
         
         
         <h2>Starter code (Arduino)</h2><pre class="code"><code>void setup() { Serial.begin(115200); }

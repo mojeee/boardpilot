@@ -62,6 +62,15 @@
     "lettore rfid",
     "badge"
   ],
+  "gotchas": [
+    {
+      "text": "It runs on 3.3 V only: 5 V on VCC damages it.",
+      "source": {
+        "title": "NXP MFRC522 datasheet",
+        "section": "Operating conditions: supply voltage 2.5 to 3.6 V"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "NXP MFRC522 datasheet",

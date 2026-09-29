@@ -10,6 +10,10 @@
   "voltage": "3.3",
   "model": { "shape": "button", "size": [6, 6, 5], "color": "#2B2B2B" },
   "keywords": ["button", "switch", "push", "tactile"],
+  "gotchas": [
+    { "text": "An input with nothing pulling it reads random values. Use INPUT_PULLUP and wire the button to GND: pressed reads LOW.", "source": { "title": "Arduino reference", "section": "Digital pins: INPUT_PULLUP" } },
+    { "text": "The contacts bounce for a few milliseconds, so one press can count as several. Debounce in code.", "source": { "title": "Arduino examples", "section": "Debounce" } }
+  ],
   "sources": [{ "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" }],
   "starterSketch": "button"
 }

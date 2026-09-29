@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Slide switch (SPDT) with ESP32","description":"How to wire the Slide switch (SPDT) to an ESP32: pins, suggested GPIO, 3.3 V supply. Free part data from BoardPilot.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/parts/slide-switch/","about":"Slide switch (SPDT)","keywords":"slide switch, spdt, switch, on off, interruttore, deviatore","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Parts library","item":"https://boardpilot.agentflowbind.com/parts/"},{"@type":"ListItem","position":3,"name":"Slide switch (SPDT)","item":"https://boardpilot.agentflowbind.com/parts/slide-switch/"}]}]}</script>
   </head>
   <body>
@@ -64,6 +64,7 @@
         <h2>Pins and ESP32 wiring</h2>
         <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Role</th><th>ESP32 pin</th><th>Notes</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>A</td><td>Output (the part drives it)</td><td class="mono">D25</td><td>To a GPIO; use INPUT_PULLUP. LOW when the slider is on this side</td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>COM</td><td>Ground</td><td class="mono">GND</td><td>Middle pin</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>B</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Leave unconnected, or use a second GPIO</td></tr></tbody></table></div>
         <p class="fine">Suggested wiring for the 30-pin ESP32 DevKit, avoiding flash, input-only and strapping pins. BoardPilot checks it for you as you wire.</p>
+        
         
         
         <h2>Starter code (Arduino)</h2><pre class="code"><code>void setup() {

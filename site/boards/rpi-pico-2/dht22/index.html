@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"DHT22 with Raspberry Pi Pico 2","description":"How to connect the DHT22 to the Raspberry Pi Pico 2: which pins to use (DATA → GP15), 3.3-5 V supply, the checks that matter on this board, and Arduino code to test it.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/boards/rpi-pico-2/dht22/","tool":[{"@type":"HowToTool","name":"Raspberry Pi Pico 2"},{"@type":"HowToTool","name":"DHT22 (AM2302) temperature + humidity"}],"step":[{"@type":"HowToStep","position":1,"name":"VCC → 3V3(OUT)","text":"VCC (Power) → 3V3(OUT)"},{"@type":"HowToStep","position":2,"name":"DATA → GP15","text":"DATA (One-wire data) → GP15"},{"@type":"HowToStep","position":3,"name":"GND → GND","text":"GND (Ground) → GND"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which Raspberry Pi Pico 2 pins do I use for the DHT22?","acceptedAnswer":{"@type":"Answer","text":"VCC → 3V3(OUT), DATA → GP15, GND → GND."}},{"@type":"Question","name":"Does the DHT22 work with the Raspberry Pi Pico 2 at 3.3 V?","acceptedAnswer":{"@type":"Answer","text":"Yes: the DHT22 runs at 3.3-5 V and the Raspberry Pi Pico 2 uses 3.3 V signals, so no level shifting is needed."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Board pinouts","item":"https://boardpilot.agentflowbind.com/boards/"},{"@type":"ListItem","position":3,"name":"Raspberry Pi Pico 2","item":"https://boardpilot.agentflowbind.com/boards/rpi-pico-2/"},{"@type":"ListItem","position":4,"name":"DHT22 (AM2302) temperature + humidity","item":"https://boardpilot.agentflowbind.com/boards/rpi-pico-2/dht22/"}]}]}</script>
   </head>
   <body>
@@ -66,6 +66,7 @@
         </table></div>
         <h2>Check before you power it on</h2>
         <ul class="checks"><li>Supply: 3.3 V from the 3V3(OUT) pin.</li></ul>
+        <h2>Good to know</h2><ul class="gotchas"><li>Read it at most once every 2 seconds. Faster reads return the old value or fail. <span class="fine">(Aosong AM2302 datasheet, Collecting period 2 s)</span></li></ul>
         <h2>Test code (Arduino)</h2>
         <pre class="code"><code>// Library: DHT sensor library (Adafruit)
 #include &lt;DHT.h&gt;

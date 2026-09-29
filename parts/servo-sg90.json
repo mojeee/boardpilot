@@ -11,6 +11,9 @@
   "voltage": "5",
   "model": { "shape": "motor", "size": [23, 12.2, 29], "color": "#2E6FD8" },
   "keywords": ["sg90", "servo", "micro servo", "motor", "servomotore", "motore"],
+  "gotchas": [
+    { "text": "A moving servo draws current peaks that can reset a USB-powered board. Power servos from a separate 5 V supply and connect the grounds.", "source": { "title": "Arduino Servo library reference", "section": "Servos draw considerable power; use a separate supply" } }
+  ],
   "sources": [
     { "title": "Tower Pro SG90 datasheet", "section": "Wires: brown GND, red +5 V, orange PWM; 50 Hz, 1 to 2 ms" }
   ]

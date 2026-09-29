@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"TM1637 4-digit 7-segment display with ESP32","description":"How to wire the TM1637 4-digit 7-segment display to an ESP32: pins, suggested GPIO, 3.3-5 V supply. Free part data from BoardPilot.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/parts/tm1637-4digit/","about":"TM1637 4-digit 7-segment display","keywords":"tm1637, 7 segment, 4 digit, clock display, display 7 segmenti, orologio","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Parts library","item":"https://boardpilot.agentflowbind.com/parts/"},{"@type":"ListItem","position":3,"name":"TM1637 4-digit 7-segment display","item":"https://boardpilot.agentflowbind.com/parts/tm1637-4digit/"}]}]}</script>
   </head>
   <body>
@@ -65,6 +65,7 @@
         <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Role</th><th>ESP32 pin</th><th>Notes</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>CLK</td><td>Input (the ESP32 drives it)</td><td class="mono">D25</td><td>Clock (not I2C, not SPI)</td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>DIO</td><td>Input (the ESP32 drives it)</td><td class="mono">D26</td><td>Data (not I2C)</td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>GND</td><td>Ground</td><td class="mono">GND</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>5V</td><td>Power</td><td class="mono">3V3</td><td>Works at 3.3 V or 5 V</td></tr></tbody></table></div>
         <p class="fine">Suggested wiring for the 30-pin ESP32 DevKit, avoiding flash, input-only and strapping pins. BoardPilot checks it for you as you wire.</p>
         
+        <h2>Good to know</h2><ul class="gotchas"><li>CLK and DIO are not I2C: use a TM1637 library. Any two pins work. <span class="fine">(Titan Micro TM1637 datasheet, Two-wire serial interface)</span></li></ul>
         
         
         <h2>Sources</h2><ul class="sources"><li>Titan Micro TM1637 datasheet, Two-wire interface CLK / DIO (not I2C compatible)</li></ul>

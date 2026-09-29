@@ -362,6 +362,13 @@ export interface PartPin {
 
 export type PartShape = 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled' | 'chip' | 'module' | 'motor' | 'relay';
 
+/** A known trap for a part (DHT22 needs 2 s between reads…). `when` limits it to some boards. */
+export interface PartGotcha {
+  text: string;
+  when?: 'logic3v3' | 'logic5v' | 'avr' | 'esp32';
+  source: { title: string; section?: string };
+}
+
 export interface PartDef {
   id: string;
   name: string;
@@ -382,6 +389,8 @@ export interface PartDef {
   /** Where a user-imported part came from. Built-in parts have no origin. */
   origin?: { url?: string; importedAt: string; method: 'ai' | 'manual' };
   keywords: string[];
+  /** Known traps, shown when the part is added. Each one is sourced. */
+  gotchas?: PartGotcha[];
   sources: { title: string; section?: string }[];
   starterSketch?: string;
 }

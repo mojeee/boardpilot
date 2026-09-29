@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Push button con ESP32","description":"Come collegare Push button a un ESP32: pin, GPIO consigliati, alimentazione 3.3 V. Dati gratuiti di BoardPilot.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/parts/push-button/","about":"Push button","keywords":"button, switch, push, tactile","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/it/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Libreria componenti","item":"https://boardpilot.agentflowbind.com/it/parts/"},{"@type":"ListItem","position":3,"name":"Push button","item":"https://boardpilot.agentflowbind.com/it/parts/push-button/"}]}]}</script>
   </head>
   <body>
@@ -65,6 +65,7 @@
         <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Ruolo</th><th>Pin ESP32</th><th>Note</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>1</td><td>Uscita (la pilota il componente)</td><td class="mono">D25</td><td>To a GPIO; use INPUT_PULLUP in code</td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>2</td><td>Massa</td><td class="mono">GND</td><td></td></tr></tbody></table></div>
         <p class="fine">Collegamento consigliato per l’ESP32 DevKit a 30 pin, evitando i pin della flash, di sola lettura e di strapping. BoardPilot lo controlla mentre colleghi.</p>
         
+        <h2>Da sapere</h2><ul class="gotchas"><li>Un ingresso che nessuno tira legge valori casuali. Usa INPUT_PULLUP e collega il pulsante a GND: premuto legge LOW. <span class="fine">(Arduino reference, Digital pins: INPUT_PULLUP)</span></li><li>I contatti rimbalzano per qualche millisecondo, quindi una pressione può contare come più di una. Fai il debounce nel codice. <span class="fine">(Arduino examples, Debounce)</span></li></ul>
         
         <h2>Codice di partenza (Arduino)</h2><pre class="code"><code>void setup() {
   Serial.begin(115200);

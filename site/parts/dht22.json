@@ -40,6 +40,15 @@
     "humidity",
     "temperature"
   ],
+  "gotchas": [
+    {
+      "text": "Read it at most once every 2 seconds. Faster reads return the old value or fail.",
+      "source": {
+        "title": "Aosong AM2302 datasheet",
+        "section": "Collecting period 2 s"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Aosong AM2302 datasheet",

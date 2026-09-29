@@ -67,6 +67,22 @@
     "pressione",
     "barometro"
   ],
+  "gotchas": [
+    {
+      "text": "It measures temperature and pressure only, no humidity. If your code asks for humidity, you need a BME280.",
+      "source": {
+        "title": "Bosch BMP280 datasheet",
+        "section": "Product description"
+      }
+    },
+    {
+      "text": "The address is 0x76 with SDO to GND and 0x77 with SDO high. Most GY boards answer at 0x76, while the Adafruit library looks at 0x77 unless you pass 0x76.",
+      "source": {
+        "title": "Bosch BMP280 datasheet",
+        "section": "I²C interface, slave address"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Bosch BMP280 datasheet",

@@ -62,6 +62,22 @@
     "tensione",
     "consumo"
   ],
+  "gotchas": [
+    {
+      "text": "With the usual 0.1 Ω shunt it measures up to 3.2 A (±320 mV across the shunt), and the bus voltage up to 26 V.",
+      "source": {
+        "title": "TI INA219 datasheet",
+        "section": "Electrical characteristics: shunt voltage range ±320 mV, bus voltage 0 to 26 V"
+      }
+    },
+    {
+      "text": "Put it in series on the positive side: supply + to VIN+, VIN− to the load.",
+      "source": {
+        "title": "TI INA219 datasheet",
+        "section": "Typical application: high-side sensing"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Texas Instruments INA219 datasheet",
