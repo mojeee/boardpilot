@@ -430,6 +430,16 @@ const it: Record<string, string> = {
   'Standard mode (100 kHz)': 'Standard (100 kHz)',
   'Fast mode (400 kHz)': 'Fast (400 kHz)',
   'Fast mode plus (1 MHz)': 'Fast plus (1 MHz)',
+  /* lesson previews on the 3D board */
+  'PA5 on a NUCLEO-F401RE: the pin behind the address in the code below, wired to the green LED': 'PA5 su una NUCLEO-F401RE: il pin dietro l’indirizzo del codice qui sotto, collegato al LED verde',
+  'An LED on an output pin and a button on an input pin, on an ESP32': 'Un LED su un pin di uscita e un pulsante su un pin di ingresso, su un ESP32',
+  'A button that triggers an interrupt, and the LED the handler switches, on a Raspberry Pi Pico': 'Un pulsante che fa scattare un interrupt, e il LED che la routine accende, su un Raspberry Pi Pico',
+  'An I2C sensor on the ESP32’s default bus: SDA on D21, SCL on D22': 'Un sensore I2C sul bus predefinito dell’ESP32: SDA su D21, SCL su D22',
+  'An LED with its resistor on GP15 of a Raspberry Pi Pico': 'Un LED con la sua resistenza su GP15 di un Raspberry Pi Pico',
+  'Show on the 3D board': 'Mostra sulla scheda 3D',
+  'Preview': 'Anteprima',
+  'Close preview': 'Chiudi l’anteprima',
+  'Your project is set aside while you look; closing the preview brings it back unchanged.': 'Il tuo progetto viene messo da parte mentre guardi; chiudendo l’anteprima torna com’era.',
 };
 
 export default it;

@@ -727,3 +727,12 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 /* MCP settings */
 .mcp-settings { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; }
 .mcp-cmd { flex: 1; background: var(--chrome); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px 8px; overflow-x: auto; white-space: nowrap; }
+
+/* Lesson previews on the 3D board (split view) */
+.learn.with-preview { grid-template-columns: 250px minmax(0, 1fr) minmax(0, 1.1fr); }
+.learn-board { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 10px 0; padding: 8px 10px; border: 1px dashed var(--line); border-radius: var(--radius-sm); }
+.learn-preview { border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; padding: 10px; gap: 6px; background: var(--bg); }
+.learn-preview-head { display: flex; align-items: center; gap: 8px; }
+.learn-preview-head .btn { margin-left: auto; }
+.learn-preview-3d { position: relative; flex: 1; min-height: 0; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.learn-preview-3d .viewport { position: absolute; inset: 0; }

@@ -71,6 +71,8 @@ export async function wireEvents() {
   };
   await sync(useScene.getState().scene.board);
   useScene.subscribe((s, prev) => {
+    // A lesson preview shows another board without switching the hardware layer.
+    if (s.preview || prev.preview) return;
     if (s.scene.board !== prev.scene.board) void sync(s.scene.board);
   });
 }
