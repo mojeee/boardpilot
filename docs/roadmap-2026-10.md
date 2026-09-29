@@ -486,6 +486,47 @@ draw wires and run the debug demo on a simulated board, with no install.
 This is also the first half of the "Web version using WebSerial" backlog item: the same build
 later talks to real boards through Chrome's WebSerial.
 
+## Next · Workspace redesign (your plan, Sep 29, not started)
+
+Planned only. Nothing here is built yet. To continue on another computer: clone the repo, `npm install`,
+`npm run dev`, and start from this section (everything else in this file is done and released as 0.6.1).
+
+Goal: a cleaner, IDE-like workspace where the AI sees everything that happens and helps at every step.
+
+1. **Layout**
+   - [ ] The left task rail becomes a narrow top menu (tasks as compact tabs or a dropdown), so the
+         3D view gets the space.
+   - [ ] Default project page: the 3D view in the middle, the **AI chat open on the right**, and a
+         **bottom panel with two tabs: Code and Log**. Running the code switches the bottom panel
+         to the Log tab.
+   - [ ] Every panel can be expanded and collapsed (the resize handles from 0.6.0 stay).
+2. **Code in the app**
+   - [ ] A code editor for the project's sketch in the bottom panel (no new dependency without
+         asking; a lightweight editor or a plain textarea with syntax colouring first).
+   - [ ] A debugger view for the code: run in the simulator, step, the running line highlighted
+         (builds on the template live run view and the BoardPilotProbe step markers).
+3. **Many projects**
+   - [ ] Project tabs above the 3D view, so several projects are open at once.
+   - [ ] "+" on the tab bar opens a new project with three choices: **Blank**, **Read from port**,
+         **Template**.
+4. **Read from port** (the hardest part)
+   - [ ] Find the board on USB automatically (port scan, chip identify, USB ids), set the board,
+         then look for what is connected: I2C scan on the default bus with the swap test, known
+         chip IDs from the parts library, pull-ups, ADC pins that read a real voltage.
+   - [ ] Build the scene from what was found, every part marked "detected" with its measurement,
+         and ask the user to confirm anything that was guessed (honest AI rule).
+5. **AI that sees everything and helps at each step**
+   - [ ] The assistant receives every app event (log, scene changes, code changes, measurements)
+         and raises warnings by itself when something looks wrong, with the source of each claim.
+   - [ ] Build by writing: "add a BME280 and an OLED on I2C" adds the parts and suggests the wiring;
+         "make it read the temperature every 2 s" writes the code.
+   - [ ] Before building, it asks several short questions (board, power, what the project must do),
+         then proposes the parts, pins and wiring for the user to confirm. Nothing is written to the
+         board without the usual confirmation.
+
+Open decisions for you when we start: which code editor (new dependency?), and whether the old
+task screens stay reachable from the top menu or merge into the project page.
+
 ## Backlog (November and December, ordered by what users ask for)
 
 ### Growth
