@@ -32,6 +32,15 @@ export async function wireEvents() {
   if (wired || !window.bp) return;
   wired = true;
   const api = bp();
+  // An AI agent asked over MCP to write to the board: the same dialog as always, and the answer
+  // goes back to the agent. Nothing is written without the click.
+  api.on.mcpWrite(async (ask) => {
+    let ok = false;
+    if (ask.req.kind === 'flash_agent') ok = await confirmInstallAgent(t('{client} (an AI agent) asks to install the diagnostic agent: {reason}', { client: ask.client, reason: ask.req.reason }));
+    else if (ask.req.kind === 'gpio_write' && ask.req.pin !== undefined)
+      ok = await confirmGpioWrite(ask.req.pin, ask.req.level ?? 1, t('{client} (an AI agent) asks: {reason}', { client: ask.client, reason: ask.req.reason }));
+    await api.mcp.writeResult(ask.id, ok ? 'approved' : 'refused');
+  });
   api.on.state((conn) => useApp.getState().set({ conn }));
   api.on.progress((progress) => useApp.getState().set({ progress }));
   api.on.log((e) => useLog.getState().add(e.type, e.text, { target: e.target, source: e.source }));

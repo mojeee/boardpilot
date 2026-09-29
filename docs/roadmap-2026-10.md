@@ -453,7 +453,7 @@ say so if you want it the other way.
 | 18 | Bill of materials and shopping list export | S | none | [x] |
 | 9 | Peripheral and pin planner | M | Suggests and highlights the pins (no "Apply": the plan comes before any part exists) | [x] |
 | 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [x] |
-| 21 | BoardPilot as an MCP server for AI agents | L | Decided Sep 29: official `@modelcontextprotocol/sdk`; stdio launcher first, local HTTP from the same code; headless mode with every write refused; free during the beta | [ ] |
+| 21 | BoardPilot as an MCP server for AI agents | L | Decided Sep 29: official `@modelcontextprotocol/sdk`; stdio launcher first, local HTTP from the same code; headless mode with every write refused; free during the beta | [x] |
 | 6 | Lessons: "Show on the 3D board" buttons | M | Split view (lesson left, 3D right) | [ ] |
 | 13 | Power budget and battery life (merges step 3 C "Power budget") | M | Yes to sourced current fields in parts; unknown parts listed as unknown | [ ] |
 | 10 | Clock-aware calculators with code (timer, PWM, UART, ADC) | M | Add a sourced `clocks` section to board files | [ ] |

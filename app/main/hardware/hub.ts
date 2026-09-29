@@ -136,6 +136,11 @@ export class HardwareHub extends EventEmitter<HubEvents> {
     this.emit('log', { type, text, source, target });
   }
 
+  /** A log line from outside the hub (MCP calls), shown in the session log like the hub's own. */
+  note(type: LogEntry['type'], text: string, source?: string, target?: LogEntry['target']) {
+    this.log(type, text, source, target);
+  }
+
   private async closeLinks() {
     if (this.agentClient) await this.agentClient.close().catch(() => {});
     if (this.serial) await this.serial.close().catch(() => {});

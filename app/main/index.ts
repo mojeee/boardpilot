@@ -11,6 +11,9 @@ import { SessionLog } from './session/sessionLog';
 import { UserParts } from './parts/userParts';
 import { License } from './license/license';
 import { AiSettingsStore } from './settings/settings';
+import { baseDeps, setupMcp } from './mcp';
+import { runStdio } from './mcp/server';
+import type { PartDef } from '@shared/types';
 
 /** Minimal .env.local reader (KEY=value lines). Keys stay in this process only; they are the
  *  fallback when no key is saved in AI settings (ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY). */
@@ -31,6 +34,13 @@ loadEnvLocal();
 process.env.BOARDPILOT_VERSION ||= app.getVersion();
 
 const dataDir = app.getPath('userData');
+// `BoardPilot --mcp-stdio`: an MCP client started us. No window; talk MCP on stdin/stdout. Use a
+// separate Chromium profile so this process never locks the app's, but read the app's data.
+const MCP_STDIO = process.argv.includes('--mcp-stdio');
+if (MCP_STDIO) {
+  app.setPath('userData', join(dataDir, 'mcp-stdio-profile'));
+  app.disableHardwareAcceleration();
+}
 const agentDir = app.isPackaged ? join(process.resourcesPath, 'agent') : join(app.getAppPath(), 'resources/agent');
 const mode = process.env.BOARDPILOT_MODE === 'real' ? 'real' : 'sim';
 const hub = new HardwareHub(dataDir, agentDir, mode);
@@ -98,8 +108,29 @@ function createWindow() {
   }
 }
 
+let userPartList: PartDef[] = [];
+const refreshUserParts = () => void userParts.load().then((p) => (userPartList = p)).catch(() => undefined);
+
 app.whenReady().then(() => {
-  void userParts.load();
+  if (MCP_STDIO) {
+    if (process.platform === 'darwin') app.dock?.hide();
+    refreshUserParts();
+    // The client closed the pipe: we are done.
+    process.stdin.on('end', () => app.quit());
+    void runStdio(dataDir, app.getVersion(), () => ({ ...baseDeps(hub, dataDir, (n) => sessionLog.recent(n), () => userPartList), headless: true, requestWrite: async () => 'refused' as const }));
+    return;
+  }
+  refreshUserParts();
+  setupMcp({
+    hub,
+    dataDir,
+    recentLog: (n) => sessionLog.recent(n),
+    // The last loaded list, refreshed in the background so new parts show up on the next call.
+    userParts: () => {
+      refreshUserParts();
+      return userPartList;
+    },
+  });
   registerIpc(hub, assistant, sessionLog, dataDir, userParts, license);
   createWindow();
   app.on('activate', () => {
