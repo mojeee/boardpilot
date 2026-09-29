@@ -427,6 +427,13 @@ export class HardwareHub extends EventEmitter<HubEvents> {
 
   /** Reads the firmware file and checks it against the board before anything is written (read-only). */
   async preflight(filePath: string): Promise<Result<PreflightReport>> {
+    // The simulator's sample firmware has no file on disk: its check is simulated and says so.
+    if (this.st.mode === 'sim' && filePath.startsWith('/simulated/')) {
+      return {
+        ok: true,
+        value: { ok: true, items: [{ severity: 'ok', text: t('Simulated firmware for the {board}: made for this board, fits in its flash (simulated check).', { board: this.board.name }) }], programBytes: 262144 },
+      };
+    }
     try {
       const bytes = await readFile(filePath);
       return { ok: true, value: preflightImage(new Uint8Array(bytes), filePath.split(/[\\/]/).pop() ?? filePath, this.board) };

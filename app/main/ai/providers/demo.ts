@@ -34,6 +34,25 @@ export function demoOptions(env: Record<string, string | undefined> = process.en
   return { url, clientVersion: /^[0-9][0-9A-Za-z.+-]{0,31}$/.test(version) ? version : '0.0.0' };
 }
 
+/** A shorter context block for the free demo: the first 60 lines of code, no app events. */
+export function compactContext(text: string): string {
+  let codeLines = 0;
+  let cut = false;
+  const out: string[] = [];
+  for (const line of text.split('\n')) {
+    if (line.startsWith('Recent app events')) continue;
+    if (/^\s*\d+\| /.test(line)) {
+      if (++codeLines > 60) {
+        if (!cut) out.push('… (the rest of the code is left out for the free demo)');
+        cut = true;
+        continue;
+      }
+    }
+    out.push(line);
+  }
+  return out.join('\n');
+}
+
 const bytes = (x: unknown) => new TextEncoder().encode(JSON.stringify(x)).length;
 const isContext = (text: string) => text.startsWith('<context>');
 
@@ -71,6 +90,15 @@ export class DemoProvider extends GeminiProvider {
       const next = messages.findIndex((m, i) => i > 0 && m.role === 'user');
       if (next < 0) break;
       messages = messages.slice(next);
+    }
+    // Still too big: shorten the project code and drop the app events in the last question's context
+    // (the free demo gets less of the code; your own key gets all of it).
+    if (size(messages) > DEMO_MAX_BODY_BYTES) {
+      messages = messages.map((m, i) =>
+        m.role === 'user' && i === messages.map((x) => x.role).lastIndexOf('user')
+          ? { ...m, content: m.content.map((p) => (p.type === 'text' && isContext(p.text) ? { ...p, text: compactContext(p.text) } : p)) }
+          : m,
+      );
     }
     const final = size(messages);
     if (final > DEMO_MAX_BODY_BYTES) {

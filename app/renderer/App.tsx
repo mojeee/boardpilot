@@ -181,6 +181,8 @@ function Work() {
   const rightOpen = useLayout((s) => s.rightOpen);
   const bottomOpen = useLayout((s) => s.bottomOpen);
   const bottomMax = useLayout((s) => s.bottomMax);
+  // Home and Learn are whole pages of their own: no Code/Log panel under them.
+  const noBottom = useApp((s) => s.screen === 'home' || s.screen === 'learn');
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (handleLayoutKey(e)) e.preventDefault();
@@ -188,17 +190,19 @@ function Work() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
-  const cls = ['work', rightOpen ? '' : 'right-closed', !bottomOpen ? 'bottom-closed' : bottomMax ? 'bottom-max' : ''].filter(Boolean).join(' ');
+  const cls = ['work', rightOpen ? '' : 'right-closed', noBottom ? 'bottom-none' : !bottomOpen ? 'bottom-closed' : bottomMax ? 'bottom-max' : ''].filter(Boolean).join(' ');
   return (
     <div className={cls}>
       <main className="center">
         <Center />
       </main>
       <Right />
-      <div className="bottom">
-        {bottomOpen && !bottomMax && <Splitter kind="log" />}
-        <BottomPanel />
-      </div>
+      {!noBottom && (
+        <div className="bottom">
+          {bottomOpen && !bottomMax && <Splitter kind="log" />}
+          <BottomPanel />
+        </div>
+      )}
     </div>
   );
 }

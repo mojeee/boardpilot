@@ -18,7 +18,7 @@
 .menu-item:hover { color: var(--text); background: var(--panel); }
 .menu-item.on { background: var(--raised); color: var(--text); }
 .menu-item.on svg { color: var(--ok); opacity: 1; }
-.top-mid { flex: 1 1 0; min-width: 0; display: flex; justify-content: center; }
+.top-mid { flex: 1 1 0; min-width: 0; display: flex; justify-content: center; overflow: hidden; }
 .topbar .conn { flex: 0 1 auto; }
 .topbar .board-chip { min-width: 40px; flex-shrink: 1; max-width: 200px; }
 .conn-status { display: inline-flex; align-items: center; gap: 7px; background: none; border: none; padding: 3px 4px; border-radius: 6px; font-size: 12px; min-width: 0; flex-shrink: 1; overflow: hidden; }
@@ -295,9 +295,21 @@
 .cmd-spark { color: var(--ai); }
 .cmd-ph { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
 .kbd { font-size: 10.5px; color: var(--dim); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; }
-@media (max-width: 1500px) {
+.cmd-ph-short { display: none; }
+@media (max-width: 1760px) {
   .cmd-ph { display: none; }
+  .cmd-ph-short { display: inline; white-space: nowrap; }
   .cmd-open { width: auto; }
+  .cmd-ph-short { overflow: hidden; text-overflow: ellipsis; }
+}
+@media (max-width: 1300px) {
+  .cmd-ph-short { display: none; }
+}
+/* Squeezed further (long menu words, a narrow window): the spark alone, ⌘K stays in the tooltip. */
+.top-mid { container-type: inline-size; }
+@container (max-width: 80px) {
+  .cmd-open .kbd { display: none; }
+  .cmd-open { justify-content: center; }
 }
 .cmd-back { position: fixed; inset: 0; z-index: 90; background: rgba(8, 10, 13, 0.45); display: flex; justify-content: center; align-items: flex-start; padding-top: 70px; }
 .cmd { width: min(620px, 92vw); background: var(--panel); border: 1px solid var(--ai-line); border-radius: 12px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55); overflow: hidden; }
@@ -324,6 +336,9 @@
 .ai-notice { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--warn); border-radius: 8px; padding: 9px 11px; display: flex; flex-direction: column; gap: 6px; }
 .ai-notice.sev-error { border-left-color: var(--err); }
 .ai-notice.sev-info { border-left-color: var(--pin-sda); }
+.ai-notice.resolved { border-left-color: var(--ok); opacity: 0.7; }
+.ai-notice.resolved .notice-kicker { color: var(--ok); }
+.ai-notice.resolved .ai-text { color: var(--muted); }
 .notice-kicker { color: var(--ai); font-size: 11.5px; font-weight: 600; }
 .ai-proposal { background: rgba(0, 0, 0, 0.18); border-radius: 7px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
 .ai-proposal .label { margin: 0; }
@@ -372,10 +387,18 @@
 }
 
 /* ---------- 3D: Light and Detail switches, part tags ---------- */
-.look-bar { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.look-bar { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+/* The toolbar spans the view: only its buttons take clicks, the gaps let the 3D view be dragged. */
+.vp-toolbar { align-items: flex-start; pointer-events: none; }
+.vp-toolbar > *:not(.look-bar), .look-bar > * { pointer-events: auto; }
 .look-bar .seg { background: rgba(18, 23, 28, 0.88); }
 .seg-label { font-size: 11px; color: var(--dim); padding: 4px 8px; border-right: 1px solid var(--line); display: inline-flex; align-items: center; }
 .viewport .badges { top: auto; bottom: 36px; }
+/* A narrow 3D view has no room for both the colour legend and the keyboard hint: keep the legend. */
+.viewport { container-type: inline-size; }
+@container (max-width: 840px) {
+  .kbd-hint { display: none; }
+}
 .chip-tag { font-size: 11px; color: var(--text); white-space: nowrap; background: rgba(18, 23, 29, 0.85); border: 1px solid var(--line); border-radius: 5px; padding: 2px 7px; }
 @media (max-width: 1640px) {
   .topbar .wide-only-2 { display: none; }

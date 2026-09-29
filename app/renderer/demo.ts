@@ -238,6 +238,53 @@ async function runNamedDemo(name: string, scenario: string | null) {
     const act = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('do') ?? 'backup_flash';
     useAi.getState().push({ role: 'user', text: 'I can’t find where to back up my board before flashing.' });
     await runAction(act, '', 'ai');
+  } else if (name === 'workspace') {
+    // #demo=workspace: the redesigned project page as in the mockup: three project tabs, the weather
+    // station with SDA/SCL swapped in the code (warnings banner, fix chips), and the assistant
+    // backing up the board step by step.
+    const { useProjects } = await import('./state/projects');
+    const { useTemplate } = await import('./state/templateRun');
+    const { TEMPLATES } = await import('@shared/templates');
+    const { t } = await import('@shared/i18n');
+    const first = useProjects.getState().tabs[0].id;
+    useProjects.getState().rename(first, t('Weather station'));
+    for (const [id, board] of [
+      ['plant-watering', 'esp32-devkitc-30'],
+      ['blink-button', 'rpi-pico'],
+    ] as const) {
+      const tpl = TEMPLATES.find((x) => x.id === id);
+      if (!tpl) continue;
+      useProjects.getState().add({ board, parts: [], wires: [] }, t(tpl.name));
+      await until(() => useApp.getState().conn.board === board);
+      useTemplate.getState().open(id);
+    }
+    useProjects.getState().switchTo(first);
+    await until(() => useApp.getState().conn.board === 'esp32-devkitc-30');
+    const { loadSketch } = await import('./components/CodeCheck');
+    loadSketch(
+      'weather_station.ino',
+      [
+        '#include <Wire.h>',
+        '#include <Adafruit_BME280.h>',
+        'Adafruit_BME280 bme;',
+        '',
+        'void setup() {',
+        '  Serial.begin(115200);',
+        '  Wire.begin(22, 21);',
+        '  bme.begin(0x76);',
+        '}',
+        '',
+        'void loop() {',
+        '  float t = bme.readTemperature();',
+        '  Serial.printf("%.1f C\\n", t);',
+        '  delay(1000);',
+        '}',
+      ].join('\n'),
+    );
+    const { runAction } = await import('./state/appActions');
+    const { useAi } = await import('./state/store');
+    useAi.getState().push({ role: 'user', text: t('I can’t find where to back up my board before flashing.') });
+    void runAction('backup_flash', '', 'ai');
   } else if (name === 'export') {
     // #demo=export[&id=weather-station]: a template project and the Export PDF dialog.
     const { useTemplate } = await import('./state/templateRun');
