@@ -136,3 +136,43 @@ describe('other flows on the simulator', () => {
     expect(end.result?.title).toBe('The power supply dips too low');
   }, 25000);
 });
+
+describe('flash-firmware pre-flight on the simulator', () => {
+  async function flashWith(bytes: Uint8Array, name: string) {
+    const { mkdtempSync, writeFileSync } = await import('node:fs');
+    const { join } = await import('node:path');
+    const { tmpdir } = await import('node:os');
+    const file = join(mkdtempSync(join(tmpdir(), 'bp-pre-')), name);
+    writeFileSync(file, bytes);
+    const { hub, ready } = makeHub('healthy');
+    await ready;
+    const scene = SCENARIOS.find((s) => s.id === 'healthy')!.scene;
+    const { ctx, log } = makeCtx(hub, scene);
+    const runner = new FlowRunner(FLOWS['flash-firmware'], ctx);
+    void runner.start();
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'file');
+    await runner.answer({ kind: 'input', input: 'firmware', value: file });
+    const s = await waitFor(runner, (st) => runner.currentStep?.id !== 'preflight' || st.status !== 'running');
+    return { s, runner, log, hub };
+  }
+  const espImage = (chip: number) => {
+    const b = new Uint8Array(100_000);
+    b[0] = 0xe9;
+    b[3] = 0x2f;
+    b[12] = chip;
+    return b;
+  };
+
+  it('stops before writing a file built for another chip', async () => {
+    const { runner, log, hub } = await flashWith(espImage(0x09), 'sketch.ino.bin');
+    expect(runner.currentStep?.id).toBe('preflight');
+    expect(log.some((e) => e.type === 'failed' && /ESP32-S3/.test(e.text))).toBe(true);
+    expect(hub.state.backups.length).toBe(0);
+  }, 30000);
+
+  it('goes on to the confirmation for a matching file', async () => {
+    const { runner } = await flashWith(espImage(0x00), 'sketch.ino.bin');
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'confirm');
+    expect(runner.currentStep?.id).toBe('confirm');
+  }, 30000);
+});

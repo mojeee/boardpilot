@@ -22,6 +22,7 @@ import type {
   WriteRequest,
 } from './types';
 import type { AiModelInfo, AiProviderId, AiSettingsInput, AiSettingsView, AiStatus } from './ai';
+import type { PreflightReport } from './preflight';
 
 export type Unsubscribe = () => void;
 
@@ -50,6 +51,8 @@ export interface BoardPilotApi {
     closeSerial(): Promise<Result<true>>;
     writeSerial(text: string): Promise<Result<true>>;
     captureSerial(baud: number, ms: number): Promise<Result<string[]>>;
+    /** Checks a firmware file against the board before writing (format, chip, size). Read-only. */
+    preflight(filePath: string): Promise<Result<PreflightReport>>;
   };
   sim: {
     scenarios(): Promise<ScenarioInfo[]>;

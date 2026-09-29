@@ -3,6 +3,8 @@
 
 import { EventEmitter } from 'node:events';
 import { existsSync, readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { preflightImage, type PreflightReport } from '@shared/preflight';
 import { join } from 'node:path';
 import type {
   AgentReplyMap,
@@ -386,6 +388,16 @@ export class HardwareHub extends EventEmitter<HubEvents> {
       8 * 60 * 1000,
       t('Restoring your firmware'),
     );
+  }
+
+  /** Reads the firmware file and checks it against the board before anything is written (read-only). */
+  async preflight(filePath: string): Promise<Result<PreflightReport>> {
+    try {
+      const bytes = await readFile(filePath);
+      return { ok: true, value: preflightImage(new Uint8Array(bytes), filePath.split(/[\\/]/).pop() ?? filePath, this.board) };
+    } catch {
+      return { ok: false, error: { code: 'read_failed', humanMessage: t('The file could not be read.'), hint: t('Check that the file still exists and try again.') } };
+    }
   }
 
   flashUser(token: string, filePath: string): Promise<Result<{ bytes: number }>> {

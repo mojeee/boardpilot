@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Flash pre-flight check: before anything is written, Flash firmware reads the file and checks that it is made for the board. Covered: the format the board takes; the ESP32 image header (chip, flash size, app size against the default partition, merged images); the UF2 family (RP2040 vs RP2350); Intel HEX checksums and size (with a warning near the AVR bootloader, and nRF52 UICR records left out); the STM32 vector table (stack in SRAM, start in flash). A problem stops the flow with the reason and "Choose another file"; warnings are shown before the confirmation. Every result is read from the file itself.
 - Sharper pictures: screenshots are captured at 2x pixel density (README 2400 px, website 1800 and 900 px, matching the sizes the pages declare), and each board's social image now shows the bare board, large and crisp.
 - Silkscreen: pin names that would print under a chip or button move to a free side of their pin when there is one.
 - Roadmap: a last step for October, an interactive demo of the app on the website (the simulator running in the page, no install), as you asked.

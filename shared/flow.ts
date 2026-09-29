@@ -19,6 +19,7 @@ import type {
   WriteRequest,
 } from './types';
 import { t } from './i18n';
+import type { PreflightReport } from './preflight';
 
 export type StepType = 'auto' | 'question' | 'input' | 'confirm' | 'action' | 'result';
 export type StepStatus = 'pending' | 'running' | 'waiting' | 'ok' | 'warning' | 'failed' | 'skipped';
@@ -108,6 +109,7 @@ export interface FlowHardware {
   agent<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>): Promise<Result<AgentReplyMap[K]>>;
   captureSerial(baud: number, ms: number): Promise<Result<string[]>>;
   flashUser(token: string, filePath: string): Promise<Result<{ bytes: number }>>;
+  preflight(filePath: string): Promise<Result<PreflightReport>>;
 }
 
 export interface FlowContext {
