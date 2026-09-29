@@ -15,6 +15,7 @@ import { PowerBudget } from '../components/PowerBudget';
 import { Calculators } from '../components/Calculators';
 import { PortfolioPanel } from '../components/PortfolioPanel';
 import { PinPlanner } from '../components/PinPlanner';
+import { StateMachineDesigner } from '../components/StateMachineDesigner';
 import { TemplatePicker, TemplateView } from '../components/TemplatePanel';
 import { useTemplate } from '../state/templateRun';
 import { TEMPLATES } from '@shared/templates';
@@ -26,6 +27,7 @@ export function NewProjectPanel() {
   const [sketch, setSketch] = useState<string | null>(null);
   const [showTemplates, setShowTemplates] = useState(false);
   const tplOpen = useTemplate((s) => !!s.tpl);
+  const hasMachine = useScene((s) => s.scene.stateMachine !== undefined);
   const board = getBoard(scene.board);
 
   const assign = () => {
@@ -114,6 +116,10 @@ export function NewProjectPanel() {
           <details className="bom-details">
             <summary className="label">{t('Calculators: timer, PWM, UART, ADC')}</summary>
             <Calculators />
+          </details>
+          <details className="bom-details" open={hasMachine || undefined}>
+            <summary className="label">{t('State machine designer: diagram, C code and tests')}</summary>
+            <StateMachineDesigner />
           </details>
           <div className="label">{t('3. Starter code')}</div>
           <div className="row gap wrap">

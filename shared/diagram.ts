@@ -65,7 +65,7 @@ const LANE = 10;
 const HEAD = 44;
 
 /** Header order of a board pin: along the board edge, the way the pins are physically lined up. */
-function headerOrder(board: BoardDef): Map<string, number> {
+export function headerOrder(board: BoardDef): Map<string, number> {
   const withPos = board.pins.map((p) => {
     const [x, , z] = pinPositionMm(board, p);
     return { p, x, z };
