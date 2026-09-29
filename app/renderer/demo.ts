@@ -143,6 +143,25 @@ async function runNamedDemo(name: string, scenario: string | null) {
     useApp.getState().setScreen('learn');
     await sleep(800);
     if (b && b.kind === 'board') document.querySelector<HTMLButtonElement>('.learn-board .btn')?.click();
+  } else if (name === 'starter') {
+    // #demo=starter&board=rpi-pico: the weather station on an RP board, New project with a
+    // generated Pico SDK project (clicks the toolchain choice and the generate button).
+    const id = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('board') ?? 'rpi-pico';
+    useScene.getState().openScene({ board: id, parts: [], wires: [] });
+    await until(() => useApp.getState().conn.board === id);
+    const { TEMPLATES, templateScene } = await import('@shared/templates');
+    const { PARTS, getBoard } = await import('@shared/board');
+    const { t } = await import('@shared/i18n');
+    const tpl = TEMPLATES.find((x) => x.id === 'weather-station');
+    if (tpl) useScene.getState().openScene(templateScene(tpl, getBoard(id), PARTS));
+    openTask('newProject');
+    await sleep(800);
+    const click = (text: string) => [...document.querySelectorAll<HTMLButtonElement>('.wizard button')].find((b) => b.textContent?.trim() === text)?.click();
+    click(t('Pico SDK'));
+    await sleep(300);
+    click(t('Generate Pico SDK project'));
+    await sleep(300);
+    document.querySelector('.wizard pre.code')?.scrollIntoView({ block: 'center' });
   } else if (name === 'code') {
     // #demo=code: the weather station with a sketch that has SDA/SCL reversed and the LED on the wrong pin.
     openTask('newProject');
