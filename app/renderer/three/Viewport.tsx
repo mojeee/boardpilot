@@ -107,6 +107,9 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
         <Canvas
           camera={{ position: [-38, 72, 96], fov: 35, near: 1, far: 4000 }}
           dpr={[1, 2]}
+          // offsetSize: measure the layout size, not the on-screen size, so the canvas stays right
+          // inside a CSS-scaled parent (the social clip capture scales the whole app).
+          resize={{ offsetSize: true }}
           gl={{ preserveDrawingBuffer: true, antialias: true }}
           onPointerMissed={() => !useScene.getState().wireMode && useScene.getState().select(null)}
         >
