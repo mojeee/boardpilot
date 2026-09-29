@@ -460,7 +460,7 @@ say so if you want it the other way.
 | 14 | Register map viewer, decoded live | M | BME280, MPU6050, SSD1306 first | [x] |
 | 7 | Hands-on labs inside lessons, checked live | L | All boards with the agent; simulator scenarios for each | [x] |
 | 8 | Timing view (logic-analyser style) | L | Current stream rate first, labelled "sampled"; fast capture later | [x] |
-| 16 | Guided portfolio projects with checkpoints (builds on the templates) | L | Finished reference code, with hints shown first | [~] Smart room monitor done (8 checked stages, simulator end to end); industrial node and predictive maintenance next |
+| 16 | Guided portfolio projects with checkpoints (builds on the templates) | L | Finished reference code, with hints shown first | [x] |
 | 12 | State machine designer → C code and tests | L | A tool in New project | [ ] |
 | 11 | Starter firmware for STM32 HAL, ESP-IDF, Pico SDK | L | Pico SDK first; compile check as a nightly CI job | [ ] |
 | 17 | AI interview coach | M | Answers stored only on this computer, deletable, 90 days | [x] |
