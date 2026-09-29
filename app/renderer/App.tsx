@@ -78,6 +78,7 @@ function RightPanel() {
   const flowId = useWizard((s) => s.state?.flowId);
   if (screen === 'newProject') return <NewProjectPanel />;
   if (screen === 'debug') return flowId?.startsWith('debug-') ? <WizardWithAssistant /> : <DebugPicker />;
+  if (screen === 'test' && flowId?.startsWith('lab-')) return <WizardWithAssistant />;
   if (screen === 'connect' || screen === 'flash') {
     const want = TASKS.find((x) => x.screen === screen)?.flow;
     return flowId === want ? <WizardWithAssistant /> : <FlowStarter screen={screen} />;

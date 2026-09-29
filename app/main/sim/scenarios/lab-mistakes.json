@@ -1,7 +1,7 @@
 {
- "id": "healthy",
- "name": "Weather station, all good",
- "description": "Everything wired correctly. The firmware streams temperature, humidity, pressure and the knob.",
+ "id": "lab-mistakes",
+ "name": "Lab bench, three beginner mistakes",
+ "description": "The LED is on an input-only pin, the button has no pull-up, and the knob has a loose leg.",
  "ports": [
   {
    "path": "/dev/cu.usbserial-0001",
@@ -124,7 +124,7 @@
     "id": "w5",
     "from": {
      "part": "board",
-     "pin": "D25"
+     "pin": "D35"
     },
     "to": {
      "part": "led1",
@@ -223,12 +223,12 @@
   "pins": {
    "34": {
     "analog": {
-     "mv": 1840,
-     "noise": 12
+     "mv": 0,
+     "noise": 6,
+     "stuck": true
     }
    },
    "27": {
-    "external": "pullup",
     "button": true
    }
   }
@@ -240,15 +240,12 @@
   "12": 0,
   "15": 1
  },
- "initialAgentPins": {
-  "25": {
-   "mode": "pwm",
-   "duty": 62,
-   "hz": 5000
-  }
- },
  "serial": {
   "baud": 115200,
-  "mode": "weather"
+  "mode": "lines",
+  "lines": [
+   "Blink sketch running"
+  ],
+  "intervalMs": 1000
  }
 }

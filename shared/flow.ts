@@ -21,6 +21,8 @@ import type {
 import { t } from './i18n';
 import type { PreflightReport } from './preflight';
 
+export type SimControl = 'turnKnob' | 'pressButton';
+
 export type StepType = 'auto' | 'question' | 'input' | 'confirm' | 'action' | 'result';
 export type StepStatus = 'pending' | 'running' | 'waiting' | 'ok' | 'warning' | 'failed' | 'skipped';
 export type InputKind = 'model' | 'library' | 'photo' | 'datasheet' | 'port' | 'firmware';
@@ -46,6 +48,8 @@ export interface ResultData {
   sources: string[];
   nextSteps: string[];
   highlight: TargetRef[];
+  /** Labs: whether the lab's check passed (a passed lab marks its lesson done). */
+  passed?: boolean;
 }
 
 export interface StepOutcome {
@@ -81,7 +85,9 @@ export interface StepDef {
   /** question steps: show "describe it in your words" */
   allowFreeText?: boolean;
   inputs?: InputKind[];
-  confirm?: { write: WriteRequest['kind']; details: string[] };
+  confirm?: { write: WriteRequest['kind']; details: string[]; uses?: number };
+  /** action steps in simulator mode: a button that does the physical part on the simulated bench */
+  simControl?: SimControl;
   /** Skip the step when this returns false (look before asking). */
   when?: (ctx: FlowContext) => boolean;
   run?: (ctx: FlowContext, answer?: StepAnswer) => Promise<StepOutcome>;
@@ -106,6 +112,8 @@ export interface FlowHardware {
   agentReady(): boolean;
   /** Backs up the flash if needed, flashes the agent and says hello. Needs a token from a confirm step. */
   installAgent(token: string): Promise<Result<HelloReply>>;
+  /** gpio_write / pwm with a token from a confirm step */
+  agentWrite<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>, token: string): Promise<Result<AgentReplyMap[K]>>;
   agent<K extends AgentRequest['cmd']>(req: Extract<AgentRequest, { cmd: K }>): Promise<Result<AgentReplyMap[K]>>;
   captureSerial(baud: number, ms: number): Promise<Result<string[]>>;
   flashUser(token: string, filePath: string): Promise<Result<{ bytes: number }>>;

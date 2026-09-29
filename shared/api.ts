@@ -58,11 +58,11 @@ export interface BoardPilotApi {
     scenarios(): Promise<ScenarioInfo[]>;
     load(id: string): Promise<Result<ConnectionState>>;
     scene(): Promise<Scene>;
-    control(action: 'fixWiring' | 'turnKnob'): Promise<Result<true>>;
+    control(action: 'fixWiring' | 'turnKnob' | 'pressButton'): Promise<Result<true>>;
   };
   safety: {
     /** Call only from a user click on a Confirm button. */
-    grant(kind: WriteRequest['kind'] | 'restore'): Promise<string>;
+    grant(kind: WriteRequest['kind'] | 'restore', uses?: number): Promise<string>;
   };
   ai: {
     status(): Promise<AiStatus>;

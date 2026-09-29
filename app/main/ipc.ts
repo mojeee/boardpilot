@@ -40,9 +40,9 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('sim:scenarios', () => hub.scenarios());
   h('sim:load', (id: string) => hub.loadScenario(id));
   h('sim:scene', () => hub.scenarioScene());
-  h('sim:control', (a: 'fixWiring' | 'turnKnob') => hub.simControl(a));
+  h('sim:control', (a: 'fixWiring' | 'turnKnob' | 'pressButton') => hub.simControl(a));
 
-  h('safety:grant', (kind: WriteRequest['kind'] | 'restore') => grant(kind));
+  h('safety:grant', (kind: WriteRequest['kind'] | 'restore', uses?: number) => grant(kind, typeof uses === 'number' ? uses : 1));
 
   h('ai:status', () => ai.status());
   h('ai:getSettings', () => ai.getSettings());

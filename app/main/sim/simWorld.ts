@@ -17,9 +17,10 @@ import noBoard from './scenarios/no-board.json';
 import portBusy from './scenarios/port-busy.json';
 import resetting from './scenarios/keeps-resetting.json';
 import garbage from './scenarios/garbage-serial.json';
+import labMistakes from './scenarios/lab-mistakes.json';
 
 /** Hand-written benches for the ESP32 DevKit. Other boards get generated benches (see bench.ts). */
-export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage].map(
+export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage, labMistakes].map(
   (s) => s as unknown as Scenario,
 );
 
@@ -41,6 +42,7 @@ export class SimWorld {
   fixed = false;
   private driven = new Map<number, AgentPinState>();
   private knobSweepStart = 0;
+  private buttonDownUntil = 0;
   private readonly bootTime = Date.now();
 
   constructor(scenarioId: string = DEFAULT_SCENARIO, board: BoardDef = getBoard()) {
@@ -92,6 +94,11 @@ export class SimWorld {
     this.knobSweepStart = Date.now();
   }
 
+  /** "Press the button" demo: every simulated button is held down for 4 s. */
+  pressButton() {
+    this.buttonDownUntil = Date.now() + 4000;
+  }
+
   agentBoot() {
     this.firmware = 'agent';
     this.driven.clear();
@@ -120,7 +127,7 @@ export class SimWorld {
     if (!a) return null;
     let mv = a.mv;
     const since = Date.now() - this.knobSweepStart;
-    if (since < 8000) {
+    if (since < 8000 && !a.stuck) {
       // "Turn the knob" demo: sweep 0 → full scale → 0 over 8 s
       const phase = since / 8000;
       mv = Math.round(this.adcMax * (phase < 0.5 ? phase * 2 : (1 - phase) * 2));
@@ -134,7 +141,13 @@ export class SimWorld {
     if (d?.mode === 'pwm') return Math.random() * 100 < (d.duty ?? 0) ? 1 : 0;
     const mv = this.analogMv(gpio);
     if (mv !== null) return mv > this.adcMax / 2 ? 1 : 0;
-    return this.externalPull(gpio) === 'pullup' ? 1 : 0;
+    const pull = this.externalPull(gpio);
+    if (this.physical.pins[String(gpio)]?.button) {
+      if (Date.now() < this.buttonDownUntil) return 0;
+      // Released with no pull-up or pull-down: the pin floats and reads at random.
+      if (!pull) return Math.random() < 0.5 ? 1 : 0;
+    }
+    return pull === 'pullup' ? 1 : 0;
   }
 
   pinState(gpio: number): AgentPinState {

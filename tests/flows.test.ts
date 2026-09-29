@@ -176,3 +176,94 @@ describe('flash-firmware pre-flight on the simulator', () => {
     expect(runner.currentStep?.id).toBe('confirm');
   }, 30000);
 });
+
+describe('lesson labs on the simulator', () => {
+  async function startLab(flow: string, scenario: string) {
+    const { hub, ready } = makeHub(scenario);
+    await ready;
+    const scene = SCENARIOS.find((s) => s.id === scenario)!.scene;
+    const { ctx, log } = makeCtx(hub, scene);
+    const runner = new FlowRunner(FLOWS[flow], ctx);
+    void runner.start();
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'agent');
+    await runner.answer({ kind: 'confirm', confirmed: true, token: grant('flash_agent') });
+    return { hub, runner, log };
+  }
+  const end = (r: FlowRunner) => waitFor(r, (s) => s.status === 'done' || s.status === 'failed', 20000);
+
+  it('blink: one confirmation allows the 6 writes, and the pin follows them', async () => {
+    const { runner, log } = await startLab('lab-blink', 'healthy');
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'allow');
+    await runner.answer({ kind: 'confirm', confirmed: true, token: grant('gpio_write', 6) });
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'see');
+    expect(log.some((e) => e.text.includes('D25 read back: 1 0 1 0 1 0'))).toBe(true);
+    await runner.answer({ kind: 'option', optionId: 'yes', label: 'It blinked 3 times' });
+    const s = await end(runner);
+    expect(s.result).toMatchObject({ passed: true, confidence: 'measured' });
+  }, 30000);
+
+  it('blink: an LED on an input-only pin is refused, and the lab says where to move it', async () => {
+    const { runner } = await startLab('lab-blink', 'lab-mistakes');
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'allow');
+    await runner.answer({ kind: 'confirm', confirmed: true, token: grant('gpio_write', 6) });
+    const s = await end(runner);
+    expect(s.result?.passed).toBe(false);
+    expect(s.result?.title).toBe('The pin cannot drive the LED');
+  }, 30000);
+
+  it('blink: nothing is written without the confirmation', async () => {
+    const { runner, log } = await startLab('lab-blink', 'healthy');
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'allow');
+    await runner.answer({ kind: 'confirm', confirmed: false });
+    const s = await end(runner);
+    expect(s.status).toBe('failed');
+    expect(log.some((e) => e.text.includes('read back'))).toBe(false);
+  }, 30000);
+
+  it('button: 1 released, 0 while pressed', async () => {
+    const { runner, hub } = await startLab('lab-button', 'healthy');
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'press');
+    hub.simControl('pressButton');
+    await runner.answer({ kind: 'done' });
+    const s = await end(runner);
+    expect(s.result).toMatchObject({ passed: true, title: 'Your button works' });
+  }, 30000);
+
+  it('button: a floating pin is caught before the press', async () => {
+    const { runner } = await startLab('lab-button', 'lab-mistakes');
+    const s = await end(runner);
+    expect(s.result?.passed).toBe(false);
+    expect(s.result?.title).toMatch(/floats|reads 0/);
+  }, 30000);
+
+  it('adc: turning the knob covers the range', async () => {
+    const { runner, hub } = await startLab('lab-adc', 'healthy');
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'turn');
+    hub.simControl('turnKnob');
+    await runner.answer({ kind: 'done' });
+    const s = await end(runner);
+    expect(s.result?.passed).toBe(true);
+  }, 30000);
+
+  it('adc: a loose leg leaves the reading stuck', async () => {
+    const { runner, hub } = await startLab('lab-adc', 'lab-mistakes');
+    await waitFor(runner, (s) => s.status === 'waiting' && runner.currentStep?.id === 'turn');
+    hub.simControl('turnKnob');
+    await runner.answer({ kind: 'done' });
+    const s = await end(runner);
+    expect(s.result).toMatchObject({ passed: false, title: 'The reading did not change' });
+  }, 30000);
+
+  it('i2c: finds the sensor and explains its chip ID', async () => {
+    const { runner } = await startLab('lab-i2c', 'healthy');
+    const s = await end(runner);
+    expect(s.result?.passed).toBe(true);
+    expect(s.result?.cause).toContain('0x60');
+  }, 30000);
+
+  it('i2c: crossed wires are found with the swap test', async () => {
+    const { runner } = await startLab('lab-i2c', 'weather-station-swapped');
+    const s = await end(runner);
+    expect(s.result).toMatchObject({ passed: false, title: 'SDA and SCL are crossed' });
+  }, 30000);
+});

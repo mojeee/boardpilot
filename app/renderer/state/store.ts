@@ -341,6 +341,8 @@ export interface ConfirmRequest {
   body: string;
   details: string[];
   confirmLabel: string;
+  /** writes this one confirmation allows (default 1), stated in the dialog text */
+  uses?: number;
   resolve(token: string | null): void;
 }
 
