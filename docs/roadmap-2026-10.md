@@ -452,7 +452,8 @@ say so if you want it the other way.
 | 5 | Wiring diagram and schematic from the project | L | Wiring view first; lives as a viewport tab and in the report | [~] wiring view done; schematic next |
 | 18 | Bill of materials and shopping list export | S | none | [x] |
 | 9 | Peripheral and pin planner | M | Suggests and highlights the pins (no "Apply": the plan comes before any part exists) | [x] |
-| 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [ ] |
+| 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [x] |
+| 21 | BoardPilot as an MCP server for AI agents | L | Needs your OK: `@modelcontextprotocol/sdk` dependency, transport (stdio launcher or local HTTP), headless mode | [ ] |
 | 6 | Lessons: "Show on the 3D board" buttons | M | Split view (lesson left, 3D right) | [ ] |
 | 13 | Power budget and battery life (merges step 3 C "Power budget") | M | Yes to sourced current fields in parts; unknown parts listed as unknown | [ ] |
 | 10 | Clock-aware calculators with code (timer, PWM, UART, ADC) | M | Add a sourced `clocks` section to board files | [ ] |
