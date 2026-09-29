@@ -29,6 +29,8 @@ const parts = readdirSync(join(root, 'parts'))
   .map((f) => JSON.parse(readFileSync(join(root, 'parts', f), 'utf8')))
   .sort((a, b) => a.name.localeCompare(b.name));
 const PARTS_COUNT = String(parts.length);
+// lessons are TypeScript data: count their ids rather than importing the module
+const LESSONS_COUNT = String((readFileSync(join(root, 'shared/lessons.ts'), 'utf8').match(/^    id: '/gm) ?? []).length);
 const featured = ['bme280-gy', 'hc-sr04', 'ssd1306-i2c', 'mpu6050', 'ws2812b-strip', 'vl53l0x', 'ds18b20-probe', 'rc522-rfid', 'relay-1ch', 'servo-sg90', 'ina219', 'neo-6m-gps', 'bh1750-gy302', 'max30102', 'l298n-driver', 'tm1637-4digit'];
 const partsCloud = (lang) =>
   featured
@@ -121,6 +123,9 @@ function landing(lang) {
     .replaceAll('{{PARTS_COUNT}}', PARTS_COUNT)
     .replaceAll('{{BOARDS}}', `${lang === 'it' ? '/it' : ''}/boards/`)
     .replaceAll('{{BOARDS_COUNT}}', String(boards.length))
+    .replaceAll('{{LEARN}}', `${lang === 'it' ? '/it' : ''}/learn/`)
+    .replaceAll('{{GLOSSARY}}', `${lang === 'it' ? '/it' : ''}/learn/glossary/`)
+    .replaceAll('{{TOOLS}}', `${lang === 'it' ? '/it' : ''}/tools/`)
     .replaceAll('{{BOARD_CARDS}}', boardCards(lang, boards, BOARD_IT))
     .replaceAll('{{PARTS_CLOUD}}', partsCloud(lang))
     .replaceAll('{{TRY_LIVE}}', tryBlock(lang, board, false))
@@ -131,6 +136,8 @@ function landing(lang) {
     .replaceAll('{{OG_LOCALE}}', lang === 'it' ? 'it_IT' : 'en_US')
     .replaceAll('{{OG_LOCALE_ALT}}', lang === 'it' ? 'en_US' : 'it_IT');
   if (lang === 'it') html = translate(html, IT);
+  // after translation too: the Italian texts carry the same placeholder
+  html = html.replaceAll('{{LESSONS_COUNT}}', LESSONS_COUNT);
   const title = unesc(/<title[^>]*>([\s\S]*?)<\/title>/.exec(html)[1]);
   const description = unesc(/<meta name="description"[^>]*content="([^"]*)"/.exec(html)[1]);
   const ld = {
@@ -144,7 +151,7 @@ function landing(lang) {
         url,
         description,
         applicationCategory: 'DeveloperApplication',
-        applicationSubCategory: 'Embedded development, ESP32 debugging',
+        applicationSubCategory: 'Embedded development, electronics learning, ESP32 debugging',
         operatingSystem: 'macOS 12+, Windows 10, Windows 11',
         softwareVersion: pkg.version,
         inLanguage: ['en', 'it'],
@@ -159,10 +166,14 @@ function landing(lang) {
         license: `${REPO}/blob/main/LICENSE.md`,
         author: { '@type': 'Person', name: 'Mojtaba Amini', url: 'https://github.com/mojeee' },
         sameAs: [REPO],
+        keywords:
+          lang === 'it'
+            ? 'sistemi embedded, imparare embedded da zero, microcontrollore, ESP32, Raspberry Pi Pico, Arduino, STM32, I2C, SPI, UART, GPIO, ADC, PWM, RTOS, debug firmware, schema elettrico'
+            : 'embedded systems, learn embedded from zero, microcontroller, ESP32, Raspberry Pi Pico, Arduino, STM32, I2C, SPI, UART, GPIO, ADC, PWM, RTOS, firmware debugging, schematic',
         featureList:
           lang === 'it'
-            ? 'Scheda ESP32 in 3D, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, libreria componenti, grafici dal vivo, simulatore'
-            : 'Live 3D ESP32 board, guided I2C debugging, SDA/SCL swap test, decoded I2C bus, wiring checker, parts library, live plots, simulator',
+            ? 'Scheda 3D dal vivo per 13 schede, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, schema elettrico, pianificatore dei pin, lista della spesa, consumi e batteria, calcolatori di timer e UART, macchine a stati, codice di partenza Arduino e Pico SDK, lezioni di embedded con laboratori verificati sulla scheda, vista temporale, mappe dei registri, server MCP per agenti AI, simulatore'
+            : 'Live 3D board for 13 boards, guided I2C debugging, SDA/SCL swap test, decoded I2C bus, wiring checker, schematic, pin planner, shopping list, power budget and battery life, timer and UART calculators, state machine designer, Arduino and Pico SDK starter code, embedded lessons with labs checked on the board, timing view, register maps, MCP server for AI agents, simulator',
       },
       { '@type': 'WebPage', '@id': `${url}#page`, url, name: title, inLanguage: lang, isPartOf: { '@id': `${SITE}/#website` }, about: { '@id': `${SITE}/#app` } },
       { '@type': 'FAQPage', mainEntity: faqFrom(html) },

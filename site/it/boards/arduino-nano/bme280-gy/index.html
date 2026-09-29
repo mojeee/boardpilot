@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=87d815fd3c" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"BME280 con Arduino Nano","description":"Come collegare BME280 a Arduino Nano: quali pin usare (SCL → A5, SDA → A4), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/arduino-nano/bme280-gy/","tool":[{"@type":"HowToTool","name":"Arduino Nano"},{"@type":"HowToTool","name":"GY-BME280 breakout"}],"step":[{"@type":"HowToStep","position":1,"name":"VIN → 3V3","text":"VIN (Alimentazione) → 3V3"},{"@type":"HowToStep","position":2,"name":"GND → GND","text":"GND (Massa) → GND"},{"@type":"HowToStep","position":3,"name":"SCL → A5","text":"SCL (Clock I2C (SCL)) → A5 (PC5)"},{"@type":"HowToStep","position":4,"name":"SDA → A4","text":"SDA (Dati I2C (SDA)) → A4 (PC4)"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di Arduino Nano uso per BME280?","acceptedAnswer":{"@type":"Answer","text":"VIN → 3V3, GND → GND, SCL → A5 (PC5), SDA → A4 (PC4)."}},{"@type":"Question","name":"BME280 funziona con Arduino Nano a 5 V?","acceptedAnswer":{"@type":"Answer","text":"BME280 funziona a 3,3 V e Arduino Nano usa segnali a 5 V. Alimentalo a 3,3 V e metti un traslatore di livello sui fili dei segnali, oppure compra la versione del modulo a 5 V."}},{"@type":"Question","name":"Qual è l’indirizzo I2C di BME280?","acceptedAnswer":{"@type":"Answer","text":"0x76 o 0x77. Una scansione I2C (BoardPilot la fa per te) mostra quale usa il tuo modulo."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"Arduino Nano","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-nano/"},{"@type":"ListItem","position":4,"name":"GY-BME280 breakout","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-nano/bme280-gy/"}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
