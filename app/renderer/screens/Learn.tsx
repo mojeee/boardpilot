@@ -13,6 +13,7 @@ import type { Scene, TargetRef } from '@shared/types';
 import { askAi } from '../components/ai';
 import { Icon } from '../components/Icon';
 import { LessonWidget } from './LearnWidgets';
+import { InterviewCoach } from '../components/InterviewCoach';
 
 const KEY = 'bp.learn';
 
@@ -241,7 +242,9 @@ export function Learn() {
               <p className="dim">{t('Answer out loud before you look anything up. Senior interviews ask why, not what.')}</p>
               <ol>
                 {lesson.interview.map((q) => (
-                  <li key={q}>{t(q)}</li>
+                  <li key={q}>
+                    {t(q)} <InterviewCoach lesson={lesson} question={q} />
+                  </li>
                 ))}
               </ol>
             </section>
