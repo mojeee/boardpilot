@@ -723,3 +723,7 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .planner-row { cursor: pointer; }
 .planner-row:hover td { background: var(--raised); }
 .learn-seg { align-self: flex-start; flex-wrap: wrap; }
+
+/* MCP settings */
+.mcp-settings { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; }
+.mcp-cmd { flex: 1; background: var(--chrome); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px 8px; overflow-x: auto; white-space: nowrap; }

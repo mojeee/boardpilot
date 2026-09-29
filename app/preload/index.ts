@@ -76,6 +76,7 @@ const api: BoardPilotApi = {
     save: call('project:save'),
     open: call('project:open'),
   } as BoardPilotApi['project'],
+  mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult') } as BoardPilotApi['mcp'],
   license: {
     status: call('license:status'),
     activate: call('license:activate'),
@@ -93,6 +94,7 @@ const api: BoardPilotApi = {
     log: listen('log'),
     progress: listen('progress'),
     trace: listen('trace'),
+    mcpWrite: listen('mcpWrite'),
   } as BoardPilotApi['on'],
 };
 
