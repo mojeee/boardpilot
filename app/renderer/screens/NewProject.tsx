@@ -11,6 +11,7 @@ import { addPart } from '../state/sceneActions';
 import { AssistantPanel } from '../components/AssistantPanel';
 import { CodeCheck } from '../components/CodeCheck';
 import { BomTable } from '../components/BomTable';
+import { PinPlanner } from '../components/PinPlanner';
 import { TemplatePicker, TemplateView } from '../components/TemplatePanel';
 import { useTemplate } from '../state/templateRun';
 import { TEMPLATES } from '@shared/templates';
@@ -53,6 +54,10 @@ export function NewProjectPanel() {
             </button>
           </div>
           {showTemplates && <TemplatePicker />}
+          <details className="bom-details">
+            <summary className="label">{t('Plan my pins')}</summary>
+            <PinPlanner />
+          </details>
           <div className="label">{t('1. Add parts')}</div>
           <PartsLibrary />
           <PhotoInput compact onConfirm={(id) => addPart(id, { confirmed: true })} />
