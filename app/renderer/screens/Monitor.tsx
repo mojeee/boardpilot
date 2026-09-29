@@ -1,4 +1,5 @@
-// Monitor: serial console for the user's firmware, live plots colored by source pin, memory panel.
+// Monitor: serial console for the user's firmware, the timing view (sampled pin levels and decoded
+// I2C), live plots colored by source pin, memory panel.
 
 import { useEffect, useRef, useState } from 'react';
 import uPlot from 'uplot';
@@ -7,6 +8,7 @@ import { currentBoard, useApp, useLive, log, type Series } from '../state/store'
 import { startStream, agent } from '../state/hw';
 import { ROLE_HEX, getBoard, pinByGpio } from '@shared/board';
 import { openTask } from '../components/TaskRail';
+import { TimingPanel } from '../components/TimingPanel';
 import { t } from '@shared/i18n';
 
 const WINDOWS = [
@@ -296,6 +298,7 @@ export function Monitor() {
           {t('Reset plots')}
         </button>
       </div>
+      <TimingPanel />
       <div className="monitor-grid">
         <div className="plots">
           {keys.length === 0 && (
