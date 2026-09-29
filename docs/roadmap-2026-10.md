@@ -449,7 +449,7 @@ say so if you want it the other way.
 
 | # | Issue | Size | Decision needed (my default) | Status |
 |---|---|---|---|---|
-| 5 | Wiring diagram and schematic from the project | L | Wiring view first; lives as a viewport tab and in the report | [~] wiring view done; schematic next |
+| 5 | Wiring diagram and schematic from the project | L | Wiring view first; lives as a viewport tab and in the report | [x] |
 | 18 | Bill of materials and shopping list export | S | none | [x] |
 | 9 | Peripheral and pin planner | M | Suggests and highlights the pins (no "Apply": the plan comes before any part exists) | [x] |
 | 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [x] |

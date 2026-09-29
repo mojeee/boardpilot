@@ -36,6 +36,8 @@ export async function runDemo(name: string, scenario: string | null) {
     await runNamedDemo(name, scenario);
     const view = hp.get('view');
     if (view === '3d' || view === '2d' || view === 'diagram') useScene.getState().set({ view });
+    // &diagram=schematic: the Diagram tab shows the schematic instead of the wiring diagram.
+    if (hp.get('diagram') === 'schematic') (await import('./three/DiagramView')).setDiagramMode('schematic');
   } finally {
     if (cam === 'top' || cam === 'side' || cam === 'module' || cam === 'home') useScene.getState().preset(cam);
   }
