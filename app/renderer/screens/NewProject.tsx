@@ -9,6 +9,7 @@ import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
 import { addPart } from '../state/sceneActions';
 import { AssistantPanel } from '../components/AssistantPanel';
+import { CodeCheck } from '../components/CodeCheck';
 import { t } from '@shared/i18n';
 
 export function NewProjectPanel() {
@@ -81,6 +82,8 @@ export function NewProjectPanel() {
             )}
           </div>
           {sketch && <pre className="code">{sketch}</pre>}
+          <div className="label">{t('4. Check my code against the drawing')}</div>
+          <CodeCheck />
         </div>
       </div>
       <div className="right-bottom small-assistant">

@@ -215,12 +215,14 @@ interface LiveStore {
   mem: ProbeFrame['mem'][];
   series: Record<string, Series>;
   paused: boolean;
+  /** Baud rate chosen in Monitor (the code checker compares it with Serial.begin). */
+  baud: number;
   recording: { startedAt: number; rows: string[] } | null;
   pushFrame(f: LiveFrame): void;
   pushTrace(t: TraceEvent): void;
   pushSerial(lines: string[]): void;
   pushProbe(p: ProbeFrame): void;
-  set(p: Partial<Pick<LiveStore, 'paused' | 'recording' | 'serial'>>): void;
+  set(p: Partial<Pick<LiveStore, 'paused' | 'recording' | 'serial' | 'baud'>>): void;
   resetSeries(): void;
 }
 
@@ -256,6 +258,7 @@ export const useLive = create<LiveStore>((set, get) => ({
   mem: [],
   series: {},
   paused: false,
+  baud: 115200,
   recording: null,
   pushFrame: (f) => {
     const now = Date.now() / 1000;
