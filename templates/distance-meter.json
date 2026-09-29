@@ -1,0 +1,75 @@
+{
+  "id": "distance-meter",
+  "name": "Distance meter",
+  "summary": "An ultrasonic sensor measures the distance and a 4-digit display shows it in centimetres.",
+  "difficulty": "easy",
+  "minutes": 30,
+  "learn": [
+    "Time a pulse with pulseIn()",
+    "Turn an echo time into centimetres",
+    "Drive a TM1637 display with two pins"
+  ],
+  "parts": [
+    { "id": "sonar1", "partId": "hc-sr04", "label": "HC-SR04" },
+    { "id": "disp1", "partId": "tm1637-4digit", "label": "Display" }
+  ],
+  "pins": {
+    "TRIG": { "part": "sonar1", "pin": "TRIG" },
+    "ECHO": { "part": "sonar1", "pin": "ECHO" },
+    "CLK": { "part": "disp1", "pin": "CLK" },
+    "DIO": { "part": "disp1", "pin": "DIO" }
+  },
+  "libraries": ["TM1637 (by Avishay Orpaz)"],
+  "notes": ["On a 3.3 V board, ECHO needs a voltage divider (1 kΩ + 2 kΩ): the HC-SR04 answers with 5 V."],
+  "code": {
+    "includes": ["#include <TM1637Display.h>"],
+    "globals": [
+      "const int TRIG_PIN = {TRIG};",
+      "const int ECHO_PIN = {ECHO};",
+      "TM1637Display display({CLK}, {DIO});",
+      "unsigned long lastPing = 0;"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(TRIG_PIN, OUTPUT);",
+      "  pinMode(ECHO_PIN, INPUT);",
+      "  display.setBrightness(4);"
+    ],
+    "loop": [
+      "  if (millis() - lastPing < 250) {  // at least 60 ms between pings (HC-SR04 manual)",
+      "    probe.loop();",
+      "    return;",
+      "  }",
+      "  lastPing = millis();",
+      "  probe.step(\"Measure the distance\");",
+      "  digitalWrite(TRIG_PIN, LOW);",
+      "  delayMicroseconds(2);",
+      "  digitalWrite(TRIG_PIN, HIGH);  // a 10 µs pulse starts a measurement",
+      "  delayMicroseconds(10);",
+      "  digitalWrite(TRIG_PIN, LOW);",
+      "  unsigned long echoUs = pulseIn(ECHO_PIN, HIGH, 30000);  // 0 when nothing answers",
+      "  float cm = echoUs / 58.0;  // HC-SR04 manual: distance in cm = echo time in µs / 58",
+      "  probe.value(\"distance\", cm);",
+      "  probe.step(\"Show it on the display\");",
+      "  display.showNumberDec((int)cm);",
+      "  if (echoUs > 0 && cm < 10) probe.event(\"Something is closer than 10 cm\");",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 250,
+    "inputs": { "distance": { "wave": { "min": 6, "max": 80, "periodS": 16 } } },
+    "loop": [
+      { "step": "Measure the distance" },
+      { "read": "distance", "as": "distance", "unit": "cm", "digits": 0 },
+      { "step": "Show it on the display" },
+      { "show": "disp1", "text": "{distance}" },
+      { "if": "distance < 10", "then": [{ "event": "Something is closer than 10 cm" }] }
+    ]
+  },
+  "sources": [
+    { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Timing diagram; distance = echo time / 58 (cm)" },
+    { "title": "Titan Micro TM1637 datasheet", "section": "Two-wire serial interface" }
+  ]
+}

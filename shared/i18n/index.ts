@@ -19,6 +19,7 @@ import boardsUi from './it/boards-ui';
 import boardsData from './it/boards-data';
 import code from './it/code';
 import gotchas from './it/gotchas';
+import templates from './it/templates';
 import lessons from './it/lessons';
 
 export type Lang = 'en' | 'it';
@@ -28,7 +29,7 @@ export const LANGS: { id: Lang; label: string }[] = [
 ];
 
 // lessons first: an existing UI translation with the same English key wins
-export const IT: Record<string, string> = { ...lessons, ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts, ...settings, ...partsdata, ...partsdata2, ...partsdata3, ...partsdata4, ...partsdata5, ...boardsUi, ...boardsData, ...code, ...gotchas };
+export const IT: Record<string, string> = { ...lessons, ...common, ...app, ...three, ...wizard, ...flows, ...main, ...parts, ...settings, ...partsdata, ...partsdata2, ...partsdata3, ...partsdata4, ...partsdata5, ...boardsUi, ...boardsData, ...code, ...gotchas, ...templates };
 
 let current: Lang = 'en';
 const listeners = new Set<(l: Lang) => void>();

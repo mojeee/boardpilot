@@ -2,6 +2,7 @@
 
 import type { BoardDef, PartDef, Scene } from './types';
 import { boardPinFor, isEspFamily, pinById } from './board';
+import { stm32Name } from './templates';
 
 const ident = (s: string) => s.replace(/[^A-Za-z0-9]/g, '_').toUpperCase();
 
@@ -22,7 +23,7 @@ export function generateSketch(scene: Scene, board: BoardDef, parts: Record<stri
   /** How the pin is written in code: the GPIO number, or the pin name on STM32 (STM32duino macros like PA5). */
   const expr = (g: number) => {
     const p = board.pins.find((x) => x.gpio === g && x.kind === 'gpio');
-    return board.family === 'stm32' && p?.chipPin ? p.chipPin : String(g);
+    return board.family === 'stm32' && p ? stm32Name(p) : String(g);
   };
   const esp = isEspFamily(board);
   const avr = board.family === 'avr';

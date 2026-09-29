@@ -10,12 +10,17 @@ import { PartsLibrary } from '../components/PartsLibrary';
 import { addPart } from '../state/sceneActions';
 import { AssistantPanel } from '../components/AssistantPanel';
 import { CodeCheck } from '../components/CodeCheck';
+import { TemplatePicker, TemplateView } from '../components/TemplatePanel';
+import { useTemplate } from '../state/templateRun';
+import { TEMPLATES } from '@shared/templates';
 import { t } from '@shared/i18n';
 
 export function NewProjectPanel() {
   const scene = useScene((s) => s.scene);
   const findings = useScene((s) => s.findings);
   const [sketch, setSketch] = useState<string | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const tplOpen = useTemplate((s) => !!s.tpl);
   const board = getBoard(scene.board);
 
   const assign = () => {
@@ -36,6 +41,17 @@ export function NewProjectPanel() {
               <div className="small dim">{t('Add your parts. The app picks safe pins and writes starter code.')}</div>
             </div>
           </div>
+          {tplOpen ? (
+            <TemplateView />
+          ) : (
+            <>
+          <div className="row between">
+            <div className="label">{t('Start from a template')}</div>
+            <button className="btn small ghost" onClick={() => setShowTemplates(!showTemplates)}>
+              {showTemplates ? t('Hide') : t('Show {n} templates', { n: 5 })}
+            </button>
+          </div>
+          {showTemplates && <TemplatePicker />}
           <div className="label">{t('1. Add parts')}</div>
           <PartsLibrary />
           <PhotoInput compact onConfirm={(id) => addPart(id, { confirmed: true })} />
@@ -84,6 +100,8 @@ export function NewProjectPanel() {
           {sketch && <pre className="code">{sketch}</pre>}
           <div className="label">{t('4. Check my code against the drawing')}</div>
           <CodeCheck />
+            </>
+          )}
         </div>
       </div>
       <div className="right-bottom small-assistant">

@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import type { BoardDef, PinDef, TargetRef } from '@shared/types';
 import { ROLE_HEX, pinMount, pinOutward, pinPositionMm, pinRoleInScene } from '@shared/board';
 import { useLive, useScene } from '../state/store';
+import { useTemplate } from '../state/templateRun';
 import { pinLiftMm } from './geometry';
 
 const GOLD = '#D9B45A';
@@ -46,7 +47,10 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
 
   useFrame(({ clock }) => {
     const live = useLive.getState();
-    const st = pin.gpio !== null && Date.now() - live.frameAt < 2000 ? live.frame?.pins[String(pin.gpio)] : undefined;
+    const measured = pin.gpio !== null && Date.now() - live.frameAt < 2000 ? live.frame?.pins[String(pin.gpio)] : undefined;
+    // A template running in the simulator drives the pins when nothing is measured.
+    const sim = pin.gpio !== null ? useTemplate.getState().simPins[pin.gpio] : undefined;
+    const st = measured ?? (sim !== undefined ? { mode: 'out', level: sim } : undefined);
     let glow = inUse ? 0.25 : 0.05;
     if (st?.mode === 'pwm') glow = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(clock.elapsedTime * 8)) * ((st.duty ?? 50) / 100);
     else if (st?.level === 1) glow = 0.9;
