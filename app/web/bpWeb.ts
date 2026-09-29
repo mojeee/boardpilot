@@ -12,7 +12,7 @@
 
 import type { BoardPilotApi, McpStatus, TraceEvent, Unsubscribe } from '@shared/api';
 import { EVENT_CHANNELS } from '@shared/api';
-import type { HardwareMode, LicenseStatus, LogEntry, PartDef, Result, Scene } from '@shared/types';
+import type { AiContext, CodeSuggestionRequest, HardwareMode, LicenseStatus, LogEntry, PartDef, Result, Scene } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { PROVIDER_INFO } from '@shared/ai';
 import { BUY_URL, TRIAL_DAYS } from '@shared/brand';
@@ -167,6 +167,7 @@ const api: BoardPilotApi = {
     ask: wrap((q: string, ctx) => assistant.ask(q, { ...ctx, log: ctx.log.length ? ctx.log : sessionLog.slice(-50) })),
     recognize: wrap((b64: string, mt: 'image/jpeg' | 'image/png' | 'image/webp') => assistant.recognizePart(b64, mt)),
     classify: wrap((text: string, options: { id: string; label: string }[]) => assistant.classify(text, options)),
+    suggestCode: wrap((ctx: AiContext, req: CodeSuggestionRequest) => assistant.suggestCode({ ...ctx, log: ctx.log.length ? ctx.log : sessionLog.slice(-50) }, req)),
     reset: wrap(() => assistant.reset()),
   },
   session: {

@@ -79,17 +79,28 @@ export function buildContextBlock(board: BoardDef, ctx: AiContext): string {
         Object.entries(ctx.live.pins).map(([g, s]) => [g, s.mv !== undefined ? `${s.mode} ${s.mv} mV (measured)` : `${s.mode} level ${s.level ?? '?'}`]),
       )
     : null;
+  const { sketch, ...drawing } = ctx.scene;
   return [
     '<context>',
     `Reply language: ${getLanguage() === 'it' ? 'Italian (keep pin names, code and units as they are)' : 'English'}`,
     `Screen: ${ctx.screen}${ctx.flowId ? `, flow ${ctx.flowId}, step ${ctx.stepId ?? '?'}` : ''}`,
     `Board: ${board.name} (${board.id}), facts from the board file: ${JSON.stringify(boardFacts)}`,
     `Board pins: ${JSON.stringify(pins)}`,
-    `Project scene (what the user drew; may differ from the real bench): ${JSON.stringify(ctx.scene)}`,
+    `Project scene (what the user drew; may differ from the real bench): ${JSON.stringify(drawing)}`,
+    sketch?.text.trim() ? `Project code (${sketch.name}, numbered lines, as the user has it in the Code panel):\n${numberedCode(sketch.text)}` : 'Project code: none yet',
+    ...(ctx.events?.length ? [`Recent app events (newest last): ${JSON.stringify(ctx.events.slice(-30))}`] : []),
     `Parts library entries for the scene: ${JSON.stringify(partFacts)}`,
     `User answers so far: ${JSON.stringify(ctx.answers)}`,
     `Latest live pin readings: ${live ? JSON.stringify(live) : 'none (agent not streaming)'}`,
     `Last session log entries: ${JSON.stringify(ctx.log.slice(-50).map((e) => ({ type: e.type, text: e.text, source: e.source, target: e.target })))}`,
     '</context>',
   ].join('\n');
+}
+
+/** The code with line numbers, cut to a size the models take comfortably. */
+export function numberedCode(text: string, maxLines = 400): string {
+  const lines = text.split('\n');
+  const shown = lines.slice(0, maxLines).map((l, i) => `${String(i + 1).padStart(4)}| ${l.slice(0, 240)}`);
+  if (lines.length > maxLines) shown.push(`… ${lines.length - maxLines} more lines not shown`);
+  return shown.join('\n');
 }

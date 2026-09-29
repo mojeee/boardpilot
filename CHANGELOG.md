@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+Workspace redesign (the plan in `docs/roadmap-2026-10.md`):
+
+- A top menu replaces the left task rail: Project, Connect, Flash, Debug, Monitor, Test, Report and Learn, with the board and its USB status next to it (click the status to connect). The app opens on the project page: the 3D board in the middle, the assistant open on the right (with a "Project tools" tab for parts, pins, templates, starter code and calculators), and a bottom panel with two tabs, Code and Log. Home is one click on the logo.
+- Every panel can be hidden and brought back: the assistant (⌘I, or the arrow on its edge), the bottom panel (⌘J, or ▾), the bottom panel over the whole centre (⤢), and ⌘⇧F for the 3D view alone. The choice is remembered; the resize handles stay.
+- Code panel: the project's sketch in an editor with syntax colouring, line numbers, auto-indent and its own undo, saved with the project. The code checker runs as you type: each finding marks its line, and a one-click "Fix" appears where the fix is a plain edit (Wire.begin pins in the wrong order, Serial.begin at another speed than the monitor). Open and save the sketch from the panel.
+- Debugger view for templates: "Run in simulator" and "Step" in the Code panel, the running line highlighted and followed, and beside the code the simulated time, state, step, the values on each part and the level of each pin, all labelled "simulated". Running switches to the Log tab, which shows the story of the run (or the session log).
+- "Suggest code": without the AI, the starter code for the parts and pins in the drawing, from the parts library; with the AI, the next piece of code for the drawing, placed near the cursor. The suggestion waits in the editor with its source (Tab accepts, Esc dismisses, Explain asks the assistant) and AI code goes through the code checker before it is shown.
+- The assistant now sees the project's code (numbered lines) with the drawing.
+- Log rows carry a severity bar (warnings and failures stand out).
+
 ## 0.6.1 (2026-09-29)
 
 - New project starts empty instead of on the simulator's demo bench (Undo brings the demo back; a project you have worked on is never cleared). A "Start empty" button clears a project with parts, again with Undo.

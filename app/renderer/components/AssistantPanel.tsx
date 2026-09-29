@@ -106,7 +106,7 @@ export function DemoBanner() {
   );
 }
 
-export function AssistantPanel({ title, hideInput }: { title?: string; hideInput?: boolean }) {
+export function AssistantPanel({ title, hideInput, hideHeader }: { title?: string; hideInput?: boolean; hideHeader?: boolean }) {
   const items = useAi((s) => s.items);
   const busy = useAi((s) => s.busy);
   const ai = useApp((s) => s.ai);
@@ -117,7 +117,7 @@ export function AssistantPanel({ title, hideInput }: { title?: string; hideInput
 
   return (
     <section className="assistant">
-      <header>
+      <header hidden={hideHeader}>
         <span className="panel-title ai-title">
           <Icon name="ai" size={16} /> {title ?? t('Assistant')}
         </span>

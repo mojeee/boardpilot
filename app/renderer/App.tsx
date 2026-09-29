@@ -2,9 +2,12 @@ import { useEffect } from 'react';
 import { useApp } from './state/store';
 import { wireEvents } from './state/hw';
 import { TopBar } from './components/TopBar';
-import { TaskRail, TASKS, openTask } from './components/TaskRail';
-import { LogPanel } from './components/LogPanel';
+import { TASKS, openTask } from './components/TaskRail';
+import { BottomPanel } from './components/BottomPanel';
+import { CodeFindingsLogger } from './components/CodeCheck';
 import { Splitter } from './components/Splitter';
+import { Icon } from './components/Icon';
+import { handleLayoutKey, useLayout } from './state/layout';
 import { AssistantPanel } from './components/AssistantPanel';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DevMenu } from './components/DevMenu';
@@ -12,6 +15,7 @@ import { Viewport } from './three/Viewport';
 import { WizardWithAssistant } from './wizard/WizardPanel';
 import { useWizard } from './wizard/session';
 import { Home } from './screens/Home';
+import './styles/workspace.css';
 import { DebugPicker } from './screens/DebugPicker';
 import { TestHardware } from './screens/TestHardware';
 import { Monitor } from './screens/Monitor';
@@ -21,7 +25,7 @@ import { Learn } from './screens/Learn';
 import { runDemo } from './demo';
 import { PartEditor } from './components/PartEditor';
 import { LicenseDialog, LockScreen, useLicense } from './components/License';
-import { AiSettingsDialog } from './components/AiSettings';
+import { AiSettingsDialog, openAiSettings } from './components/AiSettings';
 import { BoardPickerDialog } from './components/BoardPicker';
 import { DownloadAppPrompt, isWebDemo } from './components/WebDemo';
 import { usePartsLib } from './state/partsLib';
@@ -78,10 +82,40 @@ function FlowStarter({ screen }: { screen: string }) {
   );
 }
 
+function AiModelLink() {
+  const ai = useApp((s) => s.ai);
+  return (
+    <button className="link dim small mono" onClick={openAiSettings} title={t('AI settings')}>
+      {ai.enabled ? (ai.provider === 'demo' ? t('demo') : ai.model) : t('off')}
+    </button>
+  );
+}
+
+/** The project page's right panel: the assistant (open by default) or the project tools. */
+function ProjectRight() {
+  const tab = useLayout((s) => s.rightTab);
+  const set = useLayout.getState().setRightTab;
+  return (
+    <div className="right-tabs">
+      <div className="tabbar" role="tablist" aria-label={t('Right panel')}>
+        <button role="tab" aria-selected={tab === 'assistant'} className={`tab ai ${tab === 'assistant' ? 'on' : ''}`} onClick={() => set('assistant')}>
+          <Icon name="ai" size={14} /> {t('Assistant')}
+        </button>
+        <button role="tab" aria-selected={tab === 'tools'} className={`tab ${tab === 'tools' ? 'on' : ''}`} onClick={() => set('tools')} title={t('Parts, pins, templates, starter code and calculators')}>
+          <Icon name="project" size={14} /> {t('Project tools')}
+        </button>
+        <span className="grow" />
+        <AiModelLink />
+      </div>
+      <div className={`tab-body ${tab === 'assistant' ? 'no-scroll' : ''}`}>{tab === 'assistant' ? <AssistantPanel hideHeader /> : <NewProjectPanel />}</div>
+    </div>
+  );
+}
+
 function RightPanel() {
   const screen = useApp((s) => s.screen);
   const flowId = useWizard((s) => s.state?.flowId);
-  if (screen === 'newProject') return <NewProjectPanel />;
+  if (screen === 'newProject') return <ProjectRight />;
   if (screen === 'debug') return flowId?.startsWith('debug-') ? <WizardWithAssistant /> : <DebugPicker />;
   if (screen === 'test' && flowId?.startsWith('lab-')) return <WizardWithAssistant />;
   if (screen === 'connect' || screen === 'flash') {
@@ -109,6 +143,58 @@ function Center() {
   }
 }
 
+/** The right panel, or a narrow strip with a button to bring it back. */
+function Right() {
+  const open = useLayout((s) => s.rightOpen);
+  if (!open) {
+    return (
+      <aside className="right">
+        <div className="right-strip">
+          <button onClick={() => useLayout.getState().toggleRight(true)} title={t('Show the assistant (⌘I)')} aria-label={t('Show the assistant (⌘I)')}>
+            <Icon name="ai" size={16} />
+            <span className="vtext">{t('Assistant')}</span>
+          </button>
+        </div>
+      </aside>
+    );
+  }
+  return (
+    <aside className="right">
+      <Splitter kind="right" />
+      <button className="edge-toggle" onClick={() => useLayout.getState().toggleRight(false)} title={t('Hide the panel (⌘I)')} aria-label={t('Hide the panel (⌘I)')}>
+        ›
+      </button>
+      <RightPanel />
+    </aside>
+  );
+}
+
+function Work() {
+  const rightOpen = useLayout((s) => s.rightOpen);
+  const bottomOpen = useLayout((s) => s.bottomOpen);
+  const bottomMax = useLayout((s) => s.bottomMax);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (handleLayoutKey(e)) e.preventDefault();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  const cls = ['work', rightOpen ? '' : 'right-closed', !bottomOpen ? 'bottom-closed' : bottomMax ? 'bottom-max' : ''].filter(Boolean).join(' ');
+  return (
+    <div className={cls}>
+      <main className="center">
+        <Center />
+      </main>
+      <Right />
+      <div className="bottom">
+        {bottomOpen && !bottomMax && <Splitter kind="log" />}
+        <BottomPanel />
+      </div>
+    </div>
+  );
+}
+
 export function App() {
   useEffect(() => {
     void boot();
@@ -121,18 +207,8 @@ export function App() {
   return (
     <div className="shell">
       <TopBar />
-      <TaskRail />
-      <main className="center">
-        <Center />
-      </main>
-      <aside className="right">
-        <Splitter kind="right" />
-        <RightPanel />
-      </aside>
-      <div className="bottom">
-        <Splitter kind="log" />
-        <LogPanel />
-      </div>
+      <Work />
+      <CodeFindingsLogger />
       <DevMenu />
       <PartEditor />
       <LicenseDialog />

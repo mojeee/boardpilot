@@ -52,6 +52,22 @@ describe('code vs wiring checker', () => {
     expect(f[0].source).toMatch(/not a measurement/);
   });
 
+  it('offers a one-line fix for Wire.begin with plain numbers, keeping the rest of the line', () => {
+    const f = check(GOOD.replace('Wire.begin(SDA_PIN, SCL_PIN)', 'Wire.begin(22, 21, 400000)'));
+    expect(f[0].fix).toEqual({ text: '  Wire.begin(21, 22, 400000);' });
+  });
+
+  it('offers no fix when the pins are named constants (the user changes the constant)', () => {
+    const f = check(GOOD.replace('Wire.begin(SDA_PIN, SCL_PIN)', 'Wire.begin(I2C_A, I2C_B)').replace('#include <Wire.h>', '#include <Wire.h>\n#define I2C_A 22\n#define I2C_B 21'));
+    expect(f[0].rule).toBe('code_i2c_pins');
+    expect(f[0].fix).toBeUndefined();
+  });
+
+  it('offers a fix for Serial.begin at the wrong speed', () => {
+    const f = check(GOOD.replace('Serial.begin(115200)', 'Serial.begin(9600)'), { monitorBaud: 115200 });
+    expect(f.find((x) => x.rule === 'code_baud')?.fix).toEqual({ text: '  Serial.begin(115200);' });
+  });
+
   it('flags Wire.begin() on default pins when the drawing uses others', () => {
     const moved: Scene = { ...scene, wires: scene.wires.map((w) => (w.id === 'w1' ? { ...w, from: { part: 'board', pin: 'D32' } } : w)) };
     const f = checkCode(GOOD.replace('Wire.begin(SDA_PIN, SCL_PIN)', 'Wire.begin()'), moved, esp, PARTS);

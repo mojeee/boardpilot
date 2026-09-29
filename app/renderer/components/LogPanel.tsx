@@ -1,8 +1,9 @@
-// Session log. Entries with a target focus the 3D view when clicked.
+// Session log. Entries with a target focus the 3D view when clicked. In the workspace it is the
+// Log tab of the bottom panel (LogFilters sit in the tab bar, LogList below).
 
 import { useEffect, useRef } from 'react';
 import type { LogType } from '@shared/types';
-import { targetLabel, getBoard } from '@shared/board';
+import { targetLabel } from '@shared/board';
 import { currentBoard, useLog, useScene } from '../state/store';
 import { t } from '@shared/i18n';
 
@@ -11,7 +12,25 @@ const LABEL: Record<LogType | 'all', string> = { all: 'All', check: 'Checks', fo
 /** The short type chip on each log row. */
 const TYPE_CHIP: Record<LogType, string> = { info: 'info', check: 'check', warning: 'warning', failed: 'failed', found: 'found', action: 'action' };
 
-export function LogPanel() {
+export function LogFilters() {
+  const filter = useLog((s) => s.filter);
+  return (
+    <>
+      <div className="filters">
+        {FILTERS.map((f) => (
+          <button key={f} className={filter === f ? 'on' : ''} onClick={() => useLog.getState().setFilter(f)}>
+            {t(LABEL[f])}
+          </button>
+        ))}
+      </div>
+      <button className="link small" onClick={() => useLog.getState().clear()}>
+        {t('Clear')}
+      </button>
+    </>
+  );
+}
+
+export function LogList() {
   const entries = useLog((s) => s.entries);
   const filter = useLog((s) => s.filter);
   const scene = useScene((s) => s.scene);
@@ -24,37 +43,34 @@ export function LogPanel() {
   }, [shown.length]);
 
   return (
+    <div className="log-list" ref={listRef}>
+      {shown.length === 0 && <div className="empty">{t('Everything the app checks, finds and does appears here.')}</div>}
+      {shown.map((e) => (
+        <div
+          key={e.id}
+          className={`log-row sev-bar-${e.type} ${e.target ? 'clickable' : ''}`}
+          onClick={() => e.target && useScene.getState().focusOn([e.target])}
+          title={e.target ? t('Show in 3D') : undefined}
+        >
+          <span className="log-time mono">{new Date(e.t).toLocaleTimeString([], { hour12: false })}</span>
+          <span className={`log-type t-${e.type}`}>{t(TYPE_CHIP[e.type] ?? e.type)}</span>
+          <span className="log-text">{e.text}</span>
+          {e.target && <span className="log-target mono">{targetLabel(currentBoard(), scene, e.target)}</span>}
+          {e.source && <span className={`log-src ${e.source.startsWith('measured') ? 'measured' : ''}`}>{e.source}</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function LogPanel() {
+  return (
     <section className="log-panel">
       <header>
         <span className="panel-title">{t('Session log')}</span>
-        <div className="filters">
-          {FILTERS.map((f) => (
-            <button key={f} className={filter === f ? 'on' : ''} onClick={() => useLog.getState().setFilter(f)}>
-              {t(LABEL[f])}
-            </button>
-          ))}
-        </div>
-        <button className="link small" onClick={() => useLog.getState().clear()}>
-          {t('Clear')}
-        </button>
+        <LogFilters />
       </header>
-      <div className="log-list" ref={listRef}>
-        {shown.length === 0 && <div className="empty">{t('Everything the app checks, finds and does appears here.')}</div>}
-        {shown.map((e) => (
-          <div
-            key={e.id}
-            className={`log-row ${e.target ? 'clickable' : ''}`}
-            onClick={() => e.target && useScene.getState().focusOn([e.target])}
-            title={e.target ? t('Show in 3D') : undefined}
-          >
-            <span className="log-time mono">{new Date(e.t).toLocaleTimeString([], { hour12: false })}</span>
-            <span className={`log-type t-${e.type}`}>{t(TYPE_CHIP[e.type] ?? e.type)}</span>
-            <span className="log-text">{e.text}</span>
-            {e.target && <span className="log-target mono">{targetLabel(currentBoard(), scene, e.target)}</span>}
-            {e.source && <span className={`log-src ${e.source.startsWith('measured') ? 'measured' : ''}`}>{e.source}</span>}
-          </div>
-        ))}
-      </div>
+      <LogList />
     </section>
   );
 }
