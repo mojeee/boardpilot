@@ -97,6 +97,10 @@ interface SceneStore {
   loadNonce: number;
   /** Floor style of the 3D view: a workbench or a plain grid. */
   stage: 'desk' | 'plain';
+  /** A temporary scene shown by a lesson; the user's project is kept aside and comes back intact. */
+  preview: { title: string } | null;
+  startPreview(scene: Scene, focus: TargetRef[], title: string): void;
+  endPreview(): void;
   past: Scene[];
   future: Scene[];
   /** Replace the scene. Pass keepHistory to make it undoable. */
@@ -117,6 +121,9 @@ interface SceneStore {
 }
 
 const STAGE_KEY = 'bp.stage';
+
+/** The user's project while a lesson preview is open (see startPreview). */
+let previewSaved: { scene: Scene; past: Scene[]; future: Scene[]; selected: TargetRef | null; highlight: TargetRef[]; view: SceneStore['view'] } | null = null;
 
 /** The remembered floor style; slow computers (few cores or little memory) start with the plain one. */
 function initialStage(): 'desk' | 'plain' {
@@ -149,6 +156,20 @@ export const useScene = create<SceneStore>((set, get) => ({
   cameraPreset: { name: 'home', nonce: 0 },
   loadNonce: 0,
   stage: initialStage(),
+  preview: null,
+  startPreview: (scene, focus, title) => {
+    const st = get();
+    // Keep the user's project exactly as it is (history and view too), unless a preview is already open.
+    if (!st.preview) previewSaved = { scene: st.scene, past: st.past, future: st.future, selected: st.selected, highlight: st.highlight, view: st.view };
+    set((s) => ({ ...withFindings(scene), past: [], future: [], selected: null, highlight: focus, view: '3d', preview: { title }, loadNonce: s.loadNonce + 1 }));
+    setTimeout(() => get().focusOn(focus), 400);
+  },
+  endPreview: () => {
+    const saved = previewSaved;
+    previewSaved = null;
+    if (!get().preview || !saved) return set({ preview: null });
+    set((s) => ({ ...withFindings(saved.scene), past: saved.past, future: saved.future, selected: saved.selected, highlight: saved.highlight, view: saved.view, preview: null, loadNonce: s.loadNonce + 1 }));
+  },
   past: [],
   future: [],
   setScene: (s, keepHistory) =>

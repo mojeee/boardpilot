@@ -35,3 +35,25 @@ describe('lessons', () => {
     expect(LESSONS.filter((l) => l.interview.length === 0).map((l) => l.id)).toEqual([]);
   });
 });
+
+describe('lesson previews on the 3D board', () => {
+  it('reference real boards, pins and part pins, in at least four lessons', async () => {
+    const { BOARDS, PARTS } = await import('@shared/board');
+    let lessonsWithBoard = 0;
+    for (const l of LESSONS) {
+      const blocks = l.blocks.filter((b) => b.kind === 'board');
+      if (blocks.length) lessonsWithBoard++;
+      for (const b of blocks) {
+        if (b.kind !== 'board') continue;
+        const board = BOARDS[b.board];
+        expect(board, `${l.id}: ${b.board}`).toBeTruthy();
+        for (const p of [...b.pins, ...(b.wires ?? []).map((w) => w.pin)]) expect(board.pins.some((x) => x.id === p), `${l.id}: ${p}`).toBe(true);
+        for (const w of b.wires ?? []) {
+          const part = b.parts?.find((p) => p.id === w.part);
+          expect(part && PARTS[part.partId].pins.some((p) => p.name === w.partPin), `${l.id}: ${w.part}.${w.partPin}`).toBe(true);
+        }
+      }
+    }
+    expect(lessonsWithBoard).toBeGreaterThanOrEqual(4);
+  });
+});

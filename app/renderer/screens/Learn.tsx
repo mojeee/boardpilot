@@ -6,7 +6,10 @@ import { useEffect, useRef, useState } from 'react';
 import { create } from 'zustand';
 import { LESSONS, TRACKS, type Lesson, type LessonBlock } from '@shared/lessons';
 import { t } from '@shared/i18n';
-import { useApp } from '../state/store';
+import { useApp, useScene } from '../state/store';
+import { Viewport } from '../three/Viewport';
+import { PARTS, ROLE_HEX, partRoleColor } from '@shared/board';
+import type { Scene, TargetRef } from '@shared/types';
 import { askAi } from '../components/ai';
 import { Icon } from '../components/Icon';
 import { LessonWidget } from './LearnWidgets';
@@ -116,7 +119,49 @@ function Block({ b }: { b: LessonBlock }) {
           <p>{t(b.text)}</p>
         </div>
       );
+    case 'board':
+      return (
+        <div className="learn-board">
+          <button className="btn small" onClick={() => showOnBoard(b)}>
+            <Icon name="box" size={14} /> {t('Show on the 3D board')}
+          </button>
+          <span className="small dim">{t(b.label)}</span>
+        </div>
+      );
   }
+}
+
+/** Opens the lesson's preview scene next to the lesson. The user's project is set aside, not changed. */
+function showOnBoard(b: Extract<LessonBlock, { kind: 'board' }>) {
+  const scene: Scene = {
+    board: b.board,
+    parts: (b.parts ?? []).map((p) => ({ ...p, confirmed: true })),
+    wires: (b.wires ?? []).map((w, i) => {
+      const role = PARTS[b.parts?.find((p) => p.id === w.part)?.partId ?? '']?.pins.find((p) => p.name === w.partPin)?.role ?? 'passive';
+      return { id: `lw${i}`, from: { part: 'board', pin: w.pin }, to: { part: w.part, pin: w.partPin }, color: ROLE_HEX[partRoleColor(role)] };
+    }),
+  };
+  useScene.getState().startPreview(scene, b.pins.map((p) => `pin:${p}` as TargetRef), t(b.label));
+}
+
+function PreviewPane() {
+  const preview = useScene((s) => s.preview);
+  if (!preview) return null;
+  return (
+    <div className="learn-preview">
+      <div className="learn-preview-head">
+        <span className="badge sim">{t('Preview')}</span>
+        <span className="small">{preview.title}</span>
+        <button className="btn small ghost" onClick={() => useScene.getState().endPreview()}>
+          {t('Close preview')}
+        </button>
+      </div>
+      <p className="small dim">{t('Your project is set aside while you look; closing the preview brings it back unchanged.')}</p>
+      <div className="learn-preview-3d">
+        <Viewport compact />
+      </div>
+    </div>
+  );
 }
 
 function LessonList({ lesson }: { lesson: Lesson }) {
@@ -153,6 +198,9 @@ function LessonList({ lesson }: { lesson: Lesson }) {
 }
 
 export function Learn() {
+  const previewOpen = useScene((st) => !!st.preview);
+  // Leaving Learn (or switching lesson) always gives the project back.
+  useEffect(() => () => useScene.getState().endPreview(), []);
   const current = useLearn((s) => s.current);
   const done = useLearn((s) => s.done);
   const aiOn = useApp((s) => s.ai.enabled);
@@ -161,7 +209,10 @@ export function Learn() {
   const next = LESSONS[idx + 1];
   const prev = LESSONS[idx - 1];
   const scroller = useRef<HTMLDivElement>(null);
-  useEffect(() => scroller.current?.scrollTo({ top: 0 }), [lesson.id]);
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: 0 });
+    useScene.getState().endPreview();
+  }, [lesson.id]);
   const isDone = done.includes(lesson.id);
   const title = t(lesson.title);
 
@@ -171,7 +222,7 @@ export function Learn() {
   };
 
   return (
-    <div className="learn">
+    <div className={`learn ${previewOpen ? 'with-preview' : ''}`}>
       <LessonList lesson={lesson} />
       <div className="learn-scroll" ref={scroller}>
         <article className="learn-article">
@@ -230,6 +281,7 @@ export function Learn() {
           </div>
         </article>
       </div>
+      <PreviewPane />
     </div>
   );
 }
