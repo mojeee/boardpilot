@@ -9,6 +9,7 @@
   "logicVolt": 3.3,
   "flashBytes": 524288,
   "ramBytes": 131072,
+  "clocks": {"cpuHz": 96000000, "pwmHz": 96000000, "uartHz": 96000000, "adcHz": 96000000, "note": "The STM32 Arduino core runs the Black Pill at 96 MHz so USB gets its 48 MHz (print F_CPU to check). Timers get 96 MHz; Serial1 is USART1 on APB2, 96 MHz; the ADC is fed from PCLK2, 96 MHz.", "source": {"title": "RM0383 STM32F411 reference manual", "section": "6.2 Clocks (timer clock x2 when APB prescaler > 1)"}},
   "pcbMm": {
     "length": 52.81,
     "width": 20.78,

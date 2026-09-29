@@ -1,0 +1,92 @@
+// Italian translations. Key = the exact English text passed to t().
+// Scope: clock-aware calculators (shared/clocks, components/Calculators) and the clock notes in
+// boards/*.json.
+const it: Record<string, string> = {
+  'Calculators: timer, PWM, UART, ADC': 'Calcolatori: timer, PWM, UART, ADC',
+  'Timer / PWM': 'Timer / PWM',
+  'UART baud': 'Baud UART',
+  'ADC rate': 'Velocità ADC',
+  'Timer clock (Hz)': 'Clock del timer (Hz)',
+  'UART clock (Hz)': 'Clock della UART (Hz)',
+  'ADC input clock (Hz)': 'Clock in ingresso all’ADC (Hz)',
+  'Frequency (Hz)': 'Frequenza (Hz)',
+  'Duty (%)': 'Duty (%)',
+  'Baud rate': 'Baud rate',
+  Setting: 'Impostazione',
+  'Code copied.': 'Codice copiato.',
+  'There are no clock data for this board yet.': 'Per questa scheda non ci sono ancora dati sui clock.',
+  'Clock source: {source}.': 'Fonte dei clock: {source}.',
+  'Calculated from documented formulas, not measured.': 'Calcolato con formule documentate, non misurato.',
+  'Enter a frequency above 0.': 'Inserisci una frequenza sopra 0.',
+  'Enter a baud rate above 0.': 'Inserisci un baud rate sopra 0.',
+  'There is no timer calculator for this chip yet.': 'Per questo chip non c’è ancora un calcolatore del timer.',
+  'There is no UART calculator for this chip yet.': 'Per questo chip non c’è ancora un calcolatore della UART.',
+  'There is no ADC calculator for this chip yet.': 'Per questo chip non c’è ancora un calcolatore dell’ADC.',
+  '{clock} makes exactly {f}, with {steps} duty steps (about {bits} bits).': '{clock} genera esattamente {f}, con {steps} passi di duty (circa {bits} bit).',
+  '{clock} cannot make exactly {f}: nearest is {actual} ({err} off), with {steps} duty steps (about {bits} bits).':
+    '{clock} non può generare esattamente {f}: il più vicino è {actual} (scarto {err}), con {steps} passi di duty (circa {bits} bit).',
+  '{f} is too fast for this timer: the highest useful frequency is about {max}.': '{f} è troppo veloce per questo timer: la frequenza utile più alta è circa {max}.',
+  '{f} is too slow for this timer: the lowest is about {min}.': '{f} è troppo lenta per questo timer: la più bassa è circa {min}.',
+  '{f} is too fast for LEDC: the highest is about {max}.': '{f} è troppo veloce per LEDC: la più alta è circa {max}.',
+  '{f} is too slow for LEDC: the lowest is about {min}.': '{f} è troppo lenta per LEDC: la più bassa è circa {min}.',
+  '{clock} makes exactly {baud} baud.': '{clock} genera esattamente {baud} baud.',
+  '{clock} cannot make exactly {baud} baud: nearest is {actual}, {err} error, {tail}': '{clock} non può generare esattamente {baud} baud: il più vicino è {actual}, errore {err}, {tail}',
+  'which is fine.': 'e va bene.',
+  'which usually works if the other side is accurate.': 'e di solito funziona se l’altro lato è preciso.',
+  'which is too much: pick another speed.': 'ed è troppo: scegli un’altra velocità.',
+  'This UART': 'Questa UART',
+  'The nearest setting is {nominal}.': 'L’impostazione più vicina è {nominal}.',
+  '{baud} baud is out of range for this UART clock.': '{baud} baud è fuori portata per questo clock della UART.',
+  'Real rate': 'Velocità reale',
+  Divider: 'Divisore',
+  'Duty value': 'Valore di duty',
+  Level: 'Livello',
+  Conversion: 'Conversione',
+  clocks: 'cicli di clock',
+  'ADC clock': 'Clock dell’ADC',
+  'Max rate': 'Velocità massima',
+  Registers: 'Registri',
+  'Registers (Arduino sketch)': 'Registri (sketch Arduino)',
+  Arduino: 'Arduino',
+  'Arduino (ESP32 core 3.x)': 'Arduino (core ESP32 3.x)',
+  'Arduino (Pico core)': 'Arduino (core Pico)',
+  'Arduino (STM32 core, HardwareTimer)': 'Arduino (core STM32, HardwareTimer)',
+  'Arduino (Adafruit nRF52 core)': 'Arduino (core Adafruit nRF52)',
+  'STM32 HAL (CubeMX)': 'STM32 HAL (CubeMX)',
+  'ESP-IDF': 'ESP-IDF',
+  'Pico SDK': 'Pico SDK',
+  'Prescaler {p}': 'Prescaler {p}',
+  'Prescaler {p} (Arduino default)': 'Prescaler {p} (predefinito di Arduino)',
+  'PCLK2 / {p}, sample time {c} cycles': 'PCLK2 / {p}, tempo di campionamento {c} cicli',
+  'Back to back (CLKDIV 0)': 'Una dopo l’altra (CLKDIV 0)',
+  'CLKDIV {d}': 'CLKDIV {d}',
+  'Acquisition time {us} µs': 'Tempo di acquisizione {us} µs',
+  'ADC clock {adc}: one conversion takes {us} µs, so at most about {rate} readings per second.':
+    'Clock dell’ADC {adc}: una conversione dura {us} µs, quindi al massimo circa {rate} letture al secondo.',
+  'The ADC clock is above 200 kHz, so you get less than 10-bit accuracy.': 'Il clock dell’ADC è sopra 200 kHz, quindi la precisione è sotto i 10 bit.',
+  'The ADC clock is below 50 kHz, which the datasheet does not recommend.': 'Il clock dell’ADC è sotto 50 kHz, che il datasheet sconsiglia.',
+  'The ADC clock would be {adc}, above the 36 MHz limit. Pick a bigger prescaler.': 'Il clock dell’ADC sarebbe {adc}, sopra il limite di 36 MHz. Scegli un prescaler più grande.',
+  'One conversion every {us} µs, so {rate} readings per second.': 'Una conversione ogni {us} µs, quindi {rate} letture al secondo.',
+  'One reading takes about {us} µs, so at most about {rate} readings per second.': 'Una lettura dura circa {us} µs, quindi al massimo circa {rate} letture al secondo.',
+  'Espressif does not publish a fixed conversion time for analogRead(). Measure it in your sketch with micros() around a few hundred reads.':
+    'Espressif non pubblica un tempo di conversione fisso per analogRead(). Misuralo nel tuo sketch con micros() attorno a qualche centinaio di letture.',
+  // clock notes in boards/*.json
+  '16 MHz crystal. Timers, UART and ADC run from the CPU clock and have their own prescalers.':
+    'Quarzo da 16 MHz. Timer, UART e ADC usano il clock della CPU e hanno i loro prescaler.',
+  '16 MHz. Timers, UART and ADC run from the CPU clock and have their own prescalers.':
+    '16 MHz. Timer, UART e ADC usano il clock della CPU e hanno i loro prescaler.',
+  'CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.': 'CPU a 240 MHz; LEDC (PWM) e UART usano APB_CLK, 80 MHz.',
+  'CPU at 160 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.': 'CPU a 160 MHz; LEDC (PWM) e UART usano APB_CLK, 80 MHz.',
+  'SYSCLK 84 MHz. Timers on APB1 get 84 MHz (APB1 is 42 MHz, and timer clocks double when APB1 is divided). Serial is USART2 on APB1, 42 MHz. The ADC is fed from PCLK2, 84 MHz, through its own prescaler.':
+    'SYSCLK 84 MHz. I timer su APB1 ricevono 84 MHz (APB1 è a 42 MHz, e il clock dei timer raddoppia quando APB1 è diviso). Serial è la USART2 su APB1, 42 MHz. L’ADC è alimentato da PCLK2, 84 MHz, attraverso il suo prescaler.',
+  'The STM32 Arduino core runs the Black Pill at 96 MHz so USB gets its 48 MHz (print F_CPU to check). Timers get 96 MHz; Serial1 is USART1 on APB2, 96 MHz; the ADC is fed from PCLK2, 96 MHz.':
+    'Il core Arduino STM32 fa girare la Black Pill a 96 MHz perché l’USB abbia i suoi 48 MHz (stampa F_CPU per verificare). I timer ricevono 96 MHz; Serial1 è la USART1 su APB2, 96 MHz; l’ADC è alimentato da PCLK2, 96 MHz.',
+  'The Pico SDK starts clk_sys at 125 MHz; PWM uses clk_sys and UART uses clk_peri (the same 125 MHz). The Arduino core may run at another speed (Tools → CPU Speed); change the clock above if so. The ADC has its own 48 MHz clock.':
+    'Il Pico SDK avvia clk_sys a 125 MHz; il PWM usa clk_sys e la UART usa clk_peri (gli stessi 125 MHz). Il core Arduino può girare a un’altra velocità (Strumenti → CPU Speed); in quel caso cambia il clock qui sopra. L’ADC ha il suo clock a 48 MHz.',
+  'The Pico SDK starts clk_sys at 150 MHz on the RP2350; PWM uses clk_sys and UART uses clk_peri (the same 150 MHz). The ADC has its own 48 MHz clock.':
+    'Sull’RP2350 il Pico SDK avvia clk_sys a 150 MHz; il PWM usa clk_sys e la UART usa clk_peri (gli stessi 150 MHz). L’ADC ha il suo clock a 48 MHz.',
+  'CPU at 64 MHz. The PWM peripheral counts a 16 MHz clock through a prescaler; the UART only offers a fixed list of rates.':
+    'CPU a 64 MHz. La periferica PWM conta un clock da 16 MHz attraverso un prescaler; la UART offre solo un elenco fisso di velocità.',
+  '600 MHz. The calculators do not cover the i.MX RT1062 timers yet.': '600 MHz. I calcolatori non coprono ancora i timer dell’i.MX RT1062.',
+};
+export default it;

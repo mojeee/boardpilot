@@ -12,6 +12,7 @@ import { AssistantPanel } from '../components/AssistantPanel';
 import { CodeCheck } from '../components/CodeCheck';
 import { BomTable } from '../components/BomTable';
 import { PowerBudget } from '../components/PowerBudget';
+import { Calculators } from '../components/Calculators';
 import { PinPlanner } from '../components/PinPlanner';
 import { TemplatePicker, TemplateView } from '../components/TemplatePanel';
 import { useTemplate } from '../state/templateRun';
@@ -105,6 +106,10 @@ export function NewProjectPanel() {
               <PowerBudget />
             </details>
           )}
+          <details className="bom-details">
+            <summary className="label">{t('Calculators: timer, PWM, UART, ADC')}</summary>
+            <Calculators />
+          </details>
           <div className="label">{t('3. Starter code')}</div>
           <div className="row gap wrap">
             <button className="btn small" disabled={!scene.parts.length} onClick={() => setSketch(generateSketch(scene, board, PARTS))}>

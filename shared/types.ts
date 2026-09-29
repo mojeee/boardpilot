@@ -326,6 +326,8 @@ export interface BoardDef {
   cornerRadiusMm?: number;
   /** Current of the chip (or whole board, as the note says), from its datasheet. */
   power?: CurrentDraw;
+  /** Peripheral clocks as the board's Arduino core sets them up, for the timer, UART and ADC calculators. */
+  clocks?: BoardClocks;
   /** Mounting holes: [x, y, diameter] in mm from the PCB top-left corner, from the board's mechanical drawing. */
   holesMm?: [number, number, number][];
   pins: PinDef[];
@@ -369,6 +371,19 @@ export interface PartPin {
 export type PartShape = 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled' | 'chip' | 'module' | 'motor' | 'relay';
 
 /** Supply current from a datasheet: typical in normal use, lowest standby, short peaks (mA). */
+/** Clock frequencies in Hz. Which clock each one is (APB1 timer clock, APB_CLK…) is in the note. */
+export interface BoardClocks {
+  cpuHz: number;
+  /** clock feeding the timer / PWM peripheral */
+  pwmHz?: number;
+  /** clock feeding the UART that Serial (or Serial1) uses */
+  uartHz?: number;
+  /** clock feeding the ADC before its own prescaler */
+  adcHz?: number;
+  note: string;
+  source: { title: string; section?: string };
+}
+
 export interface CurrentDraw {
   typMa: number;
   sleepMa?: number;

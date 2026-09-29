@@ -9,6 +9,7 @@
   "logicVolt": 5,
   "flashBytes": 32768,
   "ramBytes": 2048,
+  "clocks": {"cpuHz": 16000000, "pwmHz": 16000000, "uartHz": 16000000, "adcHz": 16000000, "note": "16 MHz. Timers, UART and ADC run from the CPU clock and have their own prescalers.", "source": {"title": "Arduino Nano tech specs; ATmega328P datasheet", "section": "Clock speed 16 MHz; System Clock and Clock Options"}},
   "pcbMm": {
     "length": 43.18,
     "width": 17.78,
