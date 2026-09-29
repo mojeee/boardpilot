@@ -117,6 +117,16 @@ const it: Record<string, string> = {
     'Alcuni dati sono stati cercati sul web. Considerali un suggerimento finché non li controlli:',
   'The free demo cannot read PDF files, so this draft comes from a web search for the datasheet. Check every pin.':
     'La demo gratuita non può leggere file PDF, quindi questa bozza viene da una ricerca web del datasheet. Controlla ogni pin.',
+  /* MCP (AI agents) */
+  'AI agents (MCP)': 'Agenti AI (MCP)',
+  'Let AI coding agents (Claude Code, Cursor, Claude Desktop) use this board through BoardPilot': 'Permetti agli agenti AI di programmazione (Claude Code, Cursor, Claude Desktop) di usare questa scheda tramite BoardPilot',
+  'They can read measurements, board and part data and the wiring checks. Anything that writes to the board still needs your click here. Local only: nothing leaves this computer.': 'Possono leggere le misure, i dati di schede e componenti e i controlli dei collegamenti. Qualsiasi scrittura sulla scheda richiede comunque il tuo clic qui. Solo in locale: niente lascia questo computer.',
+  'Add it to Claude Code:': 'Aggiungilo a Claude Code:',
+  'Copy': 'Copia',
+  'Copied': 'Copiato',
+  'Other clients: run {cmd} as a stdio MCP server. When BoardPilot is closed, it runs without a window and refuses every write.': 'Altri client: esegui {cmd} come server MCP stdio. Quando BoardPilot è chiuso, funziona senza finestra e rifiuta ogni scrittura.',
+  '{client} (an AI agent) asks to install the diagnostic agent: {reason}': '{client} (un agente AI) chiede di installare l’agente diagnostico: {reason}',
+  '{client} (an AI agent) asks: {reason}': '{client} (un agente AI) chiede: {reason}',
 };
 
 export default it;

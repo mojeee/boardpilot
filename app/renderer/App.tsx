@@ -39,7 +39,8 @@ async function boot() {
   }
   let timer: ReturnType<typeof setTimeout> | null = null;
   useScene.subscribe((s, prev) => {
-    if (s.scene === prev.scene) return;
+    // A lesson preview is not the user's project: never autosave it (nor the restore after it).
+    if (s.scene === prev.scene || s.preview || prev.preview) return;
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => window.bp.project.autosave(useScene.getState().scene), 800);
   });

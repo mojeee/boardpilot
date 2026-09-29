@@ -449,11 +449,12 @@ say so if you want it the other way.
 
 | # | Issue | Size | Decision needed (my default) | Status |
 |---|---|---|---|---|
-| 5 | Wiring diagram and schematic from the project | L | Wiring view first; lives as a viewport tab and in the report | [ ] |
-| 18 | Bill of materials and shopping list export | S | none | [ ] |
-| 9 | Peripheral and pin planner | M | Suggest first, "Apply" button to add the wires | [ ] |
-| 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [ ] |
-| 6 | Lessons: "Show on the 3D board" buttons | M | Split view (lesson left, 3D right) | [ ] |
+| 5 | Wiring diagram and schematic from the project | L | Wiring view first; lives as a viewport tab and in the report | [~] wiring view done; schematic next |
+| 18 | Bill of materials and shopping list export | S | none | [x] |
+| 9 | Peripheral and pin planner | M | Suggests and highlights the pins (no "Apply": the plan comes before any part exists) | [x] |
+| 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [x] |
+| 21 | BoardPilot as an MCP server for AI agents | L | Decided Sep 29: official `@modelcontextprotocol/sdk`; stdio launcher first, local HTTP from the same code; headless mode with every write refused; free during the beta | [x] |
+| 6 | Lessons: "Show on the 3D board" buttons | M | Split view (lesson left, 3D right) | [x] |
 | 13 | Power budget and battery life (merges step 3 C "Power budget") | M | Yes to sourced current fields in parts; unknown parts listed as unknown | [ ] |
 | 10 | Clock-aware calculators with code (timer, PWM, UART, ADC) | M | Add a sourced `clocks` section to board files | [ ] |
 | 14 | Register map viewer, decoded live | M | BME280, MPU6050, SSD1306 first | [ ] |
@@ -463,6 +464,9 @@ say so if you want it the other way.
 | 12 | State machine designer → C code and tests | L | A tool in New project | [ ] |
 | 11 | Starter firmware for STM32 HAL, ESP-IDF, Pico SDK | L | Pico SDK first; compile check as a nightly CI job | [ ] |
 | 17 | AI interview coach | M | Answers stored only on this computer, deletable, 90 days | [ ] |
+| 22 | Motion graphics for social posts, rendered from the real app (8 clips × 3 formats) | L | Record the real app with CSS/SVG animation (no new dependency); muted, no music | [ ] |
+| 23 | YouTube channel plan: research, format, first 6 videos ready to record | M | Decided Sep 29: voice and hands only; one English channel with Italian subtitles; 1 long video every 2 weeks + 2 Shorts a week | [ ] |
+| 24 | Publishing and outreach workflow with Claude in Chrome (you always click Post) | S | The workflow and tracking files are written here; the browser part runs on your computer | [ ] |
 
 ## Last step · Try it in the browser (your request, Sep 29)
 
