@@ -61,9 +61,9 @@ Boards are data files in [`boards/`](boards/) (pins with positions, flags and so
 
 Also: connect and identify (esptool v4/v5), safe flashing with automatic backup, new-project pin assignment with a starter sketch, reports as Markdown and PDF, English and Italian UI, 30-day free trial.
 
-### New since 0.5.0
+### New in 0.6.0
 
-These are in `main` and ship in the next release (build from source to try them today; see [CHANGELOG.md](CHANGELOG.md)).
+Everything below is in the [0.6.0 release](https://github.com/mojeee/boardpilot/releases/latest); details in [CHANGELOG.md](CHANGELOG.md).
 
 | | |
 |---|---|
