@@ -1,6 +1,6 @@
 // The assistant: plain-language answers with a confidence label and the source of every claim.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AiReply, AiSource } from '@shared/types';
 import { PARTS, targetLabel } from '@shared/board';
 import { currentBoard, log, useAi, useApp, useScene, type ChatItem } from '../state/store';
@@ -8,6 +8,8 @@ import { showWhere, stopAction } from '../state/appActions';
 import { sceneWithParts } from '../state/buildProject';
 import { revealLine } from '../state/code';
 import { useLayout } from '../state/layout';
+import { useProjects } from '../state/projects';
+import { stillFound, useOpenChecks } from '../state/events';
 import { askAi } from './ai';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
@@ -148,6 +150,16 @@ function ActionCard({ item }: { item: Extract<ChatItem, { role: 'action' }> }) {
 
 /** Something the app's checks found by themselves, said by the assistant with its source. */
 function NoticeCard({ item }: { item: Extract<ChatItem, { role: 'notice' }> }) {
+  const found = useOpenChecks((s) => stillFound(item.key, s));
+  if (!found)
+    return (
+      <div className="ai-notice resolved">
+        <div className="row gap">
+          <span className="notice-kicker">✓ {t('The checks no longer find this')}</span>
+        </div>
+        <div className="ai-text">{item.text}</div>
+      </div>
+    );
   return (
     <div className={`ai-notice sev-${item.severity}`}>
       <div className="row gap">
@@ -233,7 +245,10 @@ export function DemoBanner() {
 }
 
 export function AssistantPanel({ title, hideInput, hideHeader }: { title?: string; hideInput?: boolean; hideHeader?: boolean }) {
-  const items = useAi((s) => s.items);
+  const all = useAi((s) => s.items);
+  const activeTab = useProjects((s) => s.active);
+  // "I noticed" cards are about one project: show them in that project's tab only.
+  const items = useMemo(() => all.filter((it) => it.role !== 'notice' || !it.tab || it.tab === activeTab), [all, activeTab]);
   const busy = useAi((s) => s.busy);
   const ai = useApp((s) => s.ai);
   const list = useRef<HTMLDivElement>(null);

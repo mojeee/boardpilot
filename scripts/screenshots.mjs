@@ -9,37 +9,47 @@
 // "boards" writes site/img/boards/<id>-3d.png (then run: npx electron scripts/render-social.cjs boards).
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** name → hash for the app window and how long the scripted demo needs before the capture (ms). */
+// Every shot sets the 3D look (&detail, &light) so a choice remembered by an earlier run does not leak in.
+const LOOK = '&detail=full&light=studio';
 const SHOTS = {
-  home: { hash: '', delay: 6000 },
-  live: { hash: '#demo=live&stage=desk', delay: 26000 },
-  debug: { hash: '#demo=debug&scenario=weather-station-swapped&stage=desk', delay: 32000 },
-  test: { hash: '#demo=test&scenario=weather-station-swapped&stage=desk', delay: 30000 },
-  monitor: { hash: '#demo=monitor&scenario=healthy', delay: 16000 },
-  library: { hash: '#demo=library&stage=desk', delay: 20000 },
-  schematic: { hash: '#demo=template&id=smart-room-monitor&view=diagram&diagram=schematic&speed=1', delay: 12000 },
-  timing: { hash: '#demo=timing&scenario=healthy', delay: 22000 },
-  learn: { hash: '#demo=lesson-preview&lesson=gpio&stage=desk', delay: 14000 },
-  code: { hash: '#demo=code&stage=desk', delay: 14000 },
+  workspace: { hash: `#demo=workspace&stage=desk${LOOK}`, delay: 30000 },
+  home: { hash: '#screen=home', delay: 6000 },
+  live: { hash: `#demo=live&stage=desk${LOOK}`, delay: 26000 },
+  debug: { hash: `#demo=debug&scenario=weather-station-swapped&stage=desk${LOOK}`, delay: 32000 },
+  test: { hash: `#demo=test&scenario=weather-station-swapped&stage=desk${LOOK}`, delay: 30000 },
+  monitor: { hash: `#demo=monitor&scenario=healthy${LOOK}`, delay: 16000 },
+  library: { hash: `#demo=library&stage=desk${LOOK}`, delay: 20000 },
+  schematic: { hash: `#demo=template&id=smart-room-monitor&view=diagram&diagram=schematic&speed=1${LOOK}`, delay: 12000 },
+  timing: { hash: `#demo=timing&scenario=healthy${LOOK}`, delay: 22000 },
+  learn: { hash: `#demo=lesson-preview&lesson=gpio&stage=desk${LOOK}`, delay: 14000 },
+  code: { hash: `#demo=code&stage=desk${LOOK}`, delay: 14000 },
+  newproject: { hash: `#demo=new-project&mode=port&scenario=weather-station-swapped${LOOK}`, delay: 26000 },
+  export: { hash: `#demo=export&id=weather-station${LOOK}`, delay: 12000 },
+  import: { hash: `#demo=import${LOOK}`, delay: 30000 },
 };
 
-/** The 3D viewport inside the 1600 × 1000 window: right of the task rail, left of the panel, above the log. */
-const VIEWPORT = '208,56,992,692';
+/** The 3D viewport inside the 1600 × 1000 window: under the top menu and the project tabs, left of the assistant, above the Code/Log panel. */
+const VIEWPORT = '0,84,1200,666';
 
 const want = process.argv.slice(2);
 const headless = process.platform === 'linux' && !process.env.DISPLAY;
+
+/** A fresh app profile for every shot: nothing remembered by an earlier run leaks into the picture. */
+const profile = () => mkdtempSync(join(tmpdir(), 'bp-shot-'));
 
 function run(env, delay) {
   const electron = ['electron', '.', '--no-sandbox', '--force-device-scale-factor=2', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
   const cmd = headless ? 'xvfb-run' : 'npx';
   const args = headless ? ['-a', '-s', '-screen 0 3300x2100x24', 'npx', ...electron] : electron;
-  spawnSync(cmd, args, { cwd: root, env: { ...process.env, ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });
+  spawnSync(cmd, args, { cwd: root, env: { ...process.env, BP_PROFILE: profile(), ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });
 }
 
 if (want[0] === 'boards') {
@@ -48,7 +58,7 @@ if (want[0] === 'boards') {
   for (const id of ids) {
     const out = join(root, 'site/img/boards', `${id}-3d.png`);
     process.stdout.write(`${id}… `);
-    run({ BP_SNAPSHOT: out, BP_SNAPSHOT_RECT: VIEWPORT, BP_SNAPSHOT_HASH: `#demo=board&board=${id}&stage=desk&clean=1&bare=1` }, 24000);
+    run({ BP_SNAPSHOT: out, BP_SNAPSHOT_RECT: VIEWPORT, BP_SNAPSHOT_HASH: `#demo=board&board=${id}&stage=desk&clean=1&bare=1${LOOK}` }, 24000);
     console.log(existsSync(out) ? 'ok' : 'failed');
   }
   process.exit(0);

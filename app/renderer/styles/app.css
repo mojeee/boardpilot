@@ -575,7 +575,7 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .board-chips .chip { font-size: 10.5px; padding: 1px 6px; }
 
 /* Screenshots for social images (#demo=…&clean=1): the 3D view without its overlays. */
-.snapshot-clean .vp-toolbar, .snapshot-clean .legend, .snapshot-clean .badges, .snapshot-clean .kbd-hint, .snapshot-clean .wire-hint, .snapshot-clean .info-card { display: none !important; }
+.snapshot-clean .vp-toolbar, .snapshot-clean .look-bar, .snapshot-clean .legend, .snapshot-clean .badges, .snapshot-clean .kbd-hint, .snapshot-clean .wire-hint, .snapshot-clean .info-card { display: none !important; }
 
 /* Code vs wiring check */
 .code-check { display: flex; flex-direction: column; gap: 8px; }

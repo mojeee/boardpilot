@@ -158,6 +158,7 @@ export function CommandBox() {
       <button className="cmd-open" onClick={openCommandBox} title={t('Ask AI or find anything (⌘K)')} data-where="top:search">
         <span className="cmd-spark">✦</span>
         <span className="cmd-ph">{t('Ask AI or find anything: “back up my board”')}</span>
+        <span className="cmd-ph-short">{t('Ask AI or find…')}</span>
         <span className="kbd mono">⌘K</span>
       </button>
       {open && <Palette />}

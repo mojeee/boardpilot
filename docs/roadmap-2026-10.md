@@ -555,16 +555,19 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
          a title block (project, drawn by, date, revision, sheet n of m), notes with datasheet
          sources, and open warnings listed.
 9. **Update every screenshot** (after the redesign is built)
-   - [ ] Retake all screenshots on the website (landing page, Learn and tool pages) and in the
+   - [x] Retake all screenshots on the website (landing page, Learn and tool pages) and in the
          GitHub README with the new workspace, using the existing screenshot scripts in simulator
-         mode.
+         mode. *Done Sep 29, plus three new ones (workspace, Read from port, Export PDF), the board
+         social images and the "Try it live" posters. The "Import from a link" picture still needs a
+         retake on a normal connection (the product site refused this machine).*
 10. **Last step: real end-to-end tests of each scenario**
-   - [ ] Playwright tests on the built Electron app, one per scenario (connect and identify, new
+   - [x] Playwright tests on the built Electron app, one per scenario (connect and identify, new
          project Blank / Read from port / Template / Describe it, flash with backup, each debug
          flow, monitor, test hardware, report, PDF export, AI doing an action), in simulator mode.
-   - [ ] Claude drives the app for real: clicks through each scenario, performs the actions,
+   - [x] Claude drives the app for real: clicks through each scenario, performs the actions,
          checks what the screen, 3D view and log show, and reports anything broken, before the
-         release.
+         release. *Report in `docs/testing.md` (Sep 29): 18 of 18 scenarios pass; eight problems found
+         and fixed; still to do by hand: real AI keys and real boards.*
 
 Design mockups of this plan (workspace, New project, PDF export), also in `design/redesign/`:
 https://claude.ai/artifact/7ZXocFamKF2neLh5cnJgeL

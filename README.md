@@ -65,6 +65,20 @@ Boards are data files in [`boards/`](boards/) (pins with positions, flags and so
 
 Also: connect and identify (esptool v4/v5), safe flashing with automatic backup, new-project pin assignment with a starter sketch, reports as Markdown and PDF, English and Italian UI, 30-day free trial.
 
+### The new workspace (next release)
+
+An IDE-like project page: the 3D board in the middle, the assistant on the right, **Code and Log** at the bottom, several projects in tabs, and a warnings banner with one-click fixes. Details in [CHANGELOG.md](CHANGELOG.md).
+
+![The project workspace: three project tabs, a warnings banner that the code swaps SDA and SCL with a "Fix the code" button, the detailed 3D board, the sketch with a fix chip on the line, and the assistant backing up the board step by step](docs/img/workspace.jpg)
+
+| | |
+|---|---|
+| ![New project: Read from port](docs/img/newproject.jpg) **New project: Blank, Read from port or Template** Read from port finds the board on USB, identifies the chip and looks for what is connected (I2C scan with the swap test, chip IDs, analog pins); anything guessed is for you to confirm. Or describe the project and get parts, wiring and code. | ![Export PDF](docs/img/export.jpg) **Export PDF** The electrical design as a drawing set: schematic (IEC or ANSI symbols), wiring diagram and pin map, bill of materials, checks, power budget and measurements, with a title block, on A3, A4, Letter or Tabloid. |
+
+- **Code panel** with syntax colouring, the code checker's findings on their lines and one-click fixes, "Suggest code", and a debugger view that runs templates in the simulator with the running line highlighted.
+- **The assistant does what the app does**: "back up my board", "flash my code, then open the monitor", with each step shown and "Show me where it is". ⌘K finds any action, even without AI.
+- **Better 3D**: Light (Studio, Bench, High contrast) and Detail (Simple, Full, Labels): chips with legs by package, small parts, traces, the power LED lit on USB, glowing pins and wires.
+
 ### New in 0.6.0
 
 Everything below is in the [0.6.0 release](https://github.com/mojeee/boardpilot/releases/latest); details in [CHANGELOG.md](CHANGELOG.md).

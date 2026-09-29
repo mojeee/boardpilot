@@ -31,7 +31,7 @@ const DETAILS: [Detail, string, string][] = [
   ['labels', 'Labels', 'Full detail with the name of every pin and a tag on each main part'],
 ];
 
-/** Light and Detail switches (top right of the 3D view). */
+/** Light and Detail switches: the end of the toolbar, on the right; they wrap under it when the view is narrow. */
 function LookBar() {
   const light = useView3d((s) => s.light);
   const detail = useView3d((s) => s.detail);
@@ -232,6 +232,7 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
             </div>
           </>
         )}
+        {view === '3d' && !compact && <LookBar />}
       </div>
       {libOpen && !compact && (
         <div className="lib-overlay">
@@ -239,7 +240,6 @@ export function Viewport({ compact }: { compact?: boolean } = {}) {
         </div>
       )}
 
-      {view === '3d' && !compact && <LookBar />}
       <StatusBadges />
       {wireMode && (
         <div className="wire-hint">{wireFrom ? t('From {pin}: now click a pin on a part.', { pin: wireFrom }) : t('Click a board pin, then a pin on a part.')}</div>

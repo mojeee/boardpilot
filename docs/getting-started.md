@@ -20,6 +20,26 @@ BoardPilot starts in **simulator mode**, with a virtual ESP32 and a weather stat
 - use bench actions: *Fix the wiring*, *Turn the knob*;
 - switch to **Real board**.
 
+## The workspace
+
+The app opens on your project: the 3D board in the middle, the **assistant** on the right (the
+**Project tools** tab next to it has parts, pins, templates, starter code and calculators), and at
+the bottom the **Code** and **Log** tabs. The top menu opens the other tasks; the logo goes Home.
+
+- **Project tabs**: several projects at once. **+** starts a new one: **Blank**, **Read from port**
+  (the app finds the board and what is connected to it), **Template**, or **describe it** in your
+  own words.
+- **Code**: your sketch with colours and line numbers. The code is checked against the drawing as you
+  type; a finding marks its line and "Fix" corrects it when the fix is a plain edit. **Suggest code**
+  writes code for the parts in your drawing. Template projects **Run in simulator** and **Step**, with
+  the running line highlighted.
+- **Warnings banner**: what the checks found, one at a time, with **Fix**, **Show on the board** and
+  **Ask why**.
+- **Ask AI or find anything** (⌘/Ctrl K): run any action by its name ("back up my board", "open the
+  monitor"), even without the AI.
+- **Export PDF**: the project as a drawing set (schematic, wiring and pin map, parts list, checks).
+- Panels: ⌘/Ctrl J shows or hides Code/Log, ⌘/Ctrl I the assistant, ⌘/Ctrl ⇧ F the 3D view alone.
+
 ## The seven tasks
 
 1. **Connect and identify**: finds the USB port, reads chip, flash size, MAC and USB bridge.
@@ -35,6 +55,7 @@ BoardPilot starts in **simulator mode**, with a virtual ESP32 and a weather stat
 - Click a pin, wire or part for details. Drag parts to move them.
 - Keys: **R** rotate, **Delete** remove, **⌘/Ctrl D** duplicate, arrows nudge, **W** wire mode, **⌘/Ctrl Z** undo.
 - **Parts** opens the library; the folder and disk buttons open and save projects.
+- **Light** (Studio, Bench, High contrast) and **Detail** (Simple, Full, Labels) change the look; Simple is the fastest on slow computers.
 
 ## Language
 

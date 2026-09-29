@@ -3,6 +3,7 @@
 // log and the live readings go separately). Also the watcher that makes the assistant speak up
 // by itself when a check finds something new: each notice quotes the check and its source.
 
+import { create } from 'zustand';
 import { PARTS, getBoard } from '@shared/board';
 import { checkCode } from '@shared/codeCheck';
 import type { Scene, TargetRef } from '@shared/types';
@@ -80,6 +81,16 @@ export function startEventFeed() {
 
 /* ---------------- the assistant speaks up ---------------- */
 
+/** What the checks find right now (notice keys), so a notice whose problem is gone can say so. */
+export const useOpenChecks = create<{ wiring: Set<string>; code: Set<string> }>(() => ({ wiring: new Set(), code: new Set() }));
+
+/** False once the checks no longer find what the notice was about (fixed, or another board or project). */
+export function stillFound(key: string | undefined, open = useOpenChecks.getState()): boolean {
+  if (key?.startsWith('w:')) return open.wiring.has(key);
+  if (key?.startsWith('c:')) return open.code.has(key);
+  return true;
+}
+
 interface Notice {
   key: string;
   severity: 'error' | 'warning' | 'info';
@@ -94,7 +105,15 @@ const announced = new Set<string>();
 let pending: Notice[] = [];
 let flushTimer: ReturnType<typeof setTimeout> | null = null;
 
+let queuedTab = '';
+
 function queue(list: Notice[]) {
+  // Switching tabs while notices wait: they were about the other project, drop them.
+  const tab = useProjects.getState().active;
+  if (tab !== queuedTab) {
+    pending = [];
+    queuedTab = tab;
+  }
   const fresh = list.filter((n) => !announced.has(n.key) && !pending.some((p) => p.key === n.key));
   if (!fresh.length) return;
   pending.push(...fresh);
@@ -103,13 +122,16 @@ function queue(list: Notice[]) {
 }
 
 function flush() {
-  const list = pending;
+  // Only what the checks still find: the problem may have been fixed, or the board changed, while it waited.
+  const list = pending.filter((n) => stillFound(n.key));
   pending = [];
   const order = { error: 0, warning: 1, info: 2 } as const;
   list.sort((a, b) => order[a.severity] - order[b.severity]);
   for (const n of list) announced.add(n.key);
   // Two notices at most at once; the rest are in the banner and the log.
-  for (const n of list.slice(0, 2)) useAi.getState().push({ role: 'notice', severity: n.severity, text: n.text, hint: n.hint, source: n.source, targets: n.targets, line: n.line });
+  // A notice belongs to the project it is about; the assistant shows it only in that project's tab.
+  const tab = useProjects.getState().active;
+  for (const n of list.slice(0, 2)) useAi.getState().push({ role: 'notice', key: n.key, severity: n.severity, text: n.text, hint: n.hint, source: n.source, targets: n.targets, line: n.line, tab });
   if (list.length > 2) {
     useAi.getState().push({
       role: 'notice',
@@ -118,6 +140,7 @@ function flush() {
       hint: t('They are in the warnings banner and the log.'),
       source: t('the app’s checks'),
       targets: [],
+      tab,
     });
   }
 }
@@ -127,31 +150,33 @@ function startWatch() {
   useScene.subscribe((s, prev) => {
     if (s.preview) return;
     if (s.findings !== prev.findings) {
-      queue(
-        s.findings
-          .filter((f) => f.severity !== 'info')
-          .map((f) => ({
-            key: `w:${f.rule}:${f.targets.join(',')}:${f.message}`,
-            severity: f.severity,
-            text: f.message,
-            hint: f.hint,
-            source: f.source ?? t('wiring check of the drawing'),
-            targets: f.targets,
-          })),
-      );
+      const list: Notice[] = s.findings
+        .filter((f) => f.severity !== 'info')
+        .map((f) => ({
+          key: `w:${f.rule}:${f.targets.join(',')}:${f.message}`,
+          severity: f.severity,
+          text: f.message,
+          hint: f.hint,
+          source: f.source ?? t('wiring check of the drawing'),
+          targets: f.targets,
+        }));
+      useOpenChecks.setState({ wiring: new Set(list.map((n) => n.key)) });
+      queue(list);
     }
-    if (s.scene.sketch?.text !== prev.scene.sketch?.text || s.scene.wires !== prev.scene.wires) {
+    const sc = s.scene;
+    const was = prev.scene;
+    if (sc.sketch?.text !== was.sketch?.text || sc.wires !== was.wires || sc.parts !== was.parts || sc.board !== was.board) {
       if (codeTimer) clearTimeout(codeTimer);
       codeTimer = setTimeout(() => {
-        const sc = useScene.getState().scene;
-        const text = sc.sketch?.text ?? '';
-        if (!text.trim()) return;
-        const fs = checkCode(text, sc, getBoard(sc.board), PARTS, { monitorBaud: useLive.getState().baud });
-        queue(
-          fs
-            .filter((f) => f.severity !== 'info')
-            .map((f) => ({ key: `c:${f.rule}:${f.message}`, severity: f.severity, text: f.message, hint: f.hint, source: f.source, targets: f.targets, line: f.line || undefined })),
-        );
+        const now = useScene.getState().scene;
+        const text = now.sketch?.text ?? '';
+        const list: Notice[] = !text.trim()
+          ? []
+          : checkCode(text, now, getBoard(now.board), PARTS, { monitorBaud: useLive.getState().baud })
+              .filter((f) => f.severity !== 'info')
+              .map((f) => ({ key: `c:${f.rule}:${f.message}`, severity: f.severity, text: f.message, hint: f.hint, source: f.source, targets: f.targets, line: f.line || undefined }));
+        useOpenChecks.setState({ code: new Set(list.map((n) => n.key)) });
+        queue(list);
       }, 1500);
     }
   });

@@ -3,6 +3,9 @@
 
 const CAPTIONS = {
   en: {
+    workspace: 'The project page: 3D board, code with the checker’s fixes, the log, the assistant doing the work, and a warnings banner.',
+    newproject: 'New project → Read from port: the board, then what is connected, each fact with its source; you confirm the guesses.',
+    export: 'Export PDF: schematic, wiring and pin map, parts list and checks as a drawing set with a title block.',
     debug: 'The debug wizard found SDA and SCL crossed at the sensor, and shows which wires to swap.',
     test: 'I2C address scan, bus wiring diagram and the transaction decoded bit by bit.',
     monitor: 'Your firmware, live: plots colored like their source pin, serial console and memory.',
@@ -15,6 +18,9 @@ const CAPTIONS = {
     home: 'Pick a task, or describe the problem in your own words.',
   },
   it: {
+    workspace: 'La pagina del progetto: scheda 3D, codice con le correzioni del controllo, il registro, l’assistente che fa il lavoro e una barra degli avvisi.',
+    newproject: 'Nuovo progetto → Leggi dalla porta: la scheda, poi cosa è collegato, ogni dato con la sua fonte; le ipotesi le confermi tu.',
+    export: 'Esporta PDF: schema elettrico, collegamenti e mappa dei pin, distinta e controlli come serie di tavole con cartiglio.',
     debug: 'Il debug guidato ha trovato SDA e SCL invertiti sul sensore e mostra quali fili scambiare.',
     test: 'Scansione degli indirizzi I2C, schema del bus e transazione decodificata bit per bit.',
     monitor: 'Il tuo firmware in diretta: grafici colorati come il pin di origine, console seriale e memoria.',

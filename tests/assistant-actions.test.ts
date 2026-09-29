@@ -164,3 +164,24 @@ describe('Assistant.suggestCode and describeProject (free demo, fetch stubbed)',
     expect(p.value.notes).toEqual(['The pump needs its own supply.']);
   });
 });
+
+describe('free demo body limit', () => {
+  it('shortens the code in the context instead of refusing a big question', async () => {
+    const { DemoProvider, compactContext } = await import('../app/main/ai/providers/demo');
+    const { DEMO_MAX_BODY_BYTES } = await import('@shared/ai');
+    const { SYSTEM_PROMPT } = await import('../app/main/ai/prompt');
+    const board = getBoard('nucleo-f401re');
+    const scene: Scene = { board: board.id, parts: [], wires: [], sketch: { name: 'big.ino', text: Array.from({ length: 400 }, (_, i) => `  digitalWrite(${i % 20}, HIGH); // step ${i} of a long sketch`).join('\n') } };
+    const block = buildContextBlock(board, { screen: 'newProject', answers: {}, log: [], scene, events: ['12:00 code edited'] });
+    const p = new DemoProvider({ url: 'https://relay.test/', clientVersion: '0.7.0' });
+    const req = { model: 'm', maxTokens: 1000, system: SYSTEM_PROMPT, tools: TOOLS, messages: [{ role: 'user' as const, content: [{ type: 'text' as const, text: block }, { type: 'text' as const, text: 'hi' }] }] };
+    const fitted = p.fit(req);
+    expect(JSON.stringify(fitted).length).toBeLessThan(JSON.stringify(req).length);
+    const first = fitted.messages[0];
+    const text = first.role === 'user' && first.content[0].type === 'text' ? first.content[0].text : '';
+    expect(text).toContain('left out for the free demo');
+    expect(text).not.toContain('Recent app events');
+    expect(compactContext('a\n   1| x\nb')).toBe('a\n   1| x\nb');
+    expect(DEMO_MAX_BODY_BYTES).toBe(48 * 1024);
+  });
+});
