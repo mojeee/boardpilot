@@ -31,23 +31,23 @@ CHANGELOG entry, one commit.
 
 No new dependencies: everything comes from three.js and drei, which the app already uses.
 
-Started on Sep 28. The code is written but not committed yet; the first screenshot shows these
-need tuning:
+Done on Sep 29 (rebuilt and committed; the earlier uncommitted attempt was not in the repo):
 
-- [~] Studio lighting built in code (works offline), shinier metal on shields, pins and USB.
-- [~] Soft contact shadow under the board and parts; darker floor, quieter grid.
-      *To tune: the edge of the floor disc is visible.*
-- [~] Camera frames the board and all parts when a scene opens, when the board changes and on
-      "Overview". *To tune: it frames too far out, so the board looks small.*
-- [~] Pin names printed on the PCB like real silkscreen, plus the board name. Floating tags only
-      for pins in use, hovered, selected or highlighted. *To tune: the print is small at the
-      default zoom.*
-- [~] Jumper-wire look: thinner cables, plug housings at both ends, parallel wires fan out,
+- [x] Studio lighting built in code (works offline), shinier metal on shields, pins and USB.
+- [x] Soft contact shadow under the board and parts; darker floor that fades out (no visible
+      edge), quieter grid.
+- [x] Camera frames the board and all parts when a scene opens, when the board changes and on
+      "Overview", tight enough that the board fills a good part of the view (tested for all 13
+      boards).
+- [x] Pin names printed on the PCB like real silkscreen, plus the board name. Floating tags only
+      for pins in use, hovered, selected, highlighted or with a warning. The print is readable
+      from the "Module" view and when zoomed in; tags carry the names at the default zoom.
+- [x] Jumper-wire look: thinner cables, plug housings at both ends, parallel wires fan out,
       other wires fade while one is selected.
 
 Still to do:
 
-- [ ] **Workbench scene** (your idea): a wooden desk under the board, a blue or green anti-static
+- [x] **Workbench scene** (your idea): a wooden desk under the board, a blue or green anti-static
       mat with its grid where the board sits, and shelves in the background with parts bins,
       labelled drawers, component reels, a spool of wire, spare boards and a soldering station.
       - All built in code from simple shapes and generated textures (wood grain, mat grid, bin
@@ -58,8 +58,9 @@ Still to do:
         on slow computers.
       - Optional later: the shelf shows parts from your current project and library, so clicking a
         bin adds that part to the desk.
-- [ ] Rounded PCB corners and mounting holes (add `holesMm` to the board files, sourced from the
-      mechanical drawings).
+- [x] Rounded PCB corners and mounting holes (`holesMm` in the board files, sourced from the
+      mechanical drawings): Uno, Mega and the three Picos so far. The other boards need their
+      drawings checked before holes are added.
 
 ### Week 2 · Oct 12 to 16 · Detailed boards and parts
 

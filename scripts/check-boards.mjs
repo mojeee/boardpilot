@@ -37,6 +37,12 @@ export function checkBoard(b) {
   const { length, width, thickness } = b.pcbMm ?? {};
   if (!(length > 10 && width > 10 && thickness > 0.5)) e('bad pcbMm');
   if (!(b.layoutPxPerMm > 0)) e('bad layoutPxPerMm');
+  if (b.cornerRadiusMm !== undefined && !(b.cornerRadiusMm >= 0 && b.cornerRadiusMm < Math.min(length, width) / 4)) e('bad cornerRadiusMm');
+  for (const h of b.holesMm ?? []) {
+    const [hx, hy, d] = Array.isArray(h) ? h : [];
+    if (!(d > 0.5 && d < 5)) e(`hole ${JSON.stringify(h)}: bad diameter`);
+    else if (!(hx - d / 2 > 0 && hy - d / 2 > 0 && hx + d / 2 < length && hy + d / 2 < width)) e(`hole ${JSON.stringify(h)}: outside the PCB`);
+  }
   if (!MOUNTS.has(b.headerStyle)) e(`bad headerStyle ${b.headerStyle}`);
   if (!Array.isArray(b.pins) || b.pins.length < 8) e('too few pins');
   const ids = new Set();

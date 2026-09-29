@@ -318,6 +318,10 @@ export interface BoardDef {
   headerStyle: PinMount;
   /** PCB color, if not the usual blue. */
   pcbColor?: string;
+  /** Radius of the PCB corners, mm (default 0.8). */
+  cornerRadiusMm?: number;
+  /** Mounting holes: [x, y, diameter] in mm from the PCB top-left corner, from the board's mechanical drawing. */
+  holesMm?: [number, number, number][];
   pins: PinDef[];
   components: BoardComponent[];
   rules: BoardRules;

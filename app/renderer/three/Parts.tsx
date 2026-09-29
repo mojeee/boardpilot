@@ -2,7 +2,7 @@
 // Click to select, drag to move, R to rotate, Delete to remove. In wire mode click a board pin,
 // then a part pin, to add a wire.
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useThree, type ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -167,7 +167,18 @@ export function PartBody({ def }: { def: PartDef }) {
 }
 
 /** Pins in the part frame (unrotated): gold header pin plus a role-colored tip. */
-export function PartPins({ def, onPinClick, labels }: { def: PartDef; onPinClick?: (name: string, e: ThreeEvent<MouseEvent>) => void; labels: boolean }) {
+export function PartPins({
+  def,
+  onPinClick,
+  labels,
+  tagged,
+}: {
+  def: PartDef;
+  onPinClick?: (name: string, e: ThreeEvent<MouseEvent>) => void;
+  labels: boolean;
+  /** Pins that get a tag even when labels are off (the wired ones). */
+  tagged?: Set<string>;
+}) {
   return (
     <>
       {def.pins.map((p) => {
@@ -178,7 +189,7 @@ export function PartPins({ def, onPinClick, labels }: { def: PartDef; onPinClick
           <group key={p.name} position={pos}>
             <mesh position={[0, -1, 0]}>
               <boxGeometry args={[0.64, 4, 0.64]} />
-              <meshStandardMaterial color="#D9B45A" metalness={0.4} roughness={0.35} />
+              <meshStandardMaterial color="#D9B45A" metalness={0.9} roughness={0.28} />
             </mesh>
             <mesh position={[0, 1.1, 0]}>
               <sphereGeometry args={[0.55, 12, 8]} />
@@ -194,7 +205,7 @@ export function PartPins({ def, onPinClick, labels }: { def: PartDef; onPinClick
                 <meshBasicMaterial transparent opacity={0} depthWrite={false} />
               </mesh>
             )}
-            {labels && (
+            {(labels || tagged?.has(p.name)) && (
               <Html position={[0, 2.2, 0]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
                 <div className="pin-label small" style={{ borderColor: color }}>
                   {p.name}
@@ -216,6 +227,12 @@ function PartModel({ sp }: { sp: ScenePart }) {
   const highlighted = useScene((s) => s.highlight.includes(target));
   const dragging = useScene((s) => s.draggingPart === sp.id);
   const finding = useScene((s) => s.findings.find((f) => f.targets.includes(target)));
+  const wireMode = useScene((s) => s.wireMode);
+  const wires = useScene((s) => s.scene.wires);
+  const wired = useMemo(
+    () => new Set(wires.flatMap((w) => [w.from, w.to].filter((e) => e.part === sp.id).map((e) => e.pin))),
+    [wires, sp.id],
+  );
   const controls = useThree((s) => s.controls) as unknown as { enabled: boolean } | null;
   if (!def) {
     return (
@@ -268,7 +285,7 @@ function PartModel({ sp }: { sp: ScenePart }) {
         >
           <PartBody def={def} />
         </group>
-        <PartPins def={def} labels={labels} onPinClick={onPinClick} />
+        <PartPins def={def} labels={labels || selected || highlighted || wireMode} tagged={wired} onPinClick={onPinClick} />
       </group>
       {(selected || highlighted || dragging) && (
         <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>

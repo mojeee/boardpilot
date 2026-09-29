@@ -1,11 +1,13 @@
-// Wires as colored cables. Small pulses run along a wire while the agent reports bus activity on it.
+// Wires as jumper cables: a thin colored cable with a plug housing at each end. Parallel wires
+// fan out, and the others fade while one is selected. Small pulses run along a wire while the
+// agent reports bus activity on it.
 
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { BoardDef, Scene, SceneWire, TargetRef } from '@shared/types';
 import { useLive, useScene } from '../state/store';
-import { wireCurve, wireEndWorld } from './geometry';
+import { PLUG_MM, wireCurve, wireEndWorld, wireSpread } from './geometry';
 
 const PULSES = 4;
 
@@ -14,13 +16,18 @@ function Wire({ board, scene, wire }: { board: BoardDef; scene: Scene; wire: Sce
   const highlighted = useScene((s) => s.highlight.includes(target));
   const selected = useScene((s) => s.selected === target);
   const finding = useScene((s) => s.findings.find((f) => f.targets.includes(target)));
-  const curve = useMemo(() => {
+  // Another wire is selected: this one steps back.
+  const faded = useScene((s) => !!s.selected?.startsWith('wire:') && s.selected !== target);
+  const ends = useMemo(() => {
     const a = wireEndWorld(board, scene, wire.from);
     const b = wireEndWorld(board, scene, wire.to);
-    return a && b ? wireCurve(a, b) : null;
+    return a && b ? ([a, b] as const) : null;
   }, [board, scene, wire]);
-  const geo = useMemo(() => (curve ? new THREE.TubeGeometry(curve, 64, 0.45, 8, false) : null), [curve]);
-  const halo = useMemo(() => (curve ? new THREE.TubeGeometry(curve, 64, 0.95, 8, false) : null), [curve]);
+  const curve = useMemo(() => (ends ? wireCurve(ends[0], ends[1], wireSpread(scene, wire)) : null), [ends, scene, wire]);
+  const geo = useMemo(() => (curve ? new THREE.TubeGeometry(curve, 80, 0.32, 8, false) : null), [curve]);
+  const halo = useMemo(() => (curve ? new THREE.TubeGeometry(curve, 64, 0.85, 8, false) : null), [curve]);
+  useEffect(() => () => geo?.dispose(), [geo]);
+  useEffect(() => () => halo?.dispose(), [halo]);
   const pulses = useRef<(THREE.Mesh | null)[]>([]);
   const haloMat = useRef<THREE.MeshBasicMaterial>(null);
 
@@ -38,16 +45,23 @@ function Wire({ board, scene, wire }: { board: BoardDef; scene: Scene; wire: Sce
   if (!geo || !halo) return null;
   const haloColor = finding?.severity === 'error' ? '#FF5D52' : finding ? '#F2A93B' : highlighted ? '#C9BEFF' : '#ffffff';
   return (
-    <group>
-      <mesh
-        geometry={geo}
-        onClick={(e: ThreeEvent<MouseEvent>) => {
-          e.stopPropagation();
-          useScene.getState().select(target);
-        }}
-      >
-        <meshStandardMaterial color={wire.color} roughness={0.45} emissive={wire.color} emissiveIntensity={0.12} />
+    <group
+      onClick={(e: ThreeEvent<MouseEvent>) => {
+        // The wider halo around the thin cable catches clicks too.
+        e.stopPropagation();
+        useScene.getState().select(target);
+      }}
+    >
+      <mesh geometry={geo}>
+        <meshStandardMaterial color={wire.color} roughness={0.42} emissive={wire.color} emissiveIntensity={0.12} transparent opacity={faded ? 0.22 : 1} depthWrite={!faded} />
       </mesh>
+      {/* plug housings: black Dupont shells standing on the pins */}
+      {ends?.map((p, i) => (
+        <mesh key={i} position={[p.x, p.y + PLUG_MM / 2 - 0.3, p.z]}>
+          <boxGeometry args={[2.0, PLUG_MM, 2.0]} />
+          <meshStandardMaterial color="#16191d" roughness={0.55} transparent opacity={faded ? 0.25 : 1} depthWrite={!faded} />
+        </mesh>
+      ))}
       <mesh geometry={halo}>
         <meshBasicMaterial ref={haloMat} color={haloColor} transparent opacity={0} depthWrite={false} />
       </mesh>

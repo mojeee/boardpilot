@@ -15,6 +15,28 @@
     "thickness": 1.0
   },
   "layoutPxPerMm": 10,
+  "holesMm": [
+    [
+      2.0,
+      4.8,
+      2.1
+    ],
+    [
+      2.0,
+      16.2,
+      2.1
+    ],
+    [
+      49.0,
+      4.8,
+      2.1
+    ],
+    [
+      49.0,
+      16.2,
+      2.1
+    ]
+  ],
   "headerStyle": "male-down",
   "pcbColor": "#1B6B3A",
   "summary": "The Raspberry Pi Pico with Wi-Fi and Bluetooth added. Same 40 pins and 3.3 V logic as the Pico; the on-board LED is driven by the wireless chip (use LED_BUILTIN), and GPIO 23, 24, 25 and 29 are used by the radio, so they are not on the header.",

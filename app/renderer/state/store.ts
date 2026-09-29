@@ -93,10 +93,16 @@ interface SceneStore {
   draggingPart: string | null;
   libOpen: boolean;
   cameraPreset: { name: 'top' | 'side' | 'module' | 'home'; nonce: number };
+  /** Bumped when a scene is opened (not on edits), so the camera frames it. */
+  loadNonce: number;
+  /** Floor style of the 3D view: a workbench or a plain grid. */
+  stage: 'desk' | 'plain';
   past: Scene[];
   future: Scene[];
   /** Replace the scene. Pass keepHistory to make it undoable. */
   setScene(s: Scene, keepHistory?: boolean): void;
+  /** Open a scene (project, example, new board) and frame it with the camera. */
+  openScene(s: Scene, keepHistory?: boolean): void;
   /** Change the scene. Transient changes (drag moves) skip the undo history; call checkpoint() first. */
   updateScene(fn: (s: Scene) => Scene, opts?: { transient?: boolean }): void;
   checkpoint(): void;
@@ -106,7 +112,23 @@ interface SceneStore {
   focusOn(targets: TargetRef[]): void;
   setHighlight(targets: TargetRef[]): void;
   set(p: Partial<Pick<SceneStore, 'view' | 'labels' | 'wireFrom' | 'wireMode' | 'draggingPart' | 'libOpen'>>): void;
+  setStage(stage: 'desk' | 'plain'): void;
   preset(name: 'top' | 'side' | 'module' | 'home'): void;
+}
+
+const STAGE_KEY = 'bp.stage';
+
+/** The remembered floor style; slow computers (few cores or little memory) start with the plain one. */
+function initialStage(): 'desk' | 'plain' {
+  try {
+    const v = localStorage.getItem(STAGE_KEY);
+    if (v === 'desk' || v === 'plain') return v;
+  } catch {
+    /* no storage: use the default */
+  }
+  const nav = typeof navigator === 'undefined' ? undefined : (navigator as Navigator & { deviceMemory?: number });
+  const slow = (nav?.hardwareConcurrency ?? 8) <= 4 || (nav?.deviceMemory ?? 8) <= 4;
+  return slow ? 'plain' : 'desk';
 }
 
 function withFindings(scene: Scene) {
@@ -119,12 +141,14 @@ export const useScene = create<SceneStore>((set, get) => ({
   highlight: [],
   focus: { targets: [], nonce: 0 },
   view: '3d',
-  labels: true,
+  labels: false,
   wireMode: false,
   wireFrom: null,
   draggingPart: null,
   libOpen: false,
   cameraPreset: { name: 'home', nonce: 0 },
+  loadNonce: 0,
+  stage: initialStage(),
   past: [],
   future: [],
   setScene: (s, keepHistory) =>
@@ -134,6 +158,10 @@ export const useScene = create<SceneStore>((set, get) => ({
     const after = fn(before);
     if (after === before) return;
     set(opts?.transient ? withFindings(after) : { ...withFindings(after), past: [...get().past.slice(-99), before], future: [] });
+  },
+  openScene: (s, keepHistory) => {
+    get().setScene(s, keepHistory);
+    set((st) => ({ loadNonce: st.loadNonce + 1 }));
   },
   checkpoint: () => set({ past: [...get().past.slice(-99), get().scene], future: [] }),
   undo: () => {
@@ -152,6 +180,14 @@ export const useScene = create<SceneStore>((set, get) => ({
   focusOn: (targets) => set((s) => ({ focus: { targets, nonce: s.focus.nonce + 1 }, highlight: targets, selected: targets[0] ?? s.selected })),
   setHighlight: (highlight) => set({ highlight }),
   set: (p) => set(p),
+  setStage: (stage) => {
+    try {
+      localStorage.setItem(STAGE_KEY, stage);
+    } catch {
+      /* private mode: the choice lasts until the app closes */
+    }
+    set({ stage });
+  },
   preset: (name) => set((s) => ({ cameraPreset: { name, nonce: s.cameraPreset.nonce + 1 } })),
 }));
 
