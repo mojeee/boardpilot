@@ -3,13 +3,14 @@
 // then a part pin, to add a wire.
 
 import { useMemo, useRef } from 'react';
-import { useThree, type ThreeEvent } from '@react-three/fiber';
+import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { PartDef, ScenePart, TargetRef } from '@shared/types';
-import { PARTS, ROLE_HEX, partRoleColor } from '@shared/board';
+import { PARTS, ROLE_HEX, getBoard, partRoleColor, pinById } from '@shared/board';
 import { t } from '@shared/i18n';
-import { log, useScene } from '../state/store';
+import { log, useLive, useScene } from '../state/store';
+import { useTemplate } from '../state/templateRun';
 import { PART_BASE_Y, partPinLocal, partRotationDeg } from './geometry';
 
 const Std = ({ color, ...rest }: { color: string; transparent?: boolean; opacity?: number; emissive?: string; emissiveIntensity?: number; metalness?: number; roughness?: number }) => (
@@ -219,6 +220,36 @@ export function PartPins({
   );
 }
 
+/** An LED lights up when the board pin driving it is HIGH (measured, or in a template run). */
+function LedGlow({ sp, def }: { sp: ScenePart; def: PartDef }) {
+  const wires = useScene((s) => s.scene.wires);
+  const board = useScene((s) => s.scene.board);
+  const anode = def.pins.find((p) => p.role === 'digital_in')?.name;
+  const w = wires.find((x) => (x.to.part === sp.id && x.to.pin === anode) || (x.from.part === sp.id && x.from.pin === anode));
+  const boardPin = w ? (w.from.part === 'board' ? w.from.pin : w.to.pin) : undefined;
+  const gpio = boardPin ? pinById(getBoard(board), boardPin)?.gpio ?? null : null;
+  const mesh = useRef<THREE.Mesh>(null);
+  const light = useRef<THREE.PointLight>(null);
+  useFrame(() => {
+    if (gpio === null) return;
+    const live = useLive.getState();
+    const measured = Date.now() - live.frameAt < 2000 ? live.frame?.pins[String(gpio)]?.level : undefined;
+    const on = (measured ?? useTemplate.getState().simPins[gpio]) === 1;
+    if (mesh.current) mesh.current.visible = on;
+    if (light.current) light.current.intensity = on ? 40 : 0;
+  });
+  if (gpio === null) return null;
+  return (
+    <group position={[0, 5.5, 0]}>
+      <mesh ref={mesh} visible={false}>
+        <sphereGeometry args={[3.6, 20, 12]} />
+        <meshBasicMaterial color={def.model.color} transparent opacity={0.45} depthWrite={false} />
+      </mesh>
+      <pointLight ref={light} color={def.model.color} intensity={0} distance={40} decay={2} />
+    </group>
+  );
+}
+
 function PartModel({ sp }: { sp: ScenePart }) {
   const def = PARTS[sp.partId];
   const labels = useScene((s) => s.labels);
@@ -229,6 +260,7 @@ function PartModel({ sp }: { sp: ScenePart }) {
   const finding = useScene((s) => s.findings.find((f) => f.targets.includes(target)));
   const wireMode = useScene((s) => s.wireMode);
   const wires = useScene((s) => s.scene.wires);
+  const shown = useTemplate((s) => s.partText[sp.id]);
   const wired = useMemo(
     () => new Set(wires.flatMap((w) => [w.from, w.to].filter((e) => e.part === sp.id).map((e) => e.pin))),
     [wires, sp.id],
@@ -285,6 +317,7 @@ function PartModel({ sp }: { sp: ScenePart }) {
         >
           <PartBody def={def} />
         </group>
+        {def.model.shape === 'led' && <LedGlow sp={sp} def={def} />}
         <PartPins def={def} labels={labels || selected || highlighted || wireMode} tagged={wired} onPinClick={onPinClick} />
       </group>
       {(selected || highlighted || dragging) && (
@@ -297,6 +330,7 @@ function PartModel({ sp }: { sp: ScenePart }) {
         <div className={`part-label ${finding ? `sev-${finding.severity}` : ''}`}>
           {sp.label ?? def.name}
           {sp.confirmed === false && <span className="tag-suggestion">{t('suggestion')}</span>}
+          {shown && <span className="part-live mono">{shown}</span>}
         </div>
       </Html>
     </group>

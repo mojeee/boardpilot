@@ -66,6 +66,7 @@ Target UI: the screenshots in `/design` (Home, Debug wizard, 3D workspace, Test 
 /boards           board definitions (JSON)
 /parts            part definitions (JSON)
 /flows            wizard flow definitions
+/templates        template projects (JSON, see docs/templates.md)
 /firmware/agent   diagnostic agent source (Arduino for ESP32)
 /resources/agent  prebuilt agent binaries
 /design           target UI screenshots

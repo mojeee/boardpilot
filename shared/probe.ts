@@ -30,7 +30,8 @@ export function parseProbeLine(line: string): ProbeFrame | null {
   if (mem && typeof mem.heapFree === 'number') {
     frame.mem = { heapFree: mem.heapFree, heapMin: mem.heapMin, heapSize: mem.heapSize, stackFree: mem.stackFree };
   }
-  if (!frame.values && !frame.mem) return null;
+  for (const k of ['step', 'state', 'event'] as const) if (typeof o[k] === 'string' && o[k]) frame[k] = String(o[k]).slice(0, 80);
+  if (!frame.values && !frame.mem && !frame.step && !frame.state && !frame.event) return null;
   return frame;
 }
 

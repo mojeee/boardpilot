@@ -132,7 +132,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
     }
     if (/^[AD]\d+$/.test(e)) return pinById(board, e) ?? board.pins.find((p) => p.label === e) ?? null;
     const chip = /^P([A-K])_?(\d+)$/.exec(e);
-    if (chip) return board.pins.find((p) => p.chipPin?.replace('_', '') === `P${chip[1]}${chip[2]}`) ?? null;
+    if (chip) return board.pins.find((p) => (p.chipPin ?? p.id).replace('_', '') === `P${chip[1]}${chip[2]}` && p.kind === 'gpio') ?? null;
     return undefined; // an expression we cannot follow (a variable, a sum): stay quiet
   };
   const label = (p: PinDef) => (p.gpio !== null && !headerNumbering && p.label !== String(p.gpio) ? `${p.label} (GPIO ${p.gpio})` : p.label);

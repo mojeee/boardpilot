@@ -1,0 +1,80 @@
+{
+  "id": "weather-station",
+  "name": "Weather station",
+  "summary": "Temperature, humidity and pressure from a BME280, shown on a small OLED screen.",
+  "difficulty": "easy",
+  "minutes": 30,
+  "learn": [
+    "Share one I2C bus between two parts",
+    "Use a sensor library and check that the sensor answered",
+    "Draw text on an OLED display"
+  ],
+  "parts": [
+    { "id": "bme1", "partId": "bme280-gy", "label": "BME280" },
+    { "id": "oled1", "partId": "ssd1306-i2c", "label": "OLED" }
+  ],
+  "pins": {
+    "SDA": { "part": "bme1", "pin": "SDA" },
+    "SCL": { "part": "bme1", "pin": "SCL" }
+  },
+  "libraries": ["Adafruit BME280 Library", "Adafruit SSD1306", "Adafruit GFX Library"],
+  "code": {
+    "includes": ["#include <Wire.h>", "#include <Adafruit_BME280.h>", "#include <Adafruit_SSD1306.h>"],
+    "globals": ["Adafruit_BME280 bme;", "Adafruit_SSD1306 oled(128, 64, &Wire, -1);", "unsigned long lastRead = 0;"],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "{I2C_BEGIN}",
+      "  if (!bme.begin(0x76) && !bme.begin(0x77)) probe.event(\"BME280 not found: check the wiring\");",
+      "  if (!oled.begin(SSD1306_SWITCHCAPVCC, 0x3C)) probe.event(\"Display not found at 0x3C\");",
+      "  oled.setTextColor(SSD1306_WHITE);"
+    ],
+    "loop": [
+      "  if (millis() - lastRead < 2000) {",
+      "    probe.loop();",
+      "    return;",
+      "  }",
+      "  lastRead = millis();",
+      "  probe.step(\"Read the sensor\");",
+      "  float temperature = bme.readTemperature();",
+      "  float humidity = bme.readHumidity();",
+      "  float pressure = bme.readPressure() / 100.0F;  // Pa to hPa",
+      "  probe.value(\"temperature\", temperature);",
+      "  probe.value(\"humidity\", humidity);",
+      "  probe.value(\"pressure\", pressure);",
+      "  probe.step(\"Show the values on the display\");",
+      "  oled.clearDisplay();",
+      "  oled.setTextSize(2);",
+      "  oled.setCursor(0, 0);",
+      "  oled.print(temperature, 1);",
+      "  oled.println(\" C\");",
+      "  oled.print(humidity, 0);",
+      "  oled.println(\" %\");",
+      "  oled.setTextSize(1);",
+      "  oled.print(pressure, 0);",
+      "  oled.println(\" hPa\");",
+      "  oled.display();",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 2000,
+    "inputs": {
+      "temperature": { "wave": { "min": 21.2, "max": 23.8, "periodS": 120 } },
+      "humidity": { "wave": { "min": 41, "max": 52, "periodS": 90 } },
+      "pressure": { "wave": { "min": 1009, "max": 1013, "periodS": 300 } }
+    },
+    "loop": [
+      { "step": "Read the sensor" },
+      { "read": "temperature", "as": "temperature", "unit": "°C", "digits": 1 },
+      { "read": "humidity", "as": "humidity", "unit": "%", "digits": 0 },
+      { "read": "pressure", "as": "pressure", "unit": "hPa", "digits": 0 },
+      { "step": "Show the values on the display" },
+      { "show": "oled1", "text": "{temperature} C  {humidity} %" }
+    ]
+  },
+  "sources": [
+    { "title": "Bosch BME280 datasheet", "section": "I²C interface; measurement ranges" },
+    { "title": "Adafruit SSD1306 library", "section": "begin(SSD1306_SWITCHCAPVCC, 0x3C)" }
+  ]
+}

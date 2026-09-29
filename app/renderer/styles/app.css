@@ -576,3 +576,25 @@ label.check { display: flex; flex-direction: row; gap: 6px; align-items: center;
 .code-input { width: 100%; min-height: 160px; resize: vertical; background: var(--chrome); color: var(--text); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px; font-size: 12px; line-height: 1.45; }
 .code-line { display: block; margin-top: 3px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--bg); border-radius: 3px; padding: 2px 6px; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
 .card-note.gotcha { border-left: 2px solid var(--warn); padding-left: 8px; }
+
+/* Template projects */
+.tpl-list { display: flex; flex-direction: column; gap: 6px; }
+.tpl-card { text-align: left; display: flex; flex-direction: column; gap: 3px; background: var(--chrome); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px 10px; color: var(--text); cursor: pointer; }
+.tpl-card:hover:not(:disabled) { border-color: var(--pin-gpio); }
+.tpl-card:disabled { opacity: 0.55; cursor: default; }
+.tpl-meta { color: var(--muted); }
+.warn-text { color: var(--warn); }
+.tpl-view { display: flex; flex-direction: column; gap: 8px; }
+.tpl-learn { margin: 0; padding-left: 18px; color: var(--muted); }
+.tpl-now { display: flex; gap: 8px; align-items: center; }
+.tpl-story { max-height: 210px; overflow: auto; display: flex; flex-direction: column; gap: 2px; background: var(--chrome); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px; }
+.story-line { display: grid; grid-template-columns: 44px 1fr; gap: 8px; text-align: left; background: none; border: 0; color: var(--text); font-size: 12px; padding: 2px 4px; border-radius: 3px; cursor: pointer; }
+.story-line:hover { background: var(--raised); }
+.story-line.k-step span:last-child { font-weight: 600; }
+.story-line.k-state span:last-child { color: var(--ai); font-family: var(--font-mono); }
+.story-line.k-event span:last-child { color: var(--warn); }
+.story-line.k-value span:last-child, .story-line.k-show span:last-child { color: var(--muted); }
+.story-line.k-pin span:last-child { color: var(--pin-gpio); font-family: var(--font-mono); }
+.tpl-code { max-height: 280px; overflow: auto; }
+.tpl-code .run-line { background: rgba(92, 203, 143, 0.18); box-shadow: inset 3px 0 0 var(--ok); }
+.part-live { display: block; color: var(--pin-sda); font-size: 11px; }

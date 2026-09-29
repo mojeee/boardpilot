@@ -7,6 +7,12 @@
 //   @bp {"t":12345,"v":{"temperature":22.4,"humidity":41.2}}
 //   @bp {"t":12345,"v":{"pot":1840},"pins":{"pot":34}}
 //   @bp {"t":12345,"mem":{"heapFree":201344,"heapMin":190000,"heapSize":327680,"stackFree":6000}}
+//   @bp {"t":12345,"step":"Read the soil sensor"}
+//   @bp {"t":12345,"state":"WATERING"}
+//   @bp {"t":12345,"event":"Pump on for 3 s"}
+//
+// step(), state() and event() tell the story of what the program is doing, so BoardPilot can show
+// it in plain words and highlight the running part of the code. The memory line is ESP32 only.
 //
 // Usage:
 //   BoardPilotProbe probe(Serial);
@@ -37,6 +43,13 @@ class BoardPilotProbe {
   // Sends one memory line now (heap and stack of the calling task).
   void memory();
 
+  // Story markers, sent at once as their own line (text at most 60 characters):
+  // the step of the program that starts now, the current mode, and something that happened.
+  // step() and state() send only when the text changes, so they can sit in a fast loop().
+  void step(const char* text);
+  void state(const char* text);
+  void event(const char* text);
+
   // Call often from loop(). Every interval it sends the batch and a memory line.
   void loop();
 
@@ -53,6 +66,9 @@ class BoardPilotProbe {
 
   void printName(const char* s);
   void printNumber(float v);
+  void story(const char* key, const char* text);
+  char _lastStep[61];
+  char _lastState[61];
 
   Print& _out;
   Entry _e[kMaxValues];

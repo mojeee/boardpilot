@@ -110,6 +110,15 @@ async function runNamedDemo(name: string, scenario: string | null) {
   } else if (name === 'boards') {
     const { openBoardPicker } = await import('./components/BoardPicker');
     openBoardPicker();
+  } else if (name === 'template') {
+    // #demo=template&id=plant-watering[&speed=4]: build a template and run it in the simulator.
+    openTask('newProject');
+    const { useTemplate } = await import('./state/templateRun');
+    const hp2 = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
+    useTemplate.getState().open(hp2.get('id') ?? 'plant-watering');
+    useTemplate.getState().setSpeed(Number(hp2.get('speed') ?? 4));
+    await sleep(1500);
+    useTemplate.getState().play();
   } else if (name === 'code') {
     // #demo=code: the weather station with a sketch that has SDA/SCL reversed and the LED on the wrong pin.
     openTask('newProject');
