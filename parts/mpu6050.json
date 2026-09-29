@@ -17,6 +17,10 @@
   "pullupsOnBoard": true,
   "model": { "shape": "breakout", "size": [16, 21, 1.6], "color": "#1F4FA8" },
   "keywords": ["mpu6050", "gy-521", "accelerometer", "gyro", "imu", "motion"],
+  "gotchas": [
+    { "text": "The address is 0x68, or 0x69 when AD0 is HIGH.", "source": { "title": "InvenSense MPU-6000/MPU-6050 Product Specification", "section": "I²C interface: slave address" } },
+    { "text": "It starts in sleep mode and reads zeros until PWR_MGMT_1 (0x6B) is cleared. Libraries do this in begin(); your own code must too.", "source": { "title": "InvenSense MPU-6000/MPU-6050 Register Map", "section": "Register 107, Power Management 1 (reset value 0x40, sleep)" } }
+  ],
   "sources": [{ "title": "InvenSense MPU-6000/6050 Register Map", "section": "4.32 Register 117 WHO_AM_I (0x68)" }],
   "starterSketch": "mpu6050"
 }

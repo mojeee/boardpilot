@@ -58,6 +58,15 @@
     "scheda sd",
     "memoria"
   ],
+  "gotchas": [
+    {
+      "text": "The SD library reads FAT16 and FAT32 cards. Cards formatted as exFAT (most over 32 GB) are not found.",
+      "source": {
+        "title": "Arduino SD library reference",
+        "section": "Supported file systems: FAT16 and FAT32"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "SD Association Physical Layer Simplified Specification",

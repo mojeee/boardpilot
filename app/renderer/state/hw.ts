@@ -22,6 +22,7 @@ export const flowHardware: FlowHardware = {
   agent: (req) => agent(req),
   captureSerial: (baud, ms) => bp().hw.captureSerial(baud, ms),
   flashUser: (token, path) => bp().hw.flashUser(token, path),
+  preflight: (path) => bp().hw.preflight(path),
 };
 
 let wired = false;

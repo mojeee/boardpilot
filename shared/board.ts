@@ -313,3 +313,15 @@ export function wireFor(scene: Scene, partId: string, partPin: string) {
     (w) => (w.from.part === partId && w.from.pin === partPin) || (w.to.part === partId && w.to.pin === partPin),
   );
 }
+
+/** The part's known traps that apply on this board (see PartGotcha.when). */
+export function gotchasFor(def: PartDef, board: BoardDef): NonNullable<PartDef['gotchas']> {
+  return (def.gotchas ?? []).filter(
+    (g) =>
+      !g.when ||
+      (g.when === 'logic3v3' && board.logicVolt < 5) ||
+      (g.when === 'logic5v' && board.logicVolt >= 5) ||
+      (g.when === 'avr' && board.family === 'avr') ||
+      (g.when === 'esp32' && isEspFamily(board)),
+  );
+}

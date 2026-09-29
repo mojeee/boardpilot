@@ -14,6 +14,10 @@
   "pullupsOnBoard": true,
   "model": { "shape": "oled", "size": [27, 27, 3], "color": "#1A1A1A" },
   "keywords": ["oled", "ssd1306", "display", "screen", "128x64"],
+  "gotchas": [
+    { "text": "The address is 0x3C or 0x3D (the jumper on the back). A board printed “0x78” is 0x3C: the print shows the address shifted left by one bit.", "source": { "title": "Solomon Systech SSD1306 datasheet", "section": "I²C-bus interface: slave address, SA0 bit" } },
+    { "text": "A 128×64 display needs a 1 KB screen buffer in RAM. On a board with 2 KB of RAM (Uno, Nano) that leaves little for the rest of the sketch.", "when": "avr", "source": { "title": "Adafruit SSD1306 library", "section": "Buffer of width × height / 8 bytes; ATmega328P datasheet: 2 KB SRAM" } }
+  ],
   "sources": [{ "title": "Solomon Systech SSD1306 datasheet", "section": "8.1.5 I2C-bus interface (slave address 0111 10 SA0)" }],
   "starterSketch": "ssd1306"
 }

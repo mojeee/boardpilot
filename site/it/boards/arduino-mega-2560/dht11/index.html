@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"DHT11 con Arduino Mega 2560 R3","description":"Come collegare DHT11 a Arduino Mega 2560 R3: quali pin usare (DATA → 22), alimentazione 3,3-5 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/dht11/","tool":[{"@type":"HowToTool","name":"Arduino Mega 2560 R3"},{"@type":"HowToTool","name":"DHT11 temperature + humidity"}],"step":[{"@type":"HowToStep","position":1,"name":"VCC → 5V","text":"VCC (Alimentazione) → 5V"},{"@type":"HowToStep","position":2,"name":"DATA → 22","text":"DATA (Dati one-wire) → 22 (PA0)"},{"@type":"HowToStep","position":3,"name":"GND → GND","text":"GND (Massa) → GND"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di Arduino Mega 2560 R3 uso per DHT11?","acceptedAnswer":{"@type":"Answer","text":"VCC → 5V, DATA → 22 (PA0), GND → GND."}},{"@type":"Question","name":"DHT11 funziona con Arduino Mega 2560 R3 a 5 V?","acceptedAnswer":{"@type":"Answer","text":"Sì: DHT11 funziona a 3,3-5 V e Arduino Mega 2560 R3 usa segnali a 5 V, quindi non serve adattare i livelli."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"Arduino Mega 2560 R3","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/"},{"@type":"ListItem","position":4,"name":"DHT11 temperature + humidity","item":"https://boardpilot.agentflowbind.com/it/boards/arduino-mega-2560/dht11/"}]}]}</script>
   </head>
   <body>
@@ -67,6 +67,7 @@
         </table></div>
         <h2>Controlla prima di alimentare</h2>
         <ul class="checks"><li>Alimentazione: 5 V dal pin 5V.</li></ul>
+        <h2>Da sapere</h2><ul class="gotchas"><li>Misura da 0 a 50 °C e dal 20 al 90 %UR, solo a numeri interi. Sotto 0 °C non può misurare. <span class="fine">(Aosong DHT11 datasheet, Technical specifications)</span></li><li>Dopo l’accensione, aspetta 1 secondo prima della prima lettura. <span class="fine">(Aosong DHT11 datasheet, Power and pin)</span></li></ul>
         <h2>Codice di prova (Arduino)</h2>
         <pre class="code"><code>// Library: DHT sensor library (Adafruit)
 #include &lt;DHT.h&gt;

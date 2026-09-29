@@ -40,6 +40,15 @@
     "terreno",
     "piante"
   ],
+  "gotchas": [
+    {
+      "text": "The reading depends on your soil and supply voltage. Note the values in dry air and in water, and scale between them.",
+      "source": {
+        "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki",
+        "section": "Calibration"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki",

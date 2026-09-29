@@ -13,6 +13,10 @@
   "voltage": "3.3-5",
   "model": { "shape": "module", "size": [36, 24, 8], "color": "#1F4FA8" },
   "keywords": ["neo-6m", "gps", "gnss", "u-blox", "location", "posizione", "navigatore"],
+  "gotchas": [
+    { "text": "The first fix needs a view of the sky and takes about 30 seconds or more. Indoors it may never find one.", "source": { "title": "u-blox NEO-6 datasheet", "section": "Time-to-first-fix, cold start 27 s" } },
+    { "text": "It talks at 9600 baud. Connect the module’s TX to the board’s RX.", "source": { "title": "u-blox NEO-6 datasheet", "section": "UART default 9600 baud" } }
+  ],
   "sources": [
     { "title": "u-blox NEO-6 datasheet", "section": "UART default 9600 baud, NMEA output" }
   ]

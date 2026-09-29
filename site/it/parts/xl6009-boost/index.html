@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"XL6009 boost converter con ESP32","description":"Come collegare XL6009 boost converter a un ESP32: pin, GPIO consigliati, alimentazione 5-32 V. Dati gratuiti di BoardPilot.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/parts/xl6009-boost/","about":"XL6009 boost converter","keywords":"xl6009, boost, step up, dc-dc, regulator, elevatore di tensione","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/it/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Libreria componenti","item":"https://boardpilot.agentflowbind.com/it/parts/"},{"@type":"ListItem","position":3,"name":"XL6009 boost converter","item":"https://boardpilot.agentflowbind.com/it/parts/xl6009-boost/"}]}]}</script>
   </head>
   <body>
@@ -64,6 +64,7 @@
         <h2>Pin e collegamento all’ESP32</h2>
         <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Ruolo</th><th>Pin ESP32</th><th>Note</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>IN+</td><td>Non collegato all’ESP32</td><td class="mono">—</td><td>Input 5 to 32 V</td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>IN-</td><td>Massa</td><td class="mono">GND</td><td>Input ground, same as OUT-</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>OUT+</td><td>Non collegato all’ESP32</td><td class="mono">—</td><td>Adjustable 5 to 35 V, above the input. Set it with the trimmer BEFORE wiring</td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>OUT-</td><td>Massa</td><td class="mono">GND</td><td>To the ESP32 GND</td></tr></tbody></table></div>
         <p class="fine">Collegamento consigliato per l’ESP32 DevKit a 30 pin, evitando i pin della flash, di sola lettura e di strapping. BoardPilot lo controlla mentre colleghi.</p>
+        
         
         
         

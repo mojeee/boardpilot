@@ -44,6 +44,15 @@
     "display 7 segmenti",
     "orologio"
   ],
+  "gotchas": [
+    {
+      "text": "CLK and DIO are not I2C: use a TM1637 library. Any two pins work.",
+      "source": {
+        "title": "Titan Micro TM1637 datasheet",
+        "section": "Two-wire serial interface"
+      }
+    }
+  ],
   "sources": [
     {
       "title": "Titan Micro TM1637 datasheet",

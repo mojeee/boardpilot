@@ -12,6 +12,9 @@
   "voltage": "3.3-5",
   "model": { "shape": "module", "size": [42, 24, 12], "color": "#1F4FA8" },
   "keywords": ["tm1637", "7 segment", "4 digit", "clock display", "display 7 segmenti", "orologio"],
+  "gotchas": [
+    { "text": "CLK and DIO are not I2C: use a TM1637 library. Any two pins work.", "source": { "title": "Titan Micro TM1637 datasheet", "section": "Two-wire serial interface" } }
+  ],
   "sources": [
     { "title": "Titan Micro TM1637 datasheet", "section": "Two-wire interface CLK / DIO (not I2C compatible)" }
   ]

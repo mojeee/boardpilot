@@ -21,6 +21,9 @@
   "pullupsOnBoard": true,
   "model": { "shape": "breakout", "size": [28, 17.5, 1.6], "color": "#1F4FA8" },
   "keywords": ["ads1115", "adc", "analog to digital", "16 bit", "convertitore", "analogico"],
+  "gotchas": [
+    { "text": "Each input must stay between GND and VDD, even in differential mode. The default range is ±2.048 V; set the gain for larger signals.", "source": { "title": "TI ADS111x datasheet", "section": "Absolute maximum ratings: analog input; PGA full-scale range (default ±2.048 V)" } }
+  ],
   "sources": [
     { "title": "Texas Instruments ADS111x datasheet", "section": "ADDR pin connection and corresponding slave address (0x48 to 0x4B)" }
   ]

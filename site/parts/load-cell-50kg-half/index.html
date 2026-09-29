@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Half-bridge load cell 50 kg (3 wires) with ESP32","description":"How to wire the Half-bridge load cell 50 kg (3 wires) to an ESP32: pins, suggested GPIO, 3.3-5 V supply. Free part data from BoardPilot.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/parts/load-cell-50kg-half/","about":"Half-bridge load cell 50 kg (3 wires)","keywords":"load cell, 50kg, half bridge, body scale, cella di carico, bilancia pesapersone, peso","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Parts library","item":"https://boardpilot.agentflowbind.com/parts/"},{"@type":"ListItem","position":3,"name":"Half-bridge load cell 50 kg (3 wires)","item":"https://boardpilot.agentflowbind.com/parts/load-cell-50kg-half/"}]}]}</script>
   </head>
   <body>
@@ -64,6 +64,7 @@
         <h2>Pins and ESP32 wiring</h2>
         <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Role</th><th>ESP32 pin</th><th>Notes</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>RED</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Centre tap: signal. Colours vary: the two outer wires show the highest resistance between them</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>BLACK</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Outer end: excitation</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>WHITE</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Outer end: excitation</td></tr></tbody></table></div>
         <p class="fine">Suggested wiring for the 30-pin ESP32 DevKit, avoiding flash, input-only and strapping pins. BoardPilot checks it for you as you wire.</p>
+        
         
         
         

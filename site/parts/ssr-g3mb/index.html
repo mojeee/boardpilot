@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Solid state relay module (G3MB-202P) with ESP32","description":"How to wire the Solid state relay module (G3MB-202P) to an ESP32: pins, suggested GPIO, 5 V supply. Free part data from BoardPilot.","inLanguage":"en","url":"https://boardpilot.agentflowbind.com/parts/ssr-g3mb/","about":"Solid state relay module (G3MB-202P)","keywords":"ssr, solid state relay, g3mb-202p, omron, relè statico, relè","license":"https://creativecommons.org/licenses/by/4.0/","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isPartOf":{"@type":"Dataset","name":"BoardPilot ESP32 parts library","url":"https://boardpilot.agentflowbind.com/parts/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Parts library","item":"https://boardpilot.agentflowbind.com/parts/"},{"@type":"ListItem","position":3,"name":"Solid state relay module (G3MB-202P)","item":"https://boardpilot.agentflowbind.com/parts/ssr-g3mb/"}]}]}</script>
   </head>
   <body>
@@ -65,6 +65,7 @@
         <div class="table-wrap"><table class="pin-table"><thead><tr><th>Pin</th><th>Role</th><th>ESP32 pin</th><th>Notes</th></tr></thead><tbody><tr><td class="mono"><span class="dot" style="background:#FF6B5E"></span>DC+</td><td>Power</td><td class="mono">VIN</td><td>Needs 5 V: use VIN</td></tr><tr><td class="mono"><span class="dot" style="background:#8A96A3"></span>DC-</td><td>Ground</td><td class="mono">GND</td><td></td></tr><tr><td class="mono"><span class="dot" style="background:#5CCB8F"></span>CH1</td><td>Input (the ESP32 drives it)</td><td class="mono">D25</td><td>LOW = on on most modules</td></tr><tr><td class="mono"><span class="dot" style="background:#7D8997"></span>SW1</td><td>Not wired to the ESP32</td><td class="mono">—</td><td>Load terminals: AC only, 2 A max. Mains voltage is dangerous</td></tr></tbody></table></div>
         <p class="fine">Suggested wiring for the 30-pin ESP32 DevKit, avoiding flash, input-only and strapping pins. BoardPilot checks it for you as you wire.</p>
         <p class="note warn">This module is sold for 5 V. Its outputs may be 5 V: use a level shifter or a voltage divider on ESP32 inputs.</p>
+        
         
         <h2>Starter code (Arduino)</h2><pre class="code"><code>void setup() { pinMode(25, OUTPUT); }  // CH1
 

@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=ea9bda04dd" />
+    <link rel="stylesheet" href="/style.css?v=914e6e655a" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"LED con WeAct Black Pill STM32F411CE","description":"Come collegare LED a WeAct Black Pill STM32F411CE: quali pin usare (A → B12), alimentazione 3,3 V, i controlli che contano su questa scheda e codice Arduino per provarlo.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/led-resistor/","tool":[{"@type":"HowToTool","name":"WeAct Black Pill STM32F411CE"},{"@type":"HowToTool","name":"LED with 220 Ω resistor"}],"step":[{"@type":"HowToStep","position":1,"name":"A → B12","text":"A (Ingresso del componente) → B12 (PB12)"},{"@type":"HowToStep","position":2,"name":"K → G","text":"K (Massa) → G"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali pin di WeAct Black Pill STM32F411CE uso per LED?","acceptedAnswer":{"@type":"Answer","text":"A → B12 (PB12), K → G."}},{"@type":"Question","name":"LED funziona con WeAct Black Pill STM32F411CE a 3,3 V?","acceptedAnswer":{"@type":"Answer","text":"Sì: LED funziona a 3,3 V e WeAct Black Pill STM32F411CE usa segnali a 3,3 V, quindi non serve adattare i livelli."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"WeAct Black Pill STM32F411CE","item":"https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/"},{"@type":"ListItem","position":4,"name":"LED with 220 Ω resistor","item":"https://boardpilot.agentflowbind.com/it/boards/blackpill-f411ce/led-resistor/"}]}]}</script>
   </head>
   <body>
@@ -65,6 +65,7 @@
         </table></div>
         <h2>Controlla prima di alimentare</h2>
         <ul class="checks"></ul>
+        <h2>Da sapere</h2><ul class="gotchas"><li>La gamba lunga (anodo) va al pin, quella corta a GND, sempre con una resistenza (da 220 Ω a 1 kΩ). <span class="fine">(Arduino examples, Blink: circuit)</span></li></ul>
         <h2>Codice di prova (Arduino)</h2>
         <pre class="code"><code>void setup() {
   pinMode(PB12, OUTPUT);  // A on B12
