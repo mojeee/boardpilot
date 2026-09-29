@@ -13,6 +13,7 @@ import { openBoardPicker } from './BoardPicker';
 import { useScene } from '../state/store';
 import { getBoard } from '@shared/board';
 import { TopMenu, openTask } from './TaskRail';
+import { openExport } from './ExportDialog';
 
 /** Board and connection, one compact group: the board picker and the USB status (click to connect). */
 function BoardStatus() {
@@ -68,6 +69,9 @@ export function TopBar({ children }: { children?: React.ReactNode }) {
         </div>
       )}
       <div className="top-actions">
+        <button className="btn small ghost" onClick={openExport} title={t('The electrical design as a PDF drawing set')} data-where="top:export">
+          <Icon name="report" size={14} /> <span className="wide-only-2">{t('Export PDF')}</span>
+        </button>
         {conn.backups.length > 0 && conn.agent && (
           <button className="btn small" onClick={() => confirmRestore()} title={t('Restore my firmware')} data-where="top:restore">
             <Icon name="restore" size={15} /> <span className="wide-only">{t('Restore my firmware')}</span>

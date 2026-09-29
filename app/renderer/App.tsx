@@ -14,6 +14,7 @@ import { nameFirstTab } from './state/projects';
 import { startEventFeed } from './state/events';
 import { CommandBox } from './components/CommandBox';
 import { WarningBanner } from './components/WarningBanner';
+import { ExportDialog } from './components/ExportDialog';
 import { AssistantPanel } from './components/AssistantPanel';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DevMenu } from './components/DevMenu';
@@ -226,6 +227,7 @@ export function App() {
       <AiSettingsDialog />
       <BoardPickerDialog />
       <NewProjectDialog />
+      <ExportDialog />
       <ConfirmDialog />
       <LockScreen />
       {isWebDemo() && <DownloadAppPrompt />}

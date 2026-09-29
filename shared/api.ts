@@ -109,6 +109,8 @@ export interface BoardPilotApi {
      */
     saveProject(folder: string, files: StarterFile[]): Promise<Result<string>>;
     exportReport(markdown: string, html: string, suggestedName: string): Promise<Result<{ markdownPath: string; pdfPath: string }>>;
+    /** Asks where to save, prints the drawing set (landscape, the given paper) to PDF and writes it. */
+    exportPdf(html: string, suggestedName: string, paper: 'A4' | 'A3' | 'Letter' | 'Tabloid'): Promise<Result<string>>;
     info(): Promise<{ dataDir: string; logPath: string; version: string }>;
   };
   parts: {

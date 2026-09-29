@@ -232,6 +232,11 @@ async function execute(run: Run, id: AppActionId, arg: string) {
       (await import('./sceneActions')).changeBoard(b.id);
       return run.done(t('The project now uses the {board}.', { board: b.name }));
     }
+    case 'export_pdf': {
+      const { openExport } = await import('../components/ExportDialog');
+      openExport();
+      return run.done(t('Opened Export PDF.'));
+    }
     case 'create_report':
       await openTaskLazy('report');
       return run.done(t('Opened Report.'));
