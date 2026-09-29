@@ -1,4 +1,7 @@
-import { isUntouchedDemo, log, useApp, useScene, type Screen } from '../state/store';
+// The tasks and the top menu that opens them. The menu replaced the left task rail (workspace
+// redesign): the project page is the main place, the other tasks are one click away.
+
+import { useApp, type Screen } from '../state/store';
 import { useWizard } from '../wizard/session';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
@@ -16,36 +19,39 @@ export const TASKS: { screen: Screen; label: string; icon: string; flow?: string
 export function openTask(screen: Screen) {
   const task = TASKS.find((x) => x.screen === screen);
   useApp.getState().setScreen(screen);
-  // A new project starts empty, not on the simulator's demo bench (Undo brings the demo back).
-  if (screen === 'newProject' && isUntouchedDemo()) {
-    const s = useScene.getState();
-    s.openScene({ board: s.scene.board, parts: [], wires: [] }, true);
-    log('info', t('New empty project. Add parts, start from a template, or detect the board on your USB port.'));
-  }
   const w = useWizard.getState();
   if (task?.flow && w.state?.flowId !== task.flow) w.start(task.flow);
   if (screen === 'debug' && w.state && !w.state.flowId.startsWith('debug-')) w.cancel();
 }
 
-export function TaskRail() {
+/** The top menu: short names, the full task name as the tooltip. */
+export const MENU: { screen: Screen; label: string; icon: string; hint: string }[] = [
+  { screen: 'newProject', label: 'Project', icon: 'project', hint: 'Your project: the 3D board, the code, the log and the assistant' },
+  { screen: 'connect', label: 'Connect', icon: 'connect', hint: 'Find the board and read its chip' },
+  { screen: 'flash', label: 'Flash', icon: 'flash', hint: 'Write a program to the board, safely' },
+  { screen: 'debug', label: 'Debug', icon: 'debug', hint: 'Find out why something does not work' },
+  { screen: 'monitor', label: 'Monitor', icon: 'monitor', hint: 'Live values, serial output and memory' },
+  { screen: 'test', label: 'Test', icon: 'test', hint: 'Check pins, buses and decoded signals' },
+  { screen: 'report', label: 'Report', icon: 'report', hint: 'Summary of this session to share' },
+  { screen: 'learn', label: 'Learn', icon: 'learn', hint: 'Visual lessons, from zero to senior' },
+];
+
+export function TopMenu() {
   const screen = useApp((s) => s.screen);
   return (
-    <nav className="rail">
-      <button className={`rail-item ${screen === 'home' ? 'on' : ''}`} onClick={() => useApp.getState().setScreen('home')}>
-        <Icon name="home" /> {t('Home')}
-      </button>
-      <div className="rail-sep">{t('Tasks')}</div>
-      {TASKS.map((task, i) => (
-        <button key={task.screen} className={`rail-item ${screen === task.screen ? 'on' : ''}`} onClick={() => openTask(task.screen)} title={t(task.hint)}>
-          <Icon name={task.icon} />
-          <span className="rail-num mono">{i + 1}</span>
-          {t(task.label)}
+    <nav className="top-menu" aria-label={t('Tasks')}>
+      {MENU.map((m) => (
+        <button
+          key={m.screen}
+          className={`menu-item ${screen === m.screen ? 'on' : ''}`}
+          aria-current={screen === m.screen ? 'page' : undefined}
+          onClick={() => (m.screen === 'learn' ? useApp.getState().setScreen('learn') : openTask(m.screen))}
+          title={t(m.hint)}
+        >
+          <Icon name={m.icon} size={15} />
+          <span>{t(m.label)}</span>
         </button>
       ))}
-      <div className="rail-sep">{t('Learn')}</div>
-      <button className={`rail-item ${screen === 'learn' ? 'on' : ''}`} onClick={() => useApp.getState().setScreen('learn')} title={t('Visual lessons, from zero to senior')}>
-        <Icon name="learn" /> {t('Embedded lessons')}
-      </button>
     </nav>
   );
 }

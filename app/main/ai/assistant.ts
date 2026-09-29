@@ -4,8 +4,10 @@
 // The free demo is used whenever the picked provider has no key (see AiSettingsStore.active).
 
 import type {
+  AiCodeSuggestion,
   AiContext,
   AiReply,
+  CodeSuggestionRequest,
   AiSource,
   Confidence,
   PhotoRecognition,
@@ -209,6 +211,28 @@ const EXTRACT_SCHEMA = {
   additionalProperties: false,
 };
 
+const CODE_SCHEMA = {
+  type: 'object',
+  properties: {
+    title: { type: 'string', description: 'what the code does, max 8 words, e.g. "Read the sensor every second"' },
+    afterLine: { type: 'integer', description: 'insert after this 1-based line of the current code; 0 = at the top' },
+    replace: { type: 'boolean', description: 'true only when the text is a complete new sketch that replaces the current code' },
+    text: { type: 'string', description: 'the code to insert, indented to fit where it goes' },
+    explanation: { type: 'string', description: 'one or two plain sentences: what it does and which parts and pins it uses' },
+    sources: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: { kind: { type: 'string', enum: ['datasheet', 'library', 'user'] }, label: { type: 'string' } },
+        required: ['kind', 'label'],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ['title', 'afterLine', 'replace', 'text', 'explanation', 'sources'],
+  additionalProperties: false,
+};
+
 const CLASSIFY_SCHEMA = {
   type: 'object',
   properties: {
@@ -340,6 +364,60 @@ export class Assistant {
         logHasMeasurements,
       );
       return { ok: true, value: reply };
+    } catch (e) {
+      return { ok: false, error: toAiError(e, a.id, a.model) };
+    }
+  }
+
+  /**
+   * "Suggest code" in the Code panel: the next piece of code for the drawing (or what the user asked
+   * for), with the parts library entries or datasheets it relies on. One request, not part of the
+   * chat; the result is a suggestion the user accepts or dismisses.
+   */
+  async suggestCode(ctx: AiContext, req: CodeSuggestionRequest): Promise<Result<AiCodeSuggestion>> {
+    const a = this.active();
+    if (!a) return aiOff();
+    const board = getBoard(ctx.scene.board);
+    const lines = req.code.split('\n').length;
+    try {
+      const response = await a.provider.complete({
+        model: a.model,
+        maxTokens: 6000,
+        timeoutMs: 120_000,
+        parts: [
+          { type: 'text', text: buildContextBlock(board, { ...ctx, scene: { ...ctx.scene, sketch: { name: ctx.scene.sketch?.name ?? 'sketch.ino', text: req.code } } }) },
+          {
+            type: 'text',
+            text:
+              'Write the next piece of Arduino code for this project in the Code panel.\n' +
+              (req.request.trim() ? `The user asks: "${req.request.trim()}"\n` : 'Nothing specific was asked: add the most useful next step for the parts in the drawing (for example reading a sensor that is wired but never read).\n') +
+              `The cursor is on line ${req.cursorLine}. Prefer inserting near it, inside the right function; use afterLine for the place. Keep what is there; do not repeat existing lines.\n` +
+              'Rules: use only the pins the drawing wires to each part (by their Arduino pin numbers from the board file), the I2C address from the parts library, and libraries a beginner can install from the Library Manager. ' +
+              'Non-blocking code (millis) is better than long delay() calls. Short comments in plain words. ' +
+              'Sources: name the parts library entry (kind "library", label "parts library · <part id>") or datasheet section each pin or address comes from.',
+          },
+        ],
+        jsonSchema: { name: 'code_suggestion', schema: CODE_SCHEMA },
+      });
+      if (response.stop === 'refusal') return refused(t('The assistant could not write that code.'), t('Describe what the code should do in other words.'));
+      const p = parseJson<AiCodeSuggestion>(response.text);
+      if (!p || typeof p.text !== 'string' || !p.text.trim()) {
+        return { ok: false, error: { code: 'ai_parse', humanMessage: t('The assistant answer could not be read.'), hint: t('Try again, or use the starter code from the drawing.') } };
+      }
+      const sources: AiSource[] = (Array.isArray(p.sources) ? p.sources : []).filter(
+        (x): x is AiSource => typeof x === 'object' && x !== null && ['datasheet', 'library', 'user'].includes(x.kind) && typeof x.label === 'string',
+      );
+      return {
+        ok: true,
+        value: {
+          title: typeof p.title === 'string' && p.title.trim() ? p.title.trim() : t('Suggested code'),
+          afterLine: Number.isInteger(p.afterLine) ? Math.max(0, Math.min(lines, p.afterLine)) : lines,
+          replace: p.replace === true,
+          text: p.text.replace(/\s+$/, ''),
+          explanation: typeof p.explanation === 'string' ? p.explanation : '',
+          sources,
+        },
+      };
     } catch (e) {
       return { ok: false, error: toAiError(e, a.id, a.model) };
     }

@@ -3,7 +3,7 @@
 import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve, sep } from 'node:path';
-import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
+import type { AgentRequest, AiContext, CodeSuggestionRequest, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { BUY_URL } from '@shared/brand';
 import { setLanguage, t } from '@shared/i18n';
@@ -56,6 +56,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('ai:ask', (q: string, ctx: AiContext) => ai.ask(q, { ...ctx, log: ctx.log.length ? ctx.log : log.recent(50) }));
   h('ai:recognize', (b64: string, mt: 'image/jpeg' | 'image/png' | 'image/webp') => ai.recognizePart(b64, mt));
   h('ai:classify', (text: string, options: { id: string; label: string }[]) => ai.classify(text, options));
+  h('ai:suggestCode', (ctx: AiContext, req: CodeSuggestionRequest) => ai.suggestCode({ ...ctx, log: ctx.log.length ? ctx.log : log.recent(50) }, req));
   h('ai:reset', () => ai.reset());
 
   ipcMain.on('session:append', (_e, entry: LogEntry) => log.append(entry));

@@ -54,6 +54,7 @@ const api: BoardPilotApi = {
     ask: call('ai:ask'),
     recognize: call('ai:recognize'),
     classify: call('ai:classify'),
+    suggestCode: call('ai:suggestCode'),
     reset: call('ai:reset'),
   } as BoardPilotApi['ai'],
   session: {

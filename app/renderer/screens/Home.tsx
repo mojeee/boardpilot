@@ -23,7 +23,7 @@ function DescribeBox() {
     const r = await window.bp.ai.classify(said, options);
     setBusy(false);
     if (!r.ok) return setNote(`${r.error.humanMessage} ${r.error.hint}`);
-    if (!r.value.optionId) return setNote(t('{reason} Pick a task on the left, or ask the assistant.', { reason: r.value.reason }));
+    if (!r.value.optionId) return setNote(t('{reason} Pick a task above, or ask the assistant.', { reason: r.value.reason }));
     log('action', t('You wrote: “{text}”. Suggested: {option}.', { text: said, option: options.find((o) => o.id === r.value.optionId)?.label ?? '' }), {
       source: 'assistant classification (suggestion)',
     });

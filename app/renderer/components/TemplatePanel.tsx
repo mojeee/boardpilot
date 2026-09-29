@@ -1,13 +1,15 @@
-// Template projects in New project: pick one, it is built for the board (parts, wires, code), and
-// "Run" plays its behaviour model: the story in plain words, the running step highlighted in the
-// code, pins and parts reacting in 3D. Everything here is labelled simulated.
+// Template projects: pick one, it is built for the board (parts, wires, code), and "Run" plays its
+// behaviour model: the story in plain words (Log panel), the running step highlighted in the code
+// (Code panel), pins and parts reacting in 3D. Everything here is labelled simulated.
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { create } from 'zustand';
 import { PARTS, getBoard } from '@shared/board';
-import { TEMPLATES, stepLines, templateFits } from '@shared/templates';
+import { TEMPLATES, templateFits } from '@shared/templates';
 import { t } from '@shared/i18n';
 import { useScene } from '../state/store';
 import { useTemplate } from '../state/templateRun';
+import { useLayout } from '../state/layout';
 
 const mmss = (ms: number) => {
   const s = Math.floor(ms / 1000);
@@ -39,23 +41,9 @@ export function TemplatePicker() {
   );
 }
 
-/** The open template: what you learn, the run controls, the story and the code. */
+/** The open template: what you learn and the run controls. The code and the story are in the bottom panel. */
 export function TemplateView() {
-  const { tpl, code, story, running, speed, now, step, state } = useTemplate();
-  const lines = useMemo(() => stepLines(code), [code]);
-  // The story shows steps translated; the code has them in English.
-  const activeLine = [...lines].find(([k]) => t(k) === step)?.[1] ?? 0;
-  const codeRef = useRef<HTMLPreElement>(null);
-  const storyRef = useRef<HTMLDivElement>(null);
-
-  // Keep the running line and the newest story line in view.
-  useEffect(() => {
-    codeRef.current?.querySelector('.run-line')?.scrollIntoView({ block: 'nearest' });
-  }, [activeLine]);
-  useEffect(() => {
-    if (storyRef.current) storyRef.current.scrollTop = storyRef.current.scrollHeight;
-  }, [story.length]);
-
+  const { tpl, running, speed, now, step, state } = useTemplate();
   if (!tpl) return null;
   const st = useTemplate.getState();
   return (
@@ -82,19 +70,54 @@ export function TemplateView() {
       ))}
 
       <div className="label">{t('Run it in the simulator')}</div>
-      <div className="row gap wrap">
-        {running ? (
-          <button className="btn small" onClick={() => st.pause()}>
-            {t('Pause')}
-          </button>
-        ) : (
-          <button className="btn small primary" onClick={() => st.play()}>
-            {now ? t('Continue') : t('Run')}
-          </button>
-        )}
-        <button className="btn small" onClick={() => st.stepOnce()}>
-          {t('One step')}
+      <RunControls />
+      {(step || state) && (
+        <div className="tpl-now small">
+          {state && <span className="chip mono">{state}</span>} {step && <b>{step}</b>}
+        </div>
+      )}
+      <p className="small dim">
+        {t('The code is in the Code panel below, with the running line highlighted. The story of the run is in the Log panel.')}{' '}
+        <button className="link small" onClick={() => useLayout.getState().showBottom('code')}>
+          {t('Show the code')}
         </button>
+      </p>
+      <div className="row gap wrap">
+        {tpl.libraries?.length ? <span className="small dim">{t('Libraries: {list}', { list: [...tpl.libraries, 'BoardPilotProbe'].join(', ') })}</span> : null}
+      </div>
+      <span className="mono small dim">{mmss(now)}</span>
+      {speed !== 1 && running && <span className="mono small dim"> · {speed}×</span>}
+    </div>
+  );
+}
+
+/** Run, one step, speed, restart: the simulated run of the open template. */
+export function RunControls({ compact }: { compact?: boolean }) {
+  const { running, speed, now } = useTemplate();
+  const st = useTemplate.getState();
+  return (
+    <div className="row gap wrap run-controls">
+      {running ? (
+        <button className="btn small" onClick={() => st.pause()}>
+          {t('Pause')}
+        </button>
+      ) : (
+        <button
+          className="btn small primary"
+          onClick={() => {
+            st.play();
+            // Running the code shows what happens: the Log panel with the story.
+            useLayout.getState().showBottom('log');
+            useRunView.getState().set('story');
+          }}
+        >
+          ▶ {now ? t('Continue') : t('Run in simulator')}
+        </button>
+      )}
+      <button className="btn small" onClick={() => st.stepOnce()} title={t('Run until the next thing happens, then pause')}>
+        {t('Step')}
+      </button>
+      {!compact && (
         <div className="seg">
           {[1, 2, 4].map((x) => (
             <button key={x} className={speed === x ? 'on' : ''} onClick={() => st.setSpeed(x)}>
@@ -102,41 +125,36 @@ export function TemplateView() {
             </button>
           ))}
         </div>
+      )}
+      {!compact && (
         <button className="btn small ghost" onClick={() => st.reset()}>
           {t('Restart')}
         </button>
-        <span className="badge sim">{t('simulated')}</span>
-        <span className="mono small dim">{mmss(now)}</span>
-      </div>
-      {(step || state) && (
-        <div className="tpl-now small">
-          {state && <span className="chip mono">{state}</span>} {step && <b>{step}</b>}
-        </div>
       )}
-      <div className="tpl-story" ref={storyRef}>
-        {story.length === 0 && <div className="small dim">{t('Press Run: each step of the program appears here in plain words.')}</div>}
-        {story.filter((s) => !s.quiet).map((s, i) => (
-          <button key={i} className={`story-line k-${s.kind}`} onClick={() => s.targets.length && useScene.getState().focusOn(s.targets)}>
-            <span className="mono dim">{mmss(s.t)}</span>
-            <span>{s.text}</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="label">{t('The code')}</div>
-      <div className="row gap wrap">
-        <button className="btn small ghost" onClick={() => window.bp.session.saveFile(`${tpl.id.replace(/-/g, '_')}.ino`, code)}>
-          {t('Save .ino…')}
-        </button>
-        {tpl.libraries?.length ? <span className="small dim">{t('Libraries: {list}', { list: [...tpl.libraries, 'BoardPilotProbe'].join(', ') })}</span> : null}
-      </div>
-      <pre className="code tpl-code" ref={codeRef}>
-        {code.split('\n').map((l, i) => (
-          <div key={i} className={i + 1 === activeLine ? 'run-line' : ''}>
-            {l || ' '}
-          </div>
-        ))}
-      </pre>
+      <span className="badge sim">{t('simulated')}</span>
     </div>
   );
 }
+
+/** The story of the run in plain words; each line focuses its pin, wire or part. */
+export function RunStory() {
+  const story = useTemplate((s) => s.story);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.scrollTop = ref.current.scrollHeight;
+  }, [story.length]);
+  return (
+    <div className="tpl-story run-story" ref={ref}>
+      {story.length === 0 && <div className="small dim">{t('Press Run: each step of the program appears here in plain words.')}</div>}
+      {story.filter((s) => !s.quiet).map((s, i) => (
+        <button key={i} className={`story-line k-${s.kind}`} onClick={() => s.targets.length && useScene.getState().focusOn(s.targets)}>
+          <span className="mono dim">{mmss(s.t)}</span>
+          <span>{s.text}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Which view the Log tab shows while a template is open: the session log or the run story. */
+export const useRunView = create<{ view: 'session' | 'story'; set(v: 'session' | 'story'): void }>((set) => ({ view: 'session', set: (view) => set({ view }) }));

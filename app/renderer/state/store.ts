@@ -35,7 +35,7 @@ interface AppStore {
 }
 
 export const useApp = create<AppStore>((set) => ({
-  screen: 'home',
+  screen: 'newProject',
   conn: { mode: 'sim', board: DEFAULT_BOARD_ID, port: null, chip: null, agent: null, streaming: false, serialOpen: false, scenario: null, backups: [] },
   progress: null,
   ai: { enabled: false, provider: 'anthropic', model: '' },
@@ -143,6 +143,15 @@ function withFindings(scene: Scene) {
 }
 
 /**
+ * The code is not part of the drawing's undo history (the editor has its own undo): undoing a
+ * wiring change keeps the code as typed. Only a different file (a template was opened) comes back.
+ */
+function keepSketch(target: Scene, current: Scene): Scene {
+  if (!current.sketch || target.sketch?.name !== current.sketch.name || target.sketch.text === current.sketch.text) return target;
+  return { ...target, sketch: current.sketch };
+}
+
+/**
  * The simulator's demo scene, as loaded at start-up. New project starts empty while the scene is
  * still exactly this object: any edit makes a new scene object, so the user's own work is never cleared.
  */
@@ -197,13 +206,13 @@ export const useScene = create<SceneStore>((set, get) => ({
     const { past, scene, future } = get();
     const prev = past[past.length - 1];
     if (!prev) return;
-    set({ ...withFindings(prev), past: past.slice(0, -1), future: [scene, ...future] });
+    set({ ...withFindings(keepSketch(prev, scene)), past: past.slice(0, -1), future: [scene, ...future] });
   },
   redo: () => {
     const { past, scene, future } = get();
     const next = future[0];
     if (!next) return;
-    set({ ...withFindings(next), past: [...past, scene], future: future.slice(1) });
+    set({ ...withFindings(keepSketch(next, scene)), past: [...past, scene], future: future.slice(1) });
   },
   select: (selected) => set({ selected }),
   focusOn: (targets) => set((s) => ({ focus: { targets, nonce: s.focus.nonce + 1 }, highlight: targets, selected: targets[0] ?? s.selected })),
@@ -219,6 +228,11 @@ export const useScene = create<SceneStore>((set, get) => ({
   },
   preset: (name) => set((s) => ({ cameraPreset: { name, nonce: s.cameraPreset.nonce + 1 } })),
 }));
+
+/** Replace the project's code (typing, a loaded file, an accepted suggestion). Not an undo step. */
+export function setSketch(name: string, text: string) {
+  useScene.getState().updateScene((s) => (s.sketch?.name === name && s.sketch.text === text ? s : { ...s, sketch: { name, text } }), { transient: true });
+}
 
 /* ---------------- live data ---------------- */
 

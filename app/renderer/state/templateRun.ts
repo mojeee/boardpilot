@@ -3,9 +3,10 @@
 // activity on wires). Kept apart from the measured live data so nothing simulated is ever shown as
 // measured.
 
+import { useMemo } from 'react';
 import { create } from 'zustand';
 import { PARTS, getBoard } from '@shared/board';
-import { TEMPLATES, TemplateRun, templateCode, templateScene, type StoryItem, type TemplateDef } from '@shared/templates';
+import { TEMPLATES, TemplateRun, stepLines, templateCode, templateScene, type StoryItem, type TemplateDef } from '@shared/templates';
 import { t } from '@shared/i18n';
 import { log, useLive, useScene } from './store';
 
@@ -86,10 +87,13 @@ export const useTemplate = create<TemplateState>((set, get) => ({
     if (!tpl) return;
     stopTimer();
     const board = getBoard(useScene.getState().scene.board);
-    const scene = templateScene(tpl, board, PARTS);
+    const built = templateScene(tpl, board, PARTS);
+    const code = templateCode(tpl, board, built);
+    // The code goes into the project, so the Code panel shows it and it is saved with the project.
+    const scene = { ...built, sketch: { name: templateFileName(tpl), text: code } };
     useScene.getState().openScene(scene, true);
     run = new TemplateRun(tpl, board, scene);
-    set({ tpl, code: templateCode(tpl, board, scene), story: [], running: false, now: 0, step: '', state: '', simPins: {}, partText: {} });
+    set({ tpl, code, story: [], running: false, now: 0, step: '', state: '', simPins: {}, partText: {} });
     log('action', t('Template “{name}” built for {board}: parts, wires and code.', { name: t(tpl.name), board: board.name }), { source: `template: ${tpl.id}` });
   },
   close: () => {
@@ -142,3 +146,34 @@ export const useTemplate = create<TemplateState>((set, get) => ({
     set({ story: [], running: false, now: 0, step: '', state: '', simPins: {}, partText: {} });
   },
 }));
+
+export const templateFileName = (tpl: TemplateDef) => `${tpl.id.replace(/-/g, '_')}.ino`;
+
+/**
+ * Re-attach a template to a project that was built from it (switching project tabs): the run
+ * starts again from the beginning on the project's scene, nothing in the scene is rebuilt.
+ */
+export function attachTemplate(id: string | null) {
+  const st = useTemplate.getState();
+  if (!id) {
+    if (st.tpl) st.close();
+    return;
+  }
+  if (st.tpl?.id === id) return;
+  const tpl = TEMPLATES.find((x) => x.id === id);
+  if (!tpl) return;
+  st.pause();
+  const scene = useScene.getState().scene;
+  run = new TemplateRun(tpl, getBoard(scene.board), scene);
+  useTemplate.setState({ tpl, code: scene.sketch?.text ?? '', story: [], running: false, now: 0, step: '', state: '', simPins: {}, partText: {} });
+}
+
+/** The 1-based line of the project's code that the simulated run is on (0: none), from the probe.step markers. */
+export function useRunLine(): number {
+  const text = useScene((s) => s.scene.sketch?.text ?? '');
+  const step = useTemplate((s) => s.step);
+  const lines = useMemo(() => stepLines(text), [text]);
+  if (!step) return 0;
+  // The story shows steps translated; the code has them in English.
+  return [...lines].find(([k]) => t(k) === step)?.[1] ?? 0;
+}

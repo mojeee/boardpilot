@@ -486,24 +486,26 @@ draw wires and run the debug demo on a simulated board, with no install.
 This is also the first half of the "Web version using WebSerial" backlog item: the same build
 later talks to real boards through Chrome's WebSerial.
 
-## Next · Workspace redesign (your plan, Sep 29, not started)
+## Next · Workspace redesign (your plan, Sep 29; being built, see the ticks)
 
-Planned only. Nothing here is built yet. To continue on another computer: clone the repo, `npm install`,
-`npm run dev`, and start from this section (everything else in this file is done and released as 0.6.1).
+Built in order, one commit per step. To continue on another computer: clone the repo, `npm install`,
+`npm run dev`, and start from the first unticked item. Decisions taken with the defaults: no new
+dependency for the code editor (a plain textarea with syntax colouring), and the old task screens stay
+reachable from the top menu.
 
 Goal: a cleaner, IDE-like workspace where the AI sees everything that happens and helps at every step.
 
 1. **Layout**
-   - [ ] The left task rail becomes a narrow top menu (tasks as compact tabs or a dropdown), so the
+   - [x] The left task rail becomes a narrow top menu (tasks as compact tabs or a dropdown), so the
          3D view gets the space.
-   - [ ] Default project page: the 3D view in the middle, the **AI chat open on the right**, and a
+   - [x] Default project page: the 3D view in the middle, the **AI chat open on the right**, and a
          **bottom panel with two tabs: Code and Log**. Running the code switches the bottom panel
          to the Log tab.
-   - [ ] Every panel can be expanded and collapsed (the resize handles from 0.6.0 stay).
+   - [x] Every panel can be expanded and collapsed (the resize handles from 0.6.0 stay).
 2. **Code in the app**
-   - [ ] A code editor for the project's sketch in the bottom panel (no new dependency without
+   - [x] A code editor for the project's sketch in the bottom panel (no new dependency without
          asking; a lightweight editor or a plain textarea with syntax colouring first).
-   - [ ] A debugger view for the code: run in the simulator, step, the running line highlighted
+   - [x] A debugger view for the code: run in the simulator, step, the running line highlighted
          (builds on the template live run view and the BoardPilotProbe step markers).
 3. **Many projects**
    - [ ] Project tabs above the 3D view, so several projects are open at once.

@@ -31,8 +31,7 @@
   --font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  --topbar-h: 56px;
-  --rail-w: 208px;
+  --topbar-h: 48px;
   --right-w: 400px;
   --log-h: 250px;
   --radius: 8px;

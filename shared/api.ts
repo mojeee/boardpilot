@@ -2,9 +2,11 @@
 
 import type {
   AgentRequest,
+  AiCodeSuggestion,
   AiContext,
   AiReply,
   ChipInfo,
+  CodeSuggestionRequest,
   ConnectionState,
   HardwareMode,
   HelloReply,
@@ -81,6 +83,8 @@ export interface BoardPilotApi {
     ask(question: string, ctx: AiContext): Promise<Result<AiReply>>;
     recognize(imageBase64: string, mediaType: 'image/jpeg' | 'image/png' | 'image/webp'): Promise<Result<PhotoRecognition>>;
     classify(text: string, options: { id: string; label: string }[]): Promise<Result<{ optionId: string | null; reason: string }>>;
+    /** Code for the Code panel, from the drawing and the code so far. A suggestion to accept or dismiss. */
+    suggestCode(ctx: AiContext, req: CodeSuggestionRequest): Promise<Result<AiCodeSuggestion>>;
     reset(): Promise<void>;
   };
   session: {
