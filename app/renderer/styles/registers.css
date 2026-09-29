@@ -1,0 +1,82 @@
+/* Register map viewer (components/RegisterMap.tsx). Colors come from tokens.css. */
+
+.regmap { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.regmap-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.regmap-where { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; color: var(--muted); }
+.regmap-where .chip { margin: 0; }
+.regmap-addr {
+  background: var(--chrome);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-size: 12px;
+}
+.regmap-ro { margin: 0; color: var(--ok); }
+.regmap .card-note { margin: 0; }
+.regmap .card-flag { margin: 0; }
+
+.regmap-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: auto; }
+.regmap-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--dim);
+  font-size: 11px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--line);
+}
+.regmap-table td { padding: 5px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.regmap-row { cursor: pointer; }
+.regmap-row:hover td { background: var(--raised); }
+.regmap-row.open td { background: var(--chrome); }
+.regmap-row.read td:nth-child(4) { color: var(--ok); }
+.regmap-meaning { color: var(--muted); }
+
+.regmap-acc {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.regmap-acc.acc-r { color: var(--pin-sda); border-color: var(--pin-sda); }
+.regmap-acc.acc-rw { color: var(--pin-gpio); border-color: var(--pin-gpio); }
+.regmap-acc.acc-w { color: var(--warn); border-color: var(--warn); }
+
+.regmap-detail td { background: var(--chrome); padding: 8px 10px 10px; }
+
+.regmap-strip { display: flex; gap: 3px; margin: 6px 0 8px; }
+.regmap-seg {
+  flex-basis: 0;
+  min-width: 0;
+  border: 1px solid var(--pin-sda);
+  border-radius: var(--radius-sm);
+  padding: 3px 4px;
+  background: var(--panel);
+}
+.regmap-seg.undescribed { border-color: var(--line); border-style: dashed; }
+.regmap-seg-name { font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+.regmap-seg-bits { display: flex; justify-content: space-around; }
+.regmap-seg-bits span { font-size: 13px; color: var(--dim); }
+.regmap-seg-bits span.one { color: var(--text); font-weight: 600; }
+
+.regmap-fields { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.regmap-fields li { display: grid; grid-template-columns: 64px minmax(80px, max-content) 40px 1fr; gap: 8px; align-items: baseline; }
+.regmap-fields li.undescribed { color: var(--dim); }
+.regmap-bits { color: var(--dim); font-size: 11px; }
+.regmap-fname { color: var(--text); }
+.regmap-fval { color: var(--ok); }
+
+.regmap-foot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin-top: 4px; }
+.regmap-foot .btn { margin-left: auto; }
+.regmap-src { color: var(--dim); font-size: 10.5px; margin-top: 2px; }
+
+.regmap-cmds summary { cursor: pointer; color: var(--muted); font-size: 12px; padding: 4px 0; }
+.regmap-cmds p { margin: 4px 0 6px; }
+
+.regmap-modal { width: min(820px, calc(100vw - 48px)); max-height: calc(100vh - 80px); overflow: auto; }
+.regmap-modal h2 { font-size: 16px; }
+
+.regmap-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
