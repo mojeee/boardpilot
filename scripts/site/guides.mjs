@@ -675,6 +675,7 @@ export function buildGuides({ lang, boards, parts, site, head, header, footer, I
       };
       const rel = `${lang === 'it' ? 'it/' : ''}boards/${b.id}/${part.id}/index.html`;
       pages[rel] = head({
+        image: `/img/boards/${b.id}.jpg`,
         lang,
         title,
         description,
@@ -901,6 +902,7 @@ export function buildCompare({ lang, boards, site, head, header, footer }) {
     const title = fill(c.title, { a: an, b: bn });
     const description = fill(c.desc, { a: an, b: bn });
     pages[`${lang === 'it' ? 'it/' : ''}compare/${ia}-vs-${ib}/index.html`] = head({
+      image: `/img/boards/${ia}.jpg`,
       lang,
       title,
       description,

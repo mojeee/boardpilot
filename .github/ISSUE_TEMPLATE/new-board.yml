@@ -1,0 +1,26 @@
+name: Request a board
+description: Ask for a development board to be added (3D model, pinout, wiring rules, website page)
+title: "Board: "
+labels: ["boards"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Board name and chip
+      placeholder: e.g. Seeed XIAO ESP32-C3 (ESP32-C3)
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Product page
+    validations:
+      required: true
+  - type: input
+    id: drawing
+    attributes:
+      label: Pinout and mechanical drawing (PDF, KiCad, Eagle or DXF), if you have them
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else (USB chip, how you upload to it, pins that caused you trouble)

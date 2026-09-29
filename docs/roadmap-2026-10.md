@@ -94,11 +94,13 @@ yours to do; I draft everything.
 
 - A README hero: a short GIF or video of the 3D workbench finding crossed SDA/SCL wires, then a
   one-line pitch, the download buttons and a "Star if it helped you" line.
-- A new social preview image showing the workbench and several boards.
+- [x] A new social preview image (website and GitHub) with the 3D workbench and "13 boards".
 - Topics tuned for search on GitHub: esp32, arduino, raspberry-pi-pico, stm32, nrf52, teensy,
   pinout, embedded, electronics, i2c, 3d, electron.
 - A "good first issue" list that is easy to join: add a board (one JSON file plus sources), add a
-  part, translate into a new language. A guide: "Add your board in 30 minutes".
+  part, translate into a new language. [x] The guide "Add your board in 30 minutes"
+  (`docs/add-a-board.md`), a "Request a board" form and a README section are done; the issues
+  themselves still need to be opened.
 - GitHub Discussions switched on (questions, show your setup). Release notes with screenshots.
 - Submit to curated lists where it fits their rules: awesome-esp32, awesome-embedded-systems,
   awesome-arduino, awesome-raspberry-pi, awesome-electronics.
@@ -113,7 +115,7 @@ yours to do; I draft everything.
       code on purpose: its core numbers pins differently from the chip names, and nothing is guessed.
 - [x] **Comparison pages:** 12 pairs ("ESP32 DevKit vs Raspberry Pi Pico", "Arduino Uno vs Nano"…).
 - [x] Links between parts, boards, guides and comparisons.
-- [ ] A social image per board.
+- [x] A social image per board (used by its pinout page, wiring guides and comparisons).
 - **Free web tools, which earn links naturally:**
   - an online pinout explorer (click a pin, see what it can do)
   - an online wiring checker that runs the same rules as the app

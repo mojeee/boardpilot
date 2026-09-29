@@ -29,6 +29,8 @@ export async function runDemo(name: string, scenario: string | null) {
   const hp = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
   const stage = hp.get('stage');
   if (stage === 'desk' || stage === 'plain') useScene.getState().setStage(stage);
+  // &clean=1 hides the viewport overlays (toolbar, legend, badges) for social images.
+  if (hp.get('clean')) document.body.classList.add('snapshot-clean');
   const cam = hp.get('cam');
   try {
     await runNamedDemo(name, scenario);
