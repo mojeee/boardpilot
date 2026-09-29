@@ -1,7 +1,7 @@
 // Validation for part definitions: user-imported parts are data from outside the app,
 // so every field is checked before the part enters the library.
 
-import type { PartDef, PartGotcha, PartPinRole, PartShape, Result } from './types';
+import type { CommandDef, PartDef, PartGotcha, PartPinRole, PartShape, RegAccess, RegisterDef, RegisterField, RegisterMapDef, Result } from './types';
 import { t } from './i18n';
 
 export const PIN_ROLES: PartPinRole[] = [
@@ -133,6 +133,10 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
       method: origin.method === 'ai' ? 'ai' : 'manual',
     };
   }
+  const regs = validateRegisterMap(o.registers);
+  if (regs) def.registers = regs;
+  const regFrom = str(o.registersFrom, 60);
+  if (regFrom && !regs) def.registersFrom = slugify(regFrom);
   if (bus === 'i2c' && (!pins.some((p) => p.role === 'i2c_sda') || !pins.some((p) => p.role === 'i2c_scl'))) {
     return bad('An I2C part needs one pin with role SDA and one with role SCL.');
   }
@@ -141,4 +145,93 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
 
 function clamp(v: number | undefined, min: number, max: number, dflt: number) {
   return typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : dflt;
+}
+
+/* ---------- register maps ---------- */
+
+const ACCESS: RegAccess[] = ['r', 'rw', 'w'];
+const HEX_RE = /^0x[0-9a-f]{1,8}$/i;
+const obj = (v: unknown): Record<string, unknown> => (typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
+const access = (v: unknown): RegAccess => (ACCESS.includes(v as RegAccess) ? (v as RegAccess) : 'r');
+const regSource = (v: unknown) => {
+  const s = obj(v);
+  return { title: str(s.title, 120), section: str(s.section, 200) };
+};
+/** Meaning table: keys matching keyRe, non-empty texts. */
+function meanings(v: unknown, keyRe: RegExp): Record<string, string> | undefined {
+  const out: Record<string, string> = {};
+  for (const [k, text] of Object.entries(obj(v)).slice(0, 64)) {
+    const t = str(text, 300);
+    if (keyRe.test(k) && t) out[k] = t;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+function validateField(raw: unknown): RegisterField | null {
+  const f = obj(raw);
+  const bits = Array.isArray(f.bits) ? f.bits.map(Number) : [];
+  const [hi, lo] = bits;
+  if (!Number.isInteger(hi) || !Number.isInteger(lo) || hi > 7 || lo < 0 || hi < lo) return null;
+  const name = str(f.name, 40);
+  if (!name) return null;
+  const field: RegisterField = { bits: [hi, lo], name, text: str(f.text, 300), access: access(f.access) };
+  const values = meanings(f.values, /^\d{1,3}$/);
+  if (values) field.values = values;
+  if (f.reserved === true) field.reserved = true;
+  return field;
+}
+
+function validateRegister(raw: unknown): RegisterDef | null {
+  const r = obj(raw);
+  const addr = str(r.addr, 6);
+  const name = str(r.name, 40);
+  const source = regSource(r.source);
+  if (!/^0x[0-9a-f]{1,2}$/i.test(addr) || !name || !source.title) return null;
+  const reg: RegisterDef = { addr, name, text: str(r.text, 300), access: access(r.access), source };
+  const len = Number(r.len);
+  if (Number.isInteger(len) && len >= 2 && len <= 4) reg.len = len;
+  const shift = Number(r.shift);
+  if (Number.isInteger(shift) && shift >= 1 && shift <= 7) reg.shift = shift;
+  if (r.signed === true) reg.signed = true;
+  if (HEX_RE.test(str(r.reset, 12))) reg.reset = str(r.reset, 12);
+  if (Array.isArray(r.fields)) {
+    const fields = r.fields.slice(0, 8).map(validateField).filter((f): f is RegisterField => !!f);
+    // fields must not overlap
+    const used = new Set<number>();
+    const clean = fields.filter((f) => {
+      for (let b = f.bits[1]; b <= f.bits[0]; b++) if (used.has(b)) return false;
+      for (let b = f.bits[1]; b <= f.bits[0]; b++) used.add(b);
+      return true;
+    });
+    if (clean.length && (reg.len ?? 1) === 1) reg.fields = clean;
+  }
+  const values = meanings(r.values, HEX_RE);
+  if (values) reg.values = values;
+  return reg;
+}
+
+function validateCommand(raw: unknown): CommandDef | null {
+  const c = obj(raw);
+  const code = str(c.code, 20);
+  const name = str(c.name, 60);
+  const source = regSource(c.source);
+  if (!/^0x[0-9a-f]{2}([-,/ ]+0x[0-9a-f]{2})?$/i.test(code) || !name || !source.title) return null;
+  const cmd: CommandDef = { code, name, text: str(c.text, 300), source };
+  const params = Number(c.params);
+  if (Number.isInteger(params) && params >= 1 && params <= 8) cmd.params = params;
+  return cmd;
+}
+
+/** A clean register map, or undefined when there is nothing usable. Invalid entries are dropped. */
+export function validateRegisterMap(raw: unknown): RegisterMapDef | undefined {
+  const m = obj(raw);
+  if (!Array.isArray(m.registers)) return undefined;
+  const registers = m.registers.slice(0, 96).map(validateRegister).filter((r): r is RegisterDef => !!r);
+  const commands = Array.isArray(m.commands) ? m.commands.slice(0, 64).map(validateCommand).filter((c): c is CommandDef => !!c) : [];
+  if (!registers.length && !commands.length) return undefined;
+  const map: RegisterMapDef = { registers };
+  const note = str(m.note, 400);
+  if (note) map.note = note;
+  if (commands.length) map.commands = commands;
+  return map;
 }
