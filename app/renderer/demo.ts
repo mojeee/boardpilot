@@ -34,6 +34,8 @@ export async function runDemo(name: string, scenario: string | null) {
   const cam = hp.get('cam');
   try {
     await runNamedDemo(name, scenario);
+    const view = hp.get('view');
+    if (view === '3d' || view === '2d' || view === 'diagram') useScene.getState().set({ view });
   } finally {
     if (cam === 'top' || cam === 'side' || cam === 'module' || cam === 'home') useScene.getState().preset(cam);
   }
@@ -119,6 +121,15 @@ async function runNamedDemo(name: string, scenario: string | null) {
     useTemplate.getState().setSpeed(Number(hp2.get('speed') ?? 4));
     await sleep(1500);
     useTemplate.getState().play();
+  } else if (name === 'lesson-preview') {
+    // #demo=lesson-preview&lesson=buses: open a lesson and its first "Show on the 3D board".
+    const { LESSONS } = await import('@shared/lessons');
+    const id = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('lesson') ?? 'buses';
+    const lesson = LESSONS.find((l) => l.id === id);
+    const b = lesson?.blocks.find((x) => x.kind === 'board');
+    useApp.getState().setScreen('learn');
+    await sleep(800);
+    if (b && b.kind === 'board') document.querySelector<HTMLButtonElement>('.learn-board .btn')?.click();
   } else if (name === 'code') {
     // #demo=code: the weather station with a sketch that has SDA/SCL reversed and the LED on the wrong pin.
     openTask('newProject');

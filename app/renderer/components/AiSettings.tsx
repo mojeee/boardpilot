@@ -4,6 +4,7 @@
 // sees whether a key exists and its last 4 characters.
 
 import { useEffect, useState } from 'react';
+import { McpSettings } from './McpSettings';
 import { create } from 'zustand';
 import { AI_PROVIDERS, PROVIDER_INFO, type AiModelInfo, type AiProviderId, type AiSettingsView } from '@shared/ai';
 import type { AppError } from '@shared/types';
@@ -221,6 +222,8 @@ function AiSettingsBody() {
             ? t('Demo requests go through BoardPilot’s relay to Google. On the free tier Google may use them to improve its products.')
             : t('Your key is stored encrypted on this computer. Requests go directly from the app to the provider you choose.')}
         </p>
+
+        <McpSettings />
 
         {msg && <p className={`small ${msg.kind === 'ok' ? 'ok-text' : 'err-text'}`}>{msg.text}</p>}
 

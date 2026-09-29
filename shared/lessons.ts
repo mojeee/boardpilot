@@ -14,7 +14,10 @@ export type WidgetId =
   | 'rtos'
   | 'pwm'
   | 'state-machine'
-  | 'roadmap';
+  | 'roadmap'
+  | 'led-resistor'
+  | 'divider'
+  | 'pullup';
 
 export type LessonBlock =
   | { kind: 'p'; text: string }
@@ -25,7 +28,19 @@ export type LessonBlock =
   | { kind: 'table'; head: string[]; rows: string[][]; monoCols?: number[] }
   | { kind: 'widget'; id: WidgetId }
   /** "In real products": what goes wrong outside the classroom */
-  | { kind: 'tip'; text: string };
+  | { kind: 'tip'; text: string }
+  /**
+   * "Show on the 3D board": a temporary preview with these pins highlighted, optionally with parts
+   * wired to them. The user's project is never touched.
+   */
+  | {
+      kind: 'board';
+      board: string;
+      label: string;
+      pins: string[];
+      parts?: { id: string; partId: string; position: [number, number, number] }[];
+      wires?: { pin: string; part: string; partPin: string }[];
+    };
 
 export type TrackId = 'foundations' | 'senior';
 
@@ -71,6 +86,7 @@ export const LESSONS: Lesson[] = [
       { kind: 'h', text: 'Everything is an address' },
       { kind: 'p', text: 'The CPU sees flash, RAM and the hardware as one long list of numbered addresses. Reading a variable and switching on an LED are the same operation: write a value to an address.' },
       { kind: 'widget', id: 'memory-map' },
+      { kind: 'board', board: 'nucleo-f401re', pins: ['D13'], label: 'PA5 on a NUCLEO-F401RE: the pin behind the address in the code below, wired to the green LED' },
       {
         kind: 'code',
         code: `int counter = 5;                              // the compiler picks an address in RAM
@@ -92,6 +108,77 @@ export const LESSONS: Lesson[] = [
       'What is the difference between a microcontroller and a microprocessor?',
       'Where do the code and the variables live in an MCU?',
       'What happens between reset and main()?',
+    ],
+  },
+  {
+    id: 'hardware-basics',
+    track: 'foundations',
+    title: 'Hardware basics for software developers',
+    summary: 'Voltage, current, resistors, and how not to burn a pin',
+    minutes: 15,
+    blocks: [
+      { kind: 'p', text: 'Code can be undone; a burnt LED or a dead pin cannot. Three numbers explain almost every hardware mistake a beginner makes: voltage, current and resistance.' },
+      {
+        kind: 'table',
+        head: ['Quantity', 'What it is', 'Unit', 'Water picture'],
+        rows: [
+          ['Voltage (V)', 'The push that moves electrons', 'volt (V)', 'Water pressure'],
+          ['Current (I)', 'How much flows', 'ampere (A), usually mA', 'Litres per second'],
+          ['Resistance (R)', 'How hard it is to flow', 'ohm (Ω)', 'A narrow pipe'],
+        ],
+      },
+      { kind: 'h', text: 'Ohm’s law: V = I × R' },
+      { kind: 'p', text: 'Know two of the three and you get the third. It tells you how big a resistor must be, how much current a pin sends, and how hot a part gets (power = V × I).' },
+      { kind: 'h', text: 'An LED always needs a resistor' },
+      { kind: 'p', text: 'An LED drops an almost fixed voltage (about 2 V for red, about 3 V for blue and white). Whatever is left over must be taken by a resistor, or the current rises until the LED or the pin dies. Most pins are happy with 5 to 10 mA.' },
+      { kind: 'widget', id: 'led-resistor' },
+      {
+        kind: 'board',
+        board: 'rpi-pico',
+        label: 'An LED with its resistor on GP15 of a Raspberry Pi Pico',
+        pins: ['GP15'],
+        parts: [{ id: 'led1', partId: 'led-resistor', position: [0, 0, 40] }],
+        wires: [
+          { pin: 'GP15', part: 'led1', partPin: 'A' },
+          { pin: 'GND1', part: 'led1', partPin: 'K' },
+        ],
+      },
+      { kind: 'tip', text: 'A GPIO pin is not a power supply. The ESP32 and the Pico give a few mA per pin comfortably; motors, relays, LED strips and servos need a transistor or a driver and their own supply, with the grounds connected.' },
+      { kind: 'h', text: 'Pull-up resistors: a defined level' },
+      { kind: 'p', text: 'An input connected to nothing floats and reads random values. A pull-up resistor to 3.3 V makes it read HIGH until a button pulls it to GND. Most chips have weak internal pull-ups (INPUT_PULLUP); I2C needs real ones, because the bus must rise fast enough.' },
+      { kind: 'widget', id: 'pullup' },
+      { kind: 'h', text: 'Voltage dividers' },
+      { kind: 'p', text: 'Two resistors in series split a voltage in the ratio of their values. This is how you read a 5 V signal on a 3.3 V pin, or measure a battery with an ADC.' },
+      { kind: 'widget', id: 'divider' },
+      { kind: 'h', text: '5 V and 3.3 V do not mix' },
+      {
+        kind: 'list',
+        items: [
+          'ESP32, Pico, STM32 and nRF52 pins take at most 3.3 V (a few STM32 pins are 5 V tolerant: the board file says which).',
+          'A 5 V signal going into a 3.3 V pin: use a divider (one direction) or a level shifter (I2C, both directions).',
+          'A 3.3 V signal into a 5 V Arduino usually reads HIGH, but check the part: some need 0.7 × 5 V = 3.5 V.',
+          'Always connect the grounds: a voltage only means something against a shared ground.',
+        ],
+      },
+      { kind: 'p', text: 'BoardPilot checks these for you: the wiring rules flag a 5 V part on a 3.3 V pin, a missing ground, and an output on an input-only pin, and the shopping list adds the divider or level shifter you need.' },
+      { kind: 'h', text: 'Reading a schematic and a datasheet' },
+      {
+        kind: 'list',
+        items: [
+          'A schematic shows connections, not positions: two wires that meet with a dot are connected; lines that cross without a dot are not.',
+          'Labels with the same name (3V3, GND, SDA) are connected even when no line joins them.',
+          'On a datasheet’s first page: the supply voltage range, the interface (I2C, SPI…) and the I2C address.',
+          'Then look for “Absolute maximum ratings”: never go beyond them, not even for a moment.',
+        ],
+      },
+      { kind: 'tip', text: 'Before powering a new circuit, check three things: no wire from power straight to GND, every 5 V part away from 3.3 V pins, and the grounds connected. It takes a minute and saves boards.' },
+    ],
+    interview: [
+      'Why does an LED need a series resistor, and how do you choose its value?',
+      'What happens if you leave a GPIO input floating?',
+      'How do you connect a 5 V sensor output to a 3.3 V microcontroller?',
+      'Why does I2C need pull-up resistors, and what goes wrong if they are too large?',
+      'What is the difference between absolute maximum ratings and recommended operating conditions?',
     ],
   },
   {
@@ -150,6 +237,22 @@ while ((*status & (1 << 5)) == 0) { }   // wait for the "data ready" bit`,
     blocks: [
       { kind: 'p', text: 'GPIO means general-purpose input/output. A pin set as output puts 3.3 V or 0 V on the wire. A pin set as input reads the voltage that comes from outside.' },
       { kind: 'widget', id: 'gpio' },
+      {
+        kind: 'board',
+        board: 'esp32-devkitc-30',
+        label: 'An LED on an output pin and a button on an input pin, on an ESP32',
+        pins: ['D25', 'D26'],
+        parts: [
+          { id: 'led1', partId: 'led-resistor', position: [-30, 0, 45] },
+          { id: 'btn1', partId: 'push-button', position: [30, 0, 45] },
+        ],
+        wires: [
+          { pin: 'D25', part: 'led1', partPin: 'A' },
+          { pin: 'GND1', part: 'led1', partPin: 'K' },
+          { pin: 'D26', part: 'btn1', partPin: '1' },
+          { pin: 'GND2', part: 'btn1', partPin: '2' },
+        ],
+      },
       { kind: 'p', text: 'With a pull-up resistor the pin reads 1 when nobody touches the button. Pressing it connects the pin to ground, so pressed reads 0. It feels backwards at first, but it is the standard way to wire a button.' },
       { kind: 'h', text: 'Three steps for any pin' },
       {
@@ -197,6 +300,22 @@ while (1) {                            // 3. read the button, drive the LED
       { kind: 'p', text: 'When an event happens, the CPU pauses your code, runs a short function called an interrupt service routine (ISR), then continues exactly where it stopped. For a software developer: an event callback, triggered by hardware.' },
       { kind: 'widget', id: 'interrupt' },
       {
+        kind: 'board',
+        board: 'rpi-pico',
+        label: 'A button that triggers an interrupt, and the LED the handler switches, on a Raspberry Pi Pico',
+        pins: ['GP14', 'GP15'],
+        parts: [
+          { id: 'btn1', partId: 'push-button', position: [-25, 0, 40] },
+          { id: 'led1', partId: 'led-resistor', position: [25, 0, 40] },
+        ],
+        wires: [
+          { pin: 'GP14', part: 'btn1', partPin: '1' },
+          { pin: 'GND1', part: 'btn1', partPin: '2' },
+          { pin: 'GP15', part: 'led1', partPin: 'A' },
+          { pin: 'GND2', part: 'led1', partPin: 'K' },
+        ],
+      },
+      {
         kind: 'code',
         code: `void TIM2_IRQHandler(void) {           // the name comes from the vector table
     if (TIM2->SR & (1 << 0)) {         // update event flag
@@ -236,6 +355,19 @@ NVIC_EnableIRQ(TIM2_IRQn);             // let the CPU accept it`,
     blocks: [
       { kind: 'p', text: 'A microcontroller needs to talk to sensors, screens, memory cards and your computer. Almost everything uses one of three standard buses.' },
       { kind: 'widget', id: 'protocols' },
+      {
+        kind: 'board',
+        board: 'esp32-devkitc-30',
+        label: 'An I2C sensor on the ESP32’s default bus: SDA on D21, SCL on D22',
+        pins: ['D21', 'D22'],
+        parts: [{ id: 'bme1', partId: 'bme280-gy', position: [0, 0, 50] }],
+        wires: [
+          { pin: 'D21', part: 'bme1', partPin: 'SDA' },
+          { pin: 'D22', part: 'bme1', partPin: 'SCL' },
+          { pin: '3V3', part: 'bme1', partPin: 'VIN' },
+          { pin: 'GND1', part: 'bme1', partPin: 'GND' },
+        ],
+      },
       {
         kind: 'table',
         head: ['', 'UART', 'I2C', 'SPI'],
@@ -465,6 +597,7 @@ export function lessonTexts(l: Lesson): string[] {
   const out = [l.title, l.summary, ...l.interview];
   for (const b of l.blocks) {
     if (b.kind === 'p' || b.kind === 'h' || b.kind === 'tip') out.push(b.text);
+    else if (b.kind === 'board') out.push(b.label);
     else if (b.kind === 'list') out.push(...b.items);
     else if (b.kind === 'table') {
       out.push(...b.head);

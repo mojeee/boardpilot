@@ -4,6 +4,7 @@
 import { createContext, useContext, useEffect, useId, useState, type ReactNode } from 'react';
 import type { WidgetId } from '@shared/lessons';
 import { t } from '@shared/i18n';
+import { I2C_MODES, divider, dividerR2, e12Nearest, fmtOhms, i2cPullup, ledResistor, type I2cMode } from '@shared/electronics';
 
 type Tone = 'cpu' | 'mem' | 'io' | 'in' | 'out' | 'ok' | 'err' | 'warn' | 'spi';
 const TONE: Record<Tone, string> = {
@@ -573,6 +574,187 @@ function Roadmap() {
   );
 }
 
+// ---------- hardware basics ----------
+
+/** A resistor drawn as a zig-zag between two points on a horizontal line. */
+function Resistor({ x, y, w = 80, label, tone = 'var(--warn)' }: { x: number; y: number; w?: number; label: string; tone?: string }) {
+  let d = `M${x} ${y}`;
+  const n = 6;
+  for (let i = 0; i < n; i++) d += ` L${x + ((i + 0.5) * w) / n} ${y + (i % 2 ? 8 : -8)}`;
+  d += ` L${x + w} ${y}`;
+  return (
+    <g>
+      <path d={d} fill="none" stroke={tone} strokeWidth={2} strokeLinejoin="round" />
+      <Label x={x + w / 2} y={y - 16} anchor="middle" mono>
+        {label}
+      </Label>
+    </g>
+  );
+}
+
+const LED_COLORS: { key: string; label: string; vf: number; color: string }[] = [
+  { key: 'red', label: 'Red', vf: 2.0, color: '#FF5D52' },
+  { key: 'yellow', label: 'Yellow', vf: 2.1, color: '#E8D24A' },
+  { key: 'green', label: 'Green', vf: 2.2, color: '#5CCB8F' },
+  { key: 'blue', label: 'Blue or white', vf: 3.1, color: '#3FB6E8' },
+];
+
+function LedResistorCalc() {
+  const [supply, setSupply] = useState(3.3);
+  const [color, setColor] = useState(0);
+  const [ma, setMa] = useState(10);
+  const led = LED_COLORS[color];
+  const r = ledResistor(supply, led.vf, ma);
+  return (
+    <div className="learn-widget">
+      <Figure h={150} label={t('An LED in series with a resistor')}>
+        <line x1={60} y1={75} x2={170} y2={75} stroke="var(--pin-power)" strokeWidth={2} />
+        <Label x={60} y={60} mono>{`${supply.toFixed(1)} V`}</Label>
+        <Resistor x={170} y={75} w={110} label={r.ok ? fmtOhms(r.standard) : '—'} />
+        <line x1={280} y1={75} x2={380} y2={75} stroke="var(--muted)" strokeWidth={2} />
+        <path d="M380 55 L380 95 L420 75 Z" fill={r.ok ? led.color : 'none'} stroke={led.color} strokeWidth={2} opacity={r.ok ? Math.min(1, 0.35 + r.actualMa / 15) : 0.4} />
+        <line x1={420} y1={55} x2={420} y2={95} stroke={led.color} strokeWidth={2} />
+        <line x1={420} y1={75} x2={560} y2={75} stroke="var(--pin-ground)" strokeWidth={2} />
+        <Label x={560} y={60} anchor="end" mono>GND</Label>
+        <Label x={400} y={120} anchor="middle">{t('LED drops {v} V', { v: led.vf.toFixed(1) })}</Label>
+        <Label x={225} y={120} anchor="middle">{r.ok ? t('resistor takes {v} V', { v: r.drop.toFixed(1) }) : ''}</Label>
+      </Figure>
+      <div className="seg learn-seg">
+        {LED_COLORS.map((c, i) => (
+          <button key={c.key} className={i === color ? 'on' : ''} onClick={() => setColor(i)}>
+            {t(c.label)}
+          </button>
+        ))}
+      </div>
+      <Slider label={t('Supply')} min={3.3} max={5} step={1.7} value={supply} onChange={setSupply} out={`${supply.toFixed(1)} V`} />
+      <Slider label={t('LED current')} min={2} max={20} step={1} value={ma} onChange={setMa} out={`${ma} mA`} />
+      <div className="learn-stats">
+        {r.ok ? (
+          <>
+            <div>
+              <span className="label">{t('Resistor (Ohm’s law)')}</span>
+              <b className="mono">{`(${supply.toFixed(1)} − ${led.vf.toFixed(1)}) V / ${ma} mA = ${fmtOhms(r.exact)}`}</b>
+            </div>
+            <div>
+              <span className="label">{t('Standard value to buy')}</span>
+              <b className="mono">{t('{r}, gives {ma} mA', { r: fmtOhms(r.standard), ma: r.actualMa.toFixed(1) })}</b>
+            </div>
+            <div>
+              <span className="label">{t('Heat in the resistor')}</span>
+              <b className="mono">{`${r.powerMw.toFixed(0)} mW`}</b>
+            </div>
+          </>
+        ) : (
+          <div>
+            <span className="label">{t('Not enough voltage')}</span>
+            <b>{t('The supply is lower than the LED needs: it stays dark.')}</b>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function DividerCalc() {
+  const [vin, setVin] = useState(5);
+  const [r1, setR1] = useState(1000);
+  const [r2, setR2] = useState(2000);
+  const d = divider(vin, r1, r2);
+  const safe = d.vout <= 3.3 + 0.05;
+  return (
+    <div className="learn-widget">
+      <Figure h={200} label={t('Two resistors divide a voltage')}>
+        <line x1={120} y1={30} x2={120} y2={50} stroke="var(--pin-power)" strokeWidth={2} />
+        <Label x={135} y={34} mono>{`Vin ${vin.toFixed(1)} V`}</Label>
+        <g transform="rotate(90 120 50)"><Resistor x={120} y={50} w={50} label="" /></g>
+        <Label x={140} y={80} mono>{`R1 ${fmtOhms(r1)}`}</Label>
+        <line x1={120} y1={100} x2={120} y2={115} stroke="var(--muted)" strokeWidth={2} />
+        <line x1={120} y1={108} x2={320} y2={108} stroke={safe ? 'var(--ok)' : 'var(--err)'} strokeWidth={2} />
+        <circle cx={320} cy={108} r={4} fill={safe ? 'var(--ok)' : 'var(--err)'} />
+        <Label x={332} y={112} mono>{`Vout ${d.vout.toFixed(2)} V`}</Label>
+        <g transform="rotate(90 120 115)"><Resistor x={120} y={115} w={50} label="" /></g>
+        <Label x={140} y={145} mono>{`R2 ${fmtOhms(r2)}`}</Label>
+        <line x1={120} y1={165} x2={120} y2={185} stroke="var(--pin-ground)" strokeWidth={2} />
+        <Label x={135} y={190} mono>GND</Label>
+        <Label x={332} y={132}>{safe ? t('Safe for a 3.3 V pin') : t('Too high for a 3.3 V pin')}</Label>
+      </Figure>
+      <Slider label={t('Input voltage')} min={3.3} max={12} step={0.1} value={vin} onChange={setVin} out={`${vin.toFixed(1)} V`} />
+      <Slider label="R1" min={100} max={10000} step={100} value={r1} onChange={setR1} out={fmtOhms(r1)} />
+      <Slider label="R2" min={100} max={10000} step={100} value={r2} onChange={setR2} out={fmtOhms(r2)} />
+      <div className="learn-stats">
+        <div>
+          <span className="label">{t('Output')}</span>
+          <b className="mono">{`${vin.toFixed(1)} × ${fmtOhms(r2)} / (${fmtOhms(r1)} + ${fmtOhms(r2)}) = ${d.vout.toFixed(2)} V`}</b>
+        </div>
+        <div>
+          <span className="label">{t('Current through the divider')}</span>
+          <b className="mono">{`${d.currentMa.toFixed(2)} mA`}</b>
+        </div>
+        <div>
+          <span className="label">{t('R2 for 3.3 V out with this R1')}</span>
+          <b className="mono">{vin > 3.3 ? `${fmtOhms(dividerR2(vin, 3.3, r1))} → ${fmtOhms(e12Nearest(dividerR2(vin, 3.3, r1)))}` : '—'}</b>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PullupCalc() {
+  const [vdd, setVdd] = useState(3.3);
+  const [pf, setPf] = useState(150);
+  const [mode, setMode] = useState<I2cMode>('standard');
+  const [r, setR] = useState(4700);
+  const res = i2cPullup(vdd, pf, mode, r);
+  // The rising edge: an RC curve that has to reach 70 % of VDD within the allowed rise time.
+  const limit = I2C_MODES[mode].riseNs;
+  const span = Math.max(limit * 1.6, (res.riseNs ?? 0) * 1.4);
+  const tau = (r * pf * 1e-12 * 1e9) || 1;
+  let curve = '';
+  for (let i = 0; i <= 120; i++) {
+    const tNs = (i / 120) * span;
+    const v = 1 - Math.exp(-tNs / tau);
+    curve += `${i ? 'L' : 'M'}${(60 + (tNs / span) * 560).toFixed(1)} ${(170 - v * 130).toFixed(1)}`;
+  }
+  const limitX = 60 + (limit / span) * 560;
+  return (
+    <div className="learn-widget">
+      <Figure h={200} label={t('How fast the I2C line rises with this pull-up')}>
+        <line x1={60} y1={170} x2={620} y2={170} stroke="var(--line)" />
+        <line x1={60} y1={40} x2={620} y2={40} stroke="var(--line)" strokeDasharray="4 4" />
+        <Label x={52} y={44} anchor="end" mono>VDD</Label>
+        <line x1={limitX} y1={30} x2={limitX} y2={172} stroke="var(--warn)" strokeDasharray="4 3" />
+        <Label x={limitX + 6} y={30} mono>{t('max rise {ns} ns', { ns: limit })}</Label>
+        <path d={curve} fill="none" stroke={res.fits ? 'var(--pin-sda)' : 'var(--err)'} strokeWidth={2} />
+        <Label x={620} y={190} anchor="end">{t('Time')}</Label>
+      </Figure>
+      <div className="seg learn-seg">
+        {(Object.keys(I2C_MODES) as I2cMode[]).map((m) => (
+          <button key={m} className={m === mode ? 'on' : ''} onClick={() => setMode(m)}>
+            {t(I2C_MODES[m].label)}
+          </button>
+        ))}
+      </div>
+      <Slider label={t('Bus voltage')} min={3.3} max={5} step={1.7} value={vdd} onChange={setVdd} out={`${vdd.toFixed(1)} V`} />
+      <Slider label={t('Bus capacitance')} min={20} max={400} step={10} value={pf} onChange={setPf} out={`${pf} pF`} />
+      <Slider label={t('Pull-up')} min={500} max={20000} step={100} value={r} onChange={setR} out={fmtOhms(r)} />
+      <div className="learn-stats">
+        <div>
+          <span className="label">{t('Allowed range')}</span>
+          <b className="mono">{res.possible ? `${fmtOhms(res.minOhms)} – ${fmtOhms(res.maxOhms)}` : t('none: too much capacitance')}</b>
+        </div>
+        <div>
+          <span className="label">{t('Rise time with {r}', { r: fmtOhms(r) })}</span>
+          <b className="mono">{`${(res.riseNs ?? 0).toFixed(0)} ns`}</b>
+        </div>
+        <div>
+          <span className="label">{t('Verdict')}</span>
+          <b>{res.fits ? t('Fits the I2C specification') : r < res.minOhms ? t('Too strong: the chips cannot pull the line low') : t('Too weak: edges too slow for this speed')}</b>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const WIDGETS: Record<WidgetId, () => ReactNode> = {
   'mcu-anatomy': McuAnatomy,
   'memory-map': MemoryMap,
@@ -586,6 +768,9 @@ const WIDGETS: Record<WidgetId, () => ReactNode> = {
   pwm: PwmDemo,
   'state-machine': StateMachine,
   roadmap: Roadmap,
+  'led-resistor': LedResistorCalc,
+  divider: DividerCalc,
+  pullup: PullupCalc,
 };
 
 export function LessonWidget({ id }: { id: WidgetId }) {

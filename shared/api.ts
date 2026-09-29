@@ -102,6 +102,12 @@ export interface BoardPilotApi {
     save(scene: Scene): Promise<Result<string>>;
     open(): Promise<Result<Scene>>;
   };
+  mcp: {
+    status(): Promise<McpStatus>;
+    setEnabled(on: boolean): Promise<McpStatus>;
+    /** Answer to an MCP write request, after the user's click. */
+    writeResult(id: string, status: 'approved' | 'refused'): Promise<void>;
+  };
   license: {
     status(): Promise<LicenseStatus>;
     activate(key: string): Promise<Result<LicenseStatus>>;
@@ -119,7 +125,25 @@ export interface BoardPilotApi {
     log(cb: (e: Omit<LogEntry, 'id' | 't'>) => void): Unsubscribe;
     progress(cb: (p: { task: string; pct: number } | null) => void): Unsubscribe;
     trace(cb: (t: TraceEvent) => void): Unsubscribe;
+    mcpWrite(cb: (ask: McpWriteAsk) => void): Unsubscribe;
   };
+}
+
+/** The MCP server switch (Settings → AI agents). */
+export interface McpStatus {
+  enabled: boolean;
+  running: boolean;
+  /** The command an MCP client runs to reach BoardPilot. */
+  command: string;
+  /** Ready-to-paste Claude Code line. */
+  claudeCode: string;
+}
+
+/** A write an AI agent asked for over MCP; the app shows its confirmation dialog. */
+export interface McpWriteAsk {
+  id: string;
+  client: string;
+  req: WriteRequest;
 }
 
 export const EVENT_CHANNELS = ['state', 'live', 'serial', 'probe', 'log', 'progress', 'trace'] as const;
