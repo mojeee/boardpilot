@@ -32,6 +32,33 @@ export const FAMILY_LABEL: Record<BoardDef['family'], string> = {
   imxrt: 'Teensy (i.MX RT)',
 };
 
+/** The family name a chip tool prints for each board family (used to switch the project's board). */
+const FAMILY_NAME: Record<BoardDef['family'], RegExp> = {
+  esp32: /ESP32/,
+  esp32s3: /ESP32-S3/,
+  esp32c3: /ESP32-C3/,
+  rp2040: /RP2040/,
+  rp2350: /RP2350/,
+  avr: /ATMEGA/,
+  stm32: /STM32/,
+  nrf52: /NRF52/,
+  imxrt: /IMXRT|MIMXRT|TEENSY/,
+};
+
+/**
+ * The board a chip that answered on USB belongs to: boards whose family the chip names, narrowed by
+ * the port's USB ids (Pico vs Pico W share a chip). Null when it is not clear; then the user picks.
+ * `current` wins when it fits, so a chosen board is never swapped for a look-alike.
+ */
+export function boardForChip(chip: string, usbBoardIds: string[] = [], current?: string): BoardDef | null {
+  const c = chip.toUpperCase();
+  const fits = Object.values(BOARDS).filter((b) => chipMatchesBoard(chip, b) && FAMILY_NAME[b.family].test(c));
+  if (!fits.length) return null;
+  const cur = fits.find((b) => b.id === current);
+  if (cur) return cur;
+  return fits.find((b) => usbBoardIds.includes(b.id)) ?? (fits.length === 1 ? fits[0] : null);
+}
+
 /**
  * Does the chip a tool reported fit the selected board? Used to warn when the project is set to one
  * board but another is plugged in. Unknown combinations count as a match (no false alarms).

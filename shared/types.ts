@@ -559,6 +559,8 @@ export interface ScenePart {
   label?: string;
   /** Set when the user confirmed an AI suggestion ("this photo shows a BME280") */
   confirmed?: boolean;
+  /** Found by "Read from port": how (the measurement, e.g. the chip ID that answered). */
+  detected?: string;
 }
 
 export interface Scene {
@@ -662,6 +664,27 @@ export interface AiCodeSuggestion {
   explanation: string;
   sources: AiSource[];
 }
+
+/** "Describe it" (New project): the description, the questions asked so far and their answers. */
+export interface DescribeRequest {
+  text: string;
+  boardId: string;
+  answers: { question: string; answer: string }[];
+}
+
+/** The assistant's turn in "Describe it": a few questions first, then a proposal to confirm. */
+export type DescribeReply =
+  | { kind: 'questions'; questions: { question: string; options: string[] }[] }
+  | {
+      kind: 'proposal';
+      name: string;
+      summary: string;
+      parts: { partId: string; why: string }[];
+      /** starter code for the parts (the pins come from the safe-pin rules when the project is built) */
+      code: string;
+      notes: string[];
+      sources: AiSource[];
+    };
 
 export interface PhotoRecognition {
   partId: string | null;

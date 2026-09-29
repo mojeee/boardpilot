@@ -199,6 +199,32 @@ async function runNamedDemo(name: string, scenario: string | null) {
         '}',
       ].join('\n'),
     );
+  } else if (name === 'new-project') {
+    // #demo=new-project[&mode=port|template|blank]: the New project dialog (Read from port runs on the simulated bench).
+    const { openNewProject } = await import('./state/projects');
+    const mode = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('mode');
+    // The scripted confirmation stands in for the user's click on "Back up and install".
+    if (mode === 'port') await connectAndInstall();
+    openNewProject(mode === 'port' || mode === 'template' || mode === 'blank' ? mode : null);
+  } else if (name === 'tabs') {
+    // #demo=tabs: three projects open (two templates and the simulator's bench), the first one active.
+    const { useProjects } = await import('./state/projects');
+    const { useTemplate } = await import('./state/templateRun');
+    const { t } = await import('@shared/i18n');
+    const bench = useScene.getState().scene;
+    for (const [id, board] of [
+      ['plant-watering', 'esp32-devkitc-30'],
+      ['blink-button', 'rpi-pico'],
+    ] as const) {
+      const { TEMPLATES } = await import('@shared/templates');
+      const tpl = TEMPLATES.find((x) => x.id === id);
+      if (!tpl) continue;
+      useProjects.getState().add({ board, parts: [], wires: [] }, t(tpl.name));
+      await until(() => useApp.getState().conn.board === board);
+      useTemplate.getState().open(id);
+    }
+    useProjects.getState().switchTo(useProjects.getState().tabs[0].id);
+    void bench;
   } else if (name === 'project') {
     useScene.getState().openScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

@@ -8,6 +8,9 @@ import { CodeFindingsLogger } from './components/CodeCheck';
 import { Splitter } from './components/Splitter';
 import { Icon } from './components/Icon';
 import { handleLayoutKey, useLayout } from './state/layout';
+import { ProjectTabs } from './components/ProjectTabs';
+import { NewProjectDialog } from './components/NewProjectDialog';
+import { nameFirstTab } from './state/projects';
 import { AssistantPanel } from './components/AssistantPanel';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { DevMenu } from './components/DevMenu';
@@ -42,7 +45,7 @@ async function boot() {
   if (useApp.getState().conn.mode === 'real') {
     const last = await window.bp.project.last();
     if (last) useScene.getState().openScene(last);
-  }
+  } else nameFirstTab('Demo bench');
   let timer: ReturnType<typeof setTimeout> | null = null;
   useScene.subscribe((s, prev) => {
     // A lesson preview is not the user's project: never autosave it (nor the restore after it).
@@ -207,6 +210,7 @@ export function App() {
   return (
     <div className="shell">
       <TopBar />
+      <ProjectTabs />
       <Work />
       <CodeFindingsLogger />
       <DevMenu />
@@ -214,6 +218,7 @@ export function App() {
       <LicenseDialog />
       <AiSettingsDialog />
       <BoardPickerDialog />
+      <NewProjectDialog />
       <ConfirmDialog />
       <LockScreen />
       {isWebDemo() && <DownloadAppPrompt />}

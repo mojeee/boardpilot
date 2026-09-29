@@ -8,6 +8,8 @@ import type {
   ChipInfo,
   CodeSuggestionRequest,
   ConnectionState,
+  DescribeReply,
+  DescribeRequest,
   HardwareMode,
   HelloReply,
   I2cTraceStep,
@@ -85,6 +87,8 @@ export interface BoardPilotApi {
     classify(text: string, options: { id: string; label: string }[]): Promise<Result<{ optionId: string | null; reason: string }>>;
     /** Code for the Code panel, from the drawing and the code so far. A suggestion to accept or dismiss. */
     suggestCode(ctx: AiContext, req: CodeSuggestionRequest): Promise<Result<AiCodeSuggestion>>;
+    /** New project → "Describe it": questions first, then parts and starter code to confirm. */
+    describeProject(req: DescribeRequest): Promise<Result<DescribeReply>>;
     reset(): Promise<void>;
   };
   session: {
