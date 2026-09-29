@@ -96,6 +96,21 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       return { ok: false, error: toAppError(e) };
     }
   });
+  h('session:savePng', async (name: string, dataUrl: string): Promise<Result<string>> => {
+    const prefix = 'data:image/png;base64,';
+    if (typeof dataUrl !== 'string' || !dataUrl.startsWith(prefix) || dataUrl.length > 40 * 1024 * 1024)
+      return { ok: false, error: { code: 'bad_image', humanMessage: t('The picture could not be saved.'), hint: t('Try the export again.') } };
+    try {
+      const win = BrowserWindow.getFocusedWindow();
+      const opts: Electron.SaveDialogOptions = { defaultPath: String(name), filters: [{ name: 'PNG', extensions: ['png'] }] };
+      const r = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
+      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Not saved.'), hint: '' } };
+      await writeFile(r.filePath, Buffer.from(dataUrl.slice(prefix.length), 'base64'));
+      return { ok: true, value: r.filePath };
+    } catch (e) {
+      return { ok: false, error: toAppError(e) };
+    }
+  });
   h('session:exportReport', async (markdown: string, html: string, name: string): Promise<Result<{ markdownPath: string; pdfPath: string }>> => {
     try {
       const win = BrowserWindow.getFocusedWindow();

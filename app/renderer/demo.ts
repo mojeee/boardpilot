@@ -68,6 +68,19 @@ async function runNamedDemo(name: string, scenario: string | null) {
     if (ports.ok && ports.value[0]) await window.bp.hw.identify(ports.value[0].path);
     openTask('monitor');
     await window.bp.hw.openSerial(115200);
+  } else if (name === 'timing') {
+    // #demo=timing&scenario=healthy: the Monitor's timing view with a slow PWM on the LED (a square
+    // wave the 20 Hz stream can follow), the pins streaming, and one decoded I2C read.
+    await connectAndInstall();
+    openTask('monitor');
+    await sleep(300);
+    const token = await window.bp.safety.grant('gpio_write');
+    await window.bp.hw.agentWrite({ cmd: 'pwm', pin: 25, duty: 30, hz: 1 }, token);
+    await startStream(20);
+    const { selectTimingRow } = await import('./components/TimingPanel');
+    selectTimingRow(25);
+    await sleep(5000);
+    await agent({ cmd: 'i2c_read', sda: 21, scl: 22, addr: '0x76', reg: '0xD0', len: 1 });
   } else if (name === 'live') {
     await connectAndInstall();
     openTask('connect');
