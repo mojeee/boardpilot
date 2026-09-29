@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ADC explained: how a microcontroller reads an analog voltage | BoardPilot</title>
+    <meta name="description" content="What an analog-to-digital converter does, what resolution and sample rate mean, and how to turn a raw 12-bit ADC reading into volts." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/learn/adc/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/adc/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/adc/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/adc/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/learn/adc/" />
+    <meta property="og:title" content="ADC explained: how a microcontroller reads an analog voltage | BoardPilot" />
+    <meta property="og:description" content="What an analog-to-digital converter does, what resolution and sample rate mean, and how to turn a raw 12-bit ADC reading into volts." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/learn/adc/#lesson","headline":"ADC: reading the analog world","name":"ADC: reading the analog world","description":"What an analog-to-digital converter does, what resolution and sample rate mean, and how to turn a raw 12-bit ADC reading into volts.","url":"https://boardpilot.agentflowbind.com/learn/adc/","inLanguage":"en","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT10M","position":7,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Embedded systems from zero","url":"https://boardpilot.agentflowbind.com/learn/"},"teaches":["ADC (analog-to-digital converter)","ADC resolution","Sample rate","DAC (digital-to-analog converter)","Datasheet","HAL (hardware abstraction layer)"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://boardpilot.agentflowbind.com/learn/"},{"@type":"ListItem","position":3,"name":"ADC: reading the analog world","item":"https://boardpilot.agentflowbind.com/learn/adc/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/adc/" hreflang="en" class="on">EN</a><a href="/it/learn/adc/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/learn/">Learn</a> / <span>ADC: reading the analog world</span></nav>
+        <p class="learn-kicker">Foundations · Lesson 7 of 11 · about 10 min</p>
+        <h1>ADC: reading the analog world</h1>
+        <p class="lead">From a voltage to a number</p>
+        
+        <p>Temperature, light and pressure change smoothly, but the CPU only understands numbers. The analog-to-digital converter (ADC) takes snapshots of a voltage and rounds each one to the nearest step.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Interactive demo</p><p><b>What the ADC sees.</b> A smooth signal and the stepped copy the ADC produces. Change the resolution from 1 to 12 bits and the number of samples, and watch the copy get closer to the real signal; move the sensor voltage to see the number your code receives.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=adc&lang=en" target="_blank" rel="noopener">Try it in the browser demo →</a></p></aside>
+        <ul class="learn-list"><li>Resolution is how fine the steps are. A 12-bit ADC has 4096 steps: about 0.8 mV each at 3.3 V.</li><li>Sample rate is how often it takes a snapshot. Too slow and fast changes are lost.</li></ul>
+        <pre class="code"><code>uint16_t raw = HAL_ADC_GetValue(&amp;hadc1);   // 0 .. 4095
+float volts = raw * 3.3f / 4095;           // 2048 -&gt; 1.65 V
+// volts -&gt; temperature, light, pressure: the formula is in the sensor's datasheet</code></pre>
+        <aside class="learn-box learn-tip"><p class="learn-box-h">In real products</p><p>Every sensor maps voltage to a value in its own way, and the formula is in its datasheet. Reading datasheets is a core embedded skill.</p></aside>
+        <aside class="learn-box learn-lab"><p class="learn-box-h">Hands-on lab (in the app)</p><p><b>Turn a potentiometer end to end while the app reads the ADC.</b></p><p class="fine">Labs run in the BoardPilot app on your own board, or on the simulated one: the app checks each step with live readings. They cannot run on this page.</p><p class="learn-box-link"><a href="/#download">Download BoardPilot →</a></p></aside>
+        <h2 id="interview">Interview questions</h2>
+        <ol class="learn-list learn-questions"><li>What limits the accuracy of an ADC reading?</li><li>What happens if you sample a signal too slowly?</li><li>How do you turn a raw 12-bit reading into volts?</li></ol>
+        <p class="fine">No answers here on purpose: try answering out loud first. In the BoardPilot app, the interview coach reads your own answer and tells you what was right, what is missing and what a senior interviewer would ask next (it uses the AI provider you choose in the app). <a href="/learn/interview-questions/">Embedded systems interview questions →</a></p>
+        <h2>Key terms</h2>
+        <p class="link-cloud"><a href="/learn/glossary/#adc">ADC (analog-to-digital converter)</a> <a href="/learn/glossary/#adc-resolution">ADC resolution</a> <a href="/learn/glossary/#sample-rate">Sample rate</a> <a href="/learn/glossary/#dac">DAC (digital-to-analog converter)</a> <a href="/learn/glossary/#datasheet">Datasheet</a> <a href="/learn/glossary/#hal">HAL (hardware abstraction layer)</a></p>
+        <div class="cta-box">
+          <h2>In the app, the lessons come alive</h2>
+          <p>The lessons have interactive demos and hands-on labs checked on your board in the app. These pages are the readable version: the demos are described in words, and the labs need the app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/#download">Download BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=en" target="_blank" rel="noopener">Try the lessons in your browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="All lessons">
+          <a class="learn-prev" href="/learn/buses/" rel="prev"><span>← Previous</span><b>UART, I2C and SPI</b></a>
+          <a class="learn-all" href="/learn/">All lessons</a>
+          <a class="learn-next" href="/learn/rtos/" rel="next"><span>Next →</span><b>RTOS: many jobs on one chip</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

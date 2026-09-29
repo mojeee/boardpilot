@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How an embedded system works, from power on to the first reading | BoardPilot</title>
+    <meta name="description" content="Follow one thermostat cycle from power on to sleep, see how every embedded idea fits together, and how your code gets from the computer into the chip." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/learn/full-picture/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/full-picture/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/full-picture/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/full-picture/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/learn/full-picture/" />
+    <meta property="og:title" content="How an embedded system works, from power on to the first reading | BoardPilot" />
+    <meta property="og:description" content="Follow one thermostat cycle from power on to sleep, see how every embedded idea fits together, and how your code gets from the computer into the chip." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/learn/full-picture/#lesson","headline":"The full picture","name":"The full picture","description":"Follow one thermostat cycle from power on to sleep, see how every embedded idea fits together, and how your code gets from the computer into the chip.","url":"https://boardpilot.agentflowbind.com/learn/full-picture/","inLanguage":"en","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT8M","position":10,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Embedded systems from zero","url":"https://boardpilot.agentflowbind.com/learn/"},"teaches":["Embedded system","Firmware","Flash memory","RAM (SRAM)","Debugger","JTAG and SWD","Flashing","Toolchain","Cross-compiler","SDK"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://boardpilot.agentflowbind.com/learn/"},{"@type":"ListItem","position":3,"name":"The full picture","item":"https://boardpilot.agentflowbind.com/learn/full-picture/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/full-picture/" hreflang="en" class="on">EN</a><a href="/it/learn/full-picture/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/learn/">Learn</a> / <span>The full picture</span></nav>
+        <p class="learn-kicker">Foundations · Lesson 10 of 11 · about 8 min</p>
+        <h1>The full picture</h1>
+        <p class="lead">One device, one cycle, every lesson</p>
+        <nav class="learn-toc" aria-label="In this lesson"><p class="learn-box-h">In this lesson</p><ol><li><a href="#the-device-is-like-a-body">The device is like a body</a></li><li><a href="#from-your-computer-to-the-chip">From your computer to the chip</a></li><li><a href="#interview">Interview questions</a></li></ol></nav>
+        <p>Follow one cycle of a thermostat. Every embedded device, from a toy to a car, repeats the same pattern: wait, sense, decide, act, sleep.</p>
+        <ol class="learn-list"><li>Power on: the CPU runs the program from flash and sets up pins, buses and timers.</li><li>The timer counts by itself while the CPU rests.</li><li>The timer raises an interrupt and the scheduler wakes the sensor task.</li><li>Over I2C, the MCU asks the sensor for the temperature.</li><li>The code compares it with the target and sets one GPIO bit: the heater turns on.</li><li>The display task draws the new value on the screen.</li><li>A button press raises an interrupt and changes the target.</li><li>Everything is done: the CPU sleeps until the next tick.</li></ol>
+        <h2 id="the-device-is-like-a-body">The device is like a body</h2>
+        <div class="table-wrap"><table class="pin-table learn-table"><thead><tr><th scope="col">Body</th><th scope="col">Embedded</th></tr></thead><tbody><tr><td>Brain</td><td>CPU</td></tr><tr><td>Long-term memory</td><td>Flash, where the program lives</td></tr><tr><td>Short-term memory</td><td>RAM, where the variables live</td></tr><tr><td>Heartbeat</td><td>Timer</td></tr><tr><td>Reflex</td><td>Interrupt</td></tr><tr><td>Eyes and skin</td><td>Sensors and ADC</td></tr><tr><td>Muscles</td><td>Outputs: LEDs, motors, heaters</td></tr><tr><td>Nerves</td><td>Wires and buses: I2C, SPI, UART</td></tr></tbody></table></div>
+        <h2 id="from-your-computer-to-the-chip">From your computer to the chip</h2>
+        <ol class="learn-list"><li>Write C code in an IDE such as STM32CubeIDE.</li><li>The compiler turns it into a binary file.</li><li>The programmer on the board (for example ST-LINK) writes the binary into flash. This is flashing.</li><li>The MCU restarts and runs your code.</li><li>The debugger pauses the chip so you can look at variables and registers, line by line.</li></ol>
+        <p>In BoardPilot, Flash firmware backs up the board before it writes, and Monitor shows what your code prints.</p>
+        <h2 id="interview">Interview questions</h2>
+        <ol class="learn-list learn-questions"><li>Walk me through what happens from power on to the first sensor reading.</li><li>How does the code get from your computer into the chip?</li></ol>
+        <p class="fine">No answers here on purpose: try answering out loud first. In the BoardPilot app, the interview coach reads your own answer and tells you what was right, what is missing and what a senior interviewer would ask next (it uses the AI provider you choose in the app). <a href="/learn/interview-questions/">Embedded systems interview questions →</a></p>
+        <h2>Key terms</h2>
+        <p class="link-cloud"><a href="/learn/glossary/#embedded-system">Embedded system</a> <a href="/learn/glossary/#firmware">Firmware</a> <a href="/learn/glossary/#flash-memory">Flash memory</a> <a href="/learn/glossary/#ram">RAM (SRAM)</a> <a href="/learn/glossary/#debugger">Debugger</a> <a href="/learn/glossary/#jtag-swd">JTAG and SWD</a> <a href="/learn/glossary/#flashing">Flashing</a> <a href="/learn/glossary/#toolchain">Toolchain</a> <a href="/learn/glossary/#cross-compiler">Cross-compiler</a> <a href="/learn/glossary/#sdk">SDK</a></p>
+        <div class="cta-box">
+          <h2>In the app, the lessons come alive</h2>
+          <p>The lessons have interactive demos and hands-on labs checked on your board in the app. These pages are the readable version: the demos are described in words, and the labs need the app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/#download">Download BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=en" target="_blank" rel="noopener">Try the lessons in your browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="All lessons">
+          <a class="learn-prev" href="/learn/essentials/" rel="prev"><span>← Previous</span><b>PWM, state machines and more</b></a>
+          <a class="learn-all" href="/learn/">All lessons</a>
+          <a class="learn-next" href="/learn/road-to-senior/" rel="next"><span>Next →</span><b>The road to senior</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

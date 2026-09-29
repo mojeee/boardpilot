@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Timers and interrupts explained: prescaler, ARR and ISR | BoardPilot</title>
+    <meta name="description" content="How a microcontroller timer counts by itself, how to choose the prescaler (PSC) and reload value (ARR), and how interrupts and ISRs work, compared with polling." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/timers-interrupts/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/learn/timers-interrupts/" />
+    <meta property="og:title" content="Timers and interrupts explained: prescaler, ARR and ISR | BoardPilot" />
+    <meta property="og:description" content="How a microcontroller timer counts by itself, how to choose the prescaler (PSC) and reload value (ARR), and how interrupts and ISRs work, compared with polling." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/learn/timers-interrupts/#lesson","headline":"Timers and interrupts","name":"Timers and interrupts","description":"How a microcontroller timer counts by itself, how to choose the prescaler (PSC) and reload value (ARR), and how interrupts and ISRs work, compared with polling.","url":"https://boardpilot.agentflowbind.com/learn/timers-interrupts/","inLanguage":"en","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT15M","position":5,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Embedded systems from zero","url":"https://boardpilot.agentflowbind.com/learn/"},"teaches":["Vector table","Timer","Prescaler and auto-reload (PSC, ARR)","Interrupt","ISR (interrupt service routine)","Polling","volatile","STM32"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://boardpilot.agentflowbind.com/learn/"},{"@type":"ListItem","position":3,"name":"Timers and interrupts","item":"https://boardpilot.agentflowbind.com/learn/timers-interrupts/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/#features" data-i18n="nav.features">Features</a>
+          <a href="/learn/" data-i18n="nav.learn">Learn</a>
+          <a href="/tools/" data-i18n="nav.tools">Calculators</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+          <a href="/#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/timers-interrupts/" hreflang="en" class="on">EN</a><a href="/it/learn/timers-interrupts/" hreflang="it" class="">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/#download" data-i18n="nav.download">Download</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">BoardPilot</a> / <a href="/learn/">Learn</a> / <span>Timers and interrupts</span></nav>
+        <p class="learn-kicker">Foundations · Lesson 5 of 11 · about 15 min</p>
+        <h1>Timers and interrupts</h1>
+        <p class="lead">Exact timing without wasting the CPU</p>
+        <nav class="learn-toc" aria-label="In this lesson"><p class="learn-box-h">In this lesson</p><ol><li><a href="#timers-a-counter-that-counts-by-itself">Timers: a counter that counts by itself</a></li><li><a href="#interrupts-the-hardware-taps-the-cpu-on-the-shoulder">Interrupts: the hardware taps the CPU on the shoulder</a></li><li><a href="#interview">Interview questions</a></li></ol></nav>
+        <p>A delay loop keeps the whole CPU busy doing nothing, and its timing is a guess. Two hardware features fix this: timers and interrupts.</p>
+        <h2 id="timers-a-counter-that-counts-by-itself">Timers: a counter that counts by itself</h2>
+        <p>The prescaler (PSC) slows the clock down, and the counter starts again from 0 every time it reaches the reload value (ARR). Each restart is an update event.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Interactive demo</p><p><b>Timer calculator.</b> Pick the clock (16 MHz after reset or 84 MHz), type PSC and ARR, and see the tick rate and the update events per second. Slow settings blink an LED at the real rate.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=timers-interrupts&lang=en" target="_blank" rel="noopener">Try it in the browser demo →</a></p></aside>
+        <h2 id="interrupts-the-hardware-taps-the-cpu-on-the-shoulder">Interrupts: the hardware taps the CPU on the shoulder</h2>
+        <p>When an event happens, the CPU pauses your code, runs a short function called an interrupt service routine (ISR), then continues exactly where it stopped. For a software developer: an event callback, triggered by hardware.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Interactive demo</p><p><b>An interrupt on a timeline.</b> The main loop runs, a timer overflow pauses it, the ISR runs, and the main loop continues exactly where it stopped.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=timers-interrupts&lang=en" target="_blank" rel="noopener">Try it in the browser demo →</a></p></aside>
+        <aside class="learn-box learn-board"><p class="learn-box-h">On the 3D board</p><p><b>A button that triggers an interrupt, and the LED the handler switches, on a Raspberry Pi Pico</b></p><p class="fine">Pins: <span class="mono">GP14, GP15</span> · <a href="/boards/rpi-pico/">Raspberry Pi Pico</a></p><p class="fine">In the app this opens a 3D preview of the Raspberry Pi Pico with these pins highlighted. Your own project is never touched.</p></aside>
+      </div>
+      <div class="wrap try-wrap learn-try"><div class="try-live" data-src="/demo/#demo=lesson-preview&amp;lesson=timers-interrupts&amp;lang=en" data-title="BoardPilot live demo" data-full="Open full screen">
+          <img src="/img/learn.jpg?v=6ecc3e7445" width="1800" height="1125" alt="The BoardPilot Learn screen: a lesson with its 3D board preview" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=lesson-preview&amp;lesson=timers-interrupts&amp;lang=en" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Try it live</a>
+            <p>The real app, running in your browser: this lesson with its 3D preview on a simulated Raspberry Pi Pico. No install, nothing to plug in.</p>
+          </div>
+        </div>
+        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+      <div class="wrap narrow">
+        <pre class="code"><code>void TIM2_IRQHandler(void) {           // the name comes from the vector table
+    if (TIM2-&gt;SR &amp; (1 &lt;&lt; 0)) {         // update event flag
+        TIM2-&gt;SR &amp;= ~(1 &lt;&lt; 0);         // clear it, or the ISR runs again forever
+        GPIOA-&gt;ODR ^= (1 &lt;&lt; 5);        // toggle the LED
+    }
+}
+
+// in main(): 16 MHz / 16000 = 1 kHz ticks, 1000 ticks = 1 second
+TIM2-&gt;PSC = 15999;
+TIM2-&gt;ARR = 999;
+TIM2-&gt;DIER |= (1 &lt;&lt; 0);                // interrupt on update
+TIM2-&gt;CR1  |= (1 &lt;&lt; 0);                // start counting
+NVIC_EnableIRQ(TIM2_IRQn);             // let the CPU accept it</code></pre>
+        <ul class="learn-list"><li>Keep interrupt routines short: set a flag and leave. Heavy work goes in the main loop.</li><li>Always clear the interrupt flag.</li><li>Mark every variable shared with an interrupt as volatile.</li></ul>
+        <h2 id="interview">Interview questions</h2>
+        <ol class="learn-list learn-questions"><li>What is the difference between polling and interrupts?</li><li>Why should an interrupt routine be short?</li><li>How do you choose PSC and ARR for an interrupt every second?</li></ol>
+        <p class="fine">No answers here on purpose: try answering out loud first. In the BoardPilot app, the interview coach reads your own answer and tells you what was right, what is missing and what a senior interviewer would ask next (it uses the AI provider you choose in the app). <a href="/learn/interview-questions/">Embedded systems interview questions →</a></p>
+        <h2>Key terms</h2>
+        <p class="link-cloud"><a href="/learn/glossary/#vector-table">Vector table</a> <a href="/learn/glossary/#timer">Timer</a> <a href="/learn/glossary/#prescaler">Prescaler and auto-reload (PSC, ARR)</a> <a href="/learn/glossary/#interrupt">Interrupt</a> <a href="/learn/glossary/#isr">ISR (interrupt service routine)</a> <a href="/learn/glossary/#polling">Polling</a> <a href="/learn/glossary/#volatile">volatile</a> <a href="/learn/glossary/#stm32">STM32</a></p>
+        <div class="cta-box">
+          <h2>In the app, the lessons come alive</h2>
+          <p>The lessons have interactive demos and hands-on labs checked on your board in the app. These pages are the readable version: the demos are described in words, and the labs need the app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/#download">Download BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=en" target="_blank" rel="noopener">Try the lessons in your browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="All lessons">
+          <a class="learn-prev" href="/learn/gpio/" rel="prev"><span>← Previous</span><b>GPIO: pins in and out</b></a>
+          <a class="learn-all" href="/learn/">All lessons</a>
+          <a class="learn-next" href="/learn/buses/" rel="next"><span>Next →</span><b>UART, I2C and SPI</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">License</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Releases</a>
+          <a href="/parts/" data-i18n="nav.parts">Parts library</a>
+          <a href="/boards/" data-i18n="nav.pinout">Boards</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Support</a>
+          <a href="/learn/">Learn</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

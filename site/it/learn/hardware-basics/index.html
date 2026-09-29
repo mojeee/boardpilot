@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Elettronica di base per programmatori: legge di Ohm, resistenze, pull-up | BoardPilot</title>
+    <meta name="description" content="Tensione, corrente e resistenza per chi scrive software: legge di Ohm, resistenza del LED, pull-up, partitori, 3,3 V e 5 V e come leggere un datasheet." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/learn/hardware-basics/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/learn/hardware-basics/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/learn/hardware-basics/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/learn/hardware-basics/" />
+    <meta property="og:title" content="Elettronica di base per programmatori: legge di Ohm, resistenze, pull-up | BoardPilot" />
+    <meta property="og:description" content="Tensione, corrente e resistenza per chi scrive software: legge di Ohm, resistenza del LED, pull-up, partitori, 3,3 V e 5 V e come leggere un datasheet." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=788f39dfcb" />
+    <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/#lesson","headline":"Basi di hardware per chi viene dal software","name":"Basi di hardware per chi viene dal software","description":"Tensione, corrente e resistenza per chi scrive software: legge di Ohm, resistenza del LED, pull-up, partitori, 3,3 V e 5 V e come leggere un datasheet.","url":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/","inLanguage":"it","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=6ecc3e7445","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT15M","position":2,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Sistemi embedded da zero","url":"https://boardpilot.agentflowbind.com/it/learn/"},"teaches":["Livello logico (HIGH e LOW)","Resistenza di pull-up","Resistenza di pull-down","Ingresso flottante","Brownout","Legge di Ohm","Resistenza di limitazione","Partitore di tensione","Level shifter (traslatore di livello)","Datasheet","Valori massimi assoluti","Schema elettrico","Breadboard","Cavetto jumper (Dupont)","Multimetro"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"Basi di hardware per chi viene dal software","item":"https://boardpilot.agentflowbind.com/it/learn/hardware-basics/"}]}]}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/learn/hardware-basics/" hreflang="en" class="">EN</a><a href="/it/learn/hardware-basics/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article learn">
+      <div class="wrap narrow">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/it/">BoardPilot</a> / <a href="/it/learn/">Impara</a> / <span>Basi di hardware per chi viene dal software</span></nav>
+        <p class="learn-kicker">Fondamenti · Lezione 2 di 11 · circa 15 min</p>
+        <h1>Basi di hardware per chi viene dal software</h1>
+        <p class="lead">Tensione, corrente, resistenze, e come non bruciare un pin</p>
+        <nav class="learn-toc" aria-label="In questa lezione"><p class="learn-box-h">In questa lezione</p><ol><li><a href="#legge-di-ohm-v-i-r">Legge di Ohm: V = I × R</a></li><li><a href="#un-led-vuole-sempre-una-resistenza">Un LED vuole sempre una resistenza</a></li><li><a href="#resistenze-di-pull-up-un-livello-definito">Resistenze di pull-up: un livello definito</a></li><li><a href="#partitori-di-tensione">Partitori di tensione</a></li><li><a href="#5-v-e-3-3-v-non-vanno-mischiati">5 V e 3,3 V non vanno mischiati</a></li><li><a href="#leggere-uno-schema-e-un-datasheet">Leggere uno schema e un datasheet</a></li><li><a href="#interview">Domande da colloquio</a></li></ol></nav>
+        <p>Il codice si può annullare; un LED bruciato o un pin morto no. Tre numeri spiegano quasi ogni errore hardware di chi inizia: tensione, corrente e resistenza.</p>
+        <div class="table-wrap"><table class="pin-table learn-table"><thead><tr><th scope="col">Quantità</th><th scope="col">Che cos’è</th><th scope="col">Unità</th><th scope="col">Paragone con l’acqua</th></tr></thead><tbody><tr><td>Tensione (V)</td><td>La spinta che muove gli elettroni</td><td>volt (V)</td><td>La pressione dell’acqua</td></tr><tr><td>Corrente (I)</td><td>Quanta ne scorre</td><td>ampere (A), di solito mA</td><td>Litri al secondo</td></tr><tr><td>Resistenza (R)</td><td>Quanto è difficile scorrere</td><td>ohm (Ω)</td><td>Un tubo stretto</td></tr></tbody></table></div>
+        <h2 id="legge-di-ohm-v-i-r">Legge di Ohm: V = I × R</h2>
+        <p>Conoscendone due ricavi la terza. Ti dice quanto deve essere grande una resistenza, quanta corrente manda un pin e quanto scalda un componente (potenza = V × I).</p>
+        <h2 id="un-led-vuole-sempre-una-resistenza">Un LED vuole sempre una resistenza</h2>
+        <p>Un LED fa cadere una tensione quasi fissa (circa 2 V il rosso, circa 3 V il blu e il bianco). Quello che avanza lo deve prendere una resistenza, altrimenti la corrente sale finché il LED o il pin muore. Alla maggior parte dei pin bastano da 5 a 10 mA.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Calcolatore della resistenza per LED.</b> Scegli il colore del LED, l’alimentazione a 3,3 V o 5 V e la corrente, e ottieni la resistenza dalla legge di Ohm, il valore standard da comprare, la corrente reale e il calore nella resistenza.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=hardware-basics&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <aside class="learn-box learn-board"><p class="learn-box-h">Sulla scheda 3D</p><p><b>Un LED con la sua resistenza su GP15 di un Raspberry Pi Pico</b></p><p class="fine">Pin: <span class="mono">GP15</span> · <a href="/it/boards/rpi-pico/">Raspberry Pi Pico</a></p><p class="fine">Nell’app questo apre un’anteprima 3D della scheda Raspberry Pi Pico con questi pin evidenziati. Il tuo progetto non viene mai toccato.</p></aside>
+      </div>
+      <div class="wrap try-wrap learn-try"><div class="try-live" data-src="/demo/#demo=lesson-preview&amp;lesson=hardware-basics&amp;lang=it" data-title="Demo dal vivo di BoardPilot" data-full="Apri a schermo intero">
+          <img src="/img/learn.jpg?v=6ecc3e7445" width="1800" height="1125" alt="La schermata Impara di BoardPilot: una lezione con l’anteprima della scheda in 3D" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=lesson-preview&amp;lesson=hardware-basics&amp;lang=it" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Provala dal vivo</a>
+            <p>La vera app, nel tuo browser: questa lezione con la sua anteprima 3D su una scheda Raspberry Pi Pico simulata. Niente da installare, niente da collegare.</p>
+          </div>
+        </div>
+        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+      <div class="wrap narrow">
+        <aside class="learn-box learn-tip"><p class="learn-box-h">Nei prodotti reali</p><p>Un pin GPIO non è un alimentatore. ESP32 e Pico danno tranquillamente qualche mA per pin; motori, relè, strisce LED e servo vogliono un transistor o un driver e un loro alimentatore, con le masse collegate.</p></aside>
+        <h2 id="resistenze-di-pull-up-un-livello-definito">Resistenze di pull-up: un livello definito</h2>
+        <p>Un ingresso non collegato a niente fluttua e legge valori casuali. Una resistenza di pull-up verso 3,3 V lo fa leggere ALTO finché un pulsante non lo porta a GND. Quasi tutti i chip hanno pull-up interne deboli (INPUT_PULLUP); l’I2C ne vuole di vere, perché il bus deve salire abbastanza in fretta.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Calcolatore delle pull-up I2C.</b> Imposta la tensione del bus, la capacità del bus, la velocità I2C e il valore della pull-up, e vedi quanto velocemente sale la linea, l’intervallo di resistenze ammesso e se rientra nel limite dell’I2C.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=hardware-basics&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <h2 id="partitori-di-tensione">Partitori di tensione</h2>
+        <p>Due resistenze in serie dividono una tensione nel rapporto dei loro valori. Così leggi un segnale a 5 V su un pin a 3,3 V, o misuri una batteria con un ADC.</p>
+        <aside class="learn-box learn-demo"><p class="learn-box-h">Demo interattiva</p><p><b>Calcolatore del partitore.</b> Imposta la tensione di ingresso, R1 e R2 e vedi la tensione di uscita, la corrente nel partitore, se l’uscita è sicura per un pin a 3,3 V e quale R2 dà 3,3 V.</p><p class="learn-box-link"><a href="/demo/#screen=learn&lesson=hardware-basics&lang=it" target="_blank" rel="noopener">Provala nella demo nel browser →</a></p></aside>
+        <h2 id="5-v-e-3-3-v-non-vanno-mischiati">5 V e 3,3 V non vanno mischiati</h2>
+        <ul class="learn-list"><li>I pin di ESP32, Pico, STM32 e nRF52 reggono al massimo 3,3 V (alcuni pin STM32 tollerano i 5 V: il file della scheda dice quali).</li><li>Un segnale a 5 V che entra in un pin a 3,3 V: usa un partitore (una direzione) o un traslatore di livello (I2C, due direzioni).</li><li>Un segnale a 3,3 V su un Arduino a 5 V di solito si legge ALTO, ma controlla il componente: alcuni vogliono 0,7 × 5 V = 3,5 V.</li><li>Collega sempre le masse: una tensione ha senso solo rispetto a una massa comune.</li></ul>
+        <p>BoardPilot lo controlla per te: le regole di cablaggio segnalano un componente a 5 V su un pin a 3,3 V, una massa mancante e un’uscita su un pin solo ingresso, e la lista della spesa aggiunge il partitore o il traslatore che serve.</p>
+        <h2 id="leggere-uno-schema-e-un-datasheet">Leggere uno schema e un datasheet</h2>
+        <ul class="learn-list"><li>Uno schema mostra i collegamenti, non le posizioni: due fili che si incontrano con un punto sono collegati; linee che si incrociano senza punto no.</li><li>Etichette con lo stesso nome (3V3, GND, SDA) sono collegate anche se nessuna linea le unisce.</li><li>Nella prima pagina di un datasheet: l’intervallo della tensione di alimentazione, l’interfaccia (I2C, SPI…) e l’indirizzo I2C.</li><li>Poi cerca “Absolute maximum ratings”: non superarli mai, neanche per un attimo.</li></ul>
+        <aside class="learn-box learn-tip"><p class="learn-box-h">Nei prodotti reali</p><p>Prima di alimentare un circuito nuovo controlla tre cose: nessun filo dall’alimentazione direttamente a GND, ogni componente a 5 V lontano dai pin a 3,3 V, e le masse collegate. Ci vuole un minuto e salva le schede.</p></aside>
+        <h2 id="interview">Domande da colloquio</h2>
+        <ol class="learn-list learn-questions"><li>Perché un LED vuole una resistenza in serie, e come scegli il suo valore?</li><li>Cosa succede se lasci un ingresso GPIO fluttuante?</li><li>Come colleghi l’uscita a 5 V di un sensore a un microcontrollore a 3,3 V?</li><li>Perché l’I2C vuole resistenze di pull-up, e cosa va storto se sono troppo grandi?</li><li>Qual è la differenza tra absolute maximum ratings e condizioni di funzionamento raccomandate?</li></ol>
+        <p class="fine">Qui non ci sono le risposte, apposta: prova prima a rispondere ad alta voce. Nell’app BoardPilot l’allenatore per i colloqui legge la tua risposta e ti dice cosa era giusto, cosa manca e cosa chiederebbe dopo un intervistatore senior (usa il fornitore di IA che scegli nell’app). <a href="/it/learn/interview-questions/">Domande da colloquio sui sistemi embedded →</a></p>
+        <h2>Parole chiave</h2>
+        <p class="link-cloud"><a href="/it/learn/glossary/#logic-level">Livello logico (HIGH e LOW)</a> <a href="/it/learn/glossary/#pull-up">Resistenza di pull-up</a> <a href="/it/learn/glossary/#pull-down">Resistenza di pull-down</a> <a href="/it/learn/glossary/#floating-input">Ingresso flottante</a> <a href="/it/learn/glossary/#brownout">Brownout</a> <a href="/it/learn/glossary/#ohms-law">Legge di Ohm</a> <a href="/it/learn/glossary/#led-resistor">Resistenza di limitazione</a> <a href="/it/learn/glossary/#voltage-divider">Partitore di tensione</a> <a href="/it/learn/glossary/#level-shifter">Level shifter (traslatore di livello)</a> <a href="/it/learn/glossary/#datasheet">Datasheet</a> <a href="/it/learn/glossary/#absolute-maximum-ratings">Valori massimi assoluti</a> <a href="/it/learn/glossary/#schematic">Schema elettrico</a> <a href="/it/learn/glossary/#breadboard">Breadboard</a> <a href="/it/learn/glossary/#jumper-wire">Cavetto jumper (Dupont)</a> <a href="/it/learn/glossary/#multimeter">Multimetro</a></p>
+        <div class="cta-box">
+          <h2>Nell’app le lezioni prendono vita</h2>
+          <p>Nell’app le lezioni hanno demo interattive ed esercitazioni pratiche verificate sulla tua scheda. Queste pagine sono la versione da leggere: le demo sono descritte a parole e le esercitazioni richiedono l’app.</p>
+          <p class="learn-cta-btns"><a class="btn primary" href="/it/#download">Scarica BoardPilot</a> <a class="btn" href="/demo/#screen=learn&lesson=what-is-mcu&lang=it" target="_blank" rel="noopener">Prova le lezioni nel browser</a></p>
+        </div>
+        <nav class="learn-pager" aria-label="Tutte le lezioni">
+          <a class="learn-prev" href="/it/learn/what-is-mcu/" rel="prev"><span>← Precedente</span><b>Che cos’è un microcontrollore?</b></a>
+          <a class="learn-all" href="/it/learn/">Tutte le lezioni</a>
+          <a class="learn-next" href="/it/learn/c-bits/" rel="next"><span>Successiva →</span><b>Il C per l’embedded</b></a>
+        </nav>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

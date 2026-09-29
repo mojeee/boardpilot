@@ -3,6 +3,7 @@
 
 export const IT = {
   'nav.parts': 'Componenti',
+  'nav.learn': 'Impara',
   'cta.try': 'Oppure provala prima nel browser, senza installare niente →',
   'try.eyebrow': 'Senza installare',
   'try.title': 'Provala nel tuo browser.',

@@ -229,7 +229,7 @@ export function boardCards(lang, boards, IT = {}) {
     .join('\n');
 }
 
-export function buildBoards({ lang, boards, parts = [], site, repo, head, header, footer, IT = {}, tryLive = () => '' }) {
+export function buildBoards({ lang, boards, parts = [], site, repo, head, header, footer, IT = {}, tryLive = () => '', learnLinks = () => '' }) {
   const t = T[lang];
   const tr = (s) => (lang === 'it' && s && IT[s]) || s;
   const pre = lang === 'it' ? '/it' : '';
@@ -377,6 +377,7 @@ ${rows}
         ${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('\n        ')}
         ${guides ? `<h2>${esc(fill(t.guidesH, { board: bn }))}</h2><p>${esc(t.guidesLead)}</p><p class="link-cloud">${guides}</p>` : ''}
         ${compares ? `<h2>${esc(t.compareH)}</h2><p class="link-cloud">${compares}</p>` : ''}
+        ${learnLinks(b)}
         <div class="cta-box">
           <h2>${esc(t.ctaTitle)}</h2>
           <p>${esc(t.cta)}</p>
