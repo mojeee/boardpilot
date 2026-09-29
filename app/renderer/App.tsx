@@ -22,6 +22,7 @@ import { PartEditor } from './components/PartEditor';
 import { LicenseDialog, LockScreen, useLicense } from './components/License';
 import { AiSettingsDialog } from './components/AiSettings';
 import { BoardPickerDialog } from './components/BoardPicker';
+import { DownloadAppPrompt, isWebDemo } from './components/WebDemo';
 import { usePartsLib } from './state/partsLib';
 import { useScene } from './state/store';
 import { t } from '@shared/i18n';
@@ -47,6 +48,8 @@ async function boot() {
   const params = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
   const screen = params.get('screen');
   if (screen) openTask(screen as Parameters<typeof openTask>[0]);
+  // motion=1: the social-clip capture overlay (only used with BP_MOTION, see app/main/motion.ts)
+  if (params.get('motion')) void import('./motion/overlay');
   const demo = params.get('demo');
   if (demo) void runDemo(demo, params.get('scenario'));
 }
@@ -133,6 +136,7 @@ export function App() {
       <BoardPickerDialog />
       <ConfirmDialog />
       <LockScreen />
+      {isWebDemo() && <DownloadAppPrompt />}
     </div>
   );
 }

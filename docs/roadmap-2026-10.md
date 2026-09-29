@@ -464,7 +464,7 @@ say so if you want it the other way.
 | 12 | State machine designer → C code and tests | L | A tool in New project | [x] |
 | 11 | Starter firmware for STM32 HAL, ESP-IDF, Pico SDK | L | Pico SDK first; compile check as a nightly CI job | [~] Pico SDK done (compiled nightly on Pico, Pico 2, Pico W); ESP-IDF and STM32 HAL next |
 | 17 | AI interview coach | M | Answers stored only on this computer, deletable, 90 days | [x] |
-| 22 | Motion graphics for social posts, rendered from the real app (8 clips × 3 formats) | L | Record the real app with CSS/SVG animation (no new dependency); muted, no music | [ ] |
+| 22 | Motion graphics for social posts, rendered from the real app (8 clips × 3 formats) | L | Record the real app with CSS/SVG animation (no new dependency); muted, no music | [x] |
 | 23 | YouTube channel plan: research, format, first 6 videos ready to record | M | Decided Sep 29: voice and hands only; one English channel with Italian subtitles; 1 long video every 2 weeks + 2 Shorts a week | [x] |
 | 24 | Publishing and outreach workflow with Claude in Chrome (you always click Post) | S | The workflow and tracking files are written here; the browser part runs on your computer | [x] |
 
@@ -473,15 +473,15 @@ say so if you want it the other way.
 The website shows the real app, running, instead of screenshots: visitors click pins, drag parts,
 draw wires and run the debug demo on a simulated board, with no install.
 
-- [ ] **Web demo build** of the renderer with the simulator in the page (the simulator already
+- [x] **Web demo build** of the renderer with the simulator in the page (the simulator already
       implements the same driver interface as the real board, so no hardware and no server are
       needed). Main-process features that need the computer (serial ports, esptool, files, saved
       keys) are replaced by the simulator or hidden, with a "Download the app" prompt where they
       would be.
-- [ ] Embedded on the home page and on every board page (that board, preloaded), lazy-loaded so
+- [x] Embedded on the home page and on every board page (that board, preloaded), lazy-loaded so
       the pages stay fast; a static screenshot until the visitor clicks "Try it live".
-- [ ] AI in the demo goes through the existing free demo relay only.
-- [ ] Sharper screenshots meanwhile: captured at 2× pixel density.
+- [x] AI in the demo goes through the existing free demo relay only.
+- [x] Sharper screenshots meanwhile: captured at 2× pixel density.
 
 This is also the first half of the "Web version using WebSerial" backlog item: the same build
 later talks to real boards through Chrome's WebSerial.

@@ -87,7 +87,7 @@ export function NewProjectPanel() {
           <div className="row between">
             <div className="label">{t('Start from a template')}</div>
             <button className="btn small ghost" onClick={() => setShowTemplates(!showTemplates)}>
-              {showTemplates ? t('Hide') : t('Show {n} templates', { n: 5 })}
+              {showTemplates ? t('Hide') : t('Show {n} templates', { n: TEMPLATES.length })}
             </button>
           </div>
           {showTemplates && <TemplatePicker />}

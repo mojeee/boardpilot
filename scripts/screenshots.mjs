@@ -23,6 +23,10 @@ const SHOTS = {
   test: { hash: '#demo=test&scenario=weather-station-swapped&stage=desk', delay: 30000 },
   monitor: { hash: '#demo=monitor&scenario=healthy', delay: 16000 },
   library: { hash: '#demo=library&stage=desk', delay: 20000 },
+  schematic: { hash: '#demo=template&id=smart-room-monitor&view=diagram&diagram=schematic&speed=1', delay: 12000 },
+  timing: { hash: '#demo=timing&scenario=healthy', delay: 22000 },
+  learn: { hash: '#demo=lesson-preview&lesson=gpio&stage=desk', delay: 14000 },
+  code: { hash: '#demo=code&stage=desk', delay: 14000 },
 };
 
 /** The 3D viewport inside the 1600 × 1000 window: right of the task rail, left of the panel, above the log. */

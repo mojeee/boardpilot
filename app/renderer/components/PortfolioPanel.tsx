@@ -17,6 +17,8 @@ import { openTask } from './TaskRail';
 
 const KEY = 'bp.portfolio';
 type Progress = Record<string, Record<string, StageRecord>>;
+/** Stable empty value: a new {} in a store selector would re-render forever. */
+const NO_PROGRESS: Record<string, StageRecord> = {};
 
 function load(): Progress {
   try {
@@ -76,7 +78,7 @@ export function PortfolioPanel() {
   const [projectId, setProjectId] = useState(PORTFOLIO[0].id);
   const project = PORTFOLIO.find((p) => p.id === projectId) ?? PORTFOLIO[0];
   const tpl = portfolioTemplate(project);
-  const progress = usePortfolio((s) => s.progress[project.id] ?? {});
+  const progress = usePortfolio((s) => s.progress[project.id] ?? NO_PROGRESS);
   const [open, setOpen] = useState<string | null>(null);
   const [showCode, setShowCode] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);

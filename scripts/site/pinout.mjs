@@ -154,7 +154,7 @@ function diagram(board) {
   return out.join('');
 }
 
-export function renderPinout({ lang, board, site, header, footer }) {
+export function renderPinout({ lang, board, site, header, footer, tryLive = '' }) {
   const t = T[lang];
   const url = `${site}${lang === 'it' ? '/it' : ''}/esp32-pinout/`;
   const rows = board.pins
@@ -237,6 +237,7 @@ ${header}
         ${diagram(board)}
         <figcaption>${esc(t.diagramCaption)}</figcaption>
       </figure>
+      ${tryLive}
       <div class="wrap narrow">
         <h2>${esc(t.safeTitle)}</h2>
         <div class="facts">${t.safe.map(([h, p]) => `<div class="fact"><h3>${esc(h)}</h3><p>${esc(p)}</p></div>`).join('')}</div>

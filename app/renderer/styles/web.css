@@ -1,0 +1,12 @@
+/* Browser demo only (components/WebDemo.tsx): "Get the app" chip and the download prompt. */
+
+.web-chip { cursor: pointer; color: var(--ok); border-color: #2c5a43; background: #1b2d25; }
+.web-chip:hover { border-color: var(--ok); color: var(--text); }
+.web-modal { width: min(480px, calc(100vw - 32px)); }
+.web-modal .web-reason { color: var(--text); background: var(--raised); border-radius: var(--radius-sm); padding: 8px 10px; }
+.web-modal ul { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.web-modal li { margin: 3px 0; }
+.web-modal a.btn { text-decoration: none; }
+
+/* No window frame in a browser: the top bar starts at the left edge. */
+.os-web .topbar { -webkit-app-region: no-drag; }

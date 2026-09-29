@@ -1,0 +1,241 @@
+{
+  "fps": 30,
+  "clips": [
+    {
+      "id": "found-it",
+      "title": "Found it",
+      "message": "The swap test finds crossed SDA and SCL wires and shows the evidence.",
+      "hash": "#demo=debug&scenario=weather-station-swapped&stage=desk",
+      "ready": ".result-card",
+      "settle": 2,
+      "tag": "Simulator",
+      "duration": 12,
+      "setup": [{ "at": 0, "do": "camera", "target": ".center", "pad": 0 }],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "Sensor not found? Watch this.", "it": "Il sensore non risponde? Guarda." },
+        { "at": 0.4, "do": "focus", "targets": ["wire:w1", "wire:w2"] },
+        { "at": 1.6, "do": "ring", "target": ".pin-label", "text": "SDA", "tone": "warn" },
+        { "at": 1.8, "do": "ring", "target": ".pin-label", "text": "SCL", "tone": "warn" },
+        { "at": 2.8, "do": "caption", "en": "SDA and SCL are crossed.", "it": "SDA e SCL sono invertiti." },
+        { "at": 5, "do": "clear" },
+        { "at": 5.2, "do": "camera", "target": ".result-card", "over": 1.4, "pad": 16 },
+        { "at": 5.4, "do": "caption", "en": "Found by the swap test.", "it": "Trovato con il test di scambio." },
+        { "at": 6.8, "do": "ring", "target": ".result-card h3", "tone": "warn" },
+        { "at": 8.2, "do": "ring", "target": ".evidence li", "text": "exchanged", "tone": "ok" },
+        { "at": 8.3, "do": "arrow", "target": ".evidence li", "text": "exchanged", "tone": "ok", "from": "left" },
+        { "at": 9.6, "do": "caption", "en": "The fix: swap two wires.", "it": "La soluzione: scambia due fili." },
+        { "at": 9.8, "do": "ring", "target": ".next-steps li", "tone": "ok" }
+      ],
+      "post": {
+        "en": "Sensor not found? BoardPilot scans the I2C bus as wired, then with SDA and SCL exchanged. If the sensor only answers when exchanged, the wires are crossed, and the app shows the measurements that prove it. Simulator run, real app.",
+        "it": "Il sensore non risponde? BoardPilot scansiona il bus I2C così come è collegato, poi con SDA e SCL scambiati. Se il sensore risponde solo scambiati, i fili sono invertiti, e l'app mostra le misure che lo provano. Simulatore, app vera."
+      }
+    },
+    {
+      "id": "honest-ai",
+      "title": "Honest AI",
+      "message": "Every finding carries its source: measured on this board, from a datasheet, or a labelled suggestion.",
+      "hash": "#demo=debug&scenario=weather-station-swapped&stage=desk",
+      "ready": ".result-card",
+      "settle": 2,
+      "tag": "Simulator",
+      "duration": 11,
+      "setup": [{ "at": 0, "do": "camera", "target": ".result-card .evidence", "pad": 60 }],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "Every claim shows its source.", "it": "Ogni affermazione mostra la fonte." },
+        { "at": 0.8, "do": "ring", "target": ".result-card .conf", "tone": "ok" },
+        { "at": 2.2, "do": "ring", "target": ".evidence .log-src", "text": "pullup_check", "tone": "ok" },
+        { "at": 2.3, "do": "arrow", "target": ".evidence li", "text": "D21", "tone": "ok", "from": "left" },
+        { "at": 3.8, "do": "caption", "en": "Measured on D21 and D22.", "it": "Misurato su D21 e D22." },
+        { "at": 5.4, "do": "clear" },
+        { "at": 5.5, "do": "camera", "target": ".bottom", "over": 1.2, "pad": 8 },
+        { "at": 6.2, "do": "caption", "en": "Every log line names its measurement.", "it": "Ogni riga cita la sua misura." },
+        { "at": 7, "do": "ring", "target": ".bottom .log-src", "text": "(swapped)", "tone": "ok" },
+        { "at": 8.6, "do": "caption", "en": "Guesses are labelled as suggestions.", "it": "Le ipotesi sono segnate come suggerimenti." }
+      ],
+      "post": {
+        "en": "An assistant for hardware should never invent a reading. In BoardPilot every finding says where it comes from: a measurement taken in this session, a datasheet section, or a suggestion you confirm first.",
+        "it": "Un assistente per l'hardware non deve mai inventare una lettura. In BoardPilot ogni risultato dice da dove viene: una misura di questa sessione, una sezione del datasheet, o un suggerimento da confermare."
+      }
+    },
+    {
+      "id": "thirteen-boards",
+      "title": "13 boards",
+      "message": "Thirteen boards, each generated in 3D from its own data file.",
+      "hash": "#demo=board&board=esp32-devkitc-30&bare=1&stage=desk&clean=1",
+      "ready": ".viewport canvas",
+      "settle": 3,
+      "tag": "Simulator",
+      "duration": 15,
+      "setup": [{ "at": 0, "do": "camera", "target": ".viewport", "pad": 0, "maxZoom": 2, "fill": true }],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "13 boards, one app.", "it": "13 schede, una sola app." },
+        { "at": 1.4, "do": "board", "id": "esp32-devkitc-30" },
+        { "at": 2.4, "do": "board", "id": "esp32-s3-devkitc-1" },
+        { "at": 3.4, "do": "board", "id": "esp32-c3-devkitm-1" },
+        { "at": 4.4, "do": "board", "id": "rpi-pico" },
+        { "at": 5.4, "do": "board", "id": "rpi-pico-w" },
+        { "at": 6.4, "do": "board", "id": "rpi-pico-2" },
+        { "at": 7.4, "do": "board", "id": "arduino-uno-r3" },
+        { "at": 8.4, "do": "board", "id": "arduino-nano" },
+        { "at": 9.4, "do": "board", "id": "arduino-mega-2560" },
+        { "at": 10.4, "do": "board", "id": "blackpill-f411ce" },
+        { "at": 11.4, "do": "board", "id": "nucleo-f401re" },
+        { "at": 12.4, "do": "board", "id": "nrf52840-dk" },
+        { "at": 13.4, "do": "board", "id": "teensy-41" },
+        { "at": 14.3, "do": "caption", "en": "Every pin from its datasheet.", "it": "Ogni pin dal suo datasheet." }
+      ],
+      "post": {
+        "en": "ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52 and Teensy: 13 boards, each one a data file with its pin rules and sources. The 3D board is generated from that file, so every pin is a real object you can click.",
+        "it": "ESP32, Raspberry Pi Pico, Arduino, STM32, nRF52 e Teensy: 13 schede, ognuna un file di dati con le regole dei pin e le fonti. La scheda 3D nasce da quel file, così ogni pin è un oggetto vero da cliccare."
+      }
+    },
+    {
+      "id": "parts-library",
+      "title": "380+ parts",
+      "message": "Parts from the built-in library drop onto the bench, each with its pins, bus and sources.",
+      "hash": "#demo=board&board=esp32-devkitc-30&bare=1&stage=desk&clean=1",
+      "ready": ".viewport canvas",
+      "settle": 3,
+      "tag": "Simulator",
+      "duration": 12,
+      "setup": [{ "at": 0, "do": "camera", "target": ".viewport", "pad": 0, "maxZoom": 2, "fill": true }],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "380+ parts, ready to wire.", "it": "Oltre 380 parti, pronte da collegare." },
+        { "at": 0.8, "do": "part", "id": "bme280-gy" },
+        { "at": 1.6, "do": "part", "id": "ssd1306-i2c" },
+        { "at": 2.4, "do": "part", "id": "mpu6050" },
+        { "at": 3.2, "do": "part", "id": "servo-sg90" },
+        { "at": 4, "do": "part", "id": "hc-sr04" },
+        { "at": 4.4, "do": "caption", "en": "Sensors, screens, motors, relays.", "it": "Sensori, schermi, motori, relè." },
+        { "at": 4.8, "do": "part", "id": "ws2812-ring" },
+        { "at": 5.6, "do": "part", "id": "relay-1ch" },
+        { "at": 6.4, "do": "part", "id": "vl53l0x" },
+        { "at": 7.2, "do": "part", "id": "lcd1602-i2c" },
+        { "at": 8, "do": "part", "id": "led-resistor" },
+        { "at": 8.8, "do": "caption", "en": "Each with pins, bus and sources.", "it": "Ognuna con pin, bus e fonti." }
+      ],
+      "post": {
+        "en": "More than 380 parts in the built-in library: sensors, displays, motors, relays, LEDs. Each one knows its pins, its bus and addresses, and the datasheet it came from, so the wiring checker can warn you before anything is powered.",
+        "it": "Più di 380 parti nella libreria: sensori, display, motori, relè, LED. Ognuna conosce i suoi pin, il bus e gli indirizzi, e il datasheet da cui viene, così il controllo dei collegamenti ti avvisa prima di dare corrente."
+      }
+    },
+    {
+      "id": "register-bits",
+      "title": "Register bits",
+      "message": "The Learn lesson on bits: each button runs one line of C and the register changes.",
+      "hash": "#screen=learn&lesson=c-bits",
+      "ready": ".reg-grid",
+      "settle": 1,
+      "tag": "Lesson",
+      "duration": 11,
+      "setup": [
+        { "at": 0, "do": "scroll", "target": ".learn-widget:has(.reg-grid)" },
+        { "at": 0, "do": "camera", "target": ".learn-widget:has(.reg-grid)", "pad": 14, "maxZoom": 1.6 }
+      ],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "One line of C, one bit.", "it": "Una riga di C, un bit." },
+        { "at": 0.8, "do": "click", "target": ".learn-controls .btn", "text": "Set bit" },
+        { "at": 0.85, "do": "type", "target": ".learn-out .mono", "over": 0.9 },
+        { "at": 2.2, "do": "click", "target": ".reg-cell[aria-label='Select bit 3']" },
+        { "at": 2.8, "do": "click", "target": ".learn-controls .btn", "text": "Set bit" },
+        { "at": 2.85, "do": "type", "target": ".learn-out .mono", "over": 0.9 },
+        { "at": 4.2, "do": "caption", "en": "Set, clear, flip: watch it.", "it": "Imposta, azzera, inverti: guarda." },
+        { "at": 4.6, "do": "click", "target": ".reg-cell[aria-label='Select bit 5']" },
+        { "at": 5.2, "do": "click", "target": ".learn-controls .btn", "text": "Flip bit" },
+        { "at": 5.25, "do": "type", "target": ".learn-out .mono", "over": 0.9 },
+        { "at": 6.6, "do": "click", "target": ".reg-cell[aria-label='Select bit 0']" },
+        { "at": 7.2, "do": "click", "target": ".learn-controls .btn", "text": "Set bit" },
+        { "at": 7.25, "do": "type", "target": ".learn-out .mono", "over": 0.9 },
+        { "at": 8.4, "do": "ring", "target": ".learn-out .mono.dim", "tone": "ai" },
+        { "at": 8.6, "do": "caption", "en": "Lessons built into the app.", "it": "Lezioni integrate nell'app." }
+      ],
+      "post": {
+        "en": "REG |= (1 << 5); is less scary when you can see it. The Learn lessons in BoardPilot let you press a button, run one line of C and watch the register change, bit by bit.",
+        "it": "REG |= (1 << 5); fa meno paura quando lo vedi. Le lezioni di BoardPilot ti fanno premere un pulsante, eseguire una riga di C e guardare il registro cambiare, bit per bit."
+      }
+    },
+    {
+      "id": "pwm",
+      "title": "PWM",
+      "message": "As the duty cycle grows the wave widens, the LED brightens and the motor speeds up.",
+      "hash": "#screen=learn&lesson=essentials",
+      "ready": ".learn-slider input",
+      "settle": 1,
+      "tag": "Lesson",
+      "duration": 11,
+      "setup": [
+        { "at": 0, "do": "scroll", "target": ".learn-widget:has(.learn-slider)" },
+        { "at": 0, "do": "camera", "target": ".learn-widget:has(.learn-slider)", "pad": 14, "maxZoom": 1.6 }
+      ],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "PWM: the wave sets the power.", "it": "PWM: l'onda decide la potenza." },
+        { "at": 0.6, "do": "slide", "target": ".learn-slider input", "to": 92, "over": 3.6 },
+        { "at": 4.4, "do": "caption", "en": "Wider pulse, brighter LED, faster motor.", "it": "Più impulso, più luce, più velocità." },
+        { "at": 4.6, "do": "ring", "target": ".learn-stats", "tone": "warn" },
+        { "at": 6, "do": "slide", "target": ".learn-slider input", "to": 8, "over": 2.6 },
+        { "at": 7.2, "do": "clear" },
+        { "at": 8.6, "do": "caption", "en": "The average follows the duty cycle.", "it": "La media segue il duty cycle." }
+      ],
+      "post": {
+        "en": "PWM in one picture: widen the pulse and the average voltage rises, so the LED gets brighter and the motor spins faster. One of the interactive widgets in BoardPilot's built-in lessons.",
+        "it": "Il PWM in un'immagine: allarghi l'impulso e la tensione media sale, così il LED si accende di più e il motore gira più veloce. Uno dei widget interattivi delle lezioni integrate in BoardPilot."
+      }
+    },
+    {
+      "id": "i2c-decode",
+      "title": "I2C decoded",
+      "message": "One I2C read decoded bit by bit: start, address, ACK, register, data, stop.",
+      "hash": "#demo=test&scenario=weather-station-swapped&stage=desk",
+      "ready": ".decode-svg",
+      "settle": 1,
+      "tag": "Simulator",
+      "duration": 11,
+      "setup": [
+        { "at": 0, "do": "scroll", "target": ".card.wide:has(.decode-svg)" },
+        { "at": 0, "do": "camera", "target": ".card.wide:has(.decode-svg)", "pad": 14, "maxZoom": 1.6 },
+        { "at": 0, "do": "hide", "target": ".decode-svg" }
+      ],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "One I2C read, bit by bit.", "it": "Una lettura I2C, bit per bit." },
+        { "at": 0.3, "do": "reveal", "target": ".decode-svg", "over": 6 },
+        { "at": 1.8, "do": "pan", "target": ".decode-scroll", "to": 1, "over": 4.5 },
+        { "at": 3, "do": "caption", "en": "Start, address, ACK, data, stop.", "it": "Start, indirizzo, ACK, dati, stop." },
+        { "at": 7, "do": "ring", "target": ".decode-scroll", "tone": "sda", "pad": 4 },
+        { "at": 7.2, "do": "caption", "en": "Real protocol, simulated board.", "it": "Protocollo reale, scheda simulata." }
+      ],
+      "post": {
+        "en": "What actually happens on the wire when you read a sensor register: start, address, ACK, register, restart, data, stop. BoardPilot draws every I2C transaction the diagnostic agent sees, bit by bit. Shown here in simulator mode.",
+        "it": "Cosa succede davvero sul filo quando leggi un registro del sensore: start, indirizzo, ACK, registro, restart, dati, stop. BoardPilot disegna ogni transazione I2C vista dall'agente diagnostico, bit per bit. Qui in modalità simulatore."
+      }
+    },
+    {
+      "id": "no-hardware",
+      "title": "Works without hardware",
+      "message": "The simulator runs the whole app with no board attached, through the same interface as a real board.",
+      "hash": "#demo=live&stage=desk",
+      "ready": ".ok-chip",
+      "settle": 3,
+      "tag": "Simulator",
+      "duration": 11,
+      "setup": [{ "at": 0, "do": "camera", "target": "all" }],
+      "steps": [
+        { "at": 0, "do": "caption", "en": "No board on your desk?", "it": "Nessuna scheda sulla scrivania?" },
+        { "at": 0.6, "do": "ring", "target": ".topbar .sim-chip", "tone": "warn" },
+        { "at": 2.4, "do": "caption", "en": "The simulator runs every task.", "it": "Il simulatore esegue ogni attività." },
+        { "at": 2.6, "do": "clear" },
+        { "at": 2.8, "do": "click", "target": ".topbar .btn.icon[aria-label='Developer menu']" },
+        { "at": 3.2, "do": "camera", "target": ".devmenu", "over": 1.2, "pad": 20, "maxZoom": 1.3 },
+        { "at": 4.6, "do": "ring", "target": ".devmenu .seg", "tone": "warn" },
+        { "at": 5.4, "do": "caption", "en": "Same interface as a real board.", "it": "Stessa interfaccia di una scheda vera." },
+        { "at": 7.4, "do": "clear" },
+        { "at": 7.6, "do": "camera", "target": ".center", "over": 1.2, "pad": 0 },
+        { "at": 8.4, "do": "caption", "en": "Try it before you buy anything.", "it": "Provala prima di comprare qualcosa." }
+      ],
+      "post": {
+        "en": "No board yet? BoardPilot's simulator implements the same interface as a real board, so every task runs without hardware: connect, debug, test, monitor. It is how we build the app, and how you can try it today.",
+        "it": "Non hai ancora una scheda? Il simulatore di BoardPilot ha la stessa interfaccia di una scheda vera, quindi ogni attività funziona senza hardware: collegare, fare debug, testare, monitorare. È così che sviluppiamo l'app, ed è così che puoi provarla oggi."
+      }
+    }
+  ]
+}
