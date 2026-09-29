@@ -3,6 +3,7 @@ import { confirmRestore } from '../state/hw';
 import { Icon } from './Icon';
 import { LogoMark } from './Logo';
 import { LicenseChip } from './License';
+import { GetAppChip, isWebDemo } from './WebDemo';
 import { LANGS, getLanguage, type Lang } from '@shared/i18n';
 import { changeLanguage } from '../state/lang';
 import { t } from '@shared/i18n';
@@ -56,7 +57,7 @@ export function TopBar() {
             <Icon name="restore" size={15} /> {t('Restore my firmware')}
           </button>
         )}
-        <LicenseChip />
+        {isWebDemo() ? <GetAppChip /> : <LicenseChip />}
         <select className="select lang-select" value={getLanguage()} onChange={(e) => changeLanguage(e.target.value as Lang)} title={t('Language')}>
           {LANGS.map((l) => (
             <option key={l.id} value={l.id}>

@@ -71,6 +71,15 @@
       }
     }
   ],
+  "current": {
+    "typMa": 15,
+    "sleepMa": 2,
+    "note": "15 mA while working; under 2 mA quiescent.",
+    "source": {
+      "title": "Cytron / ElecFreaks HC-SR04 user manual",
+      "section": "Electric parameters: working current 15 mA"
+    }
+  },
   "sources": [
     {
       "title": "Cytron / ElecFreaks HC-SR04 user manual",

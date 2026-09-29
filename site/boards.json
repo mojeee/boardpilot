@@ -16,6 +16,17 @@
    "logicVolt": 5,
    "flashBytes": 262144,
    "ramBytes": 8192,
+   "clocks": {
+    "cpuHz": 16000000,
+    "pwmHz": 16000000,
+    "uartHz": 16000000,
+    "adcHz": 16000000,
+    "note": "16 MHz crystal. Timers, UART and ADC run from the CPU clock and have their own prescalers.",
+    "source": {
+     "title": "Arduino Mega 2560 Rev3 tech specs; ATmega2560 datasheet",
+     "section": "Clock speed 16 MHz; System Clock and Clock Options"
+    }
+   },
    "pcbMm": {
     "length": 101.6,
     "width": 53.34,
@@ -1819,6 +1830,17 @@
    "logicVolt": 5,
    "flashBytes": 32768,
    "ramBytes": 2048,
+   "clocks": {
+    "cpuHz": 16000000,
+    "pwmHz": 16000000,
+    "uartHz": 16000000,
+    "adcHz": 16000000,
+    "note": "16 MHz. Timers, UART and ADC run from the CPU clock and have their own prescalers.",
+    "source": {
+     "title": "Arduino Nano tech specs; ATmega328P datasheet",
+     "section": "Clock speed 16 MHz; System Clock and Clock Options"
+    }
+   },
    "pcbMm": {
     "length": 43.18,
     "width": 17.78,
@@ -2582,6 +2604,17 @@
    "logicVolt": 5,
    "flashBytes": 32768,
    "ramBytes": 2048,
+   "clocks": {
+    "cpuHz": 16000000,
+    "pwmHz": 16000000,
+    "uartHz": 16000000,
+    "adcHz": 16000000,
+    "note": "16 MHz crystal. Timers, UART and ADC run from the CPU clock and have their own prescalers.",
+    "source": {
+     "title": "Arduino Uno Rev3 tech specs; ATmega328P datasheet",
+     "section": "Clock speed 16 MHz; System Clock and Clock Options"
+    }
+   },
    "pcbMm": {
     "length": 68.58,
     "width": 53.34,
@@ -3448,6 +3481,17 @@
    "logicVolt": 3.3,
    "flashBytes": 524288,
    "ramBytes": 131072,
+   "clocks": {
+    "cpuHz": 96000000,
+    "pwmHz": 96000000,
+    "uartHz": 96000000,
+    "adcHz": 96000000,
+    "note": "The STM32 Arduino core runs the Black Pill at 96 MHz so USB gets its 48 MHz (print F_CPU to check). Timers get 96 MHz; Serial1 is USART1 on APB2, 96 MHz; the ADC is fed from PCLK2, 96 MHz.",
+    "source": {
+     "title": "RM0383 STM32F411 reference manual",
+     "section": "6.2 Clocks (timer clock x2 when APB prescaler > 1)"
+    }
+   },
    "pcbMm": {
     "length": 52.81,
     "width": 20.78,
@@ -4590,6 +4634,16 @@
    "logicVolt": 3.3,
    "flashBytes": 4194304,
    "ramBytes": 409600,
+   "clocks": {
+    "cpuHz": 160000000,
+    "pwmHz": 80000000,
+    "uartHz": 80000000,
+    "note": "CPU at 160 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.",
+    "source": {
+     "title": "ESP32-C3 Technical Reference Manual",
+     "section": "Reset and Clock; LED PWM Controller; UART Controller"
+    }
+   },
    "pcbMm": {
     "length": 38.91,
     "width": 25.4,
@@ -5334,6 +5388,26 @@
    "logicVolt": 3.3,
    "flashBytes": 4194304,
    "ramBytes": 532480,
+   "power": {
+    "typMa": 40,
+    "sleepMa": 0.01,
+    "peakMa": 240,
+    "note": "ESP32 chip only: about 20 to 68 mA running with Wi-Fi off (modem-sleep, by CPU speed), 240 mA peaks while Wi-Fi transmits, 10 µA in deep sleep. The DevKit's USB chip, regulator and LED add more, so a bare module is better on batteries.",
+    "source": {
+     "title": "Espressif ESP32 Series Datasheet",
+     "section": "Power consumption by power modes; RF current consumption"
+    }
+   },
+   "clocks": {
+    "cpuHz": 240000000,
+    "pwmHz": 80000000,
+    "uartHz": 80000000,
+    "note": "CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.",
+    "source": {
+     "title": "ESP32 Technical Reference Manual",
+     "section": "Reset and Clock: CPU_CLK and APB_CLK; LED_PWM; UART"
+    }
+   },
    "pcbMm": {
     "length": 51.5,
     "width": 28.5,
@@ -6054,6 +6128,16 @@
    "logicVolt": 3.3,
    "flashBytes": 8388608,
    "ramBytes": 524288,
+   "clocks": {
+    "cpuHz": 240000000,
+    "pwmHz": 80000000,
+    "uartHz": 80000000,
+    "note": "CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.",
+    "source": {
+     "title": "ESP32-S3 Technical Reference Manual",
+     "section": "Reset and Clock; LED PWM Controller; UART Controller"
+    }
+   },
    "pcbMm": {
     "length": 62.87,
     "width": 25.4,
@@ -7190,6 +7274,16 @@
    "logicVolt": 3.3,
    "flashBytes": 1048576,
    "ramBytes": 262144,
+   "clocks": {
+    "cpuHz": 64000000,
+    "pwmHz": 16000000,
+    "uartHz": 16000000,
+    "note": "CPU at 64 MHz. The PWM peripheral counts a 16 MHz clock through a prescaler; the UART only offers a fixed list of rates.",
+    "source": {
+     "title": "nRF52840 Product Specification",
+     "section": "PWM: PRESCALER; UARTE: BAUDRATE"
+    }
+   },
    "pcbMm": {
     "length": 133.985,
     "width": 63.5,
@@ -8578,6 +8672,17 @@
    "logicVolt": 3.3,
    "flashBytes": 524288,
    "ramBytes": 98304,
+   "clocks": {
+    "cpuHz": 84000000,
+    "pwmHz": 84000000,
+    "uartHz": 42000000,
+    "adcHz": 84000000,
+    "note": "SYSCLK 84 MHz. Timers on APB1 get 84 MHz (APB1 is 42 MHz, and timer clocks double when APB1 is divided). Serial is USART2 on APB1, 42 MHz. The ADC is fed from PCLK2, 84 MHz, through its own prescaler.",
+    "source": {
+     "title": "RM0368 STM32F401 reference manual; STM32F401xE datasheet",
+     "section": "6.2 Clocks (timer clock x2 when APB prescaler > 1); 84 MHz max"
+    }
+   },
    "pcbMm": {
     "length": 82.5,
     "width": 70,
@@ -10919,6 +11024,17 @@
    "logicVolt": 3.3,
    "flashBytes": 4194304,
    "ramBytes": 532480,
+   "clocks": {
+    "cpuHz": 150000000,
+    "pwmHz": 150000000,
+    "uartHz": 150000000,
+    "adcHz": 48000000,
+    "note": "The Pico SDK starts clk_sys at 150 MHz on the RP2350; PWM uses clk_sys and UART uses clk_peri (the same 150 MHz). The ADC has its own 48 MHz clock.",
+    "source": {
+     "title": "RP2350 Datasheet",
+     "section": "Clocks; PWM; ADC"
+    }
+   },
    "pcbMm": {
     "length": 51,
     "width": 21,
@@ -12026,6 +12142,17 @@
    "logicVolt": 3.3,
    "flashBytes": 2097152,
    "ramBytes": 270336,
+   "clocks": {
+    "cpuHz": 125000000,
+    "pwmHz": 125000000,
+    "uartHz": 125000000,
+    "adcHz": 48000000,
+    "note": "The Pico SDK starts clk_sys at 125 MHz; PWM uses clk_sys and UART uses clk_peri (the same 125 MHz). The Arduino core may run at another speed (Tools → CPU Speed); change the clock above if so. The ADC has its own 48 MHz clock.",
+    "source": {
+     "title": "RP2040 Datasheet",
+     "section": "2.15 Clocks; 4.5 PWM; 4.9 ADC"
+    }
+   },
    "pcbMm": {
     "length": 51,
     "width": 21,
@@ -13076,6 +13203,26 @@
    "logicVolt": 3.3,
    "flashBytes": 2097152,
    "ramBytes": 270336,
+   "power": {
+    "typMa": 25,
+    "sleepMa": 0.8,
+    "note": "Whole Pico board: about 25 mA running a busy loop, 0.8 mA in dormant mode (datasheet figures at 5 V on VSYS).",
+    "source": {
+     "title": "Raspberry Pi Pico Datasheet",
+     "section": "Power consumption"
+    }
+   },
+   "clocks": {
+    "cpuHz": 125000000,
+    "pwmHz": 125000000,
+    "uartHz": 125000000,
+    "adcHz": 48000000,
+    "note": "The Pico SDK starts clk_sys at 125 MHz; PWM uses clk_sys and UART uses clk_peri (the same 125 MHz). The Arduino core may run at another speed (Tools → CPU Speed); change the clock above if so. The ADC has its own 48 MHz clock.",
+    "source": {
+     "title": "RP2040 Datasheet",
+     "section": "2.15 Clocks; 4.5 PWM; 4.9 ADC"
+    }
+   },
    "pcbMm": {
     "length": 51,
     "width": 21,
@@ -14109,6 +14256,14 @@
    "logicVolt": 3.3,
    "flashBytes": 8388608,
    "ramBytes": 1048576,
+   "clocks": {
+    "cpuHz": 600000000,
+    "note": "600 MHz. The calculators do not cover the i.MX RT1062 timers yet.",
+    "source": {
+     "title": "PJRC Teensy 4.1 page",
+     "section": "Technical specifications"
+    }
+   },
    "pcbMm": {
     "length": 60.96,
     "width": 17.78,

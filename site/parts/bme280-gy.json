@@ -74,6 +74,16 @@
       }
     }
   ],
+  "current": {
+    "typMa": 0.0036,
+    "sleepMa": 0.0001,
+    "peakMa": 0.714,
+    "note": "At 1 reading per second of humidity, pressure and temperature; chip only (a breakout's regulator adds a little).",
+    "source": {
+      "title": "Bosch BME280 datasheet",
+      "section": "Current consumption (3.6 µA at 1 Hz; sleep 0.1 µA; 714 µA during pressure measurement)"
+    }
+  },
   "sources": [
     {
       "title": "Bosch BME280 datasheet",
@@ -88,5 +98,284 @@
       "section": "4.3.1 Register 0xD0 id (0x58)"
     }
   ],
-  "starterSketch": "bme280"
+  "starterSketch": "bme280",
+  "registers": {
+    "note": "The app writes the register address, then reads the bytes. The calibration data (0x88 to 0xA1 and 0xE1 to 0xE7) is different on every chip and is not decoded here.",
+    "registers": [
+      {
+        "addr": "0xD0",
+        "name": "id",
+        "access": "r",
+        "reset": "0x60",
+        "text": "Chip ID. Tells which chip is really on the board.",
+        "values": {
+          "0x60": "BME280: temperature, humidity and pressure.",
+          "0x58": "This is a BMP280: no humidity sensor. Common mix-up with cheap boards."
+        },
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.1 Register 0xD0 id (BMP280 datasheet 4.3.1: 0x58)"
+        }
+      },
+      {
+        "addr": "0xE0",
+        "name": "reset",
+        "access": "w",
+        "reset": "0x00",
+        "text": "Soft reset: writing 0xB6 restarts the chip. It always reads 0x00.",
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.2 Register 0xE0 reset"
+        }
+      },
+      {
+        "addr": "0xF2",
+        "name": "ctrl_hum",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Humidity oversampling. A change takes effect only after the next write to ctrl_meas.",
+        "fields": [
+          {
+            "bits": [
+              2,
+              0
+            ],
+            "name": "osrs_h",
+            "access": "rw",
+            "text": "How many times humidity is sampled per reading.",
+            "values": {
+              "0": "Skipped: this value is not measured.",
+              "1": "Oversampling ×1",
+              "2": "Oversampling ×2",
+              "3": "Oversampling ×4",
+              "4": "Oversampling ×8",
+              "5": "Oversampling ×16",
+              "6": "Oversampling ×16",
+              "7": "Oversampling ×16"
+            }
+          }
+        ],
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.3 Register 0xF2 ctrl_hum (Tables 19 and 20)"
+        }
+      },
+      {
+        "addr": "0xF3",
+        "name": "status",
+        "access": "r",
+        "reset": "0x00",
+        "text": "What the chip is doing right now.",
+        "fields": [
+          {
+            "bits": [
+              3,
+              3
+            ],
+            "name": "measuring",
+            "access": "r",
+            "text": "Set while a conversion runs.",
+            "values": {
+              "0": "Idle: no conversion running.",
+              "1": "Measuring: a conversion is running."
+            }
+          },
+          {
+            "bits": [
+              0,
+              0
+            ],
+            "name": "im_update",
+            "access": "r",
+            "text": "Set while calibration data is copied from the chip's memory.",
+            "values": {
+              "0": "Calibration data is ready.",
+              "1": "Copying calibration data (after power-on or a reset)."
+            }
+          }
+        ],
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.4 Register 0xF3 status (Table 21)"
+        }
+      },
+      {
+        "addr": "0xF4",
+        "name": "ctrl_meas",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Temperature and pressure oversampling, and the power mode.",
+        "fields": [
+          {
+            "bits": [
+              7,
+              5
+            ],
+            "name": "osrs_t",
+            "access": "rw",
+            "text": "How many times temperature is sampled per reading.",
+            "values": {
+              "0": "Skipped: this value is not measured.",
+              "1": "Oversampling ×1",
+              "2": "Oversampling ×2",
+              "3": "Oversampling ×4",
+              "4": "Oversampling ×8",
+              "5": "Oversampling ×16",
+              "6": "Oversampling ×16",
+              "7": "Oversampling ×16"
+            }
+          },
+          {
+            "bits": [
+              4,
+              2
+            ],
+            "name": "osrs_p",
+            "access": "rw",
+            "text": "How many times pressure is sampled per reading.",
+            "values": {
+              "0": "Skipped: this value is not measured.",
+              "1": "Oversampling ×1",
+              "2": "Oversampling ×2",
+              "3": "Oversampling ×4",
+              "4": "Oversampling ×8",
+              "5": "Oversampling ×16",
+              "6": "Oversampling ×16",
+              "7": "Oversampling ×16"
+            }
+          },
+          {
+            "bits": [
+              1,
+              0
+            ],
+            "name": "mode",
+            "access": "rw",
+            "text": "Power mode.",
+            "values": {
+              "0": "Sleep mode: no measurements. The result registers keep their last values.",
+              "1": "Forced mode: one measurement, then back to sleep.",
+              "2": "Forced mode: one measurement, then back to sleep.",
+              "3": "Normal mode: measures again and again, with the standby time from config."
+            }
+          }
+        ],
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.5 Register 0xF4 ctrl_meas (Tables 22 to 25)"
+        }
+      },
+      {
+        "addr": "0xF5",
+        "name": "config",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Standby time, filter and interface options. In normal mode the chip may ignore writes here: write it in sleep mode.",
+        "fields": [
+          {
+            "bits": [
+              7,
+              5
+            ],
+            "name": "t_sb",
+            "access": "rw",
+            "text": "Pause between two measurements in normal mode.",
+            "values": {
+              "0": "Pause of 0.5 ms",
+              "1": "Pause of 62.5 ms",
+              "2": "Pause of 125 ms",
+              "3": "Pause of 250 ms",
+              "4": "Pause of 500 ms",
+              "5": "Pause of 1000 ms",
+              "6": "Pause of 10 ms",
+              "7": "Pause of 20 ms"
+            }
+          },
+          {
+            "bits": [
+              4,
+              2
+            ],
+            "name": "filter",
+            "access": "rw",
+            "text": "IIR filter: smooths quick jumps in pressure and temperature, like a door slamming.",
+            "values": {
+              "0": "Filter off",
+              "1": "Filter coefficient 2",
+              "2": "Filter coefficient 4",
+              "3": "Filter coefficient 8",
+              "4": "Filter coefficient 16",
+              "5": "Filter coefficient 16",
+              "6": "Filter coefficient 16",
+              "7": "Filter coefficient 16"
+            }
+          },
+          {
+            "bits": [
+              0,
+              0
+            ],
+            "name": "spi3w_en",
+            "access": "rw",
+            "text": "3-wire SPI mode. Has no effect over I2C.",
+            "values": {
+              "0": "3-wire SPI off.",
+              "1": "3-wire SPI on."
+            }
+          }
+        ],
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.6 Register 0xF5 config (Tables 26 to 28)"
+        }
+      },
+      {
+        "addr": "0xF7",
+        "name": "press",
+        "access": "r",
+        "len": 3,
+        "shift": 4,
+        "reset": "0x80000",
+        "text": "Raw pressure reading (20 bits). It becomes hPa only with the chip's calibration data.",
+        "values": {
+          "0x80000": "No result: this value is skipped, or nothing was measured since power-on."
+        },
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.7 Registers 0xF7 to 0xF9 press"
+        }
+      },
+      {
+        "addr": "0xFA",
+        "name": "temp",
+        "access": "r",
+        "len": 3,
+        "shift": 4,
+        "reset": "0x80000",
+        "text": "Raw temperature reading (20 bits). It becomes °C only with the chip's calibration data.",
+        "values": {
+          "0x80000": "No result: this value is skipped, or nothing was measured since power-on."
+        },
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.8 Registers 0xFA to 0xFC temp"
+        }
+      },
+      {
+        "addr": "0xFD",
+        "name": "hum",
+        "access": "r",
+        "len": 2,
+        "reset": "0x8000",
+        "text": "Raw humidity reading (16 bits). It becomes %RH only with the chip's calibration data.",
+        "values": {
+          "0x8000": "No result: this value is skipped, or nothing was measured since power-on."
+        },
+        "source": {
+          "title": "Bosch BME280 datasheet",
+          "section": "5.4.9 Registers 0xFD to 0xFE hum"
+        }
+      }
+    ]
+  }
 }

@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": { "jsx": "react-jsx", "lib": ["ES2023", "DOM", "DOM.Iterable"], "types": ["node"] },
+  "include": ["app/web/**/*", "app/preload/api.d.ts", "app/renderer/env.d.ts", "shared/vite-glob.d.ts"]
+}

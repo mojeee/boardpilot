@@ -11,6 +11,7 @@ import type { AppError } from '@shared/types';
 import { t } from '@shared/i18n';
 import { useApp } from '../state/store';
 import { Icon } from './Icon';
+import { isWebDemo, WebAiSettings } from './WebDemo';
 
 interface AiSettingsStore {
   open: boolean;
@@ -45,6 +46,8 @@ const errText = (e: AppError) => `${e.humanMessage} ${e.hint}`.trim();
 export function AiSettingsDialog() {
   const open = useAiSettings((s) => s.open);
   if (!open) return null;
+  // The browser demo cannot keep a key: it explains the free demo AI and offers the app instead.
+  if (isWebDemo()) return <WebAiSettings onClose={() => useAiSettings.getState().hide()} />;
   return <AiSettingsBody />;
 }
 
