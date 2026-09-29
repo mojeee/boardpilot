@@ -157,6 +157,7 @@ const it: Record<string, string> = {
   'Your free trial has ended': 'La tua prova gratuita è terminata',
   'Thank you for trying BoardPilot for {total} days. To keep using it, enter a license key. Your projects, backups and parts library are safe on this Mac.':
     'Grazie per aver provato BoardPilot per {total} giorni. Per continuare a usarlo, inserisci una chiave di licenza. I tuoi progetti, i backup e la libreria dei componenti restano al sicuro su questo Mac.',
+  'Drag to resize. Double-click to reset.': 'Trascina per ridimensionare. Doppio clic per ripristinare.',
 };
 
 export default it;

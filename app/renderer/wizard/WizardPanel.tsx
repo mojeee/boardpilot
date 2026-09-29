@@ -11,6 +11,7 @@ import { AskBox, AssistantPanel } from '../components/AssistantPanel';
 import { PhotoInput } from '../components/PhotoInput';
 import { Icon } from '../components/Icon';
 import { confirmRestore } from '../state/hw';
+import { Splitter } from '../components/Splitter';
 import { t } from '@shared/i18n';
 
 const STATUS_ICON: Record<StepState['status'], string> = {
@@ -365,6 +366,7 @@ export function WizardWithAssistant() {
         <WizardPanel />
       </div>
       <div className="right-bottom">
+        <Splitter kind="assistant" />
         <AssistantPanel hideInput />
       </div>
     </div>
