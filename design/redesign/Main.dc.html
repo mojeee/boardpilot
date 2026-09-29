@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BoardPilot project workspace</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#161B21;font-family:'IBM Plex Sans',sans-serif;color:#E9EDF1}
+a{color:#9ADCF7}a:hover{color:#E9EDF1}
+button{font-family:inherit;cursor:pointer}
+.mono{font-family:'IBM Plex Mono',monospace}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; display: flex; flex-direction: column; background: #161B21; overflow: hidden">
+
+<header style="height: 48px; flex-shrink: 0; display: flex; align-items: center; gap: 16px; padding: 0 14px; background: #12171C; border-bottom: 1px solid #2C3540">
+<div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px">
+<div style="width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(145deg,#2A5286,#1B3556); border: 1.5px solid #D9B45A; box-shadow: 0 0 10px rgba(217,180,90,0.25)"></div>
+BoardPilot
+</div>
+<nav style="display: flex; gap: 2px; font-size: 13px">
+<button style="background: #2C3541; color: #E9EDF1; border: none; border-radius: 6px; padding: 6px 11px">Project</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 6px; padding: 6px 11px">Flash</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 6px; padding: 6px 11px">Debug</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 6px; padding: 6px 11px">Monitor</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 6px; padding: 6px 11px">Test</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 6px; padding: 6px 11px">Report</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 6px; padding: 6px 11px">Learn</button>
+</nav>
+<div style="flex-grow: 1; display: flex; justify-content: center">
+<div style="width: 340px; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #1C232B; border: 1px solid #3B3463; border-radius: 8px; font-size: 12.5px; color: #A7B3BF">
+<span style="color: #C9BEFF">✦</span>
+<span style="flex-grow: 1">Ask AI or find anything: “back up my board”</span>
+<span class="mono" style="font-size: 11px; color: #7D8997; border: 1px solid #2C3540; border-radius: 4px; padding: 1px 5px">⌘K</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 7px; font-size: 12px; color: #A7B3BF">
+<span style="width: 8px; height: 8px; border-radius: 4px; background: #5CCB8F; box-shadow: 0 0 6px #5CCB8F"></span>
+<span class="mono">ESP32 · connected</span>
+</div>
+<a href="Export.dc.html" style="display: flex; align-items: center; gap: 6px; background: #1C232B; color: #E9EDF1; border: 1px solid #2C3540; border-radius: 6px; padding: 5px 10px; font-size: 12px; text-decoration: none">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A7B3BF" stroke-width="2"><path d="M6 3h9l4 4v14H6z"></path><path d="M9 13h6M9 17h6"></path></svg>Export PDF</a>
+<button style="background: #231F38; color: #C9BEFF; border: 1px solid #3B3463; border-radius: 6px; padding: 5px 10px; font-size: 12px">AI · Claude</button>
+</header>
+
+<div style="height: 40px; flex-shrink: 0; display: flex; align-items: flex-end; gap: 2px; padding: 0 12px; background: #12171C; border-bottom: 1px solid #2C3540">
+<div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; background: #161B21; border: 1px solid #2C3540; border-bottom: none; border-radius: 8px 8px 0 0; font-size: 13px">
+<span style="width: 7px; height: 7px; border-radius: 4px; background: #F2A93B"></span>Weather station<span style="color: #7D8997">×</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; font-size: 13px; color: #A7B3BF">Plant watering<span style="color: #7D8997">×</span></div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; font-size: 13px; color: #A7B3BF">Pico blink<span style="color: #7D8997">×</span></div>
+<a href="NewProject.dc.html" aria-label="New project" style="padding: 7px 12px; font-size: 18px; color: #A7B3BF; text-decoration: none">+</a>
+</div>
+
+<div role="alert" style="height: 44px; flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 0 14px 0 12px; background: linear-gradient(90deg, rgba(242,169,59,0.20), rgba(242,169,59,0.07) 60%, rgba(242,169,59,0.04)); border-bottom: 1px solid rgba(242,169,59,0.45); box-shadow: inset 3px 0 0 #F2A93B">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F2A93B" stroke-width="2"><path d="M12 3 2 20h20z"></path><path d="M12 10v4M12 17v.5"></path></svg>
+<span style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0"><b>Code and drawing disagree.</b> <span style="color: #D8DEE4">Your code puts SDA on pin 22, but the drawing wires SDA to D21. The sensor will not answer.</span></span>
+<span class="mono" style="font-size: 11px; color: #A7B3BF; white-space: nowrap">code check · line 6</span>
+<div style="flex-grow: 1"></div>
+<button style="background: #F2A93B; color: #161B21; border: none; border-radius: 6px; padding: 5px 11px; font-size: 12px; font-weight: 600">Fix the code</button>
+<button style="background: none; color: #F2A93B; border: 1px solid rgba(242,169,59,0.5); border-radius: 6px; padding: 5px 10px; font-size: 12px">Show on the board</button>
+<button style="background: none; color: #C9BEFF; border: 1px solid #3B3463; border-radius: 6px; padding: 5px 10px; font-size: 12px">✦ Ask why</button>
+<span style="font-size: 12px; color: #A7B3BF; padding-left: 4px">1 of 2 <span style="color: #E9EDF1">‹ ›</span></span>
+<button aria-label="Dismiss" style="background: none; border: none; color: #A7B3BF; font-size: 16px">×</button>
+</div>
+
+<div style="flex-grow: 1; display: flex; min-height: 0">
+
+<div style="flex-grow: 1; display: flex; flex-direction: column; min-width: 0">
+
+<div style="flex-grow: 1; position: relative; overflow: hidden; background: radial-gradient(ellipse 70% 80% at 42% 22%, #2A3542 0%, #19212A 42%, #0E1216 100%)">
+<svg width="1044" height="422" viewBox="0 0 1044 422" style="position: absolute; left: 0; top: 0">
+<defs>
+<pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#3A4654" stroke-width="0.7"></path></pattern>
+<radialGradient id="gridfade" cx="0.45" cy="0.6" r="0.55"><stop offset="0" stop-color="#fff" stop-opacity="0.9"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></radialGradient>
+<mask id="gridmask"><rect width="1044" height="422" fill="url(#gridfade)"></rect></mask>
+<linearGradient id="pcbTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3469A6"></stop><stop offset="0.45" stop-color="#22497A"></stop><stop offset="1" stop-color="#173458"></stop></linearGradient>
+<linearGradient id="pcbEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14304F"></stop><stop offset="1" stop-color="#0A1A2C"></stop></linearGradient>
+<linearGradient id="shield" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F6F8"></stop><stop offset="0.35" stop-color="#C9CED4"></stop><stop offset="0.7" stop-color="#9AA3AD"></stop><stop offset="1" stop-color="#C3C9CF"></stop></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5D98A"></stop><stop offset="1" stop-color="#A9853A"></stop></linearGradient>
+<linearGradient id="header" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B2F35"></stop><stop offset="1" stop-color="#15181C"></stop></linearGradient>
+<linearGradient id="ic" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3F46"></stop><stop offset="1" stop-color="#141619"></stop></linearGradient>
+<linearGradient id="partTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9563D0"></stop><stop offset="1" stop-color="#4E2C7A"></stop></linearGradient>
+<linearGradient id="spec" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"></stop><stop offset="0.5" stop-color="#fff" stop-opacity="0.55"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></linearGradient>
+<filter id="blur16" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"></feGaussianBlur></filter>
+<filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+<filter id="pinGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="4"></feGaussianBlur></filter>
+<g id="smd"><rect width="10" height="5" rx="0.8" fill="#6B4B2A"></rect><rect width="2.5" height="5" fill="#D6DBE0"></rect><rect x="7.5" width="2.5" height="5" fill="#D6DBE0"></rect></g>
+<g id="cap"><rect width="10" height="5" rx="0.8" fill="#B89A6A"></rect><rect width="2.5" height="5" fill="#D6DBE0"></rect><rect x="7.5" width="2.5" height="5" fill="#D6DBE0"></rect></g>
+<g id="hole"><circle r="7" fill="url(#gold)"></circle><circle r="4" fill="#0A0E12"></circle></g>
+</defs>
+
+<g transform="matrix(1,0,-0.55,0.42,120,250)" mask="url(#gridmask)"><rect x="-200" y="-100" width="1500" height="500" fill="url(#grid)"></rect></g>
+
+<ellipse cx="490" cy="276" rx="300" ry="30" fill="#000" opacity="0.6" filter="url(#blur16)"></ellipse>
+<ellipse cx="820" cy="238" rx="70" ry="14" fill="#000" opacity="0.55" filter="url(#blur16)"></ellipse>
+
+<g transform="translate(0,12) matrix(1,0,-0.35,0.55,300,110)"><rect x="0" y="0" width="420" height="200" rx="8" fill="url(#pcbEdge)"></rect></g>
+<g transform="matrix(1,0,-0.35,0.55,300,110)">
+<rect x="0" y="0" width="420" height="200" rx="8" fill="url(#pcbTop)"></rect>
+<rect x="0" y="0" width="420" height="200" rx="8" fill="none" stroke="#5B8FCC" stroke-opacity="0.55"></rect>
+<g fill="none" stroke="#3E73B0" stroke-width="1.6" opacity="0.7">
+<path d="M140 22v40h60v20h12"></path><path d="M164 22v30h40v14h8"></path><path d="M112 22v50h-10"></path>
+<path d="M356 178v-26h-60"></path><path d="M380 178v-18h-20"></path><path d="M30 100h40v-20h30"></path><path d="M30 110h50v10h20"></path>
+<path d="M88 178v-30h60v-20"></path><path d="M64 178v-20h30"></path>
+</g>
+<use href="#hole" x="12" y="12"></use><use href="#hole" x="408" y="12"></use><use href="#hole" x="12" y="188"></use><use href="#hole" x="408" y="188"></use>
+<rect x="212" y="32" width="200" height="136" rx="3" fill="#10141A"></rect>
+<rect x="222" y="40" width="148" height="120" rx="3" fill="url(#shield)"></rect>
+<rect x="222" y="40" width="148" height="120" rx="3" fill="url(#spec)" opacity="0.8" transform="skewX(-20) translate(40,0)"></rect>
+<text x="236" y="88" font-family="IBM Plex Mono" font-size="11" fill="#5B636C">ESP32-WROOM-32</text>
+<text x="236" y="104" font-family="IBM Plex Mono" font-size="8" fill="#6E767F">FCC ID 2AC7Z · 4MB</text>
+<path d="M380 48h20v12h-16v12h16v12h-16v12h16v12h-16v12h16" fill="none" stroke="#D9B45A" stroke-width="3"></path>
+<rect x="-14" y="78" width="46" height="44" rx="3" fill="url(#shield)"></rect>
+<rect x="-14" y="92" width="10" height="16" fill="#1A1D21"></rect>
+<rect x="46" y="44" width="16" height="16" rx="2" fill="#2A2E33"></rect><circle cx="54" cy="52" r="5" fill="#4A5059"></circle>
+<rect x="46" y="140" width="16" height="16" rx="2" fill="#2A2E33"></rect><circle cx="54" cy="152" r="5" fill="#4A5059"></circle>
+<text x="44" y="40" font-family="IBM Plex Mono" font-size="7" fill="#E9EDF1" opacity="0.8">EN</text>
+<text x="40" y="170" font-family="IBM Plex Mono" font-size="7" fill="#E9EDF1" opacity="0.8">BOOT</text>
+<rect x="96" y="76" width="34" height="34" rx="2" fill="url(#ic)"></rect><circle cx="101" cy="81" r="1.8" fill="#555"></circle>
+<text x="99" y="97" font-family="IBM Plex Mono" font-size="6" fill="#8A929B">CP2102</text>
+<rect x="150" y="120" width="30" height="20" rx="1.5" fill="url(#ic)"></rect><rect x="154" y="112" width="22" height="8" fill="#C9CED4"></rect>
+<text x="152" y="134" font-family="IBM Plex Mono" font-size="5.5" fill="#8A929B">AMS1117</text>
+<use href="#smd" x="150" y="84"></use><use href="#smd" x="150" y="96"></use><use href="#cap" x="170" y="84"></use><use href="#cap" x="170" y="96"></use>
+<use href="#cap" x="190" y="124"></use><use href="#smd" x="70" y="118"></use><use href="#cap" x="70" y="70"></use><use href="#smd" x="140" y="150"></use>
+<rect x="190" y="60" width="8" height="5" fill="#FF4A3D"></rect><circle cx="194" cy="62" r="9" fill="#FF4A3D" opacity="0.55" filter="url(#pinGlow)"></circle>
+<rect x="190" y="146" width="8" height="5" fill="#3A8BFF" opacity="0.6"></rect>
+<rect x="28" y="6" width="364" height="16" rx="2" fill="url(#header)"></rect>
+<rect x="28" y="178" width="364" height="16" rx="2" fill="url(#header)"></rect>
+<g fill="url(#gold)">
+<rect x="36" y="10" width="8" height="8" rx="1"></rect><rect x="60" y="10" width="8" height="8" rx="1"></rect><rect x="84" y="10" width="8" height="8" rx="1"></rect><rect x="108" y="10" width="8" height="8" rx="1"></rect><rect x="132" y="10" width="8" height="8" rx="1"></rect><rect x="156" y="10" width="8" height="8" rx="1"></rect><rect x="180" y="10" width="8" height="8" rx="1"></rect><rect x="204" y="10" width="8" height="8" rx="1"></rect><rect x="228" y="10" width="8" height="8" rx="1"></rect><rect x="252" y="10" width="8" height="8" rx="1"></rect><rect x="276" y="10" width="8" height="8" rx="1"></rect><rect x="300" y="10" width="8" height="8" rx="1"></rect><rect x="324" y="10" width="8" height="8" rx="1"></rect><rect x="348" y="10" width="8" height="8" rx="1"></rect><rect x="372" y="10" width="8" height="8" rx="1"></rect>
+<rect x="36" y="182" width="8" height="8" rx="1"></rect><rect x="60" y="182" width="8" height="8" rx="1"></rect><rect x="84" y="182" width="8" height="8" rx="1"></rect><rect x="108" y="182" width="8" height="8" rx="1"></rect><rect x="132" y="182" width="8" height="8" rx="1"></rect><rect x="156" y="182" width="8" height="8" rx="1"></rect><rect x="180" y="182" width="8" height="8" rx="1"></rect><rect x="204" y="182" width="8" height="8" rx="1"></rect><rect x="228" y="182" width="8" height="8" rx="1"></rect><rect x="252" y="182" width="8" height="8" rx="1"></rect><rect x="276" y="182" width="8" height="8" rx="1"></rect><rect x="300" y="182" width="8" height="8" rx="1"></rect><rect x="324" y="182" width="8" height="8" rx="1"></rect><rect x="348" y="182" width="8" height="8" rx="1"></rect><rect x="372" y="182" width="8" height="8" rx="1"></rect>
+</g>
+<g font-family="IBM Plex Mono" font-size="6.5" fill="#E9EDF1" opacity="0.85">
+<text x="34" y="32">D23</text><text x="58" y="32">D22</text><text x="82" y="32">TX0</text><text x="106" y="32">RX0</text><text x="130" y="32">D21</text><text x="154" y="32">D19</text><text x="178" y="32">D18</text>
+<text x="34" y="175">VIN</text><text x="58" y="175">GND</text><text x="82" y="175">D13</text><text x="106" y="175">D12</text><text x="322" y="175">GND</text><text x="346" y="175">3V3</text>
+</g>
+<circle cx="136" cy="14" r="10" fill="#3FB6E8" opacity="0.75" filter="url(#pinGlow)"></circle>
+<circle cx="64" cy="14" r="10" fill="#9ADCF7" opacity="0.65" filter="url(#pinGlow)"></circle>
+<circle cx="352" cy="186" r="9" fill="#FF6B5E" opacity="0.6" filter="url(#pinGlow)"></circle>
+<circle cx="328" cy="186" r="9" fill="#8A96A3" opacity="0.6" filter="url(#pinGlow)"></circle>
+</g>
+
+<g transform="translate(0,8) matrix(1,0,-0.35,0.55,770,196)"><rect width="100" height="74" rx="5" fill="#2A1646"></rect></g>
+<g transform="matrix(1,0,-0.35,0.55,770,196)">
+<rect width="100" height="74" rx="5" fill="url(#partTop)"></rect>
+<g transform="translate(90,64)"><circle r="5" fill="url(#gold)"></circle><circle r="2.8" fill="#0A0E12"></circle></g>
+<g transform="translate(10,64)"><circle r="5" fill="url(#gold)"></circle><circle r="2.8" fill="#0A0E12"></circle></g>
+<rect x="40" y="30" width="22" height="22" rx="2" fill="url(#shield)"></rect><circle cx="56" cy="36" r="1.5" fill="#333"></circle>
+<use href="#smd" x="18" y="34"></use><use href="#smd" x="18" y="44"></use><use href="#cap" x="70" y="38"></use>
+<rect x="68" y="52" width="14" height="10" rx="1" fill="url(#ic)"></rect>
+<g fill="url(#gold)"><circle cx="16" cy="10" r="4"></circle><circle cx="36" cy="10" r="4"></circle><circle cx="56" cy="10" r="4"></circle><circle cx="76" cy="10" r="4"></circle></g>
+<g font-family="IBM Plex Mono" font-size="5.5" fill="#fff" opacity="0.85"><text x="10" y="22">VIN</text><text x="30" y="22">GND</text><text x="50" y="22">SCL</text><text x="70" y="22">SDA</text><text x="30" y="70">GY-BME280</text></g>
+</g>
+
+<g fill="none" stroke-width="3" stroke-linecap="round" filter="url(#glow)">
+<path d="M431 118 C 480 30, 790 40, 842 200" stroke="#3FB6E8"></path>
+<path d="M359 118 C 420 10, 770 30, 822 200" stroke="#9ADCF7"></path>
+<path d="M587 218 C 650 300, 760 290, 782 200" stroke="#FF6B5E"></path>
+<path d="M563 218 C 690 320, 790 280, 802 200" stroke="#8A96A3"></path>
+</g>
+<g fill="#1A1D21" stroke="#3A3F46" stroke-width="0.8">
+<rect x="426" y="108" width="10" height="14" rx="1.5"></rect><rect x="354" y="108" width="10" height="14" rx="1.5"></rect>
+<rect x="837" y="190" width="10" height="14" rx="1.5"></rect><rect x="817" y="190" width="10" height="14" rx="1.5"></rect><rect x="797" y="190" width="10" height="14" rx="1.5"></rect><rect x="777" y="190" width="10" height="14" rx="1.5"></rect>
+</g>
+</svg>
+
+<div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; font-size: 12px">
+<button style="background: #2C3541; color: #E9EDF1; border: 1px solid #3A4552; border-radius: 6px; padding: 5px 10px">3D</button>
+<button style="background: rgba(28,35,43,0.85); color: #A7B3BF; border: 1px solid #2C3540; border-radius: 6px; padding: 5px 10px">Schematic</button>
+<button style="background: rgba(28,35,43,0.85); color: #A7B3BF; border: 1px solid #2C3540; border-radius: 6px; padding: 5px 10px">Wiring</button>
+<button style="background: rgba(28,35,43,0.85); color: #A7B3BF; border: 1px solid #2C3540; border-radius: 6px; padding: 5px 10px">Timing</button>
+</div>
+<div style="position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font-size: 12px">
+<div style="display: flex; align-items: center; gap: 4px; padding: 3px; background: rgba(18,23,28,0.85); border: 1px solid #2C3540; border-radius: 8px">
+<span style="padding: 0 6px 0 4px; color: #7D8997">Light</span>
+<button style="background: #2C3541; color: #E9EDF1; border: none; border-radius: 5px; padding: 4px 9px">Studio</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 4px 9px">Bench</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 4px 9px">High contrast</button>
+</div>
+<div style="display: flex; align-items: center; gap: 4px; padding: 3px; background: rgba(18,23,28,0.85); border: 1px solid #2C3540; border-radius: 8px">
+<span style="padding: 0 6px 0 4px; color: #7D8997">Detail</span>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 4px 9px">Simple</button>
+<button style="background: #2C3541; color: #E9EDF1; border: none; border-radius: 5px; padding: 4px 9px">Full</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 5px; padding: 4px 9px">Labels</button>
+</div>
+</div>
+
+<div style="position: absolute; left: 320px; top: 48px; display: flex; gap: 6px">
+<span class="mono" style="padding: 3px 7px; font-size: 11px; background: rgba(18,23,28,0.9); border: 1px solid #9ADCF7; border-radius: 5px; color: #9ADCF7">D22 · SCL</span>
+<span class="mono" style="padding: 3px 7px; font-size: 11px; background: rgba(18,23,28,0.9); border: 1px solid #3FB6E8; border-radius: 5px; color: #3FB6E8">D21 · SDA</span>
+</div>
+<div style="position: absolute; left: 800px; top: 236px; display: flex; align-items: center; gap: 6px; padding: 4px 9px; background: rgba(18,23,28,0.9); border: 1px solid #6B4FA8; border-radius: 6px; font-size: 11.5px">
+<span class="mono">BME280</span><span style="color: #5CCB8F">0x76 · ID 0x60 ✓</span>
+</div>
+<div style="position: absolute; left: 470px; top: 280px; display: flex; align-items: center; gap: 6px; padding: 4px 9px; background: rgba(18,23,28,0.9); border: 1px solid #2C3540; border-radius: 6px; font-size: 11px; color: #A7B3BF">
+<span style="width: 7px; height: 7px; border-radius: 4px; background: #FF4A3D; box-shadow: 0 0 6px #FF4A3D"></span>Power LED on · 3.3 V regulator AMS1117
+</div>
+<div style="position: absolute; left: 578px; top: 58px; width: 22px; height: 22px; border-radius: 11px; background: #F2A93B; color: #161B21; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px rgba(242,169,59,0.25), 0 0 16px rgba(242,169,59,0.6)">!</div>
+
+<div style="position: absolute; left: 12px; bottom: 12px; display: flex; gap: 12px; font-size: 11px; color: #A7B3BF">
+<span style="display: flex; gap: 5px; align-items: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: #FF6B5E"></span>Power</span>
+<span style="display: flex; gap: 5px; align-items: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: #8A96A3"></span>Ground</span>
+<span style="display: flex; gap: 5px; align-items: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: #3FB6E8"></span>SDA</span>
+<span style="display: flex; gap: 5px; align-items: center"><span style="width: 8px; height: 8px; border-radius: 4px; background: #9ADCF7"></span>SCL</span>
+</div>
+<div style="position: absolute; right: 12px; bottom: 12px; font-size: 11px; color: #7D8997">drag to orbit · scroll to zoom · click a pin, chip or wire</div>
+</div>
+
+<div style="height: 6px; flex-shrink: 0; background: #12171C; border-top: 1px solid #2C3540; cursor: row-resize"></div>
+
+<section style="height: 300px; flex-shrink: 0; display: flex; flex-direction: column; background: #161B21">
+<div style="height: 36px; flex-shrink: 0; display: flex; align-items: center; gap: 4px; padding: 0 10px; border-bottom: 1px solid #2C3540">
+<button style="background: #2C3541; color: #E9EDF1; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px">Code · weather_station.ino</button>
+<button style="background: none; color: #A7B3BF; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px">Log</button>
+<div style="flex-grow: 1"></div>
+<button style="background: #231F38; color: #C9BEFF; border: 1px solid #3B3463; border-radius: 6px; padding: 5px 12px; font-size: 12px">✦ Suggest code</button>
+<button style="background: #1F4B35; color: #5CCB8F; border: 1px solid #2E6B4B; border-radius: 6px; padding: 5px 12px; font-size: 12px">▶ Run in simulator</button>
+<button style="background: #1C232B; color: #A7B3BF; border: 1px solid #2C3540; border-radius: 6px; padding: 5px 12px; font-size: 12px">Step</button>
+<button style="background: #1C232B; color: #A7B3BF; border: 1px solid #2C3540; border-radius: 6px; padding: 5px 12px; font-size: 12px">Flash to board</button>
+<button aria-label="Collapse panel" style="background: none; color: #7D8997; border: none; padding: 5px 8px; font-size: 14px">▾</button>
+</div>
+<div style="flex-grow: 1; display: flex; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 19px; overflow: hidden; position: relative">
+<div style="width: 44px; flex-shrink: 0; padding: 8px 10px 0 0; text-align: right; color: #7D8997; background: #12171C">1<br>2<br>3<br>4<br>5<br><span style="color: #F2A93B">6</span><br><span style="color: #FF5D52">●</span> 7<br>8<br>9<br>10<br>11<br>12<br>13</div>
+<div style="flex-grow: 1; padding: 8px 14px 0; white-space: pre; color: #E9EDF1"><span style="color: #E07BD4">#include</span> &lt;Wire.h&gt;
+<span style="color: #E07BD4">#include</span> &lt;Adafruit_BME280.h&gt;
+Adafruit_BME280 bme;
+<span style="color: #9ADCF7">void</span> setup() {
+  Serial.begin(<span style="color: #E8D24A">115200</span>);
+<span style="display: inline-block; width: 100%; background: rgba(242,169,59,0.12); box-shadow: inset 2px 0 0 #F2A93B">  Wire.begin(<span style="color: #E8D24A">22</span>, <span style="color: #E8D24A">21</span>);   <span style="font-family: 'IBM Plex Sans',sans-serif; font-size: 11px; color: #161B21; background: #F2A93B; border-radius: 4px; padding: 1px 6px">Fix: Wire.begin(21, 22)</span></span>
+<span style="display: inline-block; width: 100%; background: rgba(255,93,82,0.08)">  bme.begin(<span style="color: #E8D24A">0x76</span>);</span>
+}
+<span style="color: #9ADCF7">void</span> loop() {
+<span style="display: inline-block; width: 100%; background: rgba(201,190,255,0.06); color: #8C84B8; font-style: italic">  float t = bme.readTemperature();
+  Serial.printf("%.1f C\n", t);
+  delay(1000);</span>
+}
+</div>
+<div style="position: absolute; right: 16px; top: 150px; width: 300px; padding: 10px 12px; background: #231F38; border: 1px solid #3B3463; border-radius: 10px; font-family: 'IBM Plex Sans',sans-serif; font-size: 12px; line-height: 17px; box-shadow: 0 12px 30px rgba(0,0,0,0.45)">
+<div style="color: #C9BEFF; font-weight: 600; margin-bottom: 4px">✦ Suggested: read the sensor every second</div>
+<div style="color: #D8DEE4">Uses the BME280 part you drew on D21/D22.</div>
+<div class="mono" style="margin-top: 5px; font-size: 10.5px; color: #A7B3BF">source: parts library · bme280-gy · Adafruit_BME280</div>
+<div style="display: flex; gap: 6px; margin-top: 8px">
+<button style="background: #C9BEFF; color: #161B21; border: none; border-radius: 5px; padding: 4px 9px; font-size: 11.5px; font-weight: 600">Accept · Tab</button>
+<button style="background: none; color: #C9BEFF; border: 1px solid #3B3463; border-radius: 5px; padding: 4px 9px; font-size: 11.5px">Explain</button>
+<button style="background: none; color: #A7B3BF; border: none; padding: 4px 6px; font-size: 11.5px">Dismiss · Esc</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+<div style="width: 6px; flex-shrink: 0; background: #12171C; border-left: 1px solid #2C3540; cursor: col-resize"></div>
+
+<aside style="width: 390px; flex-shrink: 0; display: flex; flex-direction: column; background: #1C232B">
+<div style="height: 48px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid #2C3540">
+<div>
+<div style="font-weight: 600; font-size: 14px; color: #C9BEFF">Assistant</div>
+<div style="font-size: 11px; color: #A7B3BF">sees the board, drawing and code · can do anything in the app</div>
+</div>
+<div style="flex-grow: 1"></div>
+<button aria-label="Collapse assistant" style="background: none; color: #7D8997; border: none; font-size: 14px">▸</button>
+</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px; padding: 14px; overflow: hidden">
+
+<div style="align-self: flex-end; max-width: 290px; padding: 10px 12px; background: #2C3541; border-radius: 10px; font-size: 13px; line-height: 19px">I can't find where to back up my board before flashing.</div>
+
+<div style="padding: 12px; background: #231F38; border: 1px solid #3B3463; border-radius: 10px; font-size: 13px; line-height: 19px">
+I can do it for you. A backup only reads the board, so nothing changes on it.
+<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px; padding: 10px; background: #1A1730; border-radius: 8px; font-size: 12px">
+<div style="display: flex; gap: 8px"><span style="color: #5CCB8F">✓</span>Opened Flash › Back up</div>
+<div style="display: flex; gap: 8px"><span style="color: #5CCB8F">✓</span>Picked the port <span class="mono" style="color: #A7B3BF">usbserial-0001</span></div>
+<div style="display: flex; gap: 8px; align-items: center"><span style="color: #9ADCF7">…</span>Reading 4 MB of flash<span style="flex-grow: 1; height: 4px; background: #2C3540; border-radius: 2px; overflow: hidden"><span style="display: block; width: 62%; height: 100%; background: #C9BEFF"></span></span></div>
+</div>
+<div class="mono" style="margin-top: 8px; font-size: 11px; color: #A7B3BF">app action · Flash › Back up flash · read only</div>
+<div style="display: flex; gap: 6px; margin-top: 10px">
+<button style="background: none; color: #C9BEFF; border: 1px solid #3B3463; border-radius: 6px; padding: 6px 10px; font-size: 12px">Show me where it is</button>
+<button style="background: none; color: #A7B3BF; border: 1px solid #2C3540; border-radius: 6px; padding: 6px 10px; font-size: 12px">Stop</button>
+</div>
+</div>
+
+<div style="align-self: flex-end; max-width: 290px; padding: 10px 12px; background: #2C3541; border-radius: 10px; font-size: 13px; line-height: 19px">Then add an OLED that shows the temperature.</div>
+
+<div style="padding: 12px; background: #231F38; border: 1px solid #3B3463; border-radius: 10px; font-size: 13px; line-height: 19px">
+Before I add it, two questions:
+<div style="display: flex; flex-direction: column; gap: 6px; margin-top: 10px">
+<button style="text-align: left; background: #1C232B; color: #E9EDF1; border: 1px solid #3B3463; border-radius: 6px; padding: 8px 10px; font-size: 12px">Which display? SSD1306 128×64 (I2C) or 128×32</button>
+<button style="text-align: left; background: #1C232B; color: #E9EDF1; border: 1px solid #3B3463; border-radius: 6px; padding: 8px 10px; font-size: 12px">Share the BME280's I2C bus (D21/D22)?</button>
+</div>
+<div style="margin-top: 8px; font-size: 11px; color: #A7B3BF">suggestion · nothing changes until you confirm</div>
+</div>
+</div>
+<div style="padding: 12px; border-top: 1px solid #2C3540">
+<label for="ask" style="display: block; font-size: 11px; color: #7D8997; margin-bottom: 6px">Ask, describe what to build, or tell it what to do</label>
+<div style="display: flex; gap: 8px">
+<input id="ask" placeholder="e.g. flash my code, then open the monitor" style="flex-grow: 1; background: #12171C; border: 1px solid #2C3540; border-radius: 8px; padding: 10px 12px; color: #E9EDF1; font-family: inherit; font-size: 13px">
+<button style="background: #C9BEFF; color: #161B21; border: none; border-radius: 8px; padding: 0 14px; font-weight: 600; font-size: 13px">Send</button>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

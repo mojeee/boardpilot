@@ -564,7 +564,7 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
          checks what the screen, 3D view and log show, and reports anything broken, before the
          release.
 
-Design mockups of this plan (workspace, New project, PDF export):
+Design mockups of this plan (workspace, New project, PDF export), also in `design/redesign/`:
 https://claude.ai/artifact/7ZXocFamKF2neLh5cnJgeL
 
 Open decisions for you when we start: which code editor (new dependency?), and whether the old
