@@ -268,20 +268,20 @@ November.
 
 ### A. Template projects
 
-- [ ] **Template files** (`templates/<id>.json`, same idea as boards and parts), each with:
+- [x] **Template files** (`templates/<id>.json`, same idea as boards and parts; guide in `docs/templates.md`), each with:
       - the parts, a difficulty level and time needed
       - what you will learn
       - the code, written per chip family (reusing the website guide generator)
       - the "story" markers described below
       - a behaviour model for the simulator
       - sources
-- [ ] **Works on every board:** the wiring is generated from the board's rules (default buses, safe
+- [x] **Works on every board:** the wiring is generated from the board's rules (default buses, safe
       pins, the right supply pin), and the wiring checker runs on it. A template that needs Wi-Fi
       only offers Wi-Fi boards (ESP32 family, Pico W).
-- [ ] **"Start from a template" in New project.** Pick a template → the board is detected → the
+- [~] **"Start from a template" in New project.** *Done: pick → scene and code for the board → run in the simulator. Still to do: the wire-by-wire build guide checked live, and pre-flight → flash from the template.* Pick a template → the board is detected → the
       scene appears in 3D with its wires → a step-by-step build guide, one wire at a time (checked
       live when the agent is on the board) → pre-flight → backup and confirmation → flash → run.
-- [ ] **First templates (week 3):**
+- [x] **First templates (week 3; done Sep 29):**
       1. Blink and button (first steps)
       2. Weather station: BME280 + OLED
       3. Distance meter: HC-SR04 + TM1637
@@ -299,24 +299,24 @@ November.
 
 ### B. Live run view: show what is happening
 
-- [ ] **"Story" markers in the code**, extending the BoardPilotProbe library:
+- [x] **"Story" markers in the code**, extending the BoardPilotProbe library:
       - `probe.step("Read the soil sensor")` for each step
       - `probe.state("WATERING")` for the current mode
       - `probe.event("Pump on for 3 s")` for things that happen
 
       Values and pin changes are sent too. Templates come with these markers already written; the
       user can add them to their own code.
-- [ ] **On the 3D board:**
+- [~] **On the 3D board:** *Done: pins, LED glow, wire pulses, values and display text above parts. Still to do: servo turning, relay click, OLED screen texture, PIR detection effect.*
       - pins light up when they change, and wires pulse when data goes through them
       - parts react: the LED glows, the servo turns, the relay clicks, the OLED shows the same text
         as the real one, the PIR shows a detection
       - live values float above the parts
-- [ ] **Story log in plain words**, for example: "10:02:01 Soil moisture 32% (below 40%) → pump ON
+- [x] **Story log in plain words**, for example: "10:02:01 Soil moisture 32% (below 40%) → pump ON
       (D25 HIGH) for 3 s". Each line can be clicked to focus the pin, wire or part.
-- [ ] **Code view with the running step highlighted**, driven by the `probe.step` markers, so the
+- [x] **Code view with the running step highlighted**, driven by the `probe.step` markers, so the
       user sees which part of the code is running now.
 - [ ] **Plots** of the values, coloured like the pins they come from (reusing Monitor).
-- [ ] **Simulator run:** each template has a behaviour model that runs the same steps without
+- [x] **Simulator run:** each template has a behaviour model that runs the same steps without
       hardware, with pause, step-by-step and speed controls. Everything it shows is labelled
       "simulated"; on a real board the same view shows what the probe measured, labelled
       "measured".
@@ -440,6 +440,29 @@ Each can feed back into BoardPilot (CAN, RTOS monitoring), which strengthens the
   4. IEC 61131-3 programming (licensing question with OpenPLC)
 
   Never write to industrial PLCs. Revisit after the launch if users ask for it.
+
+## Your issues (added Sep 29), in the order I will do them
+
+The Learn screen (PR #4) is merged. Your 14 issues are ordered by value for users and by how little
+they depend on open decisions. Where an issue asks for a decision, my default is written next to it;
+say so if you want it the other way.
+
+| # | Issue | Size | Decision needed (my default) | Status |
+|---|---|---|---|---|
+| 5 | Wiring diagram and schematic from the project | L | Wiring view first; lives as a viewport tab and in the report | [ ] |
+| 18 | Bill of materials and shopping list export | S | none | [ ] |
+| 9 | Peripheral and pin planner | M | Suggest first, "Apply" button to add the wires | [ ] |
+| 15 | Hardware basics lesson + LED / divider / pull-up calculators | M | none | [ ] |
+| 6 | Lessons: "Show on the 3D board" buttons | M | Split view (lesson left, 3D right) | [ ] |
+| 13 | Power budget and battery life (merges step 3 C "Power budget") | M | Yes to sourced current fields in parts; unknown parts listed as unknown | [ ] |
+| 10 | Clock-aware calculators with code (timer, PWM, UART, ADC) | M | Add a sourced `clocks` section to board files | [ ] |
+| 14 | Register map viewer, decoded live | M | BME280, MPU6050, SSD1306 first | [ ] |
+| 7 | Hands-on labs inside lessons, checked live | L | All boards with the agent; simulator scenarios for each | [ ] |
+| 8 | Timing view (logic-analyser style) | L | Current stream rate first, labelled "sampled"; fast capture later | [ ] |
+| 16 | Guided portfolio projects with checkpoints (builds on the templates) | L | Finished reference code, with hints shown first | [ ] |
+| 12 | State machine designer → C code and tests | L | A tool in New project | [ ] |
+| 11 | Starter firmware for STM32 HAL, ESP-IDF, Pico SDK | L | Pico SDK first; compile check as a nightly CI job | [ ] |
+| 17 | AI interview coach | M | Answers stored only on this computer, deletable, 90 days | [ ] |
 
 ## Last step · Try it in the browser (your request, Sep 29)
 

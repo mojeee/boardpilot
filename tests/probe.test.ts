@@ -21,3 +21,12 @@ describe('BoardPilotProbe lines', () => {
     expect(printableRatio(['⸮⸮ÿx'])).toBeLessThan(0.5);
   });
 });
+
+describe('probe story markers', () => {
+  it('reads step, state and event lines', () => {
+    expect(parseProbeLine('@bp {"t":5,"step":"Read the soil sensor"}')).toMatchObject({ t: 5, step: 'Read the soil sensor' });
+    expect(parseProbeLine('noise @bp {"t":6,"state":"WATERING"}')).toMatchObject({ state: 'WATERING' });
+    expect(parseProbeLine('@bp {"t":7,"event":"Pump on for 3 s"}')?.event).toBe('Pump on for 3 s');
+    expect(parseProbeLine('@bp {"t":8,"step":""}')).toBeNull();
+  });
+});

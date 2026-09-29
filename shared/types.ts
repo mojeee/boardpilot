@@ -165,6 +165,10 @@ export interface ProbeFrame {
   values?: Record<string, number>;
   pins?: Record<string, number>;
   mem?: { heapFree: number; heapMin?: number; heapSize?: number; stackFree?: number };
+  /** Story markers from probe.step() / state() / event(). */
+  step?: string;
+  state?: string;
+  event?: string;
 }
 
 /* ---------- session log ---------- */

@@ -1,0 +1,71 @@
+{
+  "id": "blink-button",
+  "name": "Blink and button",
+  "summary": "An LED blinks on its own and stays on while you hold the button.",
+  "difficulty": "first steps",
+  "minutes": 15,
+  "learn": [
+    "Drive an output pin (the LED)",
+    "Read a button with the internal pull-up",
+    "Keep time with millis() instead of delay(), so the button always answers"
+  ],
+  "parts": [
+    { "id": "led1", "partId": "led-resistor", "label": "LED" },
+    { "id": "btn1", "partId": "push-button", "label": "Button" }
+  ],
+  "pins": {
+    "LED": { "part": "led1", "pin": "A" },
+    "BUTTON": { "part": "btn1", "pin": "1" }
+  },
+  "code": {
+    "globals": [
+      "const int LED_PIN = {LED};",
+      "const int BUTTON_PIN = {BUTTON};",
+      "bool ledOn = false;",
+      "unsigned long lastBlink = 0;"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(LED_PIN, OUTPUT);",
+      "  pinMode(BUTTON_PIN, INPUT_PULLUP);  // pressed = LOW, no resistor needed"
+    ],
+    "loop": [
+      "  probe.step(\"Read the button\");",
+      "  bool pressed = digitalRead(BUTTON_PIN) == LOW;",
+      "  if (pressed) {",
+      "    probe.step(\"Button pressed: LED on\");",
+      "    if (!ledOn) probe.event(\"LED on while the button is held\");",
+      "    ledOn = true;",
+      "  } else if (millis() - lastBlink >= 500) {  // no delay(): the button is read all the time",
+      "    probe.step(\"Button released: blink the LED\");",
+      "    lastBlink = millis();",
+      "    ledOn = !ledOn;",
+      "  }",
+      "  digitalWrite(LED_PIN, ledOn ? HIGH : LOW);",
+      "  probe.value(\"button\", pressed ? 1 : 0, BUTTON_PIN);",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 500,
+    "inputs": { "BUTTON": { "pulses": { "everyS": 9, "highS": 3, "offsetS": 4 } } },
+    "loop": [
+      { "step": "Read the button" },
+      { "read": "BUTTON", "as": "pressed", "digits": 0 },
+      {
+        "if": "pressed",
+        "then": [
+          { "step": "Button pressed: LED on" },
+          { "if": "LED_on == 0", "then": [{ "event": "LED on while the button is held" }] },
+          { "write": "LED", "level": 1 }
+        ],
+        "else": [{ "step": "Button released: blink the LED" }, { "toggle": "LED" }]
+      }
+    ]
+  },
+  "sources": [
+    { "title": "Arduino reference", "section": "pinMode(), INPUT_PULLUP; millis()" },
+    { "title": "Arduino examples", "section": "BlinkWithoutDelay" }
+  ]
+}
