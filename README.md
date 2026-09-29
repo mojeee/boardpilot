@@ -133,7 +133,8 @@ npm test             # 2800+ tests (Vitest); npm run typecheck
 npm run build:agent  # rebuild the ESP32 diagnostic agent (arduino-cli + esp32 core)
 npm run dist:mac     # .dmg files in dist/
 npm run dist:win     # Windows installer in dist/
-npm run build:site   # regenerate the website and the parts pages
+npm run build:web    # the browser demo ("Try it live") in site/demo/, simulator only
+npm run build:site   # build:web, then regenerate the website and the parts pages
 node scripts/screenshots.mjs  # retake the README and website screenshots (after npm run build)
 node scripts/gen-starters.mjs out && PICO_SDK_PATH=~/pico-sdk bash scripts/build-starters.sh out  # compile the starters
 ```

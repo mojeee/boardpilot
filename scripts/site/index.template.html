@@ -78,6 +78,7 @@
                 <span data-i18n="cta.win">Windows</span>
               </a>
             </div>
+            <p class="try-link"><a href="#try" data-i18n="cta.try">Or try it in your browser first, no install →</a></p>
             <p class="fine" data-i18n="cta.fine">Free for 30 days · macOS 12+ and Windows 10/11 · Works without a board in simulator mode</p>
           </div>
           <div class="hero-shot">
@@ -97,6 +98,15 @@
           <div><b>0</b><span data-i18n="strip.writes">writes to your board without your OK</span></div>
           <div><b>8</b><span data-i18n="strip.sim">simulated faults to learn with</span></div>
           <div><b>EN · IT</b><span data-i18n="strip.lang">English and Italian</span></div>
+        </div>
+      </section>
+
+      <section id="try" class="section try-section">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="try.eyebrow">No install</span>
+          <h2 data-i18n="try.title">Try it in your browser.</h2>
+          <p class="lead try-lead" data-i18n="try.lead">This is the real app with a simulated ESP32 and a weather station that has one wiring mistake. Click a pin, drag a part, draw a wire, or open “Debug a problem” and watch it find the fault.</p>
+          {{TRY_LIVE}}
         </div>
       </section>
 
@@ -280,5 +290,6 @@
       </div>
     </footer>
     <script src="/app.js" defer></script>
+    <script src="/try-live.js" defer></script>
   </body>
 </html>

@@ -48,5 +48,6 @@
       "title": "Solomon Systech SSD1306 datasheet",
       "section": "I2C-bus interface: slave address 0111 10 SA0 (0x3C with SA0 = 0)"
     }
-  ]
+  ],
+  "registersFrom": "ssd1306-i2c"
 }
