@@ -8,6 +8,7 @@ import { DriverError } from '../hardware/errors';
 import { t } from '@shared/i18n';
 import { agentErrorText } from '@shared/protocol';
 import type { Scenario, SimPhysical, SimI2cDevice } from './scenario';
+import { simRegister } from './registers';
 
 import swapped from './scenarios/weather-station-swapped.json';
 import healthy from './scenarios/healthy.json';
@@ -17,9 +18,10 @@ import noBoard from './scenarios/no-board.json';
 import portBusy from './scenarios/port-busy.json';
 import resetting from './scenarios/keeps-resetting.json';
 import garbage from './scenarios/garbage-serial.json';
+import imuAsleep from './scenarios/imu-asleep.json';
 
 /** Hand-written benches for the ESP32 DevKit. Other boards get generated benches (see bench.ts). */
-export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage].map(
+export const SCENARIOS: Scenario[] = [swapped, healthy, bmp280, unpowered, noBoard, portBusy, resetting, garbage, imuAsleep].map(
   (s) => s as unknown as Scenario,
 );
 
@@ -233,8 +235,7 @@ export class SimWorld {
         const regNum = parseInt(r.reg, 16);
         for (let i = 0; i < Math.min(r.len, 32); i++) {
           const key = '0x' + (regNum + i).toString(16).toUpperCase().padStart(2, '0');
-          const v = dev.registers[key] ?? '0x00';
-          data.push(v);
+          data.push(simRegister(dev, key));
         }
         trace.push({ t: 'data', v: r.reg, dir: 'w', ack: true }, { t: 'restart' }, { t: 'addr', v: r.addr, rw: 'r', ack: true });
         data.forEach((v, i) => trace.push({ t: 'data', v, dir: 'r', ack: i < data.length - 1 }));
