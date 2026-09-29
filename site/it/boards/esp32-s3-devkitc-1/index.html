@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=537cb7e62c" />
+    <link rel="stylesheet" href="/style.css?v=87d815fd3c" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Piedinatura ESP32-S3-DevKitC-1","description":"Piedinatura ESP32-S3-DevKitC-1 (ESP32-S3): tutti i 44 pin con le funzioni, i pin da evitare, i pin I2C/SPI predefiniti e come programmarla. Logica a 3.3 V.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/","image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=ccd50de624","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"},"about":{"@type":"Product","name":"ESP32-S3-DevKitC-1","brand":"Espressif","description":"Espressif's own ESP32-S3 board: Wi-Fi, Bluetooth LE, two USB ports and an RGB LED. Breadboard friendly, 3.3 V logic."}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"ESP32-S3-DevKitC-1","item":"https://boardpilot.agentflowbind.com/it/boards/esp32-s3-devkitc-1/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali sono i pin I2C di ESP32-S3-DevKitC-1?","acceptedAnswer":{"@type":"Answer","text":"SDA è 8 e SCL è 9 (quelli predefiniti della libreria Wire di Arduino). Puoi spostare l’I2C su altri pin con Wire.begin(sda, scl)."}},{"@type":"Question","name":"Quali pin di ESP32-S3-DevKitC-1 devo evitare?","acceptedAnswer":{"@type":"Answer","text":"37, 36, 35 (memoria flash); 45 (impedisce l’avvio se al livello sbagliato); 20, 19 (USB nativa); TX, RX (seriale USB)."}},{"@type":"Question","name":"ESP32-S3-DevKitC-1 tollera i 5 V?","acceptedAnswer":{"@type":"Answer","text":"No. I pin accettano al massimo 3.3 V. Per segnali a 5 V usa un traslatore di livello o un partitore di tensione."}},{"@type":"Question","name":"Quali pin di ESP32-S3-DevKitC-1 leggono una tensione analogica?","acceptedAnswer":{"@type":"Answer","text":"1, 2, 4, 5, 6, 7, 10, 3, 8, 9, da 0 a 3.3 V."}},{"@type":"Question","name":"Come carico il codice su ESP32-S3-DevKitC-1?","acceptedAnswer":{"@type":"Answer","text":"Nell’IDE Arduino scegli la scheda esp32:esp32:esp32s3 (core esp32:esp32). Usa la porta con la scritta UART. Se il caricamento non parte, tieni premuto BOOT, premi e rilascia RESET, poi rilascia BOOT."}}]}]}</script>
   </head>
   <body>
@@ -32,12 +32,12 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
-          <a href="/it/#how" data-i18n="nav.how">Come funziona</a>
-          <a href="/it/#safety" data-i18n="nav.safety">Sicurezza</a>
-          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
-          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
           <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
         </nav>
         <div class="nav-right">
           <div class="lang" role="group" aria-label="Language">
