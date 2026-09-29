@@ -190,7 +190,7 @@ Most beginner embedded bugs are one of four kinds. Each item says which week it 
 
 ### D. Process mistakes
 
-- [ ] **Flash pre-flight check** (week 1). Before writing: image format and size fit the board's
+- [x] **Flash pre-flight check** (week 1; done Sep 29, a step in Flash firmware). Before writing: image format and size fit the board's
       flash, the image targets the right chip, the partition table is compatible.
 - [ ] **Project templates with good habits** (week 3): non-blocking loops instead of `delay()`,
       a watchdog, error handling, all explained in comments.
