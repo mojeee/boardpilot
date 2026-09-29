@@ -1,0 +1,52 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Main.dc.html": {
+      "h": 900,
+      "title": "Project workspace: warning banner, lit 3D board, AI code suggestions, AI that does things",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "NewProject.dc.html": {
+      "h": 900,
+      "title": "New project: Blank, Read from port, Template, or describe it",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Export.dc.html": {
+      "h": 900,
+      "title": "Export: electrical design as PDF",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-29T14:05:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 4480,
+      "text": "BoardPilot workspace redesign",
+      "w": 240,
+      "x": 0,
+      "y": -260
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "NewProject.dc.html",
+    "Export.dc.html"
+  ],
+  "pages": [],
+  "title": "BoardPilot workspace redesign"
+}

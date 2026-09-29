@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BoardPilot new project</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#161B21;font-family:'IBM Plex Sans',sans-serif;color:#E9EDF1}
+a{color:#9ADCF7}a:hover{color:#E9EDF1}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; background: #0D1115; overflow: hidden; display: flex; align-items: center; justify-content: center">
+
+<div style="position: absolute; inset: 0; background: radial-gradient(ellipse 60% 55% at 50% 38%, #26303B 0%, #151B22 55%, #0B0E12 100%)"></div>
+
+<div style="position: relative; width: 1040px; display: flex; flex-direction: column; gap: 24px; padding: 36px 40px; background: linear-gradient(180deg,#222B35,#1C232B 30%); border: 1px solid #36414E; border-radius: 16px; box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 40px 90px rgba(0,0,0,0.6)">
+<div style="display: flex; align-items: flex-start; gap: 16px">
+<div style="flex-grow: 1">
+<h1 style="margin: 0; font-size: 26px; font-weight: 700">New project</h1>
+<p style="margin: 6px 0 0; font-size: 14px; color: #A7B3BF">Start empty, let BoardPilot read the board on your USB port, or begin from a template.</p>
+</div>
+<a href="Main.dc.html" aria-label="Close" style="color: #7D8997; text-decoration: none; font-size: 22px">×</a>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+
+<button style="text-align: left; display: flex; flex-direction: column; gap: 10px; padding: 20px; background: linear-gradient(180deg,#1E262F,#161B21); border: 1px solid #2C3540; border-radius: 12px; color: #E9EDF1">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A7B3BF" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M12 9v6M9 12h6"></path></svg>
+<span style="font-size: 16px; font-weight: 600">Blank</span>
+<span style="font-size: 13px; line-height: 19px; color: #A7B3BF">Pick a board and add parts yourself, or describe the project to the assistant.</span>
+</button>
+
+<button style="text-align: left; display: flex; flex-direction: column; gap: 10px; padding: 20px; background: linear-gradient(180deg,#1C3228,#14201A); border: 2px solid #5CCB8F; border-radius: 12px; color: #E9EDF1; box-shadow: 0 0 24px rgba(92,203,143,0.18)">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5CCB8F" stroke-width="1.6"><path d="M9 3v4M15 3v4M7 7h10v5a5 5 0 0 1-10 0z"></path><path d="M12 17v4"></path></svg>
+<span style="font-size: 16px; font-weight: 600">Read from port</span>
+<span style="font-size: 13px; line-height: 19px; color: #A7B3BF">Plug in your board. BoardPilot finds it, identifies the chip and looks for what is connected.</span>
+</button>
+
+<button style="text-align: left; display: flex; flex-direction: column; gap: 10px; padding: 20px; background: linear-gradient(180deg,#1E262F,#161B21); border: 1px solid #2C3540; border-radius: 12px; color: #E9EDF1">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A7B3BF" stroke-width="1.6"><rect x="3" y="4" width="8" height="7" rx="1.5"></rect><rect x="13" y="4" width="8" height="7" rx="1.5"></rect><rect x="3" y="13" width="8" height="7" rx="1.5"></rect><rect x="13" y="13" width="8" height="7" rx="1.5"></rect></svg>
+<span style="font-size: 16px; font-weight: 600">Template</span>
+<span style="font-size: 13px; line-height: 19px; color: #A7B3BF">8 ready projects that build themselves on your board: blink, weather station, plant watering…</span>
+</button>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; background: #231F38; border: 1px solid #3B3463; border-radius: 12px">
+<label for="describe" style="font-size: 13px; font-weight: 600; color: #C9BEFF">✦ Or describe it, and the assistant suggests parts, wiring and starter code</label>
+<div style="display: flex; gap: 8px">
+<input id="describe" placeholder="e.g. a plant waterer: soil sensor, small pump, OLED, runs on USB" style="flex-grow: 1; background: #12171C; border: 1px solid #3B3463; border-radius: 8px; padding: 10px 12px; color: #E9EDF1; font-family: inherit; font-size: 13px">
+<button style="background: #C9BEFF; color: #161B21; border: none; border-radius: 8px; padding: 0 16px; font-weight: 600; font-size: 13px">Suggest</button>
+</div>
+<span style="font-size: 11.5px; color: #A7B3BF">It asks a few questions first. Everything it suggests is shown for you to confirm.</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 20px 22px; background: #12171C; border: 1px solid #2C3540; border-radius: 12px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="font-size: 14px; font-weight: 600">Reading your board</span>
+<span style="font-size: 12px; color: #A7B3BF">only reads · nothing is written without your OK</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 32px; font-size: 13px">
+<div style="display: flex; gap: 10px; align-items: baseline"><span style="color: #5CCB8F">✓</span><span>Port found: <span style="font-family: 'IBM Plex Mono', monospace">/dev/cu.usbserial-0001</span> (CP210x)</span></div>
+<div style="display: flex; gap: 10px; align-items: baseline"><span style="color: #5CCB8F">✓</span><span>Chip: <span style="font-family: 'IBM Plex Mono', monospace">ESP32-D0WD-V3</span>, 4 MB flash → ESP32 DevKit</span></div>
+<div style="display: flex; gap: 10px; align-items: baseline"><span style="color: #5CCB8F">✓</span><span>Firmware backed up before the diagnostic agent</span></div>
+<div style="display: flex; gap: 10px; align-items: baseline"><span style="color: #5CCB8F">✓</span><span>I2C on D21/D22: <span style="font-family: 'IBM Plex Mono', monospace">0x76</span> answers, chip ID <span style="font-family: 'IBM Plex Mono', monospace">0x60</span> → BME280</span></div>
+<div style="display: flex; gap: 10px; align-items: baseline"><span style="color: #F2A93B">!</span><span>Answers only with SDA and SCL swapped: wires look crossed</span></div>
+<div style="display: flex; gap: 10px; align-items: baseline"><span style="color: #9ADCF7">…</span><span style="color: #A7B3BF">Reading ADC pins for knobs and sensors</span></div>
+</div>
+<div style="height: 6px; background: #2C3540; border-radius: 3px; overflow: hidden"><div style="width: 78%; height: 100%; background: #5CCB8F"></div></div>
+<div style="display: flex; align-items: center; gap: 10px; padding-top: 4px">
+<span style="flex-grow: 1; font-size: 12px; color: #A7B3BF">Found parts are added as “detected”, each with its measurement. You confirm anything that was guessed.</span>
+<button style="background: none; color: #A7B3BF; border: 1px solid #2C3540; border-radius: 8px; padding: 10px 16px; font-size: 13px">Pick the board myself</button>
+<a href="Main.dc.html" style="background: #5CCB8F; color: #0D1115; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; text-decoration: none">Open the project</a>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
