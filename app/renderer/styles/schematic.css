@@ -1,0 +1,21 @@
+/* Diagram tab (three/DiagramView.tsx): the bar with the Wiring / Schematic switch and SVG export,
+   and the schematic view drawn by shared/schematic.ts. Colors come from tokens.css; the SVG itself
+   carries the design colors inline so the exported file looks the same. */
+
+.dg-bar { position: absolute; top: 0; left: 0; z-index: 1; display: flex; gap: 8px; align-items: center; }
+/* room for the bar above the drawing */
+.dg-wrap { padding-top: 36px; box-sizing: border-box; }
+
+.sch-host { line-height: 0; }
+.sch-host svg { display: block; max-width: none; }
+.sch-host [data-target],
+.sch-host [data-mark] { cursor: pointer; }
+
+/* The selected or highlighted pin, wire or part. */
+.sch-host g.hot polyline,
+.sch-host g.hot polygon,
+.sch-host g.hot rect { stroke: var(--ai); }
+.sch-host g.hot rect { stroke-width: 2; }
+.sch-host g.hot text { fill: var(--ai); }
+.sch-host g.hot circle { fill: var(--ai); }
+.sch-host .sch-wire g.hot polyline { stroke-width: 3; }
