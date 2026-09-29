@@ -49,6 +49,14 @@
       }
     }
   ],
+  "current": {
+    "typMa": 5,
+    "note": "Operating current.",
+    "source": {
+      "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki",
+      "section": "Specification: operating current 5 mA"
+    }
+  },
   "sources": [
     {
       "title": "DFRobot SEN0193 capacitive soil moisture sensor wiki",

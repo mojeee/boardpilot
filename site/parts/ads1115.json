@@ -88,6 +88,15 @@
       }
     }
   ],
+  "current": {
+    "typMa": 0.15,
+    "sleepMa": 0.0005,
+    "note": "150 µA converting continuously, 0.5 µA powered down.",
+    "source": {
+      "title": "TI ADS111x datasheet",
+      "section": "Electrical characteristics: supply current 150 µA (continuous); power-down 0.5 µA"
+    }
+  },
   "sources": [
     {
       "title": "Texas Instruments ADS111x datasheet",

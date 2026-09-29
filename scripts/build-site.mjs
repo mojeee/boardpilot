@@ -11,6 +11,7 @@ import { renderPinout } from './site/pinout.mjs';
 import { buildParts } from './site/parts.mjs';
 import { buildBoards, boardCards } from './site/boards.mjs';
 import { buildCompare, buildGuides, compareLinks, partBoardLinks } from './site/guides.mjs';
+import { tryLive } from './site/demo.mjs';
 import { readdirSync } from 'node:fs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -53,7 +54,7 @@ function hashOf(rel) {
   return hashCache.get(rel);
 }
 function bust(html) {
-  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/(?:boards\/)?[\w.-]+|style\.css|app\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
+  return html.replace(/((?:https:\/\/boardpilot\.agentflowbind\.com)?\/((?:img\/(?:boards\/|demo\/(?:en|it)\/)?[\w.-]+|style\.css|app\.js|try-live\.js|logo(?:-mark)?\.svg|favicon\.svg|apple-touch-icon\.png)))(?=["'\s,])/g, (m, url, rel) => {
     const h = hashOf(rel);
     return h ? `${url}?v=${h}` : m;
   });
@@ -95,6 +96,18 @@ function faqFrom(html) {
   return out;
 }
 
+/**
+ * "Try it live" for a board: the browser demo (site/demo/, from `npm run build:web`) behind a
+ * screenshot, loaded only on click. The screenshot is site/img/demo/<lang>/<id>.jpg when it exists,
+ * else the board's social image. No block when the demo has not been built.
+ */
+function tryBlock(lang, b, script = true) {
+  if (!existsSync(join(root, 'site/demo/index.html'))) return '';
+  const poster = [`img/demo/${lang}/${b.id}.jpg`, `img/demo/en/${b.id}.jpg`, `img/boards/${b.id}.jpg`].find((p) => existsSync(join(root, 'site', p)));
+  const [width, height] = poster?.startsWith('img/demo/') ? [1200, 750] : [1200, 630];
+  return `<div class="wrap try-wrap">${tryLive({ lang, boardId: b.id, boardName: b.name, image: `/${poster ?? 'img/live.jpg'}`, width, height, script })}</div>`;
+}
+
 function landing(lang) {
   const home = lang === 'it' ? '/it/' : '/';
   const url = `${SITE}${home}`;
@@ -110,6 +123,7 @@ function landing(lang) {
     .replaceAll('{{BOARDS_COUNT}}', String(boards.length))
     .replaceAll('{{BOARD_CARDS}}', boardCards(lang, boards, BOARD_IT))
     .replaceAll('{{PARTS_CLOUD}}', partsCloud(lang))
+    .replaceAll('{{TRY_LIVE}}', tryBlock(lang, board, false))
     .replaceAll('{{PATH_EN}}', '/')
     .replaceAll('{{PATH_IT}}', '/it/')
     .replaceAll('{{ON_EN}}', lang === 'en' ? 'on' : '')
@@ -177,8 +191,8 @@ function chrome(html, lang, pagePath) {
 }
 const pinPaths = { en: '/esp32-pinout/', it: '/it/esp32-pinout/' };
 // pages that are not the landing page keep the "Boards" link pointing at the boards index
-write('esp32-pinout/index.html', renderPinout({ lang: 'en', board, site: SITE, ...chrome(en, 'en', pinPaths) }));
-write('it/esp32-pinout/index.html', renderPinout({ lang: 'it', board, site: SITE, ...chrome(it, 'it', pinPaths) }));
+write('esp32-pinout/index.html', renderPinout({ lang: 'en', board, site: SITE, tryLive: tryBlock('en', board), ...chrome(en, 'en', pinPaths) }));
+write('it/esp32-pinout/index.html', renderPinout({ lang: 'it', board, site: SITE, tryLive: tryBlock('it', board), ...chrome(it, 'it', pinPaths) }));
 
 /* parts library pages and open dataset */
 const IT_MEASURES = {};
@@ -237,7 +251,7 @@ for (const p of parts) write(`parts/${p.id}.json`, JSON.stringify(p, null, 2));
 const boardPaths = { en: '/boards/', it: '/it/boards/' };
 const extraPages = [];
 for (const [lang, html] of [['en', en], ['it', it]]) {
-  const pages = buildBoards({ lang, boards, parts, site: SITE, repo: REPO, head, IT: BOARD_IT, ...chrome(html, lang, boardPaths) });
+  const pages = buildBoards({ lang, boards, parts, site: SITE, repo: REPO, head, IT: BOARD_IT, tryLive: (b) => tryBlock(lang, b), ...chrome(html, lang, boardPaths) });
   for (const [rel, content] of Object.entries(pages)) write(rel, content);
   // Wiring guides: part names and notes translated with the parts dictionaries, board texts with the board one.
   const guides = buildGuides({ lang, boards, parts, site: SITE, head, IT: { ...IT_MEASURES, ...BOARD_IT }, ...chrome(html, lang, boardPaths) });

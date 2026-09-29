@@ -59,6 +59,16 @@
       }
     }
   ],
+  "current": {
+    "typMa": 1,
+    "sleepMa": 0.00075,
+    "peakMa": 1.5,
+    "note": "1 mA during a conversion, 750 nA standby.",
+    "source": {
+      "title": "Maxim DS18B20 datasheet",
+      "section": "DC electrical characteristics: IDD active 1 mA typ (1.5 mA max); IDDS 750 nA"
+    }
+  },
   "sources": [
     {
       "title": "Maxim DS18B20 datasheet",

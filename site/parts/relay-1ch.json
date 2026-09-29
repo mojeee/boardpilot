@@ -62,6 +62,15 @@
       }
     }
   ],
+  "current": {
+    "typMa": 71.4,
+    "sleepMa": 0,
+    "note": "The coil while the relay is on (5 V, 70 Ω); the module's LED adds a few mA. Off: almost nothing.",
+    "source": {
+      "title": "Songle SRD-05VDC-SL-C datasheet",
+      "section": "Coil data: 5 V, 71.4 mA, 0.36 W"
+    }
+  },
   "sources": [
     {
       "title": "Songle SRD-05VDC-SL-C datasheet",

@@ -229,7 +229,7 @@ export function boardCards(lang, boards, IT = {}) {
     .join('\n');
 }
 
-export function buildBoards({ lang, boards, parts = [], site, repo, head, header, footer, IT = {} }) {
+export function buildBoards({ lang, boards, parts = [], site, repo, head, header, footer, IT = {}, tryLive = () => '' }) {
   const t = T[lang];
   const tr = (s) => (lang === 'it' && s && IT[s]) || s;
   const pre = lang === 'it' ? '/it' : '';
@@ -348,6 +348,7 @@ ${footer}`,
         ${diagram(b, lang)}
         <figcaption>${esc(t.caption)}</figcaption>
       </figure>
+      ${tryLive(b)}
       <div class="wrap narrow">
         <h2>${esc(t.glance)}</h2>
         <dl class="defaults">

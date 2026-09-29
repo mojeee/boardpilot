@@ -76,11 +76,725 @@
       }
     }
   ],
+  "current": {
+    "typMa": 3.9,
+    "sleepMa": 0.005,
+    "note": "Gyroscope and accelerometer on with the DMP; chip only (the GY-521 power LED and regulator add more).",
+    "source": {
+      "title": "InvenSense MPU-6000/MPU-6050 Product Specification",
+      "section": "Electrical characteristics: operating current 3.9 mA; sleep 5 µA"
+    }
+  },
   "sources": [
     {
       "title": "InvenSense MPU-6000/6050 Register Map",
       "section": "4.32 Register 117 WHO_AM_I (0x68)"
     }
   ],
-  "starterSketch": "mpu6050"
+  "starterSketch": "mpu6050",
+  "registers": {
+    "note": "Every register resets to 0x00 except PWR_MGMT_1 (0x40, asleep) and WHO_AM_I (0x68). INT_STATUS and the FIFO are left out on purpose: reading them clears flags or removes data.",
+    "registers": [
+      {
+        "addr": "0x19",
+        "name": "SMPLRT_DIV",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Sample rate divider: sample rate = gyro rate / (1 + this value). The gyro rate is 8 kHz with DLPF_CFG 0 or 7, else 1 kHz.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.2 Register 25 SMPLRT_DIV"
+        }
+      },
+      {
+        "addr": "0x1A",
+        "name": "CONFIG",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "External sync pin and the digital low-pass filter.",
+        "fields": [
+          {
+            "bits": [
+              5,
+              3
+            ],
+            "name": "EXT_SYNC_SET",
+            "access": "rw",
+            "text": "Where the FSYNC pin level is stored.",
+            "values": {
+              "0": "FSYNC input off.",
+              "1": "FSYNC stored in bit 0 of TEMP_OUT_L.",
+              "2": "FSYNC stored in bit 0 of GYRO_XOUT_L.",
+              "3": "FSYNC stored in bit 0 of GYRO_YOUT_L.",
+              "4": "FSYNC stored in bit 0 of GYRO_ZOUT_L.",
+              "5": "FSYNC stored in bit 0 of ACCEL_XOUT_L.",
+              "6": "FSYNC stored in bit 0 of ACCEL_YOUT_L.",
+              "7": "FSYNC stored in bit 0 of ACCEL_ZOUT_L."
+            }
+          },
+          {
+            "bits": [
+              2,
+              0
+            ],
+            "name": "DLPF_CFG",
+            "access": "rw",
+            "text": "Low-pass filter: lower numbers react faster, higher numbers are smoother.",
+            "values": {
+              "0": "Filter: accel 260 Hz, gyro 256 Hz",
+              "1": "Filter: accel 184 Hz, gyro 188 Hz",
+              "2": "Filter: accel 94 Hz, gyro 98 Hz",
+              "3": "Filter: accel 44 Hz, gyro 42 Hz",
+              "4": "Filter: accel 21 Hz, gyro 20 Hz",
+              "5": "Filter: accel 10 Hz, gyro 10 Hz",
+              "6": "Filter: accel 5 Hz, gyro 5 Hz",
+              "7": "Reserved value."
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.3 Register 26 CONFIG"
+        }
+      },
+      {
+        "addr": "0x1B",
+        "name": "GYRO_CONFIG",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Gyroscope range and self-test.",
+        "fields": [
+          {
+            "bits": [
+              7,
+              7
+            ],
+            "name": "XG_ST",
+            "access": "rw",
+            "text": "X axis gyro self-test.",
+            "values": {
+              "0": "Self-test off.",
+              "1": "Self-test on."
+            }
+          },
+          {
+            "bits": [
+              6,
+              6
+            ],
+            "name": "YG_ST",
+            "access": "rw",
+            "text": "Y axis gyro self-test.",
+            "values": {
+              "0": "Self-test off.",
+              "1": "Self-test on."
+            }
+          },
+          {
+            "bits": [
+              5,
+              5
+            ],
+            "name": "ZG_ST",
+            "access": "rw",
+            "text": "Z axis gyro self-test.",
+            "values": {
+              "0": "Self-test off.",
+              "1": "Self-test on."
+            }
+          },
+          {
+            "bits": [
+              4,
+              3
+            ],
+            "name": "FS_SEL",
+            "access": "rw",
+            "text": "Full-scale range of the gyroscope.",
+            "values": {
+              "0": "Range ±250 °/s",
+              "1": "Range ±500 °/s",
+              "2": "Range ±1000 °/s",
+              "3": "Range ±2000 °/s"
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.4 Register 27 GYRO_CONFIG"
+        }
+      },
+      {
+        "addr": "0x1C",
+        "name": "ACCEL_CONFIG",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Accelerometer range and self-test.",
+        "fields": [
+          {
+            "bits": [
+              7,
+              7
+            ],
+            "name": "XA_ST",
+            "access": "rw",
+            "text": "X axis accelerometer self-test.",
+            "values": {
+              "0": "Self-test off.",
+              "1": "Self-test on."
+            }
+          },
+          {
+            "bits": [
+              6,
+              6
+            ],
+            "name": "YA_ST",
+            "access": "rw",
+            "text": "Y axis accelerometer self-test.",
+            "values": {
+              "0": "Self-test off.",
+              "1": "Self-test on."
+            }
+          },
+          {
+            "bits": [
+              5,
+              5
+            ],
+            "name": "ZA_ST",
+            "access": "rw",
+            "text": "Z axis accelerometer self-test.",
+            "values": {
+              "0": "Self-test off.",
+              "1": "Self-test on."
+            }
+          },
+          {
+            "bits": [
+              4,
+              3
+            ],
+            "name": "AFS_SEL",
+            "access": "rw",
+            "text": "Full-scale range of the accelerometer.",
+            "values": {
+              "0": "Range ±2 g",
+              "1": "Range ±4 g",
+              "2": "Range ±8 g",
+              "3": "Range ±16 g"
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.5 Register 28 ACCEL_CONFIG"
+        }
+      },
+      {
+        "addr": "0x37",
+        "name": "INT_PIN_CFG",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "How the INT pin behaves, and the auxiliary I2C bypass.",
+        "fields": [
+          {
+            "bits": [
+              7,
+              7
+            ],
+            "name": "INT_LEVEL",
+            "access": "rw",
+            "text": "Active level of the INT pin.",
+            "values": {
+              "0": "INT is active HIGH.",
+              "1": "INT is active LOW."
+            }
+          },
+          {
+            "bits": [
+              6,
+              6
+            ],
+            "name": "INT_OPEN",
+            "access": "rw",
+            "text": "Output type of the INT pin.",
+            "values": {
+              "0": "Push-pull output.",
+              "1": "Open-drain output."
+            }
+          },
+          {
+            "bits": [
+              5,
+              5
+            ],
+            "name": "LATCH_INT_EN",
+            "access": "rw",
+            "text": "How long INT stays active.",
+            "values": {
+              "0": "A 50 µs pulse.",
+              "1": "Held until the interrupt is cleared."
+            }
+          },
+          {
+            "bits": [
+              4,
+              4
+            ],
+            "name": "INT_RD_CLEAR",
+            "access": "rw",
+            "text": "What clears the interrupt.",
+            "values": {
+              "0": "Cleared by reading INT_STATUS.",
+              "1": "Cleared by any read."
+            }
+          },
+          {
+            "bits": [
+              3,
+              3
+            ],
+            "name": "FSYNC_INT_LEVEL",
+            "access": "rw",
+            "text": "Active level of the FSYNC pin as an interrupt.",
+            "values": {
+              "0": "Active HIGH.",
+              "1": "Active LOW."
+            }
+          },
+          {
+            "bits": [
+              2,
+              2
+            ],
+            "name": "FSYNC_INT_EN",
+            "access": "rw",
+            "text": "FSYNC pin used as an interrupt.",
+            "values": {
+              "0": "Off.",
+              "1": "On."
+            }
+          },
+          {
+            "bits": [
+              1,
+              1
+            ],
+            "name": "I2C_BYPASS_EN",
+            "access": "rw",
+            "text": "Connects the auxiliary pins XDA/XCL straight to the main I2C bus.",
+            "values": {
+              "0": "Bypass off.",
+              "1": "Bypass on: a chip on XDA/XCL is reachable from your board."
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.14 Register 55 INT_PIN_CFG"
+        }
+      },
+      {
+        "addr": "0x38",
+        "name": "INT_ENABLE",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Which events raise the INT pin.",
+        "fields": [
+          {
+            "bits": [
+              4,
+              4
+            ],
+            "name": "FIFO_OFLOW_EN",
+            "access": "rw",
+            "text": "Interrupt when the FIFO overflows.",
+            "values": {
+              "0": "Off.",
+              "1": "On."
+            }
+          },
+          {
+            "bits": [
+              3,
+              3
+            ],
+            "name": "I2C_MST_INT_EN",
+            "access": "rw",
+            "text": "Interrupt from the auxiliary I2C master.",
+            "values": {
+              "0": "Off.",
+              "1": "On."
+            }
+          },
+          {
+            "bits": [
+              0,
+              0
+            ],
+            "name": "DATA_RDY_EN",
+            "access": "rw",
+            "text": "Interrupt when a new reading is ready.",
+            "values": {
+              "0": "Off.",
+              "1": "On."
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.15 Register 56 INT_ENABLE"
+        }
+      },
+      {
+        "addr": "0x3B",
+        "name": "ACCEL_XOUT",
+        "access": "r",
+        "len": 2,
+        "signed": true,
+        "reset": "0x0000",
+        "text": "Raw X acceleration. Divide by 16384 for g at the ±2 g range.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.17 Registers 59 to 64 ACCEL_OUT"
+        }
+      },
+      {
+        "addr": "0x3D",
+        "name": "ACCEL_YOUT",
+        "access": "r",
+        "len": 2,
+        "signed": true,
+        "reset": "0x0000",
+        "text": "Raw Y acceleration. Divide by 16384 for g at the ±2 g range.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.17 Registers 59 to 64 ACCEL_OUT"
+        }
+      },
+      {
+        "addr": "0x3F",
+        "name": "ACCEL_ZOUT",
+        "access": "r",
+        "len": 2,
+        "signed": true,
+        "reset": "0x0000",
+        "text": "Raw Z acceleration. Divide by 16384 for g at the ±2 g range.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.17 Registers 59 to 64 ACCEL_OUT"
+        }
+      },
+      {
+        "addr": "0x41",
+        "name": "TEMP_OUT",
+        "access": "r",
+        "len": 2,
+        "signed": true,
+        "reset": "0x0000",
+        "text": "Raw chip temperature. °C = value / 340 + 36.53.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.18 Registers 65 and 66 TEMP_OUT"
+        }
+      },
+      {
+        "addr": "0x43",
+        "name": "GYRO_XOUT",
+        "access": "r",
+        "len": 2,
+        "signed": true,
+        "reset": "0x0000",
+        "text": "Raw rotation around X. Divide by 131 for °/s at the ±250 °/s range.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.19 Registers 67 to 72 GYRO_OUT"
+        }
+      },
+      {
+        "addr": "0x45",
+        "name": "GYRO_YOUT",
+        "access": "r",
+        "len": 2,
+        "signed": true,
+        "reset": "0x0000",
+        "text": "Raw rotation around Y. Divide by 131 for °/s at the ±250 °/s range.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.19 Registers 67 to 72 GYRO_OUT"
+        }
+      },
+      {
+        "addr": "0x47",
+        "name": "GYRO_ZOUT",
+        "access": "r",
+        "len": 2,
+        "signed": true,
+        "reset": "0x0000",
+        "text": "Raw rotation around Z. Divide by 131 for °/s at the ±250 °/s range.",
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.19 Registers 67 to 72 GYRO_OUT"
+        }
+      },
+      {
+        "addr": "0x6A",
+        "name": "USER_CTRL",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "FIFO and auxiliary I2C master switches.",
+        "fields": [
+          {
+            "bits": [
+              6,
+              6
+            ],
+            "name": "FIFO_EN",
+            "access": "rw",
+            "text": "The FIFO buffer.",
+            "values": {
+              "0": "FIFO off.",
+              "1": "FIFO on."
+            }
+          },
+          {
+            "bits": [
+              5,
+              5
+            ],
+            "name": "I2C_MST_EN",
+            "access": "rw",
+            "text": "The auxiliary I2C master (for a chip on XDA/XCL).",
+            "values": {
+              "0": "I2C master off.",
+              "1": "I2C master on."
+            }
+          },
+          {
+            "bits": [
+              4,
+              4
+            ],
+            "name": "I2C_IF_DIS",
+            "access": "rw",
+            "text": "Switches the main interface to SPI (MPU-6000 only).",
+            "values": {
+              "0": "I2C interface on. The MPU6050 must keep this at 0.",
+              "1": "I2C interface off (MPU-6000 SPI mode)."
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.27 Register 106 USER_CTRL"
+        }
+      },
+      {
+        "addr": "0x6B",
+        "name": "PWR_MGMT_1",
+        "access": "rw",
+        "reset": "0x40",
+        "text": "Sleep, reset and clock source.",
+        "fields": [
+          {
+            "bits": [
+              7,
+              7
+            ],
+            "name": "DEVICE_RESET",
+            "access": "rw",
+            "text": "Resets every register. Clears itself when done.",
+            "values": {
+              "0": "No reset running.",
+              "1": "Reset running."
+            }
+          },
+          {
+            "bits": [
+              6,
+              6
+            ],
+            "name": "SLEEP",
+            "access": "rw",
+            "text": "Sleep mode.",
+            "values": {
+              "0": "Awake: the sensor measures.",
+              "1": "The sensor is asleep and reads zeros. Your code must clear bit 6 (libraries do it in begin())."
+            }
+          },
+          {
+            "bits": [
+              5,
+              5
+            ],
+            "name": "CYCLE",
+            "access": "rw",
+            "text": "Cycle mode: wake up, take one sample, sleep again.",
+            "values": {
+              "0": "Cycle mode off.",
+              "1": "Cycle mode on, at the rate set by LP_WAKE_CTRL."
+            }
+          },
+          {
+            "bits": [
+              3,
+              3
+            ],
+            "name": "TEMP_DIS",
+            "access": "rw",
+            "text": "Temperature sensor switch.",
+            "values": {
+              "0": "Temperature sensor on.",
+              "1": "Temperature sensor off."
+            }
+          },
+          {
+            "bits": [
+              2,
+              0
+            ],
+            "name": "CLKSEL",
+            "access": "rw",
+            "text": "Clock source.",
+            "values": {
+              "0": "Internal 8 MHz oscillator.",
+              "1": "PLL with the X axis gyro (recommended).",
+              "2": "PLL with the Y axis gyro.",
+              "3": "PLL with the Z axis gyro.",
+              "4": "PLL with an external 32.768 kHz clock.",
+              "5": "PLL with an external 19.2 MHz clock.",
+              "6": "Reserved value.",
+              "7": "Clock stopped: the chip does not measure."
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.28 Register 107 PWR_MGMT_1 (reset value 0x40)"
+        }
+      },
+      {
+        "addr": "0x6C",
+        "name": "PWR_MGMT_2",
+        "access": "rw",
+        "reset": "0x00",
+        "text": "Wake-up rate in cycle mode, and axes put on standby.",
+        "fields": [
+          {
+            "bits": [
+              7,
+              6
+            ],
+            "name": "LP_WAKE_CTRL",
+            "access": "rw",
+            "text": "How often the chip wakes up in cycle mode.",
+            "values": {
+              "0": "Wakes 1.25 times a second.",
+              "1": "Wakes 5 times a second.",
+              "2": "Wakes 20 times a second.",
+              "3": "Wakes 40 times a second."
+            }
+          },
+          {
+            "bits": [
+              5,
+              5
+            ],
+            "name": "STBY_XA",
+            "access": "rw",
+            "text": "X axis accelerometer standby.",
+            "values": {
+              "0": "Axis on.",
+              "1": "Axis on standby: reads nothing new."
+            }
+          },
+          {
+            "bits": [
+              4,
+              4
+            ],
+            "name": "STBY_YA",
+            "access": "rw",
+            "text": "Y axis accelerometer standby.",
+            "values": {
+              "0": "Axis on.",
+              "1": "Axis on standby: reads nothing new."
+            }
+          },
+          {
+            "bits": [
+              3,
+              3
+            ],
+            "name": "STBY_ZA",
+            "access": "rw",
+            "text": "Z axis accelerometer standby.",
+            "values": {
+              "0": "Axis on.",
+              "1": "Axis on standby: reads nothing new."
+            }
+          },
+          {
+            "bits": [
+              2,
+              2
+            ],
+            "name": "STBY_XG",
+            "access": "rw",
+            "text": "X axis gyro standby.",
+            "values": {
+              "0": "Axis on.",
+              "1": "Axis on standby: reads nothing new."
+            }
+          },
+          {
+            "bits": [
+              1,
+              1
+            ],
+            "name": "STBY_YG",
+            "access": "rw",
+            "text": "Y axis gyro standby.",
+            "values": {
+              "0": "Axis on.",
+              "1": "Axis on standby: reads nothing new."
+            }
+          },
+          {
+            "bits": [
+              0,
+              0
+            ],
+            "name": "STBY_ZG",
+            "access": "rw",
+            "text": "Z axis gyro standby.",
+            "values": {
+              "0": "Axis on.",
+              "1": "Axis on standby: reads nothing new."
+            }
+          }
+        ],
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.29 Register 108 PWR_MGMT_2"
+        }
+      },
+      {
+        "addr": "0x75",
+        "name": "WHO_AM_I",
+        "access": "r",
+        "reset": "0x68",
+        "text": "Chip ID. It stays 0x68 whatever the AD0 pin says.",
+        "values": {
+          "0x68": "MPU6050 (or MPU-6000).",
+          "0x70": "This is an MPU6500 clone, not an MPU6050. Most libraries still work with small changes."
+        },
+        "source": {
+          "title": "InvenSense MPU-6000/MPU-6050 Register Map",
+          "section": "4.32 Register 117 WHO_AM_I"
+        }
+      }
+    ]
+  }
 }
