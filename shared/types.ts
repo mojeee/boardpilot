@@ -369,6 +369,7 @@ export interface PartDef {
   measures?: string[];
   pins: PartPin[];
   bus?: 'i2c' | 'spi' | 'onewire' | 'gpio' | 'analog';
+  /** Every I2C address the part can have, the usual (default) one first. */
   addresses?: string[];
   idCheck?: { register: string; expect: string; otherValues?: Record<string, string> };
   /** supply voltage the part needs: "3.3", "5", "3.3-5" */
@@ -430,6 +431,7 @@ export interface WiringFinding {
     | 'wrong_pin_type'
     | 'reserved_pin'
     | 'logic_level'
+    | 'i2c_address_conflict'
     | 'unknown_pin';
   severity: 'error' | 'warning' | 'info';
   message: string;

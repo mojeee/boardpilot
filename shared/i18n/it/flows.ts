@@ -420,6 +420,16 @@ const it: Record<string, string> = {
   'Use another pin, or disconnect this wire while uploading.': 'Usa un altro pin, oppure scollega questo filo durante il caricamento.',
   '{pin} is wired to {parts}. These cannot share a pin.': '{pin} è collegato a {parts}. Non possono condividere un pin.',
   'Give each signal its own GPIO.': 'Dai a ogni segnale il suo GPIO.',
+  '{a} and {b} both use I2C address {addr} on the same bus. Only one of them can answer.':
+    '{a} e {b} usano entrambi l’indirizzo I2C {addr} sullo stesso bus. Solo uno dei due può rispondere.',
+  'Neither part can change its address. Put one of them on a second I2C bus, or use an I2C multiplexer.':
+    'Nessuno dei due può cambiare indirizzo. Metti uno dei due su un secondo bus I2C, oppure usa un multiplexer I2C.',
+  '{a} and {b} both answer at I2C address {addr} by default, on the same bus. Set to the same address, neither reads correctly.':
+    '{a} e {b} rispondono entrambi all’indirizzo I2C {addr} di fabbrica, sullo stesso bus. Con lo stesso indirizzo, nessuno dei due si legge correttamente.',
+  'Set {part} to address {other} with its {pin} pin, so each part has its own address.':
+    'Imposta {part} all’indirizzo {other} con il suo pin {pin}, così ogni componente ha il proprio indirizzo.',
+  'Set {part} to address {other} (see its address jumper or pads), so each part has its own address.':
+    'Imposta {part} all’indirizzo {other} (vedi il ponticello o le piazzole dell’indirizzo), così ogni componente ha il proprio indirizzo.',
   '{part}: SDA goes to {sda} and SCL to {scl}. That is the reverse of the ESP32 default (SDA = D21, SCL = D22).':
     '{part}: SDA va a {sda} e SCL a {scl}. È il contrario dei pin predefiniti dell’ESP32 (SDA = D21, SCL = D22).',
   'Swap the two wires at the sensor, or set Wire.begin(22, 21) in your code.':

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- New wiring rule: two I2C parts on the same bus that answer at the same default address (two BME280s at 0x76, two BH1750s at 0x23). It is a warning when one part can move, and the hint names the address pin from the library ("Set BH1750 to address 0x5C with its ADDR pin"). It is an error when neither part can change its address.
 - 3D view, week 1 of the October plan: studio lighting built in code (works offline) with silver shields, pins and USB; a soft contact shadow under the board and parts, redrawn only when the scene changes; a darker floor that fades out with a quieter grid.
 - New "Desk / Plain" switch in the 3D toolbar: a workbench with a wooden desk, an anti-static mat under the board and shelves of parts bins, drawers, reels, wire spools, spare boards and a soldering station, all built from simple shapes and generated textures. The choice is remembered; slow computers start with Plain.
 - The camera frames the board and every part when a scene opens, when the board changes and on "Overview", tighter than before so the board no longer looks small.
