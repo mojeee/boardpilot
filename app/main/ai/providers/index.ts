@@ -46,6 +46,12 @@ export function toAiError(e: unknown, provider: AiProviderId, model: string): Ap
         return { code: 'ai_local_text_only', humanMessage: t('The offline model reads text only, so it cannot look at photos or files.'), hint: t('Use Claude, GPT or Gemini for photos. Open AI settings (the AI chip at the top).') };
       case 'too_large':
         return { code: 'ai_local_too_large', humanMessage: t('The question and the project are too big for the offline model.'), hint: t('Ask a shorter question, or use Claude, GPT or Gemini in AI settings.') };
+      case 'load_failed':
+        return {
+          code: 'ai_local_load',
+          humanMessage: t('The offline model could not be loaded: {msg}', { msg: e.message.slice(0, 200) }),
+          hint: t('The file may be damaged, or the computer is short of memory. Delete the model in AI settings and download it again, or pick a smaller one.'),
+        };
       case 'timeout':
         return { code: 'ai_local_slow', humanMessage: t('The offline model took too long to answer.'), hint: t('Try a shorter question or a smaller model. Computers without a fast graphics card answer slowly.') };
       default:

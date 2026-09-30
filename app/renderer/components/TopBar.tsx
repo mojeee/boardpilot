@@ -8,6 +8,7 @@ import { LANGS, getLanguage, type Lang } from '@shared/i18n';
 import { changeLanguage } from '../state/lang';
 import { t } from '@shared/i18n';
 import { PROVIDER_INFO } from '@shared/ai';
+import { getLocalModel } from '@shared/localModels';
 import { openAiSettings } from './AiSettings';
 import { openBoardPicker } from './BoardPicker';
 import { useScene } from '../state/store';
@@ -94,7 +95,9 @@ export function TopBar({ children }: { children?: React.ReactNode }) {
               ? t('Set up the AI assistant')
               : ai.provider === 'demo'
                 ? t('Free demo AI through BoardPilot’s test relay, for testing only. Click to add your own key.')
-                : t('{provider}, model {model}. Click to change.', { provider: PROVIDER_INFO[ai.provider].name, model: ai.model })
+                : ai.provider === 'local'
+                  ? t('Offline model {model}, running on this computer. Click to change.', { model: getLocalModel(ai.model)?.name ?? ai.model })
+                  : t('{provider}, model {model}. Click to change.', { provider: PROVIDER_INFO[ai.provider].name, model: ai.model })
           }
         >
           <Icon name="ai" size={13} /> {!ai.enabled ? t('AI off') : ai.provider === 'demo' ? t('AI demo') : PROVIDER_INFO[ai.provider].short}

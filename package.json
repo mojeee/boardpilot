@@ -20,13 +20,19 @@
     "motion": "electron-vite build && node scripts/render-motion.mjs",
     "seo:ping": "node scripts/indexnow.mjs",
     "dist:win": "electron-vite build && electron-builder --win",
-    "test:e2e": "node scripts/e2e.mjs"
+    "test:e2e": "node scripts/e2e.mjs",
+    "check:models": "node scripts/check-models.mjs"
   },
   "build": {
     "appId": "com.agentflowbind.boardpilot",
     "productName": "BoardPilot",
     "files": [
-      "out/**/*"
+      "out/**/*",
+      "!node_modules/@node-llama-cpp/*cuda*/**"
+    ],
+    "asarUnpack": [
+      "node_modules/node-llama-cpp/**",
+      "node_modules/@node-llama-cpp/**"
     ],
     "extraResources": [
       {

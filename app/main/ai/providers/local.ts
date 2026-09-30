@@ -85,7 +85,7 @@ export class LocalProvider implements AiProvider {
     try {
       await this.deps.engine.load(path, info.contextSize);
     } catch (e) {
-      throw new ProviderError('server', 'local', e instanceof Error ? e.message : String(e));
+      throw new ProviderError('load_failed', 'local', e instanceof Error ? e.message : String(e));
     }
 
     const tools: EngineTool[] | undefined = req.tools?.map((tool) => ({ name: tool.name, description: tool.description, parameters: tool.parameters }));

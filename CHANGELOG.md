@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Offline model:** the assistant can run on your own computer, with no API key and no internet after a one-time download. AI settings has a new "Offline model" card: it looks at this computer (memory, free disk space, graphics card), recommends one of three Qwen 3 sizes (4B, 8B or 14B), and downloads it after you press Download, with a progress bar, Cancel, resume and a file check. With no key set, an installed offline model answers before the free demo. Text only (no photos or PDFs), and smaller models can be wrong more often; measurements and checks are the same. Runs through a bundled llama.cpp engine (`node-llama-cpp`). See `docs/local-ai.md`. `npm run check:models` checks the catalog against Hugging Face.
+
 ## 0.7.0 (2026-09-30)
 
 Workspace redesign (the plan in `docs/roadmap-2026-10.md`):

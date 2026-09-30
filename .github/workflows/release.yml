@@ -27,6 +27,10 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # This runner is Apple Silicon and builds both apps, but npm only installs the offline model
+      # engine for the runner's own architecture: add the Intel one for the x64 app.
+      - name: Add the Intel engine for the offline model
+        run: npm install --no-save --force --os=darwin --cpu=x64 "@node-llama-cpp/mac-x64@$(node -p "require('node-llama-cpp/package.json').version")"
       - run: npm test
       - run: npx electron-vite build
       - name: Package macOS (unsigned)

@@ -130,8 +130,8 @@ describe('the offline provider', () => {
     engine.failLoad = true;
     const { provider } = make(engine);
     const err = await provider.chat({ model: 'qwen3-8b', messages: [user('hi')], maxTokens: 100 }).catch((e) => e);
-    expect(err.kind).toBe('server');
-    expect(toAiError(err, 'local', 'qwen3-8b')).toMatchObject({ code: 'ai_local_error' });
+    expect(err.kind).toBe('load_failed');
+    expect(toAiError(err, 'local', 'qwen3-8b')).toMatchObject({ code: 'ai_local_load' });
     expect(toAiError(err, 'local', 'qwen3-8b').humanMessage).toContain('not enough memory');
   });
 
