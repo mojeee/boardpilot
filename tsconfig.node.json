@@ -2,5 +2,5 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": { "types": ["node"], "lib": ["ES2023"] },
   "include": ["app/main/**/*", "app/preload/**/*", "shared/**/*", "electron.vite.config.ts", "vite.web.config.ts", "vite.tools.config.ts", "scripts/site/tools-i18n.d.mts", "scripts/site/tools.d.mts", "vitest.config.ts", "tests/**/*", "e2e/**/*"],
-  "exclude": ["tests/preview.test.ts"]
+  "exclude": ["tests/preview.test.ts", "tests/notices.test.ts"]
 }
