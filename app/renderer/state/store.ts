@@ -15,6 +15,7 @@ import type {
   WriteRequest,
 } from '@shared/types';
 import type { TraceEvent } from '@shared/api';
+import type { SceneOp } from '@shared/sceneEdit';
 import { checkWiring } from '@shared/wiring';
 import { DEFAULT_BOARD_ID, getBoard, PARTS, pinByGpio } from '@shared/board';
 import type { AiStatus } from '@shared/ai';
@@ -398,6 +399,8 @@ export type ChatItem =
   /** an app action the assistant (or the ⌘K box) runs, step by step */
   | { id: number; role: 'action'; actionId: string; arg: string; title: string; steps: ActionStep[]; state: 'running' | 'done' | 'failed' | 'stopped'; where: string; readOnly: boolean }
   /** something the app noticed by itself (a check that fired), with its source */
+  /** project changes an AI agent asked for over MCP, waiting for Apply */
+  | { id: number; role: 'edit'; ops: SceneOp[]; reason: string; client: string; mcpId: string; state: 'pending' | 'applied' | 'declined' | 'expired' }
   | { id: number; role: 'notice'; /** which check found it (see stillFound in events.ts) */ key?: string; severity: 'error' | 'warning' | 'info'; text: string; hint: string; source: string; targets: TargetRef[]; line?: number; /** the project tab it is about */ tab?: string };
 
 type NewChatItem = ChatItem extends infer T ? (T extends ChatItem ? Omit<T, 'id'> : never) : never;

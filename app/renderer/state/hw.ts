@@ -4,8 +4,9 @@
 import type { FlowHardware } from '@shared/flow';
 import type { AgentReplyMap, AgentRequest, Result, TargetRef } from '@shared/types';
 import { canBackupFlash, getBoard, pinByGpio, pinById, PARTS } from '@shared/board';
-import { currentBoard, markDemoScene, useApp, useConfirm, useLive, useLog, useScene, log } from './store';
+import { currentBoard, markDemoScene, useAi, useApp, useConfirm, useLive, useLog, useScene, log } from './store';
 import { t } from '@shared/i18n';
+import { useLayout } from './layout';
 
 const bp = () => window.bp;
 
@@ -45,6 +46,19 @@ export async function wireEvents() {
     else if (ask.req.kind === 'gpio_write' && ask.req.pin !== undefined)
       ok = await confirmGpioWrite(ask.req.pin, ask.req.level ?? 1, t('{client} (an AI agent) asks: {reason}', { client: ask.client, reason: ask.req.reason }));
     await api.mcp.writeResult(ask.id, ok ? 'approved' : 'refused');
+  });
+  // An AI agent asked over MCP to change the project drawing: the list goes to the assistant panel
+  // with Apply; the agent gets the answer (McpEditCard in AssistantPanel.tsx).
+  api.on.mcpSceneEdit((ask) => {
+    useLayout.getState().setRightTab('assistant');
+    useAi.getState().push({ role: 'edit', ops: ask.ops, reason: ask.reason, client: ask.client, mcpId: ask.id, state: 'pending' });
+    log('action', t('{client} (an AI agent) asks to change the project. The list is in the assistant panel.', { client: ask.client }), { source: `MCP: ${ask.client}` });
+  });
+  // An AI agent asked over MCP to run one of the app's actions: the same card as the assistant's.
+  api.on.mcpAction(async (ask) => {
+    const { runActionForAgent } = await import('./appActions');
+    const answer = Date.now() > ask.expiresAt ? { status: 'refused' as const, steps: [], error: 'timed out' } : await runActionForAgent(ask.action, ask.arg, ask.client);
+    await api.mcp.actionResult(ask.id, answer);
   });
   api.on.state((conn) => useApp.getState().set({ conn }));
   api.on.progress((progress) => useApp.getState().set({ progress }));

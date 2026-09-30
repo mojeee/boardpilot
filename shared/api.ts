@@ -28,6 +28,7 @@ import type {
 } from './types';
 import type { AiModelInfo, AiProviderId, AiSettingsInput, AiSettingsView, AiStatus } from './ai';
 import type { PreflightReport } from './preflight';
+import type { SceneOp } from './sceneEdit';
 import type { CoachAttempt } from './coach';
 import type { StarterFile } from './starter/common';
 
@@ -131,6 +132,10 @@ export interface BoardPilotApi {
     setEnabled(on: boolean): Promise<McpStatus>;
     /** Answer to an MCP write request, after the user's click. */
     writeResult(id: string, status: 'approved' | 'refused'): Promise<void>;
+    /** Answer to an MCP project change. False when the request is no longer waiting (it timed out): then do not apply it. */
+    sceneEditResult(id: string, answer: McpSceneEditAnswer): Promise<boolean>;
+    /** Result of an app action an MCP agent asked for. */
+    actionResult(id: string, answer: McpActionAnswer): Promise<boolean>;
   };
   /** Interview coach on the Learn screen. Answers are kept only on this computer, 90 days at most. */
   coach: {
@@ -161,6 +166,8 @@ export interface BoardPilotApi {
     progress(cb: (p: { task: string; pct: number } | null) => void): Unsubscribe;
     trace(cb: (t: TraceEvent) => void): Unsubscribe;
     mcpWrite(cb: (ask: McpWriteAsk) => void): Unsubscribe;
+    mcpSceneEdit(cb: (ask: McpSceneEditAsk) => void): Unsubscribe;
+    mcpAction(cb: (ask: McpActionAsk) => void): Unsubscribe;
   };
 }
 
@@ -179,6 +186,40 @@ export interface McpWriteAsk {
   id: string;
   client: string;
   req: WriteRequest;
+}
+
+/** Changes to the project drawing an AI agent asked for over MCP; the app shows them with Apply. */
+export interface McpSceneEditAsk {
+  id: string;
+  client: string;
+  ops: SceneOp[];
+  reason: string;
+}
+
+/** One of the app's actions (shared/actions.ts) an AI agent asked to run over MCP. */
+export interface McpActionAsk {
+  id: string;
+  client: string;
+  action: string;
+  arg: string;
+  reason: string;
+  /** ms since epoch: after this the agent was told "refused", so it must not run any more */
+  expiresAt: number;
+}
+
+export interface McpActionAnswer {
+  status: 'done' | 'failed' | 'stopped' | 'refused';
+  /** the steps the app showed on the action's card, in plain words */
+  steps: string[];
+  error?: string;
+}
+
+export interface McpSceneEditAnswer {
+  status: 'approved' | 'refused';
+  /** the project after the changes, when applied */
+  scene?: Scene;
+  /** why it was not applied, in plain words */
+  error?: string;
 }
 
 /** Browser demo: a window event asking the page to show the "Download the app" prompt.

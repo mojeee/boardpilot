@@ -12,7 +12,7 @@ import { UserParts } from './parts/userParts';
 import { License } from './license/license';
 import { AiSettingsStore } from './settings/settings';
 import { baseDeps, setupMcp } from './mcp';
-import { runStdio } from './mcp/server';
+import { runStdio, stdioInput } from './mcp/server';
 import { motionHash, motionJob, motionWindowOptions, runMotion } from './motion';
 import type { PartDef } from '@shared/types';
 
@@ -134,8 +134,9 @@ app.whenReady().then(() => {
     if (process.platform === 'darwin') app.dock?.hide();
     refreshUserParts();
     // The client closed the pipe: we are done.
-    process.stdin.on('end', () => app.quit());
-    void runStdio(dataDir, app.getVersion(), () => ({ ...baseDeps(hub, dataDir, (n) => sessionLog.recent(n), () => userPartList), headless: true, requestWrite: async () => 'refused' as const }));
+    const input = stdioInput();
+    input.on('end', () => app.quit());
+    void runStdio(input, dataDir, app.getVersion(), () => ({ ...baseDeps(hub, dataDir, (n) => sessionLog.recent(n), () => userPartList), headless: true, requestWrite: async () => 'refused' as const, requestSceneEdit: async () => ({ status: 'refused' as const }), runAppAction: async () => ({ status: 'refused' as const, steps: [] }) }));
     return;
   }
   refreshUserParts();

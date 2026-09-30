@@ -266,6 +266,8 @@ const api: BoardPilotApi = {
       return mcpOff;
     },
     writeResult: async () => undefined,
+    sceneEditResult: async () => false,
+    actionResult: async () => false,
   },
   coach: {
     ask: wrap((lessonId: string, question: string, answer: string) => coach.ask(lessonId, question, answer)),
@@ -296,6 +298,8 @@ const api: BoardPilotApi = {
     progress: listen('progress'),
     trace: listen('trace') as (cb: (t: TraceEvent) => void) => Unsubscribe,
     mcpWrite: listen('mcpWrite'),
+    mcpSceneEdit: listen('mcpSceneEdit'),
+    mcpAction: listen('mcpAction'),
   },
 };
 

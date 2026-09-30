@@ -3,11 +3,15 @@
 // result carries its provenance ({ value, confidence, source, timestamp, boardId }): measured values
 // come from the board, documented ones from board and part files or the rules. Nothing is estimated
 // here. Write tools never write: they ask the user in the app, and headless they are refused.
+// edit_project changes the drawing, not the board, and also waits for the user's Apply.
 
 import type { AgentReplyMap, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import { BOARDS, PARTS, getBoard } from '@shared/board';
 import { checkWiring } from '@shared/wiring';
 import { checkCode } from '@shared/codeCheck';
+import { SCENE_EDIT_DESCRIPTION, SCENE_EDIT_SCHEMA, applySceneOps, describeChange, parseSceneOps, type SceneOp } from '@shared/sceneEdit';
+import type { McpActionAnswer, McpSceneEditAnswer } from '@shared/api';
+import { ACTION_IDS, APP_ACTIONS } from '@shared/actions';
 import type { HardwareHub } from '../hardware/hub';
 import { TOOLS } from '../ai/tools';
 import type { JsonSchema } from '../ai/providers/types';
@@ -22,6 +26,10 @@ export interface McpDeps {
   userParts(): PartDef[];
   /** Ask the user in the app. Headless: always "refused". */
   requestWrite(req: WriteRequest, client: string): Promise<'approved' | 'refused'>;
+  /** Show project changes in the app with Apply. Headless: always "refused". */
+  requestSceneEdit(ops: SceneOp[], reason: string, client: string): Promise<McpSceneEditAnswer>;
+  /** Run one of the app's actions in the window (writes still open their dialog). Headless: "refused". */
+  runAppAction(action: string, arg: string, reason: string, client: string): Promise<McpActionAnswer>;
   /** Name of the MCP client, for the log ("Claude Code"). */
   clientName(): string;
   headless: boolean;
@@ -88,6 +96,18 @@ export const MCP_TOOLS: McpToolDef[] = [
     inputSchema: obj({ seconds: { type: 'integer', minimum: 1, maximum: 15 }, baud: { type: 'integer' } }),
   },
   { name: 'get_log', description: 'Recent BoardPilot session log: checks, findings and user actions, with their sources.', inputSchema: obj({ limit: { type: 'integer', minimum: 1, maximum: 200 } }) },
+  { name: 'edit_project', description: `${SCENE_EDIT_DESCRIPTION} Returns "approved" with the new project and its wiring findings, or "refused".`, inputSchema: SCENE_EDIT_SCHEMA },
+  {
+    name: 'run_app_action',
+    description:
+      'Run one of BoardPilot’s own actions in the app window, the same as the user clicking it; the app shows each step. Actions that write to the board only open the usual confirmation dialog. ' +
+      'Returns the status and the steps the app showed. Actions: ' +
+      APP_ACTIONS.map((a) => `${a.id} (${a.hint}${a.arg ? ` Arg: ${a.arg}.` : ''})`).join('; '),
+    inputSchema: obj(
+      { action: { type: 'string', enum: ACTION_IDS }, arg: { type: 'string', description: 'the action’s argument, or "" when it takes none' }, reason: { type: 'string', description: 'one plain sentence for the user' } },
+      ['action', 'reason'],
+    ),
+  },
   {
     ...spec('request_flash'),
     description: 'Ask the user to install the diagnostic agent (needed for pin, I2C and ADC measurements). Shows the confirmation dialog in BoardPilot; the board’s flash is backed up first. Returns "approved" or "refused". Never writes without the user’s click.',
@@ -105,8 +125,10 @@ export async function callMcpTool(name: string, raw: unknown, deps: McpDeps): Pr
   const { hub } = deps;
   const client = deps.clientName();
   const boardId = hub.board.id;
+  // In simulator mode the "measured" values come from the simulated bench, not a real board: say so.
+  const simulated = hub.state.mode === 'sim' ? { simulated: true } : {};
   const wrap = (value: unknown, confidence: Confidence, source: string): McpToolResult => ({
-    content: [{ type: 'text', text: JSON.stringify({ value, confidence, source, timestamp: new Date().toISOString(), boardId }, null, 1) }],
+    content: [{ type: 'text', text: JSON.stringify({ value, confidence, source, timestamp: new Date().toISOString(), boardId, ...simulated }, null, 1) }],
   });
   const fail = (error: { code: string; humanMessage: string; hint: string }): McpToolResult => ({ content: [{ type: 'text', text: JSON.stringify({ error }) }], isError: true });
   const fromResult = <T>(r: Result<T>, source: string, map: (v: T) => unknown = (v) => v) => (r.ok ? wrap(map(r.value), 'measured', source) : fail(r.error));
@@ -121,7 +143,7 @@ export async function callMcpTool(name: string, raw: unknown, deps: McpDeps): Pr
   const allParts = (): Record<string, PartDef> => ({ ...PARTS, ...Object.fromEntries(deps.userParts().map((p) => [p.id, p])) });
   // Every call is visible in the app (rule 5), with the client as the source.
   const measured = ['read_pins', 'pullup_check', 'i2c_scan', 'i2c_read', 'adc_read', 'identify_board', 'list_ports', 'read_serial'].includes(name);
-  hub.note(name.startsWith('request_') ? 'action' : measured ? 'check' : 'info', `MCP ${name} ${Object.keys(input).length ? JSON.stringify(input).slice(0, 120) : ''}`.trim(), `MCP: ${client}`);
+  hub.note(name.startsWith('request_') || name === 'edit_project' || name === 'run_app_action' ? 'action' : measured ? 'check' : 'info', `MCP ${name} ${Object.keys(input).length ? JSON.stringify(input).slice(0, 120) : ''}`.trim(), `MCP: ${client}`);
 
   try {
     switch (name) {
@@ -198,6 +220,33 @@ export async function callMcpTool(name: string, raw: unknown, deps: McpDeps): Pr
       case 'get_log': {
         const n = typeof input.limit === 'number' ? input.limit : 50;
         return wrap(deps.recentLog(n).map((e) => ({ type: e.type, text: e.text, source: e.source, target: e.target })), 'documented', 'BoardPilot session log');
+      }
+      case 'run_app_action': {
+        const action = str(input.action, 'action');
+        if (!(ACTION_IDS as string[]).includes(action)) return fail({ code: 'unknown_action', humanMessage: `There is no app action "${action}".`, hint: 'See the list in the tool description.' });
+        const arg = typeof input.arg === 'string' ? input.arg : '';
+        const reason = str(input.reason, 'reason');
+        if (deps.headless) return wrap({ status: 'refused', reason: 'headless: app actions need the BoardPilot window open', steps: [] }, 'documented', 'BoardPilot safety rules');
+        const r = await deps.runAppAction(action, arg, reason, client);
+        return wrap(r, 'documented', `BoardPilot app action ${action} (the steps the app showed)`);
+      }
+      case 'edit_project': {
+        const ops = parseSceneOps(input.changes);
+        const reason = str(input.reason, 'reason');
+        const s = await deps.scene();
+        if (!s) return fail({ code: 'no_project', humanMessage: 'No project is open in BoardPilot.', hint: 'Open or draw a project in the app.' });
+        // Check first, so the agent can fix a wrong pin or part id before the user is asked.
+        const preview = applySceneOps(s, ops, allParts());
+        if (!preview.ok) return fail(preview.error);
+        const changes = preview.value.changes.map((c) => describeChange(c));
+        if (deps.headless) {
+          hub.note('action', 'MCP project change refused: BoardPilot is running headless, so nobody can apply it.', `MCP: ${client}`);
+          return wrap({ status: 'refused', reason: 'headless: project changes need the BoardPilot window open and a click from the user', changes }, 'documented', 'BoardPilot safety rules');
+        }
+        const answer = await deps.requestSceneEdit(ops, reason, client);
+        if (answer.status !== 'approved') return wrap({ status: 'refused', reason: answer.error ?? 'the user did not apply the changes', changes }, 'documented', 'the user did not apply the changes in BoardPilot; the project is unchanged');
+        const scene = answer.scene ?? preview.value.scene;
+        return wrap({ status: 'approved', changes, scene, findings: checkWiring(scene, getBoard(scene.board), allParts()) }, 'documented', 'the user applied the changes in BoardPilot (a drawing, not a measurement)');
       }
       case 'request_flash':
       case 'request_gpio_write': {

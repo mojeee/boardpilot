@@ -6,8 +6,9 @@
 
 import { createServer, type IncomingMessage, type Server as HttpServer } from 'node:http';
 import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
-import { readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { createReadStream, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import type { Readable } from 'node:stream';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -19,8 +20,10 @@ import { MCP_TOOLS, callMcpTool, mcpResources, readMcpResource, type McpDeps } f
 const INSTRUCTIONS =
   'BoardPilot gives you the user’s real development board: live pin levels, I2C scans with decoded traces, ADC readings, board and part definitions, and wiring and code checks. ' +
   'Every result says whether it was measured or documented; never state a value you did not get from a tool. ' +
+  'Results with "simulated": true come from BoardPilot’s simulator, not real hardware: tell the user so (ports, chips and readings are made up for the demo). ' +
   'Measurements need the diagnostic agent on the board: if a tool says it is missing, call request_flash and wait for the user. ' +
-  'Writes (flash, driving a pin) only happen after the user clicks Confirm in BoardPilot.';
+  'Writes (flash, driving a pin) only happen after the user clicks Confirm in BoardPilot. ' +
+  'To change the project drawing (add or remove parts and wires), call edit_project: the user sees the changes and clicks Apply; call get_scene first for the ids.';
 
 /** One MCP server (protocol side) over the shared tool implementation. */
 export function createMcpServer(deps: Omit<McpDeps, 'clientName'>, version: string): Server {
@@ -133,8 +136,15 @@ export class McpHttpServer {
   }
 }
 
+/** The client's end of the stdio pipe. In Electron's main process on Windows `process.stdin` is an
+ *  empty stream that ends at once (no file descriptor behind it), so nothing the client sends would
+ *  arrive: read file descriptor 0 directly there. Call once; it is the only reader of stdin. */
+export function stdioInput(): Readable {
+  return process.platform === 'win32' ? createReadStream('', { fd: 0 }) : process.stdin;
+}
+
 /** `BoardPilot --mcp-stdio`: proxy to the running app, or serve headless (writes refused). */
-export async function runStdio(dataDir: string, version: string, headlessDeps: () => Omit<McpDeps, 'clientName'>): Promise<void> {
+export async function runStdio(input: Readable, dataDir: string, version: string, headlessDeps: () => Omit<McpDeps, 'clientName'>): Promise<void> {
   let info: McpConnectionInfo | null = null;
   try {
     info = JSON.parse(readFileSync(connectionFile(dataDir), 'utf8')) as McpConnectionInfo;
@@ -150,11 +160,11 @@ export async function runStdio(dataDir: string, version: string, headlessDeps: (
       proxy.setRequestHandler(CallToolRequestSchema, async (req) => (await client.callTool(req.params)) as { content: { type: 'text'; text: string }[]; [key: string]: unknown });
       proxy.setRequestHandler(ListResourcesRequestSchema, () => client.listResources());
       proxy.setRequestHandler(ReadResourceRequestSchema, (req) => client.readResource(req.params));
-      await proxy.connect(new StdioServerTransport());
+      await proxy.connect(new StdioServerTransport(input));
       return;
     } catch {
       // The app is not running any more (stale file): fall through to headless.
     }
   }
-  await createMcpServer({ ...headlessDeps(), headless: true }, version).connect(new StdioServerTransport());
+  await createMcpServer({ ...headlessDeps(), headless: true }, version).connect(new StdioServerTransport(input));
 }

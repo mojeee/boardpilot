@@ -343,6 +343,11 @@
 .ai-proposal { background: rgba(0, 0, 0, 0.18); border-radius: 7px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
 .ai-proposal .label { margin: 0; }
 .ai-proposal ul { margin: 0; padding-left: 16px; }
+.ai-edit { border: 1px solid var(--ai-line); }
+.ai-edit li .link { text-align: left; }
+.edit-findings li.sev-error { color: var(--err); }
+.edit-findings li.sev-warning { color: var(--warn); }
+.edit-findings li.sev-info { color: var(--muted); }
 
 /* "Show me where it is" */
 .where-pulse { position: relative; animation: where-pulse 0.9s ease-out 3; box-shadow: 0 0 0 2px var(--ai) !important; border-radius: 6px; }

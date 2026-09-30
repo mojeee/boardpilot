@@ -5,19 +5,23 @@ import { join } from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import type { LogEntry, WriteRequest } from '@shared/types';
+import type { LogEntry, Scene, WriteRequest } from '@shared/types';
+import type { McpSceneEditAnswer } from '@shared/api';
+import type { SceneOp } from '@shared/sceneEdit';
 import { SCENARIOS } from '../app/main/sim/simWorld';
 import { grant } from '../app/main/session/safety';
 import { createMcpServer, McpHttpServer } from '../app/main/mcp/server';
 import type { McpDeps } from '../app/main/mcp/tools';
 import { makeHub } from './helpers';
 
-async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean } = {}) {
+async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean; editAnswer?: (ops: SceneOp[]) => McpSceneEditAnswer } = {}) {
   const { hub, ready } = makeHub('weather-station-swapped');
   await ready;
   const log: { type: string; text: string; source?: string }[] = [];
   hub.on('log', (e: Omit<LogEntry, 'id' | 't'>) => log.push(e));
   const writes: WriteRequest[] = [];
+  const edits: SceneOp[][] = [];
+  const actions: string[] = [];
   const deps: Omit<McpDeps, 'clientName'> = {
     hub,
     scene: async () => SCENARIOS.find((s) => s.id === 'weather-station-swapped')!.scene,
@@ -31,6 +35,15 @@ async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean
       if (req.kind === 'flash_agent') await hub.installAgent(grant('flash_agent'));
       return 'approved';
     },
+    // Stands in for the Apply card in the assistant panel.
+    requestSceneEdit: async (ops) => {
+      edits.push(ops);
+      return opts.editAnswer ? opts.editAnswer(ops) : { status: 'refused', error: 'the user clicked Not now' };
+    },
+    runAppAction: async (action) => {
+      actions.push(action);
+      return { status: 'done', steps: [`ran ${action}`] };
+    },
   };
   const server = createMcpServer(deps, 'test');
   const [a, b] = InMemoryTransport.createLinkedPair();
@@ -41,7 +54,7 @@ async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean
     const text = (r.content as { text: string }[])[0].text;
     return { isError: !!r.isError, body: JSON.parse(text) };
   };
-  return { hub, client, call, log, writes };
+  return { hub, client, call, log, writes, edits, actions };
 }
 
 describe('BoardPilot MCP server', () => {
@@ -58,6 +71,8 @@ describe('BoardPilot MCP server', () => {
     const { call, log } = await setup({ answer: 'approved' });
     const ports = await call('list_ports');
     expect(ports.body.confidence).toBe('measured');
+    // The test hub is the simulator: every result says so, so an agent never takes it for hardware.
+    expect(ports.body.simulated).toBe(true);
     const id = await call('identify_board');
     expect(id.body.value.chip).toMatch(/ESP32/);
     // No agent yet: the measurement says so, and the agent asks the user.
@@ -105,10 +120,53 @@ describe('BoardPilot MCP server', () => {
     expect((await call('get_part', { partId: 'nope' })).body.error.code).toBe('unknown_part');
   });
 
+  it('changes the project only after the user applies it', async () => {
+    const { call, edits } = await setup({ editAnswer: () => ({ status: 'approved' }) });
+    const r = await call('edit_project', {
+      reason: 'a second LED',
+      changes: [
+        { op: 'add_part', partId: 'led-resistor', id: 'led2' },
+        { op: 'add_wire', from: { part: 'board', pin: 'D26' }, to: { part: 'led2', pin: 'A' } },
+      ],
+    });
+    expect(edits).toHaveLength(1);
+    expect(r.body.value.status).toBe('approved');
+    const scene = r.body.value.scene as Scene;
+    expect(scene.parts.some((p) => p.id === 'led2')).toBe(true);
+    expect(scene.wires.some((w) => w.from.pin === 'D26' && w.to.part === 'led2')).toBe(true);
+    expect(r.body.value.changes).toContain('Wire D26 to LED A.');
+  });
+
+  it('refuses wrong pins before asking, and reports "Not now"', async () => {
+    const { call, edits } = await setup();
+    const bad = await call('edit_project', { reason: 'x', changes: [{ op: 'add_wire', from: { part: 'board', pin: 'D99' }, to: { part: 'bme1', pin: 'SDA' } }] });
+    expect(bad.isError).toBe(true);
+    expect(bad.body.error.humanMessage).toMatch(/no pin "D99"/);
+    expect(edits).toHaveLength(0);
+    const no = await call('edit_project', { reason: 'x', changes: [{ op: 'rename_part', id: 'bme1', label: 'Weather' }] });
+    expect(no.body.value.status).toBe('refused');
+  });
+
+  it('refuses project changes and app actions headless', async () => {
+    const { call, edits, actions } = await setup({ headless: true });
+    expect((await call('edit_project', { reason: 'x', changes: [{ op: 'assign_pins' }] })).body.value.status).toBe('refused');
+    expect((await call('run_app_action', { action: 'connect_board', reason: 'x' })).body.value.status).toBe('refused');
+    expect(edits).toHaveLength(0);
+    expect(actions).toHaveLength(0);
+  });
+
+  it('runs app actions in the window and returns their steps', async () => {
+    const { call, actions } = await setup();
+    const r = await call('run_app_action', { action: 'connect_board', arg: '', reason: 'find the board' });
+    expect(actions).toEqual(['connect_board']);
+    expect(r.body.value).toMatchObject({ status: 'done', steps: ['ran connect_board'] });
+    expect((await call('run_app_action', { action: 'format_disk', reason: 'x' })).isError).toBe(true);
+  });
+
   it('serves HTTP on localhost with a token, and refuses without it', async () => {
     const { hub } = makeHub('healthy');
     const dir = mkdtempSync(join(tmpdir(), 'bp-mcp-'));
-    const http = new McpHttpServer({ hub, scene: async () => null, recentLog: () => [], userParts: () => [], headless: false, requestWrite: async () => 'refused' }, dir, 'test');
+    const http = new McpHttpServer({ hub, scene: async () => null, recentLog: () => [], userParts: () => [], headless: false, requestWrite: async () => 'refused', requestSceneEdit: async () => ({ status: 'refused' }), runAppAction: async () => ({ status: 'refused', steps: [] }) }, dir, 'test');
     const info = await http.start();
     try {
       expect(info.url).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/mcp$/);

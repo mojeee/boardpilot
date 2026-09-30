@@ -2,9 +2,10 @@
 // ask the UI to show a confirmation dialog. The model never gets a confirmation token.
 // Tool definitions are provider-neutral (ToolSpec); providers/*.ts convert them for Claude, GPT and Gemini.
 
-import type { LogEntry, TargetRef, WriteRequest } from '@shared/types';
+import type { LogEntry, Scene, TargetRef, WriteRequest } from '@shared/types';
 import { ACTION_IDS, APP_ACTIONS, type AppActionId } from '@shared/actions';
 import { PARTS } from '@shared/board';
+import { SCENE_EDIT_DESCRIPTION, SCENE_EDIT_SCHEMA, applySceneOps, describeChange, parseSceneOps, type SceneOp } from '@shared/sceneEdit';
 import type { HardwareHub } from '../hardware/hub';
 import type { JsonSchema, ToolSpec } from './providers/types';
 
@@ -95,6 +96,11 @@ export const TOOLS: ToolSpec[] = [
     ),
   },
   {
+    name: 'edit_project',
+    description: `${SCENE_EDIT_DESCRIPTION} Use it when the user asks to add, remove, rename or rewire something in the drawing; use the part and wire ids from the context.`,
+    parameters: SCENE_EDIT_SCHEMA,
+  },
+  {
     name: 'write_code',
     description:
       'Put a code suggestion in the Code panel for what the user asked (e.g. "read the temperature every 2 s"). The app writes it with the drawing and the current code, checks it against the wiring, and the user accepts it with Tab or dismisses it.',
@@ -124,6 +130,8 @@ export interface ToolTurnState {
   proposal?: { partIds: string[]; reason: string };
   /** a code suggestion to write in the Code panel */
   codeRequest?: string;
+  /** changes to the drawing, shown with an Apply button */
+  sceneEdit?: { ops: SceneOp[]; reason: string };
   calls: { name: string; input: unknown; ok: boolean }[];
 }
 
@@ -142,6 +150,7 @@ export async function runTool(
   hub: HardwareHub,
   log: LogEntry[],
   turn: ToolTurnState,
+  scene?: Scene,
 ): Promise<{ content: string; isError: boolean }> {
   const input = (typeof rawInput === 'object' && rawInput !== null ? rawInput : {}) as Record<string, unknown>;
   const done = (value: unknown) => ({ content: JSON.stringify(value), isError: false });
@@ -214,6 +223,19 @@ export async function runTool(
         if (!known.length) return { content: `None of these ids is in the parts library: ${unknown.join(', ')}. Use exact ids.`, isError: true };
         turn.proposal = { partIds: known.slice(0, 8), reason: str(input.reason, 'reason') };
         return done({ shown: true, unknownIds: unknown, note: 'The user sees the parts with an "Add to the project" button. Nothing changes until they click.' });
+      }
+      case 'edit_project': {
+        if (!scene) return { content: 'No project is open.', isError: true };
+        const ops = parseSceneOps(input.changes);
+        const r = applySceneOps(scene, ops, PARTS);
+        if (!r.ok) return { content: `${r.error.humanMessage} ${r.error.hint}`, isError: true };
+        turn.sceneEdit = { ops, reason: str(input.reason, 'reason') };
+        return done({
+          shown: true,
+          changes: r.value.changes.map((c) => describeChange(c)),
+          newWiringFindings: r.value.newFindings.map((f) => ({ severity: f.severity, message: f.message, targets: f.targets })),
+          note: 'The user sees these changes with an Apply button. Nothing changes until they click; mention any new wiring finding.',
+        });
       }
       case 'write_code': {
         turn.codeRequest = str(input.request, 'request');

@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AiReply, AiSource } from '@shared/types';
+import type { SceneChange, SceneOp } from '@shared/sceneEdit';
 import { PARTS, targetLabel } from '@shared/board';
 import { currentBoard, log, useAi, useApp, useScene, type ChatItem } from '../state/store';
 import { showWhere, stopAction } from '../state/appActions';
 import { sceneWithParts } from '../state/buildProject';
+import { commitProjectEdit, previewProjectEdit } from '../state/sceneActions';
 import { revealLine } from '../state/code';
 import { useLayout } from '../state/layout';
 import { useProjects } from '../state/projects';
@@ -55,6 +57,7 @@ export function ReplyView({ reply }: { reply: AiReply }) {
         </details>
       )}
       {reply.proposal && <ProposalCard proposal={reply.proposal} />}
+      {reply.sceneEdit && <AssistantEditCard edit={reply.sceneEdit} />}
       {reply.nextOptions.length > 0 && (
         <div className="next-options">
           {reply.nextOptions.map((o) => (
@@ -100,6 +103,118 @@ function ProposalCard({ proposal }: { proposal: NonNullable<AiReply['proposal']>
       </div>
     </div>
   );
+}
+
+type EditState = 'pending' | 'applied' | 'declined' | 'expired';
+
+/**
+ * Changes to the drawing an AI asked for (the assistant or an MCP agent): the list, what the wiring
+ * check would find afterwards, and Apply. Nothing changes until the click; Apply is one undo step.
+ */
+function EditCard(props: { ops: SceneOp[]; reason: string; who: string; state: EditState; onApply(): void; onDecline(): void }) {
+  const scene = useScene((s) => s.scene);
+  const pending = props.state === 'pending';
+  // While waiting, the preview follows the project (the user may edit it meanwhile).
+  const preview = useMemo(() => (pending ? previewProjectEdit(props.ops) : null), [pending, props.ops, scene]);
+  // After Apply the list stays as it was shown (a new preview would no longer fit the project).
+  const last = useRef<SceneChange[]>([]);
+  if (preview?.ok) last.current = preview.value.changes;
+  const shown = last.current;
+  const STATUS: Record<Exclude<EditState, 'pending'>, string> = {
+    applied: t('Applied. ⌘Z undoes it.'),
+    declined: t('Not applied. The project is unchanged.'),
+    expired: t('This request timed out, so nothing was changed. Ask again.'),
+  };
+  return (
+    <div className="ai-proposal ai-edit">
+      <div className="row gap">
+        <span className="label">{t('Changes to the project')}</span>
+        <span className="small dim">{props.who}</span>
+      </div>
+      {props.reason && <div className="ai-text">{props.reason}</div>}
+      {preview && !preview.ok ? (
+        <div className="ai-error">
+          {preview.error.humanMessage} <span className="dim">{preview.error.hint}</span>
+        </div>
+      ) : (
+        <ul>
+          {shown.map((c, i) => (
+            <li key={i}>
+              {c.target ? (
+                <button className="link" onClick={() => useScene.getState().focusOn([c.target!])}>
+                  {t(c.text, c.vars)}
+                </button>
+              ) : (
+                t(c.text, c.vars)
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {preview?.ok && preview.value.newFindings.length > 0 && (
+        <div className="edit-findings">
+          <div className="label">{t('The wiring check would then find')}</div>
+          <ul>
+            {preview.value.newFindings.map((f) => (
+              <li key={f.id} className={`sev-${f.severity}`}>
+                {f.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {pending ? (
+        <div className="row gap wrap">
+          <button className="btn small primary" disabled={!preview?.ok} onClick={props.onApply}>
+            {t('Apply')}
+          </button>
+          <button className="btn small ghost" onClick={props.onDecline}>
+            {t('Not now')}
+          </button>
+          <span className="small dim">{t('Only the drawing changes, not the board. Nothing changes until you click.')}</span>
+        </div>
+      ) : (
+        <span className="small dim">{props.state !== 'pending' && STATUS[props.state]}</span>
+      )}
+    </div>
+  );
+}
+
+/** The in-app assistant's edit_project: applied here when the user clicks. */
+function AssistantEditCard({ edit }: { edit: NonNullable<AiReply['sceneEdit']> }) {
+  const [state, setState] = useState<EditState>('pending');
+  const apply = () => {
+    const r = previewProjectEdit(edit.ops);
+    if (!r.ok) return;
+    commitProjectEdit(r.value, 'assistant suggestion, applied by you');
+    setState('applied');
+  };
+  const decline = () => {
+    log('action', t('You did not apply the assistant’s changes. The project is unchanged.'));
+    setState('declined');
+  };
+  return <EditCard ops={edit.ops} reason={edit.reason} who={t('Assistant')} state={state} onApply={apply} onDecline={decline} />;
+}
+
+/** An MCP agent's edit_project: the answer goes back to the agent, and only then is it applied. */
+function McpEditCard({ item }: { item: Extract<ChatItem, { role: 'edit' }> }) {
+  const setState = (state: EditState) => useAi.getState().patch(item.id, (x) => (x.role === 'edit' ? { ...x, state } : x));
+  const source = `MCP: ${item.client}, applied by you`;
+  const apply = async () => {
+    const r = previewProjectEdit(item.ops);
+    if (!r.ok) return;
+    // Apply only if the agent is still waiting: after a timeout it was told "refused".
+    const waiting = await window.bp.mcp.sceneEditResult(item.mcpId, { status: 'approved', scene: r.value.scene });
+    if (!waiting) return setState('expired');
+    commitProjectEdit(r.value, source);
+    setState('applied');
+  };
+  const decline = async () => {
+    await window.bp.mcp.sceneEditResult(item.mcpId, { status: 'refused', error: 'the user clicked Not now' });
+    log('action', t('You did not apply the changes from {client}. The project is unchanged.', { client: item.client }), { source: `MCP: ${item.client}` });
+    setState('declined');
+  };
+  return <EditCard ops={item.ops} reason={item.reason} who={t('{client} (an AI agent, through MCP)', { client: item.client })} state={item.state} onApply={() => void apply()} onDecline={() => void decline()} />;
 }
 
 const STEP_ICON = { run: '…', ok: '✓', fail: '✕', skip: '–' } as const;
@@ -291,6 +406,8 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
             <ReplyView key={it.id} reply={it.reply} />
           ) : it.role === 'action' ? (
             <ActionCard key={it.id} item={it} />
+          ) : it.role === 'edit' ? (
+            <McpEditCard key={it.id} item={it} />
           ) : it.role === 'notice' ? (
             <NoticeCard key={it.id} item={it} />
           ) : (
