@@ -61,6 +61,7 @@ const WHY = {
   mcp: () => t('Letting AI coding agents use your board (MCP) needs the BoardPilot app on your computer.'),
   link: () => t('Importing a part from a web link needs the BoardPilot app: a web page cannot read other websites.'),
   license: () => t('License keys are entered in the BoardPilot app.'),
+  local: () => t('The offline model needs the BoardPilot app: a web page cannot download and run a model.'),
 };
 
 /* ---------- IPC-like copying: the renderer never shares objects with the "main" side ---------- */
@@ -161,7 +162,7 @@ const api: BoardPilotApi = {
   ai: {
     status: wrap(() => assistant.status()),
     getSettings: wrap(() => assistant.getSettings()),
-    saveSettings: wrap((input: AiSettingsInput) => (input.apiKey?.trim() || PROVIDER_INFO[input.provider]?.needsKey ? needsApp(WHY.key()) : assistant.saveSettings(input))),
+    saveSettings: wrap((input: AiSettingsInput) => (input.provider === 'local' ? needsApp(WHY.local()) : input.apiKey?.trim() || PROVIDER_INFO[input.provider]?.needsKey ? needsApp(WHY.key()) : assistant.saveSettings(input))),
     clearKey: wrap((provider: AiProviderId) => assistant.clearKey(provider)),
     listModels: wrap((provider: AiProviderId) => (PROVIDER_INFO[provider]?.needsKey ? needsApp(WHY.key()) : assistant.listModels(provider))),
     test: wrap((draft?: Partial<AiSettingsInput>) => (draft?.provider && PROVIDER_INFO[draft.provider]?.needsKey ? needsApp(WHY.key()) : assistant.test({ ...draft, apiKey: undefined }))),
@@ -171,6 +172,22 @@ const api: BoardPilotApi = {
     suggestCode: wrap((ctx: AiContext, req: CodeSuggestionRequest) => assistant.suggestCode({ ...ctx, log: ctx.log.length ? ctx.log : sessionLog.slice(-50) }, req)),
     describeProject: wrap((req: DescribeRequest) => assistant.describeProject(req)),
     reset: wrap(() => assistant.reset()),
+  },
+  // The browser cannot download or run a model: the settings screen of the web demo never shows it.
+  localAi: {
+    status: wrap(async () => ({
+      hardware: { platform: 'web', arch: 'wasm', ramGb: 0, freeDiskGb: 0, gpu: null, vramGb: 0 },
+      engineOk: false,
+      engineError: WHY.local(),
+      recommendedId: null,
+      selectedId: '',
+      models: [],
+      downloading: null,
+    })),
+    download: wrap(() => needsApp(WHY.local())),
+    cancel: wrap(async () => undefined),
+    remove: wrap(() => needsApp(WHY.local())),
+    onProgress: () => () => {},
   },
   session: {
     append: (entry: LogEntry) => {

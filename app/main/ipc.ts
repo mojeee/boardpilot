@@ -13,6 +13,8 @@ import type { License } from './license/license';
 import { EVENT_CHANNELS } from '@shared/api';
 import type { HardwareHub } from './hardware/hub';
 import type { Assistant } from './ai/assistant';
+import type { LocalRuntime } from './ai/local/runtime';
+import type { AiSettingsStore } from './settings/settings';
 import { grant } from './session/safety';
 import type { SessionLog } from './session/sessionLog';
 import { toAppError } from './hardware/errors';
@@ -20,7 +22,7 @@ import { CoachStore } from './session/coachStore';
 import { isSafeProjectName, isSafeProjectPath, type StarterFile } from '@shared/starter/common';
 import { makeCoachApi } from './session/coachApi';
 
-export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
+export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License, local: LocalRuntime, aiSettings: AiSettingsStore) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
 
   h('hw:state', () => hub.state);
@@ -60,6 +62,20 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('ai:suggestCode', (ctx: AiContext, req: CodeSuggestionRequest) => ai.suggestCode({ ...ctx, log: ctx.log.length ? ctx.log : log.recent(50) }, req));
   h('ai:describeProject', (req: DescribeRequest) => ai.describeProject(req));
   h('ai:reset', () => ai.reset());
+
+  // Offline model: what this computer can run, and the download of the model files.
+  h('localAi:status', () => local.status(aiSettings.model('local')));
+  h('localAi:download', async (modelId: string) => {
+    const r = await local.store.download(modelId, (p) => {
+      for (const w of BrowserWindow.getAllWindows()) w.webContents.send('evt:localAiProgress', p);
+    });
+    return r.ok ? { ok: true as const, value: undefined } : r;
+  });
+  h('localAi:cancel', () => local.store.cancel());
+  h('localAi:remove', async (modelId: string) => {
+    const r = local.store.remove(modelId);
+    return r.ok ? { ok: true as const, value: await local.status(aiSettings.model('local')) } : r;
+  });
 
   ipcMain.on('session:append', (_e, entry: LogEntry) => log.append(entry));
   h('session:info', () => ({ dataDir, logPath: log.path, version: app.getVersion() }));

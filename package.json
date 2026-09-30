@@ -86,6 +86,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
     "@modelcontextprotocol/sdk": "^1.31.0",
+    "node-llama-cpp": "^3.22.1",
     "serialport": "^13.0.0"
   },
   "devDependencies": {

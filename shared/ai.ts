@@ -1,7 +1,7 @@
 // AI providers the user can choose from, and the settings view the renderer may see.
 // The renderer never receives an API key: only whether one is set and its last 4 characters.
 
-export const AI_PROVIDERS = ['anthropic', 'openai', 'gemini', 'demo'] as const;
+export const AI_PROVIDERS = ['anthropic', 'openai', 'gemini', 'demo', 'local'] as const;
 export type AiProviderId = (typeof AI_PROVIDERS)[number];
 
 export interface AiProviderInfo {
@@ -74,6 +74,19 @@ export const PROVIDER_INFO: Record<AiProviderId, AiProviderInfo> = {
     envVar: '',
     needsKey: false,
   },
+  // The offline model: a Qwen 3 model that runs on this computer (see shared/localModels.ts). No key,
+  // no internet. `defaultModel` is the small one; the app recommends a size for the computer, and
+  // `fastModel` is the same model (there is only one loaded at a time).
+  local: {
+    id: 'local',
+    short: 'Offline',
+    name: 'Offline model',
+    defaultModel: 'qwen3-4b',
+    fastModel: 'qwen3-4b',
+    keyUrl: '',
+    envVar: '',
+    needsKey: false,
+  },
 };
 
 /** Providers the user brings a key for. */
@@ -103,6 +116,8 @@ export interface AiSettingsView {
   active: AiProviderId;
   /** False when the free demo is switched off (BOARDPILOT_DEMO_AI_URL=off). */
   demoEnabled: boolean;
+  /** True when an offline model is downloaded on this computer. */
+  localReady: boolean;
   model: string;
   providers: Record<AiProviderId, AiProviderState>;
   /** False when the OS cannot encrypt secrets; then keys cannot be saved. */
