@@ -7,7 +7,7 @@ import type { Scene } from '@shared/types';
 const inputOnly: Scene = {
   board: 'esp32-devkitc-30',
   parts: [{ id: 'led1', partId: 'led-resistor', position: [40, 0, 50] }],
-  wires: [{ from: { part: 'board', pin: 'D34' }, to: { part: 'led1', pin: 'A' }, color: '#5CCB8F' }],
+  wires: [{ id: 'w1', from: { part: 'board', pin: 'D34' }, to: { part: 'led1', pin: 'A' }, color: '#5CCB8F' }],
 };
 const notices = () => useAi.getState().items.filter((i): i is Extract<ChatItem, { role: 'notice' }> => i.role === 'notice');
 

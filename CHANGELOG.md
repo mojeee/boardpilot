@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.7.0 (2026-09-30)
 
 Workspace redesign (the plan in `docs/roadmap-2026-10.md`):
 
@@ -28,6 +28,8 @@ Workspace redesign (the plan in `docs/roadmap-2026-10.md`):
 - Fixed: in a narrow 3D view (a laptop screen, the browser demo) the Light and Detail switches covered the view buttons, and the colour legend ran into the keyboard hint. The switches now wrap under the toolbar, the hint gives way to the legend, and "Ask AI or find anything" shrinks to ✦. The empty parts of the toolbar row no longer block dragging the 3D view.
 - Screenshots retaken with the new workspace for the README and the website (three new ones: workspace, Read from port, Export PDF), plus the board social images and the "Try it live" posters (`scripts/demo-posters.cjs`). Screenshots and tests start from a clean profile (`BP_PROFILE`).
 - Describe it (New project): write what you want to build. With the assistant on, it asks up to three short questions, then proposes parts from the library, notes (power, drivers) and a sketch; without it, the words are matched against the parts library and the closest template is offered. You untick what you do not want; the safe-pin rules wire the parts, the starter code matches that wiring, and the assistant's own sketch waits in the Code panel as a suggestion checked against the wiring.
+
+- Fixed: the CI type check failed on the new notices test (it uses the browser window, so it is now checked with the renderer settings) and a test wire without an id.
 
 ## 0.6.1 (2026-09-29)
 
