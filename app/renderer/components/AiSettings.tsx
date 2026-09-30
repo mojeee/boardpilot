@@ -11,6 +11,7 @@ import type { AppError } from '@shared/types';
 import { t } from '@shared/i18n';
 import { useApp } from '../state/store';
 import { Icon } from './Icon';
+import { OfflineModel } from './OfflineModel';
 import { isWebDemo, WebAiSettings } from './WebDemo';
 
 interface AiSettingsStore {
@@ -35,6 +36,7 @@ function blurb(p: AiProviderId): string {
   if (p === 'anthropic') return t('Claude by Anthropic. Careful answers and strong tool use. The default for BoardPilot.');
   if (p === 'openai') return t('GPT by OpenAI. Uses a key from the OpenAI platform.');
   if (p === 'demo') return t('No key needed. A free, older Gemini model for trying BoardPilot.');
+  if (p === 'local') return t('Runs on this computer: free, private, works without internet. Downloaded once.');
   return t('Gemini by Google. Uses a key from Google AI Studio.');
 }
 
@@ -73,8 +75,9 @@ function AiSettingsBody() {
   const info = PROVIDER_INFO[provider];
   const state = view.providers[provider];
   const list = models[provider] ?? [];
-  const isDemo = !info.needsKey;
-  const canTest = isDemo ? view.demoEnabled : state.hasKey || Boolean(key.trim());
+  const isLocal = provider === 'local';
+  const isDemo = provider === 'demo';
+  const canTest = isLocal ? view.localReady : isDemo ? view.demoEnabled : state.hasKey || Boolean(key.trim());
 
   const pick = (p: AiProviderId) => {
     setProvider(p);
@@ -127,6 +130,7 @@ function AiSettingsBody() {
 
   const keyStatus = (p: AiProviderId) => {
     const s = view.providers[p];
+    if (p === 'local') return view.localReady ? t('Downloaded') : t('Not downloaded yet');
     if (!PROVIDER_INFO[p].needsKey) return view.demoEnabled ? t('No key needed') : t('Switched off on this computer');
     if (s.keySource === 'saved') return t('Key saved {hint}', { hint: s.keyHint });
     if (s.keySource === 'env') return t('Key from .env.local {hint}', { hint: s.keyHint });
@@ -149,15 +153,24 @@ function AiSettingsBody() {
             <button key={p} className={`ai-prov ${p === provider ? 'on' : ''}`} onClick={() => pick(p)} aria-pressed={p === provider}>
               <span className="ai-prov-name">
                 {PROVIDER_INFO[p].short}
-                {p === view.active && (view.providers[p].hasKey || (p === 'demo' && view.demoEnabled)) && <span className="chip ai-chip">{t('in use')}</span>}
+                {p === view.active && (view.providers[p].hasKey || (p === 'demo' && view.demoEnabled) || (p === 'local' && view.localReady)) && <span className="chip ai-chip">{t('in use')}</span>}
               </span>
               <span className="ai-prov-desc">{blurb(p)}</span>
-              <span className={`ai-prov-key small ${view.providers[p].hasKey || (p === 'demo' && view.demoEnabled) ? 'ok' : ''}`}>{keyStatus(p)}</span>
+              <span className={`ai-prov-key small ${view.providers[p].hasKey || (p === 'demo' && view.demoEnabled) || (p === 'local' && view.localReady) ? 'ok' : ''}`}>{keyStatus(p)}</span>
             </button>
           ))}
         </div>
 
-        {isDemo ? (
+        {isLocal ? (
+          <OfflineModel
+            picked={model}
+            onPick={setModel}
+            onChanged={() => {
+              void window.bp.ai.getSettings().then(setView);
+              void refreshAiStatus();
+            }}
+          />
+        ) : isDemo ? (
           <div className="ai-demo-info">
             <p>
               {t("Uses a free, older Gemini model through BoardPilot's test relay. Limited to a few requests per minute. For testing only: don't send private data. Add your own Claude, GPT or Gemini key for full use.")}
@@ -221,9 +234,11 @@ function AiSettingsBody() {
 
         <p className="ai-privacy small">
           <Icon name="key" size={13} />{' '}
-          {isDemo
-            ? t('Demo requests go through BoardPilot’s relay to Google. On the free tier Google may use them to improve its products.')
-            : t('Your key is stored encrypted on this computer. Requests go directly from the app to the provider you choose.')}
+          {isLocal
+            ? t('Nothing leaves this computer: the model runs here.')
+            : isDemo
+              ? t('Demo requests go through BoardPilot’s relay to Google. On the free tier Google may use them to improve its products.')
+              : t('Your key is stored encrypted on this computer. Requests go directly from the app to the provider you choose.')}
         </p>
 
         <McpSettings />

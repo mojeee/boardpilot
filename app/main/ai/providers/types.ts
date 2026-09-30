@@ -99,7 +99,7 @@ export interface AiProvider {
   listModels(timeoutMs?: number): Promise<AiModelInfo[]>;
 }
 
-export type ProviderErrorKind = 'auth' | 'quota' | 'rate' | 'offline' | 'timeout' | 'model' | 'bad_request' | 'server' | 'refused' | 'too_large' | 'not_configured';
+export type ProviderErrorKind = 'auth' | 'quota' | 'rate' | 'offline' | 'timeout' | 'model' | 'bad_request' | 'server' | 'refused' | 'too_large' | 'not_configured' | 'load_failed';
 
 /** Typed error thrown by providers; mapped to plain language in errors.ts. */
 export class ProviderError extends Error {

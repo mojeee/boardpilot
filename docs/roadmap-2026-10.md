@@ -575,7 +575,7 @@ https://claude.ai/artifact/7ZXocFamKF2neLh5cnJgeL
 Open decisions for you when we start: which code editor (new dependency?), and whether the old
 task screens stay reachable from the top menu or merge into the project page.
 
-## Next · Offline model (your request, Sep 30, in progress)
+## Next · Offline model (your request, Sep 30, paused: code done and tested, not released)
 
 Goal: the assistant works with no API key and no internet, or with a cheap API. The app looks at
 the computer, picks the best model that runs well on it, and downloads it after the user says yes.
@@ -592,28 +592,28 @@ the computer, picks the best model that runs well on it, and downloads it after 
   then the free demo.
 
 **Steps** (each ends with typecheck, tests and a commit; the UI text is in English and Italian)
-1. [ ] `shared/localModels.ts`: the model catalog (id, tier, repo, file, approximate size, memory
+1. [x] `shared/localModels.ts`: the model catalog (id, tier, repo, file, approximate size, memory
        needed) and `recommendLocalModel(hardware)` (pure, tested on Mac 8/16/32 GB, Windows with
        and without GPU, low disk, very low memory).
-2. [ ] Hardware detection in main (`app/main/ai/local/hardware.ts`): memory, free disk, CPU, GPU
+2. [x] Hardware detection in main (`app/main/ai/local/hardware.ts`): memory, free disk, CPU, GPU
        type (Metal, CUDA, Vulkan or none) and video memory from the engine.
-3. [ ] Model store (`app/main/ai/local/store.ts`): download into the app data folder with
+3. [x] Model store (`app/main/ai/local/store.ts`): download into the app data folder with
        progress, resume (Range), cancel, size and SHA-256 check (the hash Hugging Face reports),
        list installed, delete. Tested against a local HTTP server. `BOARDPILOT_MODEL_BASE_URL`
        can point at a mirror (https or localhost only).
-4. [ ] Engine and provider (`app/main/ai/local/engine.ts`, `providers/local.ts`): load lazily
+4. [x] Engine and provider (`app/main/ai/local/engine.ts`, `providers/local.ts`): load lazily
        (dynamic import, so the app still starts if the engine cannot load), `LlamaChat` for tool
        calls that the assistant loop runs itself, JSON grammar for structured replies, Qwen 3
        thinking switched off, the request trimmed to the context (compact context, oldest turns
        first), photos and PDFs refused in plain words (text-only models).
-5. [ ] Settings and assistant: provider `local`, selected model saved, `active()` and `usable`
+5. [x] Settings and assistant: provider `local`, selected model saved, `active()` and `usable`
        follow the order above, plain-language errors (`toAiError`).
-6. [ ] IPC and preload: status, recommend, download, cancel, remove, progress events.
-7. [ ] AI settings screen: an "Offline model" card with this computer's memory, GPU and disk, the
+6. [x] IPC and preload: status, recommend, download, cancel, remove, progress events.
+7. [x] AI settings screen: an "Offline model" card with this computer's memory, GPU and disk, the
        recommended model, a Download button with progress and Cancel, the other sizes with their
        fit label, Use and Delete, and one honest line: smaller models can be wrong more often;
        measurements and checks are unchanged. Top bar chip shows "Offline · Qwen 3 8B".
-8. [ ] Packaging (cannot be tested from the cloud container; the release build is the test):
+8. [~] Packaging (cannot be tested from the cloud container; the release build is the test):
        - `asarUnpack` for `node-llama-cpp` and `@node-llama-cpp/*`.
        - Windows: leave out the CUDA engine (176 MB); keep the CPU (30 MB) and Vulkan (74 MB)
          engines, so NVIDIA, AMD and Intel GPUs work. Installer grows by about 100 MB.
@@ -621,12 +621,12 @@ the computer, picks the best model that runs well on it, and downloads it after 
          `npm ci` installs only the arm64 engine. Add a step that installs `@node-llama-cpp/mac-x64`
          (same version) before packaging, or the Intel app has no offline model.
        - Check the three installers' size in the release, and open each once.
-9. [ ] Tests: catalog and recommendation, store (download, resume, bad hash, cancel), provider with
+9. [x] Tests: catalog and recommendation, store (download, resume, bad hash, cancel), provider with
        a fake engine, and an opt-in real-engine test:
        `BP_LOCAL_MODEL=/path/to/model.gguf npm test -- local-engine` (skipped when unset).
-10. [ ] `scripts/check-models.mjs` (`npm run check:models`): checks that every catalog file exists
+10. [x] `scripts/check-models.mjs` (`npm run check:models`): checks that every catalog file exists
        on Hugging Face and that its size is close to the catalog. Run it on a computer with internet.
-11. [ ] Docs and site, after it works on a real machine: `docs/local-ai.md`, README, CHANGELOG, the
+11. [~] Docs and site, after it works on a real machine: `docs/local-ai.md`, README, CHANGELOG, the
        FAQ answer "Does it need internet or an AI account?", screenshots of the new settings card.
 
 **Not verified yet (say so in the release notes until done)**
@@ -636,6 +636,52 @@ the computer, picks the best model that runs well on it, and downloads it after 
 - Reply quality and speed of each size, and the recommendation limits, need a real Mac and a real
   Windows PC. Expect CPU-only computers to answer slowly with the medium and large models.
 - The Windows and macOS installers with the engine inside (step 8).
+
+**Status log (paused Sep 30, at your request)**
+
+Done and checked in the cloud container: `npm run typecheck`, `npm test` (3241 tests pass, 1 skipped:
+the real-model test), the app build, and all 19 end-to-end scenarios, including a new one that clicks
+through AI settings → Offline model in the real app (hardware check, recommendation, download with
+progress from a local mirror, hash check, Save, chip "Offline", plain error for a broken file).
+
+What exists (all in the commits after `4d07771` on `claude/gracious-gates-0zmgaj`, not pushed yet):
+- `shared/localModels.ts`, `tests/local-models.test.ts`: catalog and recommendation.
+- `app/main/ai/local/{store,engine,runtime}.ts`, `tests/local-store.test.ts`: download (resume,
+  cancel, SHA-256), engine wrapper, hardware detection. `providers/local.ts`,
+  `tests/local-provider.test.ts`: chat, tools, JSON (two passes with tools), context fitting, errors.
+- Settings order: your key, then an installed offline model, then the free demo.
+- `AiSettings.tsx` + `OfflineModel.tsx`, IPC `localAi:*`, preload, web-demo stubs, Italian in
+  `shared/i18n/it/localai.ts`, top-bar chip "Offline".
+- `package.json`: `asarUnpack`, CUDA engine left out of the installer, `check:models` script.
+  `release.yml`: adds the Intel engine on the macOS job (the flags were tested in a scratch project).
+- `docs/local-ai.md`, CHANGELOG "Unreleased".
+- Checked in a Linux package: the engine is unpacked, CUDA is left out, and Electron's own Node
+  loads it from `app.asar` and builds a grammar.
+
+**Not done, in this order**
+1. Push the code and open a pull request (blocked on the 0.7.0 release: see "Where the code is").
+2. Run `npm run check:models` on a computer with internet: the file names and sizes in the catalog are
+   unverified (Hugging Face is not reachable from the cloud container). Fix `shared/localModels.ts` if it fails.
+3. Run a real model: download the small one from the app, or
+   `BP_LOCAL_MODEL=/path/to/Qwen3-4B-Q4_K_M.gguf npm test -- local-provider`. Nothing has answered a real
+   question yet. Check: reply quality with tools, that "thinking" stays off, speed on a CPU-only computer,
+   whether the recommendation limits in `fitLocalModel` feel right on a real Mac and Windows PC.
+4. Build the Windows and macOS installers from the branch (Actions → Release apps, without publishing
+   if possible) and open each once: installer size (expect Windows +about 100 MB), the engine loads,
+   the Intel Mac app has the Intel engine.
+5. CI cost: `npm ci` now also downloads the Linux CUDA engines (about 540 MB) on every run. If that is
+   too slow, cache `node_modules` or override those two packages.
+6. README, website FAQ ("Does it need internet or an AI account?"), feature lists and a screenshot of
+   the Offline model card, only after step 3 works.
+7. Your other request in the same message: a cheap-API option is today the existing "fast" models
+   (Claude Haiku, GPT Luna, Gemini Flash-Lite) picked by hand in AI settings; a "Cheap / Balanced /
+   Best" switch per provider is not built. The Llama family you mentioned is not in the catalog (Qwen 3
+   only, as you chose); adding one is a new row in `LOCAL_MODELS` plus its chat wrapper in `engine.ts`.
+
+**Where the code is:** the commits sit on the local branch in the cloud container. Pull request 38
+(the 0.7.0 release, checks green) is still open on the same branch, so pushing the offline code there
+would put it into 0.7.0. Once 0.7.0 is merged and released, rebase the offline commits onto `main` and
+push the branch again (a new pull request).
 
 **Continue on another computer:** `git pull`, `npm install` (adds `node-llama-cpp`), start at the
 first unchecked step. A first version of the engine and download code may already be in the

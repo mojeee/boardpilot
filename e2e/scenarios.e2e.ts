@@ -1,6 +1,7 @@
 // One test per scenario, on the built app in simulator mode (docs/testing.md).
 import { expect, test } from '@playwright/test';
 import { createServer, type Server } from 'node:http';
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { confirmDialog, driveWizard, launch, logText, menu, type App } from './app';
@@ -248,6 +249,55 @@ test('the AI does an app action: "back up my board"', async () => {
     expect(relay.calls[0]).toContain('Project scene');
   } finally {
     relay.server.close();
+  }
+});
+
+/** A stand-in for Hugging Face that serves a fake "model" file (with the SHA-256 header). */
+function fakeModelMirror(): Promise<{ server: Server; url: string }> {
+  const file = Buffer.alloc(3_000_000, 3);
+  const sha = createHash('sha256').update(file).digest('hex');
+  const server = createServer((_req, res) => {
+    res.writeHead(200, { 'content-length': file.length, 'x-linked-etag': `"${sha}"` });
+    // Slowly enough for the progress bar to be seen.
+    let sent = 0;
+    const timer = setInterval(() => {
+      res.write(file.subarray(sent, sent + 500_000));
+      sent += 500_000;
+      if (sent >= file.length) {
+        clearInterval(timer);
+        res.end();
+      }
+    }, 60);
+  });
+  return new Promise((resolve) => server.listen(0, '127.0.0.1', () => resolve({ server, url: `http://127.0.0.1:${(server.address() as { port: number }).port}` })));
+}
+
+test('offline model: AI settings looks at this computer, downloads a model, and a broken file gives plain words', async () => {
+  const mirror = await fakeModelMirror();
+  try {
+    a = await launch({ env: { BOARDPILOT_MODEL_BASE_URL: mirror.url } });
+    const { page } = a;
+    await expect(page.locator('.ai-set-chip')).toContainText('AI off');
+    await page.locator('.ai-set-chip').click();
+    await page.locator('.ai-prov', { hasText: 'Offline' }).click();
+    const panel = page.locator('.ai-local');
+    await expect(panel).toContainText('This computer:', { timeout: 60_000 });
+    await expect(panel).toContainText('Best for this computer');
+    await expect(panel.locator('.ai-local-row')).toHaveCount(3);
+    // Download the small model: progress shows, then it can be used or deleted.
+    const row = panel.locator('.ai-local-row', { hasText: 'Qwen 3 4B' });
+    await row.locator('.btn.primary', { hasText: 'Download' }).click();
+    await expect(row.locator('.ai-local-progress')).toBeVisible();
+    await expect(row.locator('.btn', { hasText: 'Delete' })).toBeVisible({ timeout: 60_000 });
+    await expect(row).toContainText('In use');
+    await page.locator('.modal-actions .btn.primary', { hasText: 'Save' }).click();
+    await expect(page.locator('.ai-set-chip')).toContainText('Offline');
+    // The file is not a real model: the assistant says so in plain words instead of failing silently.
+    await page.locator('.ask-box textarea').fill('What is on my I2C bus?');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.ai-error').last()).toContainText('The offline model could not be loaded', { timeout: 120_000 });
+  } finally {
+    mirror.server.close();
   }
 });
 
