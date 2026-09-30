@@ -2,6 +2,7 @@
 // No runtime code here except tiny helpers; keep it free of Node and DOM imports.
 
 import type { StateMachine } from './statemachine';
+import type { SceneOp } from './sceneEdit';
 
 /* ---------- errors ---------- */
 
@@ -632,6 +633,8 @@ export interface AiReply {
   proposal?: { partIds: string[]; reason: string };
   /** a code suggestion the app writes in the Code panel */
   codeRequest?: string;
+  /** changes to the drawing (shared/sceneEdit.ts), applied when the user clicks Apply */
+  sceneEdit?: { ops: SceneOp[]; reason: string };
 }
 
 export interface WriteRequest {

@@ -4,6 +4,7 @@
 // click would; backups and reads need none.
 
 import { APP_ACTIONS, actionById, type AppActionId } from '@shared/actions';
+import type { McpActionAnswer } from '@shared/api';
 import { BOARDS, PARTS, boardList, getBoard } from '@shared/board';
 import { assignPins } from '@shared/assign';
 import { TEMPLATES } from '@shared/templates';
@@ -248,8 +249,24 @@ async function execute(run: Run, id: AppActionId, arg: string) {
 
 /** Run an app action and show it as a card in the assistant panel. */
 export async function runAction(id: string, arg = '', from: 'ai' | 'box' = 'ai'): Promise<boolean> {
+  return (await runActionWithSteps(id, arg, from)).ok;
+}
+
+/** Run an app action for an MCP agent; the answer lists the steps the card showed. */
+export async function runActionForAgent(id: string, arg: string, client: string): Promise<McpActionAnswer> {
   const def = actionById(id);
-  if (!def) return false;
+  if (!def) return { status: 'failed', steps: [], error: `unknown action ${id}` };
+  // Project changes from an outside agent go through edit_project, which the user applies.
+  if (def.editsProject) return { status: 'refused', steps: [], error: 'this action changes the project: use edit_project (assign_pins), or ask the user to do it in the app' };
+  log('action', t('{client} (an AI agent) runs: {action}', { client, action: t(def.label) }), { source: `MCP: ${client}` });
+  const r = await runActionWithSteps(id, arg, 'mcp');
+  const status = r.state === 'failed' ? 'failed' : r.state === 'stopped' ? 'stopped' : r.ok ? 'done' : 'failed';
+  return { status, steps: r.steps.map((s) => `${s.status === 'fail' ? 'failed: ' : s.status === 'skip' ? 'skipped: ' : ''}${s.text}`) };
+}
+
+async function runActionWithSteps(id: string, arg: string, from: 'ai' | 'box' | 'mcp'): Promise<{ ok: boolean; steps: ActionStep[]; state?: string }> {
+  const def = actionById(id);
+  if (!def) return { ok: false, steps: [] };
   useLayout.getState().toggleRight(true);
   if (useApp.getState().screen === 'newProject') useLayout.getState().setRightTab('assistant');
   const itemId = useAi.getState().push({
@@ -263,17 +280,25 @@ export async function runAction(id: string, arg = '', from: 'ai' | 'box' = 'ai')
     readOnly: !def.writes,
   });
   const run = new Run(itemId);
-  log('action', from === 'ai' ? t('The assistant runs: {action}', { action: t(def.label) }) : t('Running: {action}', { action: t(def.label) }), { source: 'app action' });
+  if (from !== 'mcp') log('action', from === 'ai' ? t('The assistant runs: {action}', { action: t(def.label) }) : t('Running: {action}', { action: t(def.label) }), { source: 'app action' });
+  let ok = false;
   try {
     await execute(run, def.id, arg);
-    return true;
+    ok = true;
   } catch (e) {
-    if (!(e instanceof Stop)) run.fail(e instanceof Error ? e.message : String(e));
-    return false;
+    if (!(e instanceof Stop)) {
+      try {
+        run.fail(e instanceof Error ? e.message : String(e));
+      } catch {
+        /* run.fail always throws Stop after marking the card */
+      }
+    }
   } finally {
     stopped.delete(itemId);
     useAi.getState().patch(itemId, (x: ChatItem) => (x.role === 'action' && x.state === 'running' ? { ...x, state: 'done' } : x));
   }
+  const item = useAi.getState().items.find((x) => x.id === itemId);
+  return item?.role === 'action' ? { ok, steps: item.steps, state: item.state } : { ok, steps: [] };
 }
 
 export { APP_ACTIONS };

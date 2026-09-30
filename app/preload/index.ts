@@ -82,7 +82,7 @@ const api: BoardPilotApi = {
     save: call('project:save'),
     open: call('project:open'),
   } as BoardPilotApi['project'],
-  mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult') } as BoardPilotApi['mcp'],
+  mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult'), sceneEditResult: call('mcp:sceneEditResult'), actionResult: call('mcp:actionResult') } as BoardPilotApi['mcp'],
   coach: {
     ask: call('coach:ask'),
     history: call('coach:history'),
@@ -107,6 +107,8 @@ const api: BoardPilotApi = {
     progress: listen('progress'),
     trace: listen('trace'),
     mcpWrite: listen('mcpWrite'),
+    mcpSceneEdit: listen('mcpSceneEdit'),
+    mcpAction: listen('mcpAction'),
   } as BoardPilotApi['on'],
 };
 

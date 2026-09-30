@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- MCP on Windows works: `BoardPilot --mcp-stdio` never received anything from the AI agent (in Electron's main process on Windows `process.stdin` is an empty stream that ends at once), so Claude Desktop, Claude Code and Cursor saw no tools and the headless mode quit after a second. It now reads the pipe directly.
+- MCP results say when they come from the simulator (`"simulated": true`), so an agent never takes the simulated bench for real hardware.
+- AI agents and the in-app assistant can change the project: `edit_project` adds, removes and renames parts, adds and removes wires, assigns safe pins and writes the code. One shared module (`shared/sceneEdit.ts`) checks every change against the board and part files and runs the wiring rules on the result; the user sees the list with Apply in the assistant panel (⌘Z undoes it).
+- MCP `run_app_action`: an agent can run the app's own actions (connect, back up, monitor, debug, test, run the simulation, suggest code…), shown step by step like the assistant's. Writes still open their confirmation dialog.
+- Work in progress (the rest of "the chat and MCP can do everything"): see `docs/todo-ai-project-control.md`.
+
 ## 0.7.0 (2026-09-30)
 
 Workspace redesign (the plan in `docs/roadmap-2026-10.md`):

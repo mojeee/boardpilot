@@ -41,6 +41,8 @@ export interface AppActionDef {
   writes?: boolean;
   /** only reads the board */
   readsBoard?: boolean;
+  /** changes the open project; an MCP agent needs the user's Apply first (the in-app assistant was asked directly) */
+  editsProject?: boolean;
   /** where it is in the UI: a data-where value (menu items, buttons) for "Show me where it is" */
   where: string;
 }
@@ -59,12 +61,12 @@ export const APP_ACTIONS: AppActionDef[] = [
   { id: 'new_project', label: 'New project', hint: 'Open a new project: blank, read from port or template.', keywords: ['new', 'project', 'nuovo', 'progetto', 'blank', 'template'], arg: 'mode: blank, port, template (optional)', where: 'tabs:new' },
   { id: 'open_template', label: 'Start from a template', hint: 'Build a template project on this board.', keywords: ['template', 'example', 'blink', 'weather', 'modello', 'esempio'], arg: 'template id', where: 'tabs:new' },
   { id: 'run_simulation', label: 'Run in simulator', hint: 'Run the template project step by step without hardware.', keywords: ['run', 'simulate', 'simulator', 'play', 'esegui', 'simula'], where: 'code:run' },
-  { id: 'assign_pins', label: 'Assign safe pins', hint: 'Wire every part to pins that are safe on this board.', keywords: ['wire', 'wiring', 'pins', 'assign', 'collega', 'pin'], where: 'right:tools' },
+  { id: 'assign_pins', label: 'Assign safe pins', hint: 'Wire every part to pins that are safe on this board.', keywords: ['wire', 'wiring', 'pins', 'assign', 'collega', 'pin'], editsProject: true, where: 'right:tools' },
   { id: 'suggest_code', label: 'Suggest code', hint: 'Code for the parts and pins in the drawing.', keywords: ['code', 'sketch', 'write code', 'codice'], arg: 'what the code should do (optional)', where: 'code:suggest' },
   { id: 'show_code', label: 'Show the code', hint: 'Open the Code panel.', keywords: ['code', 'editor', 'sketch', 'codice'], where: 'bottom:code' },
   { id: 'show_log', label: 'Show the log', hint: 'Open the session log.', keywords: ['log', 'history', 'registro'], where: 'bottom:log' },
   { id: 'show_view', label: 'Change the view', hint: '3D board, 2D pinout, wiring diagram or schematic.', keywords: ['3d', 'pinout', 'diagram', 'schematic', 'schema', 'view', 'vista'], arg: 'view: 3d, 2d, diagram, schematic', where: 'view:toolbar' },
-  { id: 'set_board', label: 'Change the board', hint: 'Pick the board of the project.', keywords: ['board', 'esp32', 'pico', 'arduino', 'stm32', 'scheda'], arg: 'board id (optional: opens the list)', where: 'top:board' },
+  { id: 'set_board', label: 'Change the board', hint: 'Pick the board of the project.', keywords: ['board', 'esp32', 'pico', 'arduino', 'stm32', 'scheda'], arg: 'board id (optional: opens the list)', editsProject: true, where: 'top:board' },
   { id: 'export_pdf', label: 'Export PDF', hint: 'The electrical design as a drawing set: schematic, wiring, parts list, checks.', keywords: ['pdf', 'export', 'drawing', 'schematic', 'print', 'esporta', 'stampa'], where: 'top:export' },
   { id: 'create_report', label: 'Create a report', hint: 'A summary of this session to share.', keywords: ['report', 'summary', 'share', 'rapporto'], where: 'menu:report' },
   { id: 'ai_settings', label: 'AI settings', hint: 'Pick the AI provider and add your key.', keywords: ['ai', 'key', 'claude', 'gpt', 'gemini', 'chiave'], where: 'top:ai' },

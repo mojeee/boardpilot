@@ -365,12 +365,12 @@ export class Assistant {
         }
         const results: ToolResult[] = [];
         for (const call of response.toolCalls) {
-          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn);
+          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn, ctx.scene);
           turn.calls.push({ name: call.name, input: call.input, ok: !r.isError });
           results.push({ callId: call.id, name: call.name, content: r.content, isError: r.isError });
         }
         messages.push({ role: 'tool', results });
-        if (turn.ask || turn.pendingWrite || turn.actions?.length || turn.proposal) {
+        if (turn.ask || turn.pendingWrite || turn.actions?.length || turn.proposal || turn.sceneEdit) {
           // The UI takes over; ask for the final structured reply without more tool calls.
           continue;
         }
@@ -394,6 +394,7 @@ export class Assistant {
             actions: turn.actions,
             proposal: turn.proposal,
             codeRequest: turn.codeRequest,
+            sceneEdit: turn.sceneEdit,
           },
         };
       }
@@ -415,6 +416,7 @@ export class Assistant {
           actions: turn.actions,
           proposal: turn.proposal,
           codeRequest: turn.codeRequest,
+          sceneEdit: turn.sceneEdit,
         },
         measuredThisTurn,
         logHasMeasurements,

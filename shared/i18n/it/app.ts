@@ -163,6 +163,30 @@ const it: Record<string, string> = {
   "Detect my board": "Rileva la mia scheda",
   "Start empty": "Inizia vuoto",
   "Finds the board on USB, reads its chip and sets it as the project board. Only reads.": "Trova la scheda sulla USB, legge il suo chip e la imposta come scheda del progetto. Legge soltanto.",
+
+  // Project changes asked for by an AI (shared/sceneEdit.ts, EditCard in AssistantPanel.tsx)
+  'Add {part} as {id}.': 'Aggiungi {part} come {id}.',
+  'Remove {name} and its wires.': 'Rimuovi {name} e i suoi fili.',
+  'Rename {id} to “{label}”.': 'Rinomina {id} in “{label}”.',
+  'Wire {from} to {to}.': 'Collega {from} a {to}.',
+  'Remove the wire {from} – {to}.': 'Rimuovi il filo {from} – {to}.',
+  'Every part pin already has a wire: no pins to assign.': 'Ogni pin dei componenti ha già un filo: nessun pin da assegnare.',
+  'Replace the code in {name} ({lines} lines).': 'Sostituisci il codice in {name} ({lines} righe).',
+  'A lesson preview is open.': 'È aperta l’anteprima di una lezione.',
+  'Close the preview, then apply the changes.': 'Chiudi l’anteprima, poi applica le modifiche.',
+  '{n} changes applied to the project. ⌘Z undoes them.': '{n} modifiche applicate al progetto. ⌘Z le annulla.',
+  'Applied. ⌘Z undoes it.': 'Applicato. ⌘Z lo annulla.',
+  'Not applied. The project is unchanged.': 'Non applicato. Il progetto non è cambiato.',
+  'This request timed out, so nothing was changed. Ask again.': 'La richiesta è scaduta, quindi non è cambiato nulla. Chiedi di nuovo.',
+  'Changes to the project': 'Modifiche al progetto',
+  'The wiring check would then find': 'Il controllo dei collegamenti troverebbe poi',
+  Apply: 'Applica',
+  'Only the drawing changes, not the board. Nothing changes until you click.': 'Cambia solo il disegno, non la scheda. Non cambia nulla finché non clicchi.',
+  'You did not apply the assistant’s changes. The project is unchanged.': 'Non hai applicato le modifiche dell’assistente. Il progetto non è cambiato.',
+  'You did not apply the changes from {client}. The project is unchanged.': 'Non hai applicato le modifiche di {client}. Il progetto non è cambiato.',
+  '{client} (an AI agent, through MCP)': '{client} (un agente AI, tramite MCP)',
+  '{client} (an AI agent) asks to change the project. The list is in the assistant panel.': '{client} (un agente AI) chiede di modificare il progetto. L’elenco è nel pannello dell’assistente.',
+  '{client} (an AI agent) runs: {action}': '{client} (un agente AI) esegue: {action}',
 };
 
 export default it;
