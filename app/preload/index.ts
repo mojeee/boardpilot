@@ -59,6 +59,13 @@ const api: BoardPilotApi = {
     describeProject: call('ai:describeProject'),
     reset: call('ai:reset'),
   } as BoardPilotApi['ai'],
+  localAi: {
+    status: call('localAi:status'),
+    download: call('localAi:download'),
+    cancel: call('localAi:cancel'),
+    remove: call('localAi:remove'),
+    onProgress: listen('localAiProgress'),
+  } as BoardPilotApi['localAi'],
   session: {
     append: (entry) => ipcRenderer.send('session:append', entry),
     pickFile: call('session:pickFile'),

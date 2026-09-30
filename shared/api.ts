@@ -27,6 +27,7 @@ import type {
   WriteRequest,
 } from './types';
 import type { AiModelInfo, AiProviderId, AiSettingsInput, AiSettingsView, AiStatus } from './ai';
+import type { LocalAiStatus, LocalDownloadEvent } from './localModels';
 import type { PreflightReport } from './preflight';
 import type { CoachAttempt } from './coach';
 import type { StarterFile } from './starter/common';
@@ -93,6 +94,15 @@ export interface BoardPilotApi {
     /** New project → "Describe it": questions first, then parts and starter code to confirm. */
     describeProject(req: DescribeRequest): Promise<Result<DescribeReply>>;
     reset(): Promise<void>;
+  };
+  /** Offline model: what this computer can run, and downloading the model files. */
+  localAi: {
+    status(): Promise<LocalAiStatus>;
+    /** Resolves when the download has finished (or failed, or was cancelled); progress comes from onProgress. */
+    download(modelId: string): Promise<Result<void>>;
+    cancel(): Promise<void>;
+    remove(modelId: string): Promise<Result<LocalAiStatus>>;
+    onProgress(cb: (p: LocalDownloadEvent) => void): () => void;
   };
   session: {
     append(entry: LogEntry): void;

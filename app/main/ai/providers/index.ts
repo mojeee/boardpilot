@@ -6,14 +6,20 @@ import { t } from '@shared/i18n';
 import { AnthropicProvider } from './anthropic';
 import { DemoProvider, demoOptions } from './demo';
 import { GeminiProvider } from './gemini';
+import { LocalProvider, type LocalDeps } from './local';
 import { OpenAiProvider } from './openai';
 import { ProviderError, type AiProvider } from './types';
 
 export * from './types';
 export { demoOptions } from './demo';
+export type { LocalDeps } from './local';
 
 /** A provider client. The free demo needs no key; `env` supplies its relay URL and app version. */
-export function createProvider(id: AiProviderId, apiKey: string, env: Record<string, string | undefined> = process.env): AiProvider {
+export function createProvider(id: AiProviderId, apiKey: string, env: Record<string, string | undefined> = process.env, local?: LocalDeps): AiProvider {
+  if (id === 'local') {
+    if (!local) throw new ProviderError('not_configured', 'local', 'The offline model is not available here.');
+    return new LocalProvider(local);
+  }
   if (id === 'demo') {
     const opts = demoOptions(env);
     if (!opts) throw new ProviderError('not_configured', 'demo', 'The free demo is switched off (BOARDPILOT_DEMO_AI_URL=off).');
@@ -29,6 +35,26 @@ export function toAiError(e: unknown, provider: AiProviderId, model: string): Ap
   const name = PROVIDER_INFO[provider].name;
   if (!(e instanceof ProviderError)) {
     return { code: 'ai_error', humanMessage: t('The assistant failed: {msg}', { msg: e instanceof Error ? e.message : String(e) }), hint: t('Try again.') };
+  }
+  if (provider === 'local') {
+    const settings = t('Open AI settings (the AI chip at the top) to download an offline model or add your own key.');
+    switch (e.kind) {
+      case 'not_configured':
+      case 'model':
+        return { code: 'ai_local_none', humanMessage: t('No offline model is installed yet.'), hint: settings };
+      case 'bad_request':
+        return { code: 'ai_local_text_only', humanMessage: t('The offline model reads text only, so it cannot look at photos or files.'), hint: t('Use Claude, GPT or Gemini for photos. Open AI settings (the AI chip at the top).') };
+      case 'too_large':
+        return { code: 'ai_local_too_large', humanMessage: t('The question and the project are too big for the offline model.'), hint: t('Ask a shorter question, or use Claude, GPT or Gemini in AI settings.') };
+      case 'timeout':
+        return { code: 'ai_local_slow', humanMessage: t('The offline model took too long to answer.'), hint: t('Try a shorter question or a smaller model. Computers without a fast graphics card answer slowly.') };
+      default:
+        return {
+          code: 'ai_local_error',
+          humanMessage: t('The offline model stopped: {msg}', { msg: e.message.slice(0, 200) }),
+          hint: t('Close heavy programs and try again, or pick a smaller model in AI settings.'),
+        };
+    }
   }
   if (provider === 'demo') {
     const ownKey = t('Open AI settings (the AI chip at the top) to add your own Claude, GPT or Gemini key.');

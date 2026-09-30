@@ -34,6 +34,7 @@ import {
   type ChatMessage,
   type ChatResponse,
   type InputPart,
+  type LocalDeps,
   type ToolResult,
   type WebCitation,
 } from './providers';
@@ -43,7 +44,7 @@ export const MAIN_MODEL = PROVIDER_INFO.anthropic.defaultModel;
 export const FAST_MODEL = PROVIDER_INFO.anthropic.fastModel;
 const MAX_TOOL_ROUNDS = 8;
 
-const REPLY_SCHEMA = {
+export const REPLY_SCHEMA = {
   type: 'object',
   properties: {
     message: { type: 'string' },
@@ -157,7 +158,7 @@ export function enforceHonesty(reply: AiReply, measuredThisTurn: boolean, logHas
   return { ...reply, confidence, sources };
 }
 
-const RECOGNIZE_SCHEMA = {
+export const RECOGNIZE_SCHEMA = {
   type: 'object',
   properties: {
     partId: { type: ['string', 'null'], description: 'id from the library, or null if none match' },
@@ -169,7 +170,7 @@ const RECOGNIZE_SCHEMA = {
   additionalProperties: false,
 };
 
-const EXTRACT_SCHEMA = {
+export const EXTRACT_SCHEMA = {
   type: 'object',
   properties: {
     name: { type: 'string', description: 'short product name, e.g. "HC-SR04 ultrasonic sensor"' },
@@ -213,7 +214,7 @@ const EXTRACT_SCHEMA = {
   additionalProperties: false,
 };
 
-const CODE_SCHEMA = {
+export const CODE_SCHEMA = {
   type: 'object',
   properties: {
     title: { type: 'string', description: 'what the code does, max 8 words, e.g. "Read the sensor every second"' },
@@ -235,7 +236,7 @@ const CODE_SCHEMA = {
   additionalProperties: false,
 };
 
-const DESCRIBE_SCHEMA = {
+export const DESCRIBE_SCHEMA = {
   type: 'object',
   properties: {
     kind: { type: 'string', enum: ['questions', 'proposal'] },
@@ -276,7 +277,7 @@ const DESCRIBE_SCHEMA = {
   additionalProperties: false,
 };
 
-const CLASSIFY_SCHEMA = {
+export const CLASSIFY_SCHEMA = {
   type: 'object',
   properties: {
     optionId: { type: ['string', 'null'] },
@@ -296,6 +297,8 @@ export class Assistant {
     private readonly hub: HardwareHub,
     private readonly settings: AiSettingsStore,
     env: Record<string, string | undefined> = process.env,
+    /** The offline model's engine and files; without it the offline provider is unavailable. */
+    private readonly local?: LocalDeps,
   ) {
     this.env = env;
   }
@@ -303,7 +306,7 @@ export class Assistant {
   /** A provider instance for `id` with `key`; reused while the key stays the same. */
   private providerFor(id: AiProviderId, key: string): AiProvider {
     if (this.cached && this.cached.id === id && this.cached.key === key) return this.cached.provider;
-    const provider = createProvider(id, key, this.env);
+    const provider = createProvider(id, key, this.env, this.local);
     this.cached = { id, key, provider };
     return provider;
   }
@@ -312,7 +315,9 @@ export class Assistant {
     if (!this.settings.usable) return null;
     const id = this.settings.active();
     const key = this.settings.getKey(id) ?? '';
-    return { id, provider: this.providerFor(id, key), model: this.settings.model(id), fastModel: PROVIDER_INFO[id].fastModel };
+    const model = this.settings.model(id);
+    // The offline engine keeps one model loaded: the "fast" model is the same one.
+    return { id, provider: this.providerFor(id, key), model, fastModel: id === 'local' ? model : PROVIDER_INFO[id].fastModel };
   }
 
   get enabled() {
@@ -719,7 +724,7 @@ export class Assistant {
     const key = needsKey ? apiKey?.trim() || this.settings.getKey(provider) : '';
     if (needsKey && !key) return { ok: false, error: { code: 'ai_nokey', humanMessage: t('Paste an API key first.'), hint: t('The model list comes from the provider and needs your key.') } };
     try {
-      const models = await createProvider(provider, key ?? '', this.env).listModels();
+      const models = await createProvider(provider, key ?? '', this.env, this.local).listModels();
       return { ok: true, value: models };
     } catch (e) {
       return { ok: false, error: toAiError(e, provider, this.settings.model(provider)) };
@@ -735,7 +740,7 @@ export class Assistant {
     if (needsKey && !key) return { ok: false, error: { code: 'ai_nokey', humanMessage: t('Paste an API key first.'), hint: t('The test sends one short message to the provider with your key.') } };
     const started = Date.now();
     try {
-      await createProvider(provider, key ?? '', this.env).complete({ model, maxTokens: 32, timeoutMs: 30_000, parts: [{ type: 'text', text: 'Reply with the single word OK.' }] });
+      await createProvider(provider, key ?? '', this.env, this.local).complete({ model, maxTokens: 32, timeoutMs: 30_000, parts: [{ type: 'text', text: 'Reply with the single word OK.' }] });
       return { ok: true, value: { provider, model, ms: Date.now() - started } };
     } catch (e) {
       return { ok: false, error: toAiError(e, provider, model) };

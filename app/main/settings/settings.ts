@@ -20,6 +20,7 @@ import {
 } from '@shared/ai';
 import { t } from '@shared/i18n';
 import { demoOptions } from '../ai/providers/demo';
+import { DEFAULT_LOCAL_MODEL, isLocalModelId } from '@shared/localModels';
 
 /** The part of Electron's safeStorage we use (injected so tests can run without Electron). */
 export interface SecretBox {
@@ -52,6 +53,8 @@ const fail = <T>(code: string, humanMessage: string, hint: string): Result<T> =>
 export class AiSettingsStore {
   private data: SettingsFile;
   private cache = new Map<AiProviderId, string>();
+  /** Ids of the offline models on disk (set by the main process; none in tests that do not need it). */
+  localInstalled: () => string[] = () => [];
 
   constructor(
     private readonly file: string,
@@ -128,17 +131,34 @@ export class AiSettingsStore {
    *  Returns the picked provider when neither works; callers then report "AI is off". */
   active(): AiProviderId {
     const p = this.data.provider;
-    if (PROVIDER_INFO[p].needsKey && this.getKey(p)) return p;
+    if (p === 'local') return this.localReady ? 'local' : this.demoEnabled ? 'demo' : p;
+    if (p === 'demo') return this.demoEnabled ? 'demo' : this.localReady ? 'local' : p;
+    if (this.getKey(p)) return p;
+    // No key: an offline model on this computer answers before the free demo does.
+    if (this.localReady) return 'local';
     return this.demoEnabled ? 'demo' : p;
+  }
+
+  /** True when an offline model is downloaded and can be used. */
+  get localReady(): boolean {
+    return this.localInstalled().length > 0;
   }
 
   /** True when the active provider can answer (it has a key, or it is the enabled demo). */
   get usable(): boolean {
     const a = this.active();
+    if (a === 'local') return this.localReady;
     return a === 'demo' ? this.demoEnabled : this.getKey(a) !== null;
   }
 
   model(p: AiProviderId = this.active()): string {
+    if (p === 'local') {
+      // The one the user picked if it is installed, else the largest installed, else the small default.
+      const installed = this.localInstalled();
+      const picked = this.data.models.local;
+      if (picked && installed.includes(picked)) return picked;
+      return installed.at(-1) ?? DEFAULT_LOCAL_MODEL;
+    }
     if (!PROVIDER_INFO[p].needsKey) return PROVIDER_INFO[p].defaultModel;
     return this.data.models[p] ?? PROVIDER_INFO[p].defaultModel;
   }
@@ -156,6 +176,7 @@ export class AiSettingsStore {
       provider: this.data.provider,
       active: this.active(),
       demoEnabled: this.demoEnabled,
+      localReady: this.localReady,
       model: this.model(this.data.provider),
       providers,
       canSaveKeys: this.box.isEncryptionAvailable(),
@@ -182,7 +203,9 @@ export class AiSettingsStore {
       this.cache.set(input.provider, key);
     }
     this.data.provider = input.provider;
-    if (model && model !== PROVIDER_INFO[input.provider].defaultModel && PROVIDER_INFO[input.provider].needsKey) this.data.models[input.provider] = model;
+    if (input.provider === 'local') {
+      if (isLocalModelId(model)) this.data.models.local = model;
+    } else if (model && model !== PROVIDER_INFO[input.provider].defaultModel && PROVIDER_INFO[input.provider].needsKey) this.data.models[input.provider] = model;
     else delete this.data.models[input.provider];
     try {
       this.write();

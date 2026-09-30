@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { writeFile } from 'node:fs/promises';
 import { HardwareHub } from './hardware/hub';
 import { Assistant } from './ai/assistant';
+import { LocalRuntime } from './ai/local/runtime';
 import { registerIpc } from './ipc';
 import { SessionLog } from './session/sessionLog';
 import { UserParts } from './parts/userParts';
@@ -58,7 +59,9 @@ const mode = process.env.BOARDPILOT_MODE === 'real' ? 'real' : 'sim';
 const hub = new HardwareHub(dataDir, agentDir, mode);
 const sessionLog = new SessionLog(dataDir);
 const aiSettings = new AiSettingsStore(join(dataDir, 'settings.json'), safeStorage);
-const assistant = new Assistant(hub, aiSettings);
+const localRuntime = new LocalRuntime(dataDir);
+aiSettings.localInstalled = () => localRuntime.installedIds();
+const assistant = new Assistant(hub, aiSettings, process.env, localRuntime.deps());
 const userParts = new UserParts(join(dataDir, 'parts'));
 const license = new License(dataDir);
 
@@ -149,11 +152,16 @@ app.whenReady().then(() => {
       return userPartList;
     },
   });
-  registerIpc(hub, assistant, sessionLog, dataDir, userParts, license);
+  registerIpc(hub, assistant, sessionLog, dataDir, userParts, license, localRuntime, aiSettings);
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+});
+
+app.on('before-quit', () => {
+  localRuntime.store.cancel();
+  void localRuntime.dispose();
 });
 
 app.on('window-all-closed', () => {
