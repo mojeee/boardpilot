@@ -1,56 +1,55 @@
-// Live pixels on the 3D displays: the one hook between whatever draws a display's content (the
-// Display Studio simulation) and the display models in Parts.tsx.
+// Live pixels on the 3D displays: the 3D side of Display Studio's frame store
+// (app/renderer/state/displays.ts). Whatever draws a display puts a canvas there, keyed by scene
+// part id; the display model in Parts.tsx shows it on the part's active area.
 //
-//   import { setDisplayTexture, displayArea } from '../three/displayTexture';
-//
-//   const area = displayArea(PARTS['ssd1306-i2c']);   // { widthPx: 128, heightPx: 64, … } or null
-//   const canvas = document.createElement('canvas');   // area.widthPx × area.heightPx
-//   const tex = new THREE.CanvasTexture(canvas);
-//   setDisplayTexture('oled1', tex);                    // scene part id, not the part definition id
-//   … draw on the canvas, then tex.needsUpdate = true (every frame you change it) …
-//   setDisplayTexture('oled1', null);                   // screen goes dark again
+//   useDisplayFrames.setState((s) => ({ frames: { ...s.frames, oled1: { canvas, widthPx: 128, heightPx: 64, version: 1 } } }));
+//   … draw on the canvas, then bump `version` (no React re-render: the screen checks it every frame) …
+//   remove the entry and the screen goes dark again.
 //
 // Rules:
-// - Keyed by scene part id (ScenePart.id). Any THREE.Texture works; CanvasTexture is the usual one.
-// - The texture covers exactly the active area (part JSON `display.activeMm`). Canvas pixel (0, 0)
-//   is the active area's corner at -x on the pin-header side (-z in the part's own frame), so the
-//   image reads upright when the header is at the top, as on most OLED and TFT modules. Columns
-//   run along +x (the pin row), rows away from the header (+z).
-// - Use NearestFilter for crisp pixels; the display model sets nothing on your texture except
-//   showing it. Colour space is up to the producer (set SRGBColorSpace for normal canvas colours).
-// - The producer owns the texture: it updates it, and disposes it after setting null.
-// - Without a texture the screen shows the panel switched off (dark glass, or blank paper for
-//   e-paper). The models never invent screen content.
-// - The texture shows at every Detail setting (Simple too): it is what the part does, not decoration.
+// - The canvas is the panel's pixels in display colours, mapped 1:1 onto the active area (part JSON
+//   `display.activeMm`) with NearestFilter, no colour change.
+// - Canvas pixel (0, 0) is the active area's corner at -x on the pin-header side (-z in the part's
+//   own frame): columns run along the pin row, rows away from it, so the image reads upright with
+//   the header at the top, as on most OLED and TFT modules. `display.widthPx × heightPx` is the
+//   panel as it sits on the module (st7735-tft-096: 160 × 80, its controller is portrait).
+// - Without a frame the screen shows the panel switched off (dark glass, blank paper for e-paper,
+//   unlit LEDs, faint character cells). The models never invent screen content.
+// - Shown at every Detail setting (Simple too): it is what the part does, not decoration.
 
-import { create } from 'zustand';
-import type * as THREE from 'three';
+import { useEffect, useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 import type { PartDef, PartDisplay } from '@shared/types';
+import { displayLayout } from '@shared/partModel';
+import { useDisplayFrames } from '../state/displays';
 
-interface DisplayTextures {
-  byPart: Record<string, THREE.Texture>;
-}
-
-const useDisplayTextures = create<DisplayTextures>(() => ({ byPart: {} }));
-
-/** Show a texture on the display of scene part `partId` (null: back to a dark screen). */
-export function setDisplayTexture(partId: string, tex: THREE.Texture | null): void {
-  useDisplayTextures.setState((s) => {
-    const byPart = { ...s.byPart };
-    if (tex) byPart[partId] = tex;
-    else delete byPart[partId];
-    return { byPart };
-  });
-}
-
-/** The texture shown on scene part `partId` right now, if any (not reactive). */
-export function displayTexture(partId: string): THREE.Texture | null {
-  return useDisplayTextures.getState().byPart[partId] ?? null;
-}
-
-/** React hook used by the display model: re-renders when the part's texture is set or cleared. */
+/**
+ * The texture for scene part `partId`'s frame, or null with no frame. Re-renders only when the
+ * canvas itself changes; a new `version` re-uploads the same texture on the next frame.
+ */
 export function useDisplayTexture(partId: string | undefined): THREE.Texture | null {
-  return useDisplayTextures((s) => (partId ? s.byPart[partId] ?? null : null));
+  const canvas = useDisplayFrames((s) => (partId ? s.frames[partId]?.canvas ?? null : null));
+  const tex = useMemo(() => {
+    if (!canvas) return null;
+    const t = new THREE.CanvasTexture(canvas);
+    t.magFilter = THREE.NearestFilter;
+    t.minFilter = THREE.LinearFilter;
+    t.generateMipmaps = false;
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.userData.version = -1;
+    return t;
+  }, [canvas]);
+  useEffect(() => () => tex?.dispose(), [tex]);
+  useFrame(() => {
+    if (!tex || !partId) return;
+    const v = useDisplayFrames.getState().frames[partId]?.version;
+    if (v !== undefined && v !== tex.userData.version) {
+      tex.userData.version = v;
+      tex.needsUpdate = true;
+    }
+  });
+  return tex;
 }
 
 /**
@@ -60,6 +59,7 @@ export function useDisplayTexture(partId: string | undefined): THREE.Texture | n
  */
 export function displayArea(def: PartDef): (PartDisplay & { centerMm: [number, number] }) | null {
   const d = def.display;
-  if (!d) return null;
-  return { ...d, centerMm: d.centerMm ?? [0, 0] };
+  const lay = displayLayout(def);
+  if (!d || !lay) return null;
+  return { ...d, centerMm: [lay.active.x, lay.active.z] };
 }
