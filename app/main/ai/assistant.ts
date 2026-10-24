@@ -363,6 +363,7 @@ export class Assistant {
             codeRequest: turn.codeRequest,
             ...(turn.choices ? { choices: turn.choices.choices } : {}),
             ...(turn.proposal ? { proposal: turn.proposal } : {}),
+            ...(turn.display ? { display: turn.display } : {}),
           },
         };
       }
@@ -391,6 +392,7 @@ export class Assistant {
           message: withQuestion(parsed.message, turn.choices?.question ?? turn.ask?.question),
           ...(turn.choices ? { choices: turn.choices.choices } : {}),
           ...(turn.proposal ? { proposal: turn.proposal } : {}),
+          ...(turn.display ? { display: turn.display } : {}),
           toolCalls: turn.calls,
           pendingWrite: turn.pendingWrite,
           actions: turn.actions,

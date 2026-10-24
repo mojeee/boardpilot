@@ -3,6 +3,7 @@
 
 import type { StateMachine } from './statemachine';
 import type { ProjectProposal } from './projectBuilder';
+import type { DisplaySpec, SpecProblem } from './displaySpec';
 
 /* ---------- errors ---------- */
 
@@ -574,6 +575,8 @@ export interface Scene {
   stateMachine?: StateMachine;
   /** The project's sketch, edited in the Code panel and saved with the project. */
   sketch?: ProjectSketch;
+  /** Display Studio: what each display module in the drawing shows (one spec per display part). */
+  displays?: DisplaySpec[];
 }
 
 export interface ProjectSketch {
@@ -635,6 +638,8 @@ export interface AiReply {
   choices?: AiChoice[];
   /** a whole project (parts, wiring, checks) the user can apply with one click */
   proposal?: ProjectProposal;
+  /** what a display should show (Display Studio), checked, for the user to apply */
+  display?: { spec: DisplaySpec; problems: SpecProblem[] };
 }
 
 export interface AiChoice {

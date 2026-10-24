@@ -6,6 +6,8 @@ import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
 import { generateStarter, starterToolchains, TOOLCHAIN_NAME, type StarterProject, type StarterToolchain } from '@shared/starter';
 import { useScene, log } from '../state/store';
+import { DisplayStudioPanel } from '../components/DisplayStudio';
+import { panelOf } from '@shared/displaySpec';
 import { openTask } from '../components/TaskRail';
 import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
@@ -35,6 +37,7 @@ export function NewProjectPanel() {
   const tplOpen = useTemplate((s) => !!s.tpl);
   const hasMachine = useScene((s) => s.scene.stateMachine !== undefined);
   const board = getBoard(scene.board);
+  const hasDisplay = scene.parts.some((p) => PARTS[p.partId] && panelOf(PARTS[p.partId]));
   const toolchains = starterToolchains(board);
   // A board without the picked toolchain falls back to Arduino.
   const toolchain = toolchains.includes(toolchainPick) ? toolchainPick : 'arduino';
@@ -109,6 +112,10 @@ export function NewProjectPanel() {
             </button>
           </div>
           {showTemplates && <TemplatePicker />}
+          <details className="bom-details" open={hasDisplay || undefined}>
+            <summary className="label">{t('Display Studio: what your screen shows, simulated pixel by pixel')}</summary>
+            <DisplayStudioPanel />
+          </details>
           <details className="bom-details">
             <summary className="label">{t('Plan my pins')}</summary>
             <PinPlanner />

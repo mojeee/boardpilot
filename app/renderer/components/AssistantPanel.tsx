@@ -15,6 +15,7 @@ import { t } from '@shared/i18n';
 import { openAiSettings } from './AiSettings';
 import { ChoiceCards, ProposalCard, applyProposal } from './ProposalCard';
 import { ExampleChats, ReplayBar } from '../replay/ReplayBar';
+import { DisplayCard, applyDisplay } from './DisplayStudio';
 import { useReplay } from '../replay/player';
 
 const CONF_TEXT = { measured: 'Measured', documented: 'From documentation', suggestion: 'Suggestion' };
@@ -76,6 +77,17 @@ export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
           onApply={() => {
             const where = applyProposal(reply.proposal!);
             if (id !== undefined) useAi.getState().mark(id, { applied: where });
+          }}
+        />
+      )}
+      {reply.display && id !== undefined && (
+        <DisplayCard
+          id={id}
+          display={reply.display}
+          applied={!!mark?.displayApplied}
+          onApply={() => {
+            applyDisplay(reply.display!.spec);
+            useAi.getState().mark(id, { displayApplied: true });
           }}
         />
       )}
