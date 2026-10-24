@@ -61,6 +61,7 @@ const WHY = {
   mcp: () => t('Letting AI coding agents use your board (MCP) needs the BoardPilot app on your computer.'),
   link: () => t('Importing a part from a web link needs the BoardPilot app: a web page cannot read other websites.'),
   license: () => t('License keys are entered in the BoardPilot app.'),
+  compile: () => t('Compiling needs the BoardPilot app with arduino-cli: a web page cannot run the compiler. The check against the drawing works here too.'),
 };
 
 /* ---------- IPC-like copying: the renderer never shares objects with the "main" side ---------- */
@@ -279,6 +280,9 @@ const api: BoardPilotApi = {
     openBuyPage: async () => {
       window.open(BUY_URL, '_blank', 'noopener,noreferrer');
     },
+  },
+  code: {
+    compile: async () => needsApp(WHY.compile()),
   },
   app: {
     setLanguage: async (lang: 'en' | 'it') => setLanguage(lang),

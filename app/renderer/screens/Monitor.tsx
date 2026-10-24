@@ -1,10 +1,14 @@
 // Monitor: serial console for the user's firmware, the timing view (sampled pin levels and decoded
 // I2C), live plots colored by source pin, memory panel.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
-import { currentBoard, useApp, useLive, log, type Series } from '../state/store';
+import { currentBoard, useApp, useLive, useScene, log, type Series } from '../state/store';
+import { projectFiles } from '@shared/codeProject';
+import { printSites, siteForOutput } from '@shared/serialLink';
+import { revealLine } from '../state/code';
+import { useLayout } from '../state/layout';
 import { startStream, agent } from '../state/hw';
 import { ROLE_HEX, getBoard, pinByGpio } from '@shared/board';
 import { openTask } from '../components/TaskRail';
@@ -153,6 +157,9 @@ function Console() {
   const [hideProbe, setHideProbe] = useState(true);
   const box = useRef<HTMLDivElement>(null);
   const lines = (hideProbe ? serial.filter((l) => !l.startsWith('@bp ')) : serial).slice(-400);
+  // Lines whose text matches a print call of the project's code link back to that line.
+  const sketch = useScene((s) => s.scene.sketch);
+  const sites = useMemo(() => printSites(projectFiles(sketch)), [sketch]);
   useEffect(() => {
     const el = box.current;
     if (el && el.scrollHeight - el.scrollTop - el.clientHeight < 60) el.scrollTop = el.scrollHeight;
@@ -170,11 +177,26 @@ function Console() {
       </div>
       <div className="console" ref={box}>
         {lines.length === 0 && <div className="dim">{t('Nothing yet. Open the serial port above.')}</div>}
-        {lines.map((l, i) => (
-          <div key={i} className={/error|fail|could not|brownout|guru/i.test(l) ? 'err-text' : ''}>
-            {l}
-          </div>
-        ))}
+        {lines.map((l, i) => {
+          const site = sites.length ? siteForOutput(l, sites) : null;
+          return (
+            <div key={i} className={/error|fail|could not|brownout|guru/i.test(l) ? 'err-text' : ''}>
+              {l}
+              {site && (
+                <button
+                  className="serial-src mono"
+                  title={t('Probably printed by line {line} of {file} (matched by its text)', { line: site.line, file: site.file })}
+                  onClick={() => {
+                    useLayout.getState().showBottom('code');
+                    revealLine(site.line, site.file === sketch?.name ? undefined : site.file);
+                  }}
+                >
+                  ↗ {site.file === sketch?.name ? t('line {n}', { n: site.line }) : `${site.file}:${site.line}`}
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
       <div className="row gap">
         <input className="text-in mono" value={send} onChange={(e) => setSend(e.target.value)} placeholder={t('Send text to the board…')} />

@@ -1,0 +1,74 @@
+/* The Code panel's CodeMirror editor: file tabs, the editor, the status bar, and the BoardPilot
+   pieces drawn in the code (pins, suggestions, the run line, the selection toolbar, the ask box). */
+
+/* ---------- file tabs ---------- */
+.ce-files { display: flex; align-items: center; gap: 2px; padding: 0 6px; height: 28px; flex-shrink: 0; background: var(--chrome); border-bottom: 1px solid var(--line); overflow-x: auto; overflow-y: hidden; }
+.ce-file { display: flex; align-items: center; border-radius: 5px 5px 0 0; height: 100%; }
+.ce-file > button[role='tab'] { background: none; border: none; color: var(--dim); font-size: 11.5px; padding: 0 8px; height: 100%; white-space: nowrap; border-bottom: 2px solid transparent; }
+.ce-file > button[role='tab']:hover { color: var(--text); }
+.ce-file.on > button[role='tab'] { color: var(--text); border-bottom-color: var(--ai); }
+.ce-file-x { background: none; border: none; color: var(--dim); font-size: 13px; padding: 0 5px 0 0; line-height: 1; }
+.ce-file-x:hover { color: var(--err); }
+.ce-file-add { background: none; border: 1px dashed var(--line); color: var(--dim); border-radius: 5px; width: 22px; height: 20px; line-height: 1; margin-left: 4px; flex-shrink: 0; }
+.ce-file-add:hover { color: var(--text); border-color: var(--muted); }
+.ce-file-in { width: 140px; height: 20px; font-size: 11.5px; background: var(--bg); color: var(--text); border: 1px solid var(--ai-line); border-radius: 4px; padding: 0 6px; margin: 0 4px; }
+.ce-file-problem { color: var(--warn); white-space: nowrap; margin-left: 6px; }
+.ce-file-confirm { display: flex; align-items: center; gap: 6px; margin-left: 10px; white-space: nowrap; color: var(--muted); }
+.ce-file-confirm .btn.small { padding: 1px 8px; }
+
+/* ---------- editor and status bar ---------- */
+.ce-host { position: relative; flex: 1; min-height: 0; }
+.ce-host > .cm-editor { position: absolute; inset: 0; }
+.ce-status { display: flex; align-items: center; gap: 14px; height: 22px; padding: 0 10px; flex-shrink: 0; font-size: 11px; color: var(--muted); background: var(--chrome); border-top: 1px solid var(--line); white-space: nowrap; overflow: hidden; }
+.ce-status .grow { flex: 1; }
+.ce-status .ok { color: var(--ok); }
+.ce-status .err { color: var(--err); }
+.ce-status-btn { background: none; border: none; padding: 0; font: inherit; color: var(--ok); }
+.ce-status-btn.warn { color: var(--warn); }
+.ce-status-btn:hover { text-decoration: underline; }
+.ce-status-run { color: var(--ai); }
+
+/* ---------- pins in the code ---------- */
+.cm-pin { text-decoration: underline dotted var(--pin-c, var(--dim)); text-decoration-thickness: 1.5px; text-underline-offset: 3px; cursor: help; }
+.cm-pin-lit { background: color-mix(in srgb, var(--pin-c, var(--dim)) 22%, transparent); border-radius: 3px; text-decoration-style: solid; }
+.cm-pincard { display: flex; flex-direction: column; gap: 5px; padding: 9px 11px; max-width: 340px; font-size: 12px; line-height: 1.4; border-left: 3px solid var(--pin-c, var(--line)); }
+.cm-pincard-head { display: flex; align-items: center; gap: 8px; }
+.cm-pincard-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--pin-c, var(--dim)); flex-shrink: 0; }
+.cm-pincard-row { display: flex; gap: 8px; }
+.cm-pincard-row > .dim:first-child { min-width: 58px; }
+.cm-pincard-caution { color: var(--warn); }
+.cm-pincard-caution::before { content: '! '; font-weight: 700; }
+.cm-pincard-src { font-size: 10.5px; color: var(--dim); }
+.cm-pincard-actions { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.cm-completion-src { margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--dim); }
+
+/* ---------- run line (simulated template run) ---------- */
+.cm-line.ce-line.run { background: rgba(92, 203, 143, 0.13); box-shadow: inset 3px 0 0 var(--ok); }
+.cm-gutterElement.ce-run-gutter { color: var(--ok); font-weight: 600; position: relative; }
+.cm-lineNumbers .cm-gutterElement.ce-run-gutter::before { content: '▶'; position: absolute; left: 4px; font-size: 9px; }
+
+/* ---------- a waiting suggestion, in place ---------- */
+.cm-sug { margin: 4px 0 6px; padding: 8px 10px; background: var(--ai-bg); border: 1px solid var(--ai-line); border-left: 3px solid var(--ai); border-radius: 6px; font-family: var(--font-ui); display: flex; flex-direction: column; gap: 5px; max-width: 760px; }
+.cm-sug-head { display: flex; align-items: center; gap: 10px; }
+.cm-sug-title { color: var(--ai); font-weight: 600; font-size: 12.5px; }
+.cm-sug-code { margin: 0; font-size: 12px; line-height: 19px; color: var(--muted); font-style: italic; white-space: pre; overflow-x: auto; background: rgba(0, 0, 0, 0.2); border-radius: 4px; padding: 4px 8px; }
+.cm-sug-text { color: var(--text); white-space: pre-line; }
+.cm-sug-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.cm-line.cm-sug-old { text-decoration: line-through; text-decoration-color: rgba(255, 93, 82, 0.7); background: rgba(255, 93, 82, 0.08); opacity: 0.75; }
+
+/* ---------- selection toolbar ---------- */
+.cm-tooltip.cm-tooltip-above:has(> .cm-seltools), .cm-tooltip:has(> .cm-seltools) { background: var(--ai-bg); border-color: var(--ai-line); }
+.cm-seltools { display: flex; gap: 2px; padding: 2px; }
+.cm-seltool { background: none; border: none; color: var(--ai); font-size: 11.5px; padding: 2px 8px; border-radius: 4px; }
+.cm-seltool:hover { background: var(--ai-line); color: var(--text); }
+
+/* ---------- ⌘I ask box ---------- */
+.ce-ask { position: absolute; top: 36px; right: 18px; z-index: 6; width: min(520px, calc(100% - 36px)); display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--ai-bg); border: 1px solid var(--ai-line); border-radius: var(--radius); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45); }
+.ce-ask-label { color: var(--ai); white-space: nowrap; }
+.ce-ask .text-in { flex: 1; min-width: 0; }
+.ce-ask-note { position: absolute; top: 100%; left: 10px; right: 10px; margin-top: 4px; color: var(--muted); }
+
+/* the serial console's link back to the code */
+.serial-src { margin-left: 8px; background: none; border: none; padding: 0; font: inherit; font-size: 10.5px; color: var(--dim); opacity: 0; }
+.console > div:hover .serial-src { opacity: 1; }
+.serial-src:hover { color: var(--ai); text-decoration: underline; }

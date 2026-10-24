@@ -218,6 +218,16 @@ const EXTRACT_SCHEMA = {
   additionalProperties: false,
 };
 
+/** For a project with several files: which file the code is, and the others (short) for context. */
+function codeFilesNote(req: CodeSuggestionRequest): string {
+  const others = (req.otherFiles ?? []).slice(0, 8);
+  if (!req.file && !others.length) return '';
+  return (
+    (req.file ? `The code shown as the sketch is the file ${req.file} of the project. Write code for this file.\n` : '') +
+    others.map((f) => `Other project file ${f.name}:\n${f.text.slice(0, 3000)}\n`).join('')
+  );
+}
+
 const CODE_SCHEMA = {
   type: 'object',
   properties: {
@@ -427,7 +437,10 @@ export class Assistant {
             text:
               'Write the next piece of Arduino code for this project in the Code panel.\n' +
               (req.request.trim() ? `The user asks: "${req.request.trim()}"\n` : 'Nothing specific was asked: add the most useful next step for the parts in the drawing (for example reading a sensor that is wired but never read).\n') +
-              `The cursor is on line ${req.cursorLine}. Prefer inserting near it, inside the right function; use afterLine for the place. Keep what is there; do not repeat existing lines.\n` +
+              (req.selection?.text.trim()
+                ? `The user selected lines ${req.selection.line} to ${req.selection.line + req.selection.text.split('\n').length - 1}:\n${req.selection.text.slice(0, 4000)}\nReturn the new version of exactly those lines in text (replace false, afterLine ${req.selection.line - 1}); the app puts it in place of the selected lines. Keep the indentation.\n`
+                : `The cursor is on line ${req.cursorLine}. Prefer inserting near it, inside the right function; use afterLine for the place. Keep what is there; do not repeat existing lines.\n`) +
+              codeFilesNote(req) +
               'Rules: use only the pins the drawing wires to each part (by their Arduino pin numbers from the board file), the I2C address from the parts library, and libraries a beginner can install from the Library Manager. ' +
               'Non-blocking code (millis) is better than long delay() calls. Short comments in plain words. ' +
               'Sources: name the parts library entry (kind "library", label "parts library · <part id>") or datasheet section each pin or address comes from.',

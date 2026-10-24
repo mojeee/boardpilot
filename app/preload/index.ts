@@ -93,6 +93,7 @@ const api: BoardPilotApi = {
     activate: call('license:activate'),
     openBuyPage: call('license:buy'),
   } as BoardPilotApi['license'],
+  code: { compile: call('code:compile') } as BoardPilotApi['code'],
   app: {
     setLanguage: call('app:setLanguage'),
     openExternal: call('app:openExternal'),

@@ -580,6 +580,14 @@ export interface ProjectSketch {
   /** file name, e.g. weather_station.ino */
   name: string;
   text: string;
+  /** The project's other files (pins.h, display.cpp, CMakeLists.txt…), shown as tabs in the Code panel. */
+  files?: ProjectFile[];
+}
+
+export interface ProjectFile {
+  /** Path inside the project folder: a plain name, or up to three joined by "/" (isSafeProjectPath). */
+  name: string;
+  text: string;
 }
 
 export interface WiringFinding {
@@ -670,6 +678,11 @@ export interface CodeSuggestionRequest {
   cursorLine: number;
   /** what the user asked for, in their words (may be empty: "what comes next") */
   request: string;
+  /** The file `code` is (when the project has several files), and the project's other files for context. */
+  file?: string;
+  otherFiles?: ProjectFile[];
+  /** Text the user selected, for "Explain this" / "Change this" (with its 1-based first line). */
+  selection?: { text: string; line: number };
 }
 
 /** A code suggestion from the assistant; always a suggestion the user accepts or dismisses. */
