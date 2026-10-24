@@ -36,6 +36,14 @@ const SHOTS = {
   import: { hash: `#demo=import${LOOK}`, delay: 30000 },
   // A recorded conversation with the assistant, replayed to the end (parts applied, code open).
   chat: { hash: `#demo=chat&chat=weather-esp32&stage=desk${LOOK}`, delay: 34000 },
+  // The other recordings, for the website's demo gallery.
+  'chat-plant': { hash: `#demo=chat&chat=plant-pico&stage=desk${LOOK}`, delay: 34000 },
+  'chat-distance': { hash: `#demo=chat&chat=distance-uno&stage=desk${LOOK}`, delay: 34000 },
+  'chat-lamp': { hash: `#demo=chat&chat=night-lamp-it&stage=desk${LOOK}`, delay: 34000 },
+  // The assistant backing up the board before a write (the website's "flash safely" row).
+  // A template running in the simulator, step by step (the website's "How it works").
+  simrun: { hash: `#demo=template&id=plant-watering&speed=4&stage=desk${LOOK}`, delay: 16000 },
+  backup: { hash: `#demo=action&do=backup_flash&stage=desk${LOOK}`, delay: 16000 },
 };
 
 /** The 3D viewport inside the 1600 × 1000 window: under the top menu and the project tabs, left of the assistant, above the Code/Log panel. */

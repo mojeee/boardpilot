@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=258c761411" />
+    <link rel="stylesheet" href="/style.css?v=b54655bd74" />
     <link rel="stylesheet" href="/learn.css?v=76fafb0c10" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Article","LearningResource"],"@id":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/#lesson","headline":"Timer e interrupt","name":"Timer e interrupt","description":"Come conta da solo il timer di un microcontrollore, come scegliere prescaler (PSC) e valore di reload (ARR) e come funzionano interrupt e ISR, a confronto con il polling.","url":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/","inLanguage":"it","image":"https://boardpilot.agentflowbind.com/img/learn.jpg?v=9675e4f5c5","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/","logo":{"@type":"ImageObject","url":"https://boardpilot.agentflowbind.com/icon-512.png"}},"isAccessibleForFree":true,"educationalLevel":"Beginner","learningResourceType":"Lesson","timeRequired":"PT15M","position":5,"isPartOf":{"@type":"Course","@id":"https://boardpilot.agentflowbind.com/learn/#course","name":"Sistemi embedded da zero","url":"https://boardpilot.agentflowbind.com/it/learn/"},"teaches":["Tabella dei vettori","Timer","Prescaler e auto-reload (PSC, ARR)","Interrupt","ISR (routine di servizio dell’interrupt)","Polling","volatile","STM32"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Impara","item":"https://boardpilot.agentflowbind.com/it/learn/"},{"@type":"ListItem","position":3,"name":"Timer e interrupt","item":"https://boardpilot.agentflowbind.com/it/learn/timers-interrupts/"}]}]}</script>
   </head>
@@ -33,6 +33,8 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#demos" data-i18n="nav.demos">Demo</a>
+          <a href="/it/#compare" data-i18n="nav.compare">Confronto</a>
           <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
           <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
@@ -74,7 +76,7 @@
             <p>La vera app, nel tuo browser: questa lezione con la sua anteprima 3D su una scheda Raspberry Pi Pico simulata. Niente da installare, niente da collegare.</p>
           </div>
         </div>
-        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+        <script src="/try-live.js?v=1348001697" defer></script></div>
       <div class="wrap narrow">
         <pre class="code"><code>void TIM2_IRQHandler(void) {           // the name comes from the vector table
     if (TIM2-&gt;SR &amp; (1 &lt;&lt; 0)) {         // update event flag

@@ -45,56 +45,145 @@ export function tryLive({ lang, boardId, boardName, image, width = 1800, height 
         </div>${script ? '\n        <script src="/try-live.js" defer></script>' : ''}`;
 }
 
-/* ---------------- "Build a project by chatting": recorded conversations ---------------- */
+/* ---------------- Recorded conversations (app/renderer/replay/recordings/) ---------------- */
 
 const CHAT_T = {
   en: {
-    btn: 'Watch the conversation',
-    note: 'A real conversation with Claude, recorded and replayed in your browser: “{title}” on the {board}.',
-    alt: 'BoardPilot’s assistant proposing parts and wiring for “{title}”, with the result on the 3D board',
-    more: 'More recorded conversations:',
     honest:
-      'These are real conversations with Claude ({model}), recorded once and replayed here: no AI is called while you watch. In the app you have the conversation yourself, with your own Claude, GPT or Gemini key or the free demo AI. Every proposal is checked by the same wiring rules as a drawing you make by hand.',
+      'The recordings are real conversations with {model}, recorded once and replayed here: no AI is called while you watch. In the app you have the conversation yourself, with your own Claude, GPT or Gemini key or the free demo AI. Every proposal is checked by the same wiring rules as a drawing you make by hand.',
   },
   it: {
-    btn: 'Guarda la conversazione',
-    note: 'Una vera conversazione con Claude, registrata e riprodotta nel tuo browser: “{title}” sulla {board}.',
-    alt: 'L’assistente di BoardPilot propone componenti e collegamenti per “{title}”, con il risultato sulla scheda 3D',
-    more: 'Altre conversazioni registrate:',
     honest:
-      'Sono vere conversazioni con Claude ({model}), registrate una volta e riprodotte qui: mentre guardi non viene chiamata nessuna IA. Nell’app la conversazione la fai tu, con la tua chiave Claude, GPT o Gemini o con l’IA demo gratuita. Ogni proposta è verificata dalle stesse regole di cablaggio di un disegno fatto a mano.',
+      'Le registrazioni sono vere conversazioni con {model}, registrate una volta e riprodotte qui: mentre guardi non viene chiamata nessuna IA. Nell’app la conversazione la fai tu, con la tua chiave Claude, GPT o Gemini o con l’IA demo gratuita. Ogni proposta è verificata dalle stesse regole di cablaggio di un disegno fatto a mano.',
   },
 };
 
 export const chatUrl = (lang, id) => `/demo/#demo=chat&chat=${encodeURIComponent(id)}&lang=${lang === 'it' ? 'it' : 'en'}`;
 
+/* ---------------- The landing page's demo gallery ---------------- */
+
+const GALLERY_T = {
+  en: {
+    live: 'Live app',
+    rec: 'Recording',
+    script: 'Scripted',
+    soon: 'Coming soon',
+    newTag: 'New',
+    watch: 'Watch the conversation →',
+    open: 'Open the demo →',
+    debugT: 'Find a crossed wire',
+    debugD: 'The debug wizard checks a weather station whose sensor is “not found”: pull-ups, a bus scan, the swap test. It finds SDA and SCL crossed and shows which wires to swap.',
+    debugAlt: 'The debug wizard showing SDA and SCL crossed at the BME280 sensor',
+    simulated: 'simulated board',
+    inLang: { en: 'in English', it: 'in Italian' },
+    recAlt: 'The assistant’s checked proposal for “{title}” applied to the 3D board',
+    displayT: 'Display Studio',
+    displayD: 'See what your screen will show, pixel by pixel, and get the code that draws it. A recorded demo is on its way.',
+    boardsD: 'Every board page has its own live demo with that board preselected: Pico, Arduino, STM32, nRF52, Teensy and more.',
+    boardsCta: 'Pick a board →',
+    stage: 'Now playing in the player above',
+  },
+  it: {
+    live: 'App dal vivo',
+    rec: 'Registrazione',
+    script: 'Automatica',
+    soon: 'In arrivo',
+    newTag: 'Novità',
+    watch: 'Guarda la conversazione →',
+    open: 'Apri la demo →',
+    debugT: 'Trova un filo invertito',
+    debugD: 'Il debug guidato controlla una stazione meteo il cui sensore “non viene trovato”: pull-up, scansione del bus, test di scambio. Trova SDA e SCL invertiti e mostra quali fili scambiare.',
+    debugAlt: 'Il debug guidato mostra SDA e SCL invertiti sul sensore BME280',
+    simulated: 'scheda simulata',
+    inLang: { en: 'in inglese', it: 'in italiano' },
+    recAlt: 'La proposta verificata dell’assistente per “{title}” applicata alla scheda 3D',
+    displayT: 'Display Studio',
+    displayD: 'Guarda cosa mostrerà il tuo schermo, pixel per pixel, e ottieni il codice che lo disegna. Una demo registrata è in arrivo.',
+    boardsD: 'Ogni pagina delle schede ha la sua demo dal vivo con quella scheda già scelta: Pico, Arduino, STM32, nRF52, Teensy e altre.',
+    boardsCta: 'Scegli una scheda →',
+    stage: 'In riproduzione nel riquadro qui sopra',
+  },
+};
+
 /**
- * The recorded-chat block for the landing page. `recordings` are the files of
- * app/renderer/replay/recordings/ ({ id, title, blurb, board, lang, model }); `boardName(id)` names a board.
- * The first recording in the page language is the main one; the others are links.
+ * Titles and descriptions of the recordings in the other language (a recording carries only its own).
+ * A recording missing here shows its own title and blurb.
  */
-export function chatDemo({ lang, recordings, boardName, image, width = 1800, height = 1125 }) {
-  const t = CHAT_T[lang === 'it' ? 'it' : 'en'];
-  if (!recordings.length) return '';
-  // Stable sort: the caller's order, with recordings in the page language first.
-  const ordered = [...recordings].sort((a, b) => Number(b.lang === lang) - Number(a.lang === lang));
-  const [main, ...rest] = ordered;
-  const box = tryLive({
-    lang,
-    boardId: main.board,
-    boardName: boardName(main.board),
-    image,
-    width,
-    height,
-    script: false,
-    url: chatUrl(lang, main.id),
-    alt: fill(t.alt, { title: main.title }),
-    note: fill(t.note, { title: main.title, board: boardName(main.board) }),
-  }).replace(`>${T[lang === 'it' ? 'it' : 'en'].btn}</a>`, `>${esc(t.btn)}</a>`);
-  const links = rest
-    .map((r) => `<li><a href="${esc(chatUrl(lang, r.id))}" target="_blank" rel="noopener"><b>${esc(r.title)}</b> <span>${esc(r.blurb)}</span></a></li>`)
-    .join('\n            ');
-  return `<div class="wrap try-wrap">${box}</div>
-          ${rest.length ? `<p class="chat-more">${esc(t.more)}</p>\n          <ul class="chat-list">\n            ${links}\n          </ul>` : ''}
-          <p class="chat-honest">${esc(fill(t.honest, { model: main.model }))}</p>`;
+const RECORDING_T = {
+  'weather-esp32': { it: ['Stazione meteo', 'Temperatura, umidità e pressione su un piccolo schermo, con un ESP32.'] },
+  'plant-pico': { it: ['Irrigazione della pianta', 'Annaffia una pianta quando il terreno è secco, con un Raspberry Pi Pico.'] },
+  'distance-uno': { it: ['Allarme di distanza', 'Suona quando qualcosa si avvicina a meno di 30 cm, con un Arduino Uno.'] },
+  'night-lamp-it': { en: ['Night lamp', 'An LED that turns on when it gets dark, on an ESP32 (the conversation is in Italian).'] },
+};
+
+/** "claude-sonnet-5-5" → "Claude Sonnet 5.5" */
+export const modelName = (id) =>
+  String(id ?? '')
+    .replace(/-(\d+)-(\d+)$/, ' $1.$2')
+    .replace(/-(\d+)$/, ' $1')
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+
+/** A recording that fills the Display Studio slot (added by the Display Studio work). */
+export const isDisplayRecording = (r) => r.slot === 'display-studio' || /^display/.test(r.id);
+
+export const debugUrl = (lang) => `/demo/#demo=debug&scenario=weather-station-swapped&lang=${lang === 'it' ? 'it' : 'en'}`;
+
+function card({ kind, kindLabel, url, image, alt, title, text, meta, cta, tag }) {
+  const img = image
+    ? `<img src="${esc(image)}" srcset="${esc(image.replace(/\.jpg$/, '-900.jpg'))} 900w, ${esc(image)} 1800w" sizes="(max-width: 640px) 100vw, 380px" width="1800" height="1125" alt="${esc(alt)}" loading="lazy" decoding="async" />`
+    : '<span class="demo-blank" aria-hidden="true"></span>';
+  const poster = url
+    ? `<a class="demo-poster" href="${esc(url)}" target="_blank" rel="noopener" data-demo="${esc(url)}" tabindex="-1" aria-hidden="true">${img}<span class="play"></span></a>`
+    : `<div class="demo-poster soon">${img}</div>`;
+  return `<article class="demo-card${url ? '' : ' is-soon'}" data-kind="${kind}">
+              ${poster}
+              <div class="demo-body">
+                <span class="kind k-${kind}">${esc(kindLabel)}</span>${tag ? ` <span class="new-tag">${esc(tag)}</span>` : ''}
+                <h3>${esc(title)}</h3>
+                <p>${esc(text)}</p>
+                ${meta ? `<p class="demo-meta">${esc(meta)}</p>` : ''}
+                ${url && cta ? `<a class="more" href="${esc(url)}" target="_blank" rel="noopener" data-demo="${esc(url)}">${esc(cta)}</a>` : ''}
+              </div>
+            </article>`;
+}
+
+/**
+ * The demo gallery under the live player: the scripted debugging demo, every recorded conversation,
+ * the Display Studio slot (a placeholder until a recording with `slot: "display-studio"` or an id
+ * starting with "display" exists) and a link to the per-board demos.
+ * `poster(recording)` returns a site-relative screenshot (with a -900 copy) or null.
+ */
+export function demoGallery({ lang, recordings, boardName, poster, debugPoster = '/img/debug.jpg', boardsHref }) {
+  const t = GALLERY_T[lang === 'it' ? 'it' : 'en'];
+  const l = lang === 'it' ? 'it' : 'en';
+  const recTitle = (r) => RECORDING_T[r.id]?.[l]?.[0] ?? r.title;
+  const recText = (r) => (r.lang === l ? r.blurb : RECORDING_T[r.id]?.[l]?.[1] ?? r.blurb);
+  const recCard = (r, tag) =>
+    card({
+      kind: 'rec',
+      kindLabel: t.rec,
+      url: chatUrl(lang, r.id),
+      image: poster(r),
+      alt: fill(t.recAlt, { title: recTitle(r) }),
+      title: recTitle(r),
+      text: recText(r),
+      meta: `${modelName(r.model)} · ${boardName(r.board)} · ${t.inLang[r.lang] ?? r.lang}`,
+      cta: t.watch,
+      tag,
+    });
+  // Recordings in the page language first, then the others (stable).
+  const chats = recordings.filter((r) => !isDisplayRecording(r)).sort((a, b) => Number(b.lang === l) - Number(a.lang === l));
+  const display = recordings.find(isDisplayRecording);
+  const cards = [
+    card({ kind: 'script', kindLabel: t.script, url: debugUrl(lang), image: debugPoster, alt: t.debugAlt, title: t.debugT, text: t.debugD, meta: `${boardName('esp32-devkitc-30')} · ${t.simulated}`, cta: t.open }),
+    ...chats.map((r) => recCard(r)),
+    display ? recCard(display, t.newTag) : card({ kind: 'soon', kindLabel: t.soon, title: t.displayT, text: t.displayD }),
+  ];
+  return `<div class="demo-grid" data-now="${esc(t.stage)}">
+            ${cards.join('\n            ')}
+          </div>
+          <p class="demo-boards"><span class="kind k-live">${esc(t.live)}</span> ${esc(t.boardsD)} <a class="more" href="${esc(boardsHref)}">${esc(t.boardsCta)}</a></p>
+          <p class="chat-honest">${esc(fill(CHAT_T[l].honest, { model: modelName(chats[0]?.model ?? 'claude') }))}</p>`;
 }
