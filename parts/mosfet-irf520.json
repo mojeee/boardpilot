@@ -14,6 +14,9 @@
   "voltage": "3.3-5",
   "model": { "shape": "module", "size": [34, 20, 12], "color": "#B22222" },
   "keywords": ["mosfet", "irf520", "switch", "pwm", "transistor", "interruttore"],
+  "gotchas": [
+    {"text": "On a 3.3 V board the IRF520 only half turns on: its gate threshold is 2 to 4 V and its on-resistance is specified at 10 V. It gets hot and weak with pumps, motors and heaters. Use a logic-level MOSFET module such as the AOD4184, or a relay.", "when": "logic3v3", "source": {"title": "Vishay IRF520 datasheet", "section": "VGS(th) 2.0 to 4.0 V; RDS(on) specified at VGS = 10 V"}}
+  ],
   "sources": [
     { "title": "Vishay IRF520 datasheet", "section": "Gate threshold 2 to 4 V: not fully on at 3.3 V" }
   ]

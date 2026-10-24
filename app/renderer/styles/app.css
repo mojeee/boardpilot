@@ -327,6 +327,25 @@ pre.md { white-space: pre-wrap; max-height: none; }
 .src-user span { color: var(--ai); }
 .ai-tools summary { font-size: 11px; color: var(--dim); cursor: pointer; }
 .next-options { display: flex; flex-wrap: wrap; gap: 5px; }
+.ai-choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.ai-choice { text-align: left; background: var(--chrome); border: 1px solid var(--ai-line); border-radius: var(--radius-sm); padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.ai-choice b { color: var(--text); font-size: 13px; }
+.ai-choice:hover:not(:disabled) { border-color: var(--ai); background: var(--panel); }
+.ai-choice.on { border-color: var(--ai); box-shadow: 0 0 0 1px var(--ai) inset; }
+.ai-choice:disabled:not(.on) { opacity: 0.5; cursor: default; }
+.proposal { background: var(--chrome); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.proposal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.proposal-title { font-weight: 600; font-size: 14px; }
+.proposal .chip.ok { color: var(--ok); border-color: var(--ok); }
+.proposal .chip.sev-warning { color: var(--warn); border-color: var(--warn); }
+.proposal .chip.sev-error { color: var(--err); border-color: var(--err); }
+.proposal-parts { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 3px; }
+.proposal-wiring table { border-collapse: collapse; width: 100%; }
+.proposal-wiring td { padding: 2px 4px; white-space: nowrap; }
+.proposal-wiring tr { cursor: pointer; }
+.proposal-wiring tr:hover td { background: var(--panel); }
+.proposal-wiring .dot { display: inline-block; margin-right: 6px; vertical-align: middle; }
+.proposal ul { margin: 0; padding-left: 16px; }
 .ai-error { color: var(--err); font-size: 12px; }
 .ai-thinking { color: var(--ai); font-size: 12px; }
 .ask-box { display: flex; gap: 6px; align-items: flex-end; padding: 10px 14px; border-top: 1px solid var(--line); }

@@ -44,3 +44,56 @@ export function tryLive({ lang, boardId, boardName, image, width = 1800, height 
           </div>
         </div>${script ? '\n        <script src="/try-live.js" defer></script>' : ''}`;
 }
+
+/* ---------------- "Build a project by chatting": recorded conversations ---------------- */
+
+const CHAT_T = {
+  en: {
+    btn: 'Watch the conversation',
+    note: 'A real conversation with Claude, recorded and replayed in your browser: “{title}” on the {board}.',
+    alt: 'BoardPilot’s assistant proposing parts and wiring for “{title}”, with the result on the 3D board',
+    more: 'More recorded conversations:',
+    honest:
+      'These are real conversations with Claude ({model}), recorded once and replayed here: no AI is called while you watch. In the app you have the conversation yourself, with your own Claude, GPT or Gemini key or the free demo AI. Every proposal is checked by the same wiring rules as a drawing you make by hand.',
+  },
+  it: {
+    btn: 'Guarda la conversazione',
+    note: 'Una vera conversazione con Claude, registrata e riprodotta nel tuo browser: “{title}” sulla {board}.',
+    alt: 'L’assistente di BoardPilot propone componenti e collegamenti per “{title}”, con il risultato sulla scheda 3D',
+    more: 'Altre conversazioni registrate:',
+    honest:
+      'Sono vere conversazioni con Claude ({model}), registrate una volta e riprodotte qui: mentre guardi non viene chiamata nessuna IA. Nell’app la conversazione la fai tu, con la tua chiave Claude, GPT o Gemini o con l’IA demo gratuita. Ogni proposta è verificata dalle stesse regole di cablaggio di un disegno fatto a mano.',
+  },
+};
+
+export const chatUrl = (lang, id) => `/demo/#demo=chat&chat=${encodeURIComponent(id)}&lang=${lang === 'it' ? 'it' : 'en'}`;
+
+/**
+ * The recorded-chat block for the landing page. `recordings` are the files of
+ * app/renderer/replay/recordings/ ({ id, title, blurb, board, lang, model }); `boardName(id)` names a board.
+ * The first recording in the page language is the main one; the others are links.
+ */
+export function chatDemo({ lang, recordings, boardName, image, width = 1800, height = 1125 }) {
+  const t = CHAT_T[lang === 'it' ? 'it' : 'en'];
+  if (!recordings.length) return '';
+  const ordered = [...recordings].sort((a, b) => Number(b.lang === lang) - Number(a.lang === lang));
+  const [main, ...rest] = ordered;
+  const box = tryLive({
+    lang,
+    boardId: main.board,
+    boardName: boardName(main.board),
+    image,
+    width,
+    height,
+    script: false,
+    url: chatUrl(lang, main.id),
+    alt: fill(t.alt, { title: main.title }),
+    note: fill(t.note, { title: main.title, board: boardName(main.board) }),
+  }).replace(`>${T[lang === 'it' ? 'it' : 'en'].btn}</a>`, `>${esc(t.btn)}</a>`);
+  const links = rest
+    .map((r) => `<li><a href="${esc(chatUrl(lang, r.id))}" target="_blank" rel="noopener"><b>${esc(r.title)}</b> <span>${esc(r.blurb)}</span></a></li>`)
+    .join('\n            ');
+  return `<div class="wrap try-wrap">${box}</div>
+          ${rest.length ? `<p class="chat-more">${esc(t.more)}</p>\n          <ul class="chat-list">\n            ${links}\n          </ul>` : ''}
+          <p class="chat-honest">${esc(fill(t.honest, { model: main.model }))}</p>`;
+}

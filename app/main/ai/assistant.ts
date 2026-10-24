@@ -37,7 +37,8 @@ import {
 /** Anthropic defaults from CLAUDE.md; other providers' defaults live in shared/ai.ts. */
 export const MAIN_MODEL = PROVIDER_INFO.anthropic.defaultModel;
 export const FAST_MODEL = PROVIDER_INFO.anthropic.fastModel;
-const MAX_TOOL_ROUNDS = 8;
+// Building a project takes a few searches, a proposal and sometimes a fix: more rounds than a check.
+const MAX_TOOL_ROUNDS = 12;
 
 const REPLY_SCHEMA = {
   type: 'object',
@@ -137,6 +138,12 @@ function parseJson<T>(text: string): T | null {
       return null;
     }
   }
+}
+
+/** The reply text with the question the user must answer, unless the model already wrote it. */
+function withQuestion(message: string, question?: string): string {
+  if (!question || message.includes(question)) return message;
+  return message.trim() ? `${message}\n\n${question}` : question;
 }
 
 /** A claim is "measured" only if a measurement happened this turn or is in the session log. */
@@ -278,6 +285,8 @@ export class Assistant {
 
     try {
       let final: ChatResponse | null = null;
+      // After a question is shown, or on the last round, the model must answer without more tools.
+      let answerNow = false;
       for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
         const response = await a.provider.chat({
           model: a.model,
@@ -285,6 +294,7 @@ export class Assistant {
           system: SYSTEM_PROMPT,
           cacheSystem: true,
           tools: TOOLS,
+          toolChoice: answerNow || round === MAX_TOOL_ROUNDS - 1 ? 'none' : 'auto',
           messages,
           jsonSchema: { name: 'assistant_reply', schema: REPLY_SCHEMA },
         });
@@ -298,14 +308,14 @@ export class Assistant {
         }
         const results: ToolResult[] = [];
         for (const call of response.toolCalls) {
-          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn);
-          turn.calls.push({ name: call.name, input: call.input, ok: !r.isError });
+          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn, { scene: ctx.scene });
+          turn.calls.push({ name: call.name, input: call.input, ok: !r.isError, ...(r.isError ? { error: r.content.slice(0, 600) } : {}) });
           results.push({ callId: call.id, name: call.name, content: r.content, isError: r.isError });
         }
         messages.push({ role: 'tool', results });
-        if (turn.ask || turn.pendingWrite) {
+        if (turn.ask || turn.pendingWrite || turn.choices) {
           // The UI takes over; ask for the final structured reply without more tool calls.
-          continue;
+          answerNow = true;
         }
       }
       if (!final) {
@@ -317,13 +327,32 @@ export class Assistant {
       if (!parsed || typeof parsed.message !== 'string') {
         return {
           ok: true,
-          value: { message: text || t('No answer.'), confidence: 'suggestion', sources: [], highlight: turn.highlight, nextOptions: [], toolCalls: turn.calls },
+          value: {
+            message: text || t('No answer.'),
+            confidence: 'suggestion',
+            sources: [],
+            highlight: turn.highlight,
+            nextOptions: [],
+            toolCalls: turn.calls,
+            ...(turn.choices ? { choices: turn.choices.choices } : {}),
+            ...(turn.proposal ? { proposal: turn.proposal } : {}),
+          },
         };
       }
       const measuredThisTurn = turn.calls.some((c) => c.ok && MEASUREMENT_TOOLS.has(c.name));
       const logHasMeasurements = ctx.log.some((e) => e.source?.startsWith('measured'));
-      const highlight = [...new Set([...turn.highlight, ...(Array.isArray(parsed.highlight) ? parsed.highlight : [])])].filter((h): h is TargetRef =>
-        typeof h === 'string' && /^(pin|wire|part):.+/.test(h),
+      // Only targets that exist: a pin of the board, a wire or part of the drawing or of the proposal
+      // (models sometimes put library ids like "part:bme280-gy" here).
+      const shown = turn.proposal?.scene ?? ctx.scene;
+      const exists = (h: string) => {
+        const [kind, id] = h.split(/:(.+)/);
+        if (kind === 'pin') return getBoard(shown.board).pins.some((p) => p.id === id) || board.pins.some((p) => p.id === id);
+        if (kind === 'part') return shown.parts.some((p) => p.id === id) || ctx.scene.parts.some((p) => p.id === id);
+        if (kind === 'wire') return shown.wires.some((w) => w.id === id) || ctx.scene.wires.some((w) => w.id === id);
+        return false;
+      };
+      const highlight = [...new Set([...turn.highlight, ...(Array.isArray(parsed.highlight) ? parsed.highlight : [])])].filter(
+        (h): h is TargetRef => typeof h === 'string' && /^(pin|wire|part):.+/.test(h) && exists(h),
       );
       const reply = enforceHonesty(
         {
@@ -331,8 +360,10 @@ export class Assistant {
           sources: Array.isArray(parsed.sources) ? parsed.sources : [],
           confidence: ['measured', 'documented', 'suggestion'].includes(parsed.confidence) ? parsed.confidence : 'suggestion',
           highlight,
-          nextOptions: turn.ask ? turn.ask.options : Array.isArray(parsed.nextOptions) ? parsed.nextOptions.filter((o) => typeof o === 'string') : [],
-          message: turn.ask && !parsed.message.includes(turn.ask.question) ? `${parsed.message}\n\n${turn.ask.question}` : parsed.message,
+          nextOptions: turn.choices ? [] : turn.ask ? turn.ask.options : Array.isArray(parsed.nextOptions) ? parsed.nextOptions.filter((o) => typeof o === 'string') : [],
+          message: withQuestion(parsed.message, turn.choices?.question ?? turn.ask?.question),
+          ...(turn.choices ? { choices: turn.choices.choices } : {}),
+          ...(turn.proposal ? { proposal: turn.proposal } : {}),
           toolCalls: turn.calls,
           pendingWrite: turn.pendingWrite,
         },

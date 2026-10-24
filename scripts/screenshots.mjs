@@ -27,6 +27,8 @@ const SHOTS = {
   timing: { hash: '#demo=timing&scenario=healthy', delay: 22000 },
   learn: { hash: '#demo=lesson-preview&lesson=gpio&stage=desk', delay: 14000 },
   code: { hash: '#demo=code&stage=desk', delay: 14000 },
+  // A recorded conversation with the assistant, replayed to the end (parts applied, code open).
+  chat: { hash: '#demo=chat&chat=weather-esp32&stage=desk', delay: 34000 },
 };
 
 /** The 3D viewport inside the 1600 × 1000 window: right of the task rail, left of the panel, above the log. */

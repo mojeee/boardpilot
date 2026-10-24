@@ -520,9 +520,9 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
          and raises warnings by itself when something looks wrong, with the source of each claim.
    - [ ] Build by writing: "add a BME280 and an OLED on I2C" adds the parts and suggests the wiring;
          "make it read the temperature every 2 s" writes the code.
-   - [ ] Before building, it asks several short questions (board, power, what the project must do),
+   - [x] Before building, it asks several short questions (board, power, what the project must do),
          then proposes the parts, pins and wiring for the user to confirm. Nothing is written to the
-         board without the usual confirmation.
+         board without the usual confirmation. (Done: "Describe your project", see docs/ai.md.)
    - [ ] **The AI can do everything the app does.** If the user can't find something or doesn't
          know how, they ask ("back up my board", "flash my code, then open the monitor") and the
          assistant runs the same app actions, showing each step and a "Show me where it is" link
@@ -531,8 +531,9 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
    - [ ] **AI code suggestions** in the Code panel: a "Suggest code" button and inline suggestions
          (accept with Tab, explain, dismiss) that use the parts and pins in the drawing, each with
          its source (part library entry, library name).
-   - [ ] New project also offers **"Describe it"**: the assistant asks questions, then suggests
-         parts, wiring and starter code for the user to confirm.
+   - [x] New project also offers **"Describe it"**: the assistant asks questions, then suggests
+         parts, wiring and starter code for the user to confirm. Tested against Claude with
+         `npm run eval:ai` (docs/ai-evals/); recorded conversations play on the website.
 6. **Warnings as a banner**
    - [ ] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the
          project page: plain text, the source, and buttons Fix, Show on the board, Ask why, with

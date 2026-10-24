@@ -2,6 +2,7 @@
 // No runtime code here except tiny helpers; keep it free of Node and DOM imports.
 
 import type { StateMachine } from './statemachine';
+import type { ProjectProposal } from './projectBuilder';
 
 /* ---------- errors ---------- */
 
@@ -611,9 +612,20 @@ export interface AiReply {
   highlight: TargetRef[];
   nextOptions: string[];
   /** tool calls the model made in this turn, for the "how I know this" view */
-  toolCalls?: { name: string; input: unknown; ok: boolean }[];
+  toolCalls?: { name: string; input: unknown; ok: boolean; error?: string }[];
   /** a write the model asked for; the UI must show a confirmation dialog */
   pendingWrite?: WriteRequest;
+  /** options to pick from, each with what makes it different (shown as cards) */
+  choices?: AiChoice[];
+  /** a whole project (parts, wiring, checks) the user can apply with one click */
+  proposal?: ProjectProposal;
+}
+
+export interface AiChoice {
+  label: string;
+  detail: string;
+  /** the library part this choice stands for, if any */
+  partId?: string;
 }
 
 export interface WriteRequest {

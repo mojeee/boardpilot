@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json && tsc --noEmit -p tsconfig.demo.json",
     "test": "vitest run",
     "test:watch": "vitest",
+    "eval:ai": "vitest run -c vitest.live.config.ts",
     "build:agent": "bash scripts/build-agent.sh",
     "dist:mac": "electron-vite build && electron-builder --mac",
     "build:web": "vite build -c vite.web.config.ts",

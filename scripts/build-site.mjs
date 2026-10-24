@@ -11,7 +11,7 @@ import { renderPinout } from './site/pinout.mjs';
 import { buildParts } from './site/parts.mjs';
 import { buildBoards, boardCards } from './site/boards.mjs';
 import { buildCompare, buildGuides, compareLinks, partBoardLinks } from './site/guides.mjs';
-import { tryLive } from './site/demo.mjs';
+import { chatDemo, tryLive } from './site/demo.mjs';
 import { buildLearn, learnLinks, learnNavLabel, learnPath } from './site/learn.mjs';
 import { buildTools } from './site/tools.mjs';
 import { readdirSync } from 'node:fs';
@@ -112,6 +112,24 @@ function tryBlock(lang, b, script = true) {
   return `<div class="wrap try-wrap">${tryLive({ lang, boardId: b.id, boardName: b.name, image: `/${poster ?? 'img/live.jpg'}`, width, height, script })}</div>`;
 }
 
+/** Recorded conversations with the assistant (app/renderer/replay/recordings/, written by `npm run eval:ai`). */
+const RECORDINGS_DIR = join(root, 'app/renderer/replay/recordings');
+const recordings = existsSync(RECORDINGS_DIR)
+  ? readdirSync(RECORDINGS_DIR)
+      .filter((f) => f.endsWith('.json'))
+      .sort()
+      .map((f) => JSON.parse(readFileSync(join(RECORDINGS_DIR, f), 'utf8')))
+  : [];
+
+/** The recorded-chat block of the landing page; none without the browser demo or recordings. */
+function chatBlock(lang) {
+  if (!existsSync(join(root, 'site/demo/index.html'))) return '';
+  // Each language shows its own recordings first; Italian ones only on the Italian page.
+  const list = recordings.filter((r) => r.lang === 'en' || r.lang === lang);
+  const image = ['img/chat.jpg', 'img/live.jpg'].find((p) => existsSync(join(root, 'site', p)));
+  return chatDemo({ lang, recordings: list, boardName: (id) => boards.find((b) => b.id === id)?.name ?? id, image: `/${image}` });
+}
+
 function landing(lang) {
   const home = lang === 'it' ? '/it/' : '/';
   const url = `${SITE}${home}`;
@@ -131,6 +149,7 @@ function landing(lang) {
     .replaceAll('{{BOARD_CARDS}}', boardCards(lang, boards, BOARD_IT))
     .replaceAll('{{PARTS_CLOUD}}', partsCloud(lang))
     .replaceAll('{{TRY_LIVE}}', tryBlock(lang, board, false))
+    .replaceAll('{{CHAT_DEMO}}', chatBlock(lang))
     .replaceAll('{{PATH_EN}}', '/')
     .replaceAll('{{PATH_IT}}', '/it/')
     .replaceAll('{{ON_EN}}', lang === 'en' ? 'on' : '')

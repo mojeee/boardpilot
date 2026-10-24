@@ -48,7 +48,12 @@ async function runNamedDemo(name: string, scenario: string | null) {
     await window.bp.sim.load(scenario);
     useScene.getState().openScene(await window.bp.sim.scene());
   }
-  if (name === 'debug') {
+  if (name === 'chat') {
+    // A recorded conversation with the assistant (website demo): #demo=chat&chat=<recording id>
+    const { playById, RECORDINGS } = await import('./replay/player');
+    const id = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('chat') ?? RECORDINGS[0]?.id ?? '';
+    if (!(await playById(id))) useApp.getState().setScreen('newProject');
+  } else if (name === 'debug') {
     useApp.getState().setScreen('debug');
     useWizard.getState().start('debug-sensor-not-responding');
     const w = () => useWizard.getState();

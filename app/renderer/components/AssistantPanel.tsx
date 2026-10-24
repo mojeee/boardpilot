@@ -8,12 +8,17 @@ import { askAi } from './ai';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
 import { openAiSettings } from './AiSettings';
+import { ChoiceCards, ProposalCard, applyProposal } from './ProposalCard';
+import { ReplayBar } from '../replay/ReplayBar';
+import { useReplay } from '../replay/player';
 
 const CONF_TEXT = { measured: 'Measured', documented: 'From documentation', suggestion: 'Suggestion' };
 const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said' };
 
-export function ReplyView({ reply }: { reply: AiReply }) {
+export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
   const scene = useScene((s) => s.scene);
+  const mark = useAi((s) => (id === undefined ? undefined : s.marks[id]));
+  const last = useAi((s) => id !== undefined && s.items[s.items.length - 1]?.id === id);
   return (
     <div className="ai-reply">
       <div className="row gap">
@@ -47,6 +52,29 @@ export function ReplyView({ reply }: { reply: AiReply }) {
             </div>
           ))}
         </details>
+      )}
+      {reply.choices && reply.choices.length > 0 && (
+        <ChoiceCards
+          choices={reply.choices}
+          picked={mark?.picked ?? null}
+          locked={!last || !!mark?.picked}
+          onPick={(c) => {
+            if (id !== undefined) useAi.getState().mark(id, { picked: c.label });
+            void askAi(c.label);
+          }}
+        />
+      )}
+      {reply.proposal && (
+        <ProposalCard
+          proposal={reply.proposal}
+          applied={!!mark?.applied}
+          codeOpen={!!mark?.code}
+          onCode={(open) => id !== undefined && useAi.getState().mark(id, { code: open })}
+          onApply={() => {
+            applyProposal(reply.proposal!);
+            if (id !== undefined) useAi.getState().mark(id, { applied: true });
+          }}
+        />
       )}
       {reply.nextOptions.length > 0 && (
         <div className="next-options">
@@ -110,6 +138,7 @@ export function AssistantPanel({ title, hideInput }: { title?: string; hideInput
   const items = useAi((s) => s.items);
   const busy = useAi((s) => s.busy);
   const ai = useApp((s) => s.ai);
+  const replaying = useReplay((s) => !!s.rec);
   const list = useRef<HTMLDivElement>(null);
   useEffect(() => {
     list.current?.scrollTo({ top: list.current.scrollHeight, behavior: 'smooth' });
@@ -125,9 +154,9 @@ export function AssistantPanel({ title, hideInput }: { title?: string; hideInput
           {ai.enabled ? (ai.provider === 'demo' ? t('demo') : ai.model) : t('off')}
         </button>
       </header>
-      {ai.enabled && ai.provider === 'demo' && <DemoBanner />}
+      {replaying ? <ReplayBar /> : ai.enabled && ai.provider === 'demo' && <DemoBanner />}
       <div className="ai-list" ref={list}>
-        {items.length === 0 && (
+        {items.length === 0 && !replaying && (
           <div className="ai-empty">
             {ai.enabled ? (
               t('Ask anything about your board, wiring or code. I only state measurements I actually took, and show where every fact comes from.')
@@ -147,7 +176,7 @@ export function AssistantPanel({ title, hideInput }: { title?: string; hideInput
               {it.text}
             </div>
           ) : it.role === 'assistant' ? (
-            <ReplyView key={it.id} reply={it.reply} />
+            <ReplyView key={it.id} id={it.id} reply={it.reply} />
           ) : (
             <div key={it.id} className="ai-error">
               {t(it.text)} <span className="dim">{t(it.hint)}</span>
@@ -156,7 +185,7 @@ export function AssistantPanel({ title, hideInput }: { title?: string; hideInput
         )}
         {busy && <div className="ai-thinking">{t('Checking…')}</div>}
       </div>
-      {!hideInput && <AskBox />}
+      {!hideInput && !replaying && <AskBox />}
     </section>
   );
 }

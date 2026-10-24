@@ -379,11 +379,21 @@ export type ChatItem =
 
 type NewChatItem = ChatItem extends infer T ? (T extends ChatItem ? Omit<T, 'id'> : never) : never;
 
+/** What the user did with a reply's cards: the option picked, whether the proposal was applied. */
+export interface ChatMark {
+  picked?: string;
+  applied?: boolean;
+  /** the proposal's starter code is open */
+  code?: boolean;
+}
+
 interface AiStore {
   items: ChatItem[];
   busy: boolean;
+  marks: Record<number, ChatMark>;
   push(i: NewChatItem): void;
   set(p: Partial<Pick<AiStore, 'busy'>>): void;
+  mark(id: number, m: ChatMark): void;
   clear(): void;
 }
 
@@ -391,7 +401,9 @@ let chatId = 1;
 export const useAi = create<AiStore>((set) => ({
   items: [],
   busy: false,
+  marks: {},
   push: (i) => set((s) => ({ items: [...s.items, { ...i, id: chatId++ } as ChatItem] })),
   set: (p) => set(p),
-  clear: () => set({ items: [] }),
+  mark: (id, m) => set((s) => ({ marks: { ...s.marks, [id]: { ...s.marks[id], ...m } } })),
+  clear: () => set({ items: [], marks: {} }),
 }));

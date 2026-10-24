@@ -56,6 +56,8 @@ export interface ChatRequest {
   system?: string;
   messages: ChatMessage[];
   tools?: ToolSpec[];
+  /** "none": the tools stay defined (the history may hold tool calls) but the model must answer in text. */
+  toolChoice?: 'auto' | 'none';
   jsonSchema?: StructuredOutput;
   maxTokens: number;
   /** Mark the system prompt for caching where the provider needs it explicitly (Anthropic). */

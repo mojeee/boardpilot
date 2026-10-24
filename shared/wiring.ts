@@ -181,8 +181,9 @@ export function checkWiring(scene: Scene, board: BoardDef, parts: Record<string,
       continue;
     }
 
-    // A signal wire on a power/ground pin.
-    if (bp.kind !== 'gpio') {
+    // A signal wire on a power/ground pin. Passive pins are not signals: a level shifter's HV side
+    // or a MOSFET module's load supply (VIN) goes to a power pin on purpose.
+    if (bp.kind !== 'gpio' && role !== 'passive') {
       add({
         rule: 'wrong_pin_type',
         severity: 'error',
