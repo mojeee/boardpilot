@@ -19,38 +19,126 @@
   {
    "kind": "assistant",
    "reply": {
-    "message": "Here's a simple proximity beeper for your Arduino Uno: an HC-SR04 ultrasonic distance sensor plus an active buzzer, no extra parts to buy. The sensor's TRIG goes to D2 (GPIO 2), ECHO to D3 (GPIO 3), both powered from 5V/GND. The buzzer's + goes to D4 (GPIO 4), - to GND. The HC-SR04 runs fine at the Uno's 5 V logic, so no voltage divider is needed (that's only required on 3.3 V boards). In code: pulse TRIG, time the ECHO pulse to get distance, and set D4 HIGH when it's under 30 cm. Nothing is wired yet — press Apply on the card to build this, then I can write the starter code.",
+    "message": "I'll use the HC-SR04 ultrasonic distance sensor to measure distance - it runs natively at 5 V, which matches the Uno's logic, so no extra wiring tricks needed. For the beep, pick one of the buzzer options shown and I'll put together the full wiring.\n\nWhich kind of beep do you want?",
     "confidence": "documented",
     "sources": [
      {
       "kind": "library",
-      "label": "hc-sr04 part entry (VCC/TRIG/ECHO notes, 5V logic fit)"
+      "label": "hc-sr04 part entry"
      },
      {
       "kind": "library",
-      "label": "buzzer-active part entry (+ pin: HIGH beeps)"
+      "label": "buzzer-active / buzzer-passive / piezo-disc part entries"
+     }
+    ],
+    "highlight": [],
+    "nextOptions": [],
+    "choices": [
+     {
+      "label": "Active buzzer",
+      "detail": "Simplest: set the pin HIGH and it beeps at a fixed tone. No extra code needed for sound.",
+      "partId": "buzzer-active"
+     },
+     {
+      "label": "Passive buzzer",
+      "detail": "Needs tone() in code, but you can choose the pitch or make a rising alarm sound.",
+      "partId": "buzzer-passive"
+     },
+     {
+      "label": "Piezo disc",
+      "detail": "Same wiring as the passive buzzer but quieter; cheap and small.",
+      "partId": "piezo-disc"
+     }
+    ],
+    "toolCalls": [
+     {
+      "name": "search_parts",
+      "input": {
+       "query": "ultrasonic distance sensor",
+       "category": "sensor",
+       "limit": 5
+      },
+      "ok": true
+     },
+     {
+      "name": "search_parts",
+      "input": {
+       "query": "buzzer",
+       "category": "output",
+       "limit": 5
+      },
+      "ok": true
+     },
+     {
+      "name": "offer_choices",
+      "input": {
+       "question": "Which kind of beep do you want?",
+       "choices": [
+        {
+         "label": "Active buzzer",
+         "detail": "Simplest: set the pin HIGH and it beeps at a fixed tone. No extra code needed for sound.",
+         "partId": "buzzer-active"
+        },
+        {
+         "label": "Passive buzzer",
+         "detail": "Needs tone() in code, but you can choose the pitch or make a rising alarm sound.",
+         "partId": "buzzer-passive"
+        },
+        {
+         "label": "Piezo disc",
+         "detail": "Same wiring as the passive buzzer but quieter; cheap and small.",
+         "partId": "piezo-disc"
+        }
+       ]
+      },
+      "ok": true
+     }
+    ]
+   },
+   "ms": 14075
+  },
+  {
+   "kind": "pick",
+   "label": "Active buzzer"
+  },
+  {
+   "kind": "user",
+   "text": "Active buzzer"
+  },
+  {
+   "kind": "assistant",
+   "reply": {
+    "message": "Here's the proposal: the HC-SR04 distance sensor connects to 5V/GND, TRIG on D2 (GPIO 2), ECHO on D3 (GPIO 3); the active buzzer's + goes to D4 (GPIO 4) and - to GND. The checker found no errors or warnings, and nothing extra to buy since both parts run fine on the Uno's 5 V logic. Press Apply to add it to your project, and I can then write starter code that beeps whenever the measured distance drops below 30 cm.",
+    "confidence": "documented",
+    "sources": [
+     {
+      "kind": "library",
+      "label": "hc-sr04 part entry"
      },
      {
       "kind": "library",
-      "label": "arduino-uno-r3 board file (5V logic, safe GPIO pins D2–D4)"
+      "label": "buzzer-active part entry"
+     },
+     {
+      "kind": "library",
+      "label": "propose_project wiring checker result"
      }
     ],
     "highlight": [
      "part:hc1",
-     "part:buz1",
+     "part:buzzer1",
      "pin:D2",
      "pin:D3",
      "pin:D4"
     ],
     "nextOptions": [
-     "Apply and write starter code",
-     "Use a louder buzzer with a transistor",
-     "Change the trigger distance logic",
-     "Pick different pins"
+     "Apply and write the code",
+     "Explain the wiring more",
+     "Change a pin"
     ],
     "proposal": {
-     "title": "Desk Proximity Beeper",
-     "summary": "An ultrasonic sensor measures distance to anything in front of your desk; when something comes closer than 30 cm, an active buzzer beeps.",
+     "title": "Desk proximity beeper",
+     "summary": "An HC-SR04 ultrasonic sensor measures distance; when something comes closer than 30 cm, an active buzzer beeps.",
      "board": "arduino-uno-r3",
      "boardName": "Arduino Uno R3",
      "parts": [
@@ -58,16 +146,16 @@
        "id": "hc1",
        "partId": "hc-sr04",
        "name": "HC-SR04 ultrasonic distance",
-       "label": "Distance Sensor",
-       "why": "Measures distance to nearby objects using sound pulses; matches the board's 5 V logic with no extra parts needed.",
+       "label": "Distance sensor",
+       "why": "Measures distance to trigger the beep; runs natively at the Uno's 5 V logic.",
        "added": true
       },
       {
-       "id": "buz1",
+       "id": "buzzer1",
        "partId": "buzzer-active",
        "name": "Active buzzer",
-       "label": "Alert Buzzer",
-       "why": "Simplest way to beep: drive its + pin HIGH from code when distance is under 30 cm.",
+       "label": "Alarm buzzer",
+       "why": "Simplest way to beep: just drive the pin HIGH, no tone() code needed.",
        "added": true
       }
      ],
@@ -77,7 +165,7 @@
        {
         "id": "hc1",
         "partId": "hc-sr04",
-        "label": "Distance Sensor",
+        "label": "Distance sensor",
         "position": [
          -15,
          0,
@@ -86,9 +174,9 @@
         "confirmed": true
        },
        {
-        "id": "buz1",
+        "id": "buzzer1",
         "partId": "buzzer-active",
-        "label": "Alert Buzzer",
+        "label": "Alarm buzzer",
         "position": [
          32,
          0,
@@ -129,7 +217,7 @@
          "pin": "GND2"
         },
         "to": {
-         "part": "buz1",
+         "part": "buzzer1",
          "pin": "-"
         },
         "color": "#8A96A3"
@@ -165,7 +253,7 @@
          "pin": "D4"
         },
         "to": {
-         "part": "buz1",
+         "part": "buzzer1",
          "pin": "+"
         },
         "color": "#5CCB8F"
@@ -175,7 +263,7 @@
      "wiring": [
       {
        "part": "hc1",
-       "partLabel": "Distance Sensor",
+       "partLabel": "Distance sensor",
        "pin": "VCC",
        "role": "power",
        "boardPin": "5V",
@@ -186,7 +274,7 @@
       },
       {
        "part": "hc1",
-       "partLabel": "Distance Sensor",
+       "partLabel": "Distance sensor",
        "pin": "GND",
        "role": "ground",
        "boardPin": "GND1",
@@ -196,8 +284,8 @@
        "auto": false
       },
       {
-       "part": "buz1",
-       "partLabel": "Alert Buzzer",
+       "part": "buzzer1",
+       "partLabel": "Alarm buzzer",
        "pin": "-",
        "role": "ground",
        "boardPin": "GND2",
@@ -208,7 +296,7 @@
       },
       {
        "part": "hc1",
-       "partLabel": "Distance Sensor",
+       "partLabel": "Distance sensor",
        "pin": "TRIG",
        "role": "digital_in",
        "boardPin": "D2",
@@ -219,7 +307,7 @@
       },
       {
        "part": "hc1",
-       "partLabel": "Distance Sensor",
+       "partLabel": "Distance sensor",
        "pin": "ECHO",
        "role": "digital_out",
        "boardPin": "D3",
@@ -229,8 +317,8 @@
        "auto": true
       },
       {
-       "part": "buz1",
-       "partLabel": "Alert Buzzer",
+       "part": "buzzer1",
+       "partLabel": "Alarm buzzer",
        "pin": "+",
        "role": "digital_in",
        "boardPin": "D4",
@@ -247,89 +335,24 @@
     },
     "toolCalls": [
      {
-      "name": "search_parts",
-      "input": {
-       "query": "ultrasonic distance sensor",
-       "category": "sensor",
-       "limit": 5
-      },
-      "ok": true
-     },
-     {
-      "name": "search_parts",
-      "input": {
-       "query": "buzzer",
-       "category": "output",
-       "limit": 5
-      },
-      "ok": true
-     },
-     {
       "name": "propose_project",
       "input": {
-       "title": "Desk Proximity Beeper",
-       "summary": "An ultrasonic sensor measures distance to anything in front of your desk; when something comes closer than 30 cm, an active buzzer beeps.",
+       "title": "Desk proximity beeper",
+       "summary": "An HC-SR04 ultrasonic sensor measures distance; when something comes closer than 30 cm, an active buzzer beeps.",
        "board": null,
        "keepExisting": false,
        "parts": [
         {
          "id": "hc1",
          "partId": "hc-sr04",
-         "label": "Distance Sensor",
-         "why": "Measures distance to nearby objects using sound pulses; matches the board's 5 V logic with no extra parts needed."
+         "label": "Distance sensor",
+         "why": "Measures distance to trigger the beep; runs natively at the Uno's 5 V logic."
         },
         {
-         "id": "buz1",
+         "id": "buzzer1",
          "partId": "buzzer-active",
-         "label": "Alert Buzzer",
-         "why": "Simplest way to beep: drive its + pin HIGH from code when distance is under 30 cm."
-        }
-       ],
-       "wires": [
-        {
-         "boardPin": "5V",
-         "part": "hc1",
-         "pin": "VCC"
-        },
-        {
-         "boardPin": "GND1",
-         "part": "hc1",
-         "pin": "GND"
-        },
-        {
-         "boardPin": "5V",
-         "part": "buz1",
-         "pin": "+"
-        },
-        {
-         "boardPin": "GND2",
-         "part": "buz1",
-         "pin": "-"
-        }
-       ],
-       "links": []
-      },
-      "ok": true
-     },
-     {
-      "name": "propose_project",
-      "input": {
-       "title": "Desk Proximity Beeper",
-       "summary": "An ultrasonic sensor measures distance to anything in front of your desk; when something comes closer than 30 cm, an active buzzer beeps.",
-       "board": null,
-       "keepExisting": false,
-       "parts": [
-        {
-         "id": "hc1",
-         "partId": "hc-sr04",
-         "label": "Distance Sensor",
-         "why": "Measures distance to nearby objects using sound pulses; matches the board's 5 V logic with no extra parts needed."
-        },
-        {
-         "id": "buz1",
-         "partId": "buzzer-active",
-         "label": "Alert Buzzer",
-         "why": "Simplest way to beep: drive its + pin HIGH from code when distance is under 30 cm."
+         "label": "Alarm buzzer",
+         "why": "Simplest way to beep: just drive the pin HIGH, no tone() code needed."
         }
        ],
        "wires": [
@@ -345,7 +368,7 @@
         },
         {
          "boardPin": "GND2",
-         "part": "buz1",
+         "part": "buzzer1",
          "pin": "-"
         }
        ],
@@ -355,7 +378,7 @@
      }
     ]
    },
-   "ms": 22425
+   "ms": 13436
   },
   {
    "kind": "apply"

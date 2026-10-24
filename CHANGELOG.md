@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+CHANGELOG_PLACEHOLDER
+
 ## 0.7.0 (2026-09-30)
 
 Workspace redesign (the plan in `docs/roadmap-2026-10.md`):
@@ -31,12 +35,6 @@ Workspace redesign (the plan in `docs/roadmap-2026-10.md`):
 
 - Fixed: the CI type check failed on the new notices test (it uses the browser window, so it is now checked with the renderer settings) and a test wire without an id.
 
-- **Describe your project** (New project): say what you want to build and the assistant builds it with you. It asks only what changes the design (one question at a time), compares parts as cards that say what is different (what they measure, voltage, wiring, traps from the library), then proposes the whole project: library parts only, signal wires on safe pins from the board's own rules, part-to-part wires for loads and level shifters, extras to buy and starter code. Every proposal runs through the wiring checker and the assistant must fix errors and unwired pins before it answers. Nothing changes until you press "Apply to my project" (undoable); nothing is written to the board from the chat. New assistant tools: `search_parts`, `get_part`, `offer_choices`, `propose_project`, `check_project`.
-- Live AI evaluation: `npm run eval:ai` runs 20 beginner requests on 12 boards (English and Italian, a vague request, a part the library does not have) through the real assistant, with a small model playing the user, and grades every conversation by code with the app's own rules. Reports in `docs/ai-evals/` (three rounds, Claude Sonnet 5 and Sonnet 5.5). What the evaluation found and fixed: currents shown without units (a BME280 read as 3.6 mA instead of 3.6 µA), a tool argument the model filled with `""`, two questions in one turn, highlights naming library ids, a model that kept calling tools after asking the user (now the next request forbids tools, and the last round always answers), and a non-logic-level MOSFET picked for 3.3 V boards.
-- Recorded conversations on the website: real chats with Claude replay in the browser demo (`/demo/#demo=chat&chat=<id>`), with the cards, the pick, Apply and the parts appearing on the 3D board, under a "Recorded conversation" banner; no AI is called while you watch. New project lists them as "Watch an example conversation". The landing page has a new "Describe it" section.
-- Wiring rule: a passive pin on a power pin (a level shifter's HV side, a MOSFET module's load supply) is no longer reported as "a signal on a power pin".
-- Parts: the IRF520 MOSFET module warns on 3.3 V boards that it only half turns on (Vishay datasheet: VGS(th) 2 to 4 V, RDS(on) at 10 V) and points to a logic-level module.
-- The Claude provider caches the conversation too (automatic prompt caching), so the tool rounds of one answer reuse it: a builder conversation costs about $0.10 with Claude Sonnet 5.
 
 ## 0.6.1 (2026-09-29)
 

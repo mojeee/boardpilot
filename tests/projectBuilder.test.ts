@@ -206,6 +206,11 @@ describe('buildProposal', () => {
     expect(r.proposal.findings.filter((f) => f.severity === 'error')).toEqual([]);
   });
 
+  it('puts the divider resistor of a bare LDR on the shopping list (from its library note)', () => {
+    const r = buildProposal(input({ parts: [{ id: 'ldr1', partId: 'photoresistor', label: 'LDR', why: '' }] }), empty(), PARTS);
+    expect(r.ok && r.proposal.extras.some((e) => /10 kΩ resistor from LDR 2 to GND/.test(e))).toBe(true);
+  });
+
   it('checks the current drawing for the assistant', () => {
     const c = checkScene({ board: 'esp32-devkitc-30', parts: [{ id: 'bme1', partId: 'bme280-gy', position: [0, 0, 40] }], wires: [] }, PARTS);
     expect(c.unwired).toContain('bme1.SDA');

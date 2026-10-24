@@ -128,7 +128,7 @@ In the app you can also paste a product link: BoardPilot recognises the chip, re
 
 Optional. It works out of the box with a **free demo** (an older Gemini model through BoardPilot's rate-limited test relay; for testing only, don't send private data), or with **your own key** for Claude, GPT or Gemini, stored encrypted on your computer. See [docs/ai.md](docs/ai.md).
 
-**Describe your project** (New project): say what you want to build; the assistant asks what it needs, compares parts with you, then proposes the parts, the wiring on safe pins, the extras to buy and starter code, all checked by the wiring rules before you press Apply. It is tested against the real model with `npm run eval:ai` ([results](docs/ai-evals/)), and the website replays recorded conversations in the browser demo.
+**Describe your project** (in the chat, or New project → Describe it): say what you want to build; the assistant asks what it needs, compares parts with you, then proposes the parts, the wiring on safe pins, the extras to buy and starter code, all checked by the wiring rules before you press Apply. It is tested against the real model with `npm run eval:ai` ([results](docs/ai-evals/)), and the website replays recorded conversations in the browser demo.
 
 ## Install
 

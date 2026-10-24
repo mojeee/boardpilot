@@ -41,10 +41,7 @@ const it: Record<string, string> = {
   // New project
   'The assistant continues in the chat: it asks what it needs, compares parts with you and proposes the wiring, checked by the wiring rules. Nothing changes until you press Apply.':
     'L’assistente continua nella chat: chiede quello che gli serve, confronta i componenti con te e propone i collegamenti, verificati dalle regole di cablaggio. Non cambia nulla finché non premi Applica.',
-  'Describe your project': 'Descrivi il tuo progetto',
-  'Say what you want to make. The assistant asks what it needs, compares parts with you, then proposes the parts and wiring. Nothing changes until you press Apply.':
-    'Di’ cosa vuoi costruire. L’assistente chiede quello che gli serve, confronta i componenti con te, poi propone componenti e collegamenti. Non cambia nulla finché non premi Applica.',
-  'e.g. A weather station that shows the temperature on a small screen': 'es. Una stazione meteo che mostra la temperatura su un piccolo schermo',
+  'Describe a project to build': 'Descrivi un progetto da costruire',
   'A plant watering system': 'Un sistema per annaffiare una pianta',
   'A distance alarm with a buzzer': 'Un allarme di distanza con un cicalino',
   'A room monitor with a display': 'Un monitor della stanza con un display',
@@ -57,6 +54,8 @@ const it: Record<string, string> = {
     'Due resistenze di pull-up da 4,7 kΩ per SDA e SCL (nessun componente I2C del progetto ha le sue).',
   'A {k} kΩ pull-up on {part} {pin}.': 'Un pull-up da {k} kΩ su {part} {pin}.',
   'A 1 kΩ + 2 kΩ divider: {part} {pin} sends 5 V into {board}.': 'Un partitore da 1 kΩ + 2 kΩ: {part} {pin} manda 5 V in {board}.',
+  'A {k} kΩ resistor from {part} {pin} to GND: with the sensor it makes the voltage divider the ADC reads.':
+    'Una resistenza da {k} kΩ da {part} {pin} a GND: con il sensore forma il partitore che l’ADC legge.',
   'A flyback diode (e.g. 1N4007) across {part}, stripe to +.': 'Un diodo di ricircolo (es. 1N4007) ai capi di {part}, con la fascia verso il +.',
   'A level shifter for {n} line(s) between 5 V and 3.3 V.': 'Un traslatore di livello per {n} linea/e tra 5 V e 3,3 V.',
   'Ignored the wire {wire}: there is no part "{part}" in the proposal.': 'Ignorato il filo {wire}: nella proposta non c’è il componente "{part}".',

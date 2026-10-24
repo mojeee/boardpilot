@@ -2,10 +2,8 @@
 .starter-files { display: flex; flex-wrap: wrap; max-width: 100%; }
 .starter-files button { font-size: 11px; padding: 4px 8px; border-bottom: 1px solid var(--line); }
 .starter-files button + button { border-left: 1px solid var(--line); }
-.describe-it { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px solid var(--ai-line); background: var(--ai-bg); border-radius: var(--radius-sm); }
 .replay-bar { display: flex; flex-direction: column; gap: 6px; padding: 8px 12px; background: var(--ai-bg); border-bottom: 1px solid var(--ai-line); font-size: 12px; color: var(--muted); }
 .replay-bar b { color: var(--ai); }
-.replay-full { flex: 1; min-height: 0; }
 .example-chats { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 6px; }
 .example-chat { text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; background: var(--chrome); border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--text); cursor: pointer; }
 .example-chat:hover { border-color: var(--ai-line); }

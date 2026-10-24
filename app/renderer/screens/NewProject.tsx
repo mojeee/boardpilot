@@ -5,15 +5,12 @@ import { PARTS, getBoard } from '@shared/board';
 import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
 import { generateStarter, starterToolchains, TOOLCHAIN_NAME, type StarterProject, type StarterToolchain } from '@shared/starter';
-import { useApp, useScene, log } from '../state/store';
+import { useScene, log } from '../state/store';
 import { openTask } from '../components/TaskRail';
 import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
 import { addPart } from '../state/sceneActions';
-import { AskBox, AssistantPanel } from '../components/AssistantPanel';
-import { askAi } from '../components/ai';
-import { ExampleChats } from '../replay/ReplayBar';
-import { useReplay } from '../replay/player';
+import { AssistantPanel } from '../components/AssistantPanel';
 import { CodeCheck } from '../components/CodeCheck';
 import { BomTable } from '../components/BomTable';
 import { PowerBudget } from '../components/PowerBudget';
@@ -36,8 +33,6 @@ export function NewProjectPanel() {
   const [openFile, setOpenFile] = useState('main.c');
   const [showTemplates, setShowTemplates] = useState(false);
   const tplOpen = useTemplate((s) => !!s.tpl);
-  const aiOn = useApp((s) => s.ai.enabled);
-  const replaying = useReplay((s) => !!s.rec);
   const hasMachine = useScene((s) => s.scene.stateMachine !== undefined);
   const board = getBoard(scene.board);
   const toolchains = starterToolchains(board);
@@ -77,16 +72,6 @@ export function NewProjectPanel() {
     useScene.getState().preset('home');
   };
 
-  // A replayed conversation gets the whole panel: it is the thing to watch.
-  if (replaying)
-    return (
-      <div className="right-split">
-        <div className="right-bottom replay-full">
-          <AssistantPanel title={t('Describe your project')} />
-        </div>
-      </div>
-    );
-
   return (
     <div className="right-split">
       <div className="right-top">
@@ -117,21 +102,6 @@ export function NewProjectPanel() {
               </button>
             )}
           </div>
-          <ExampleChats />
-          {aiOn && (
-            <div className="describe-it">
-              <div className="label">{t('Describe your project')}</div>
-              <p className="small dim">{t('Say what you want to make. The assistant asks what it needs, compares parts with you, then proposes the parts and wiring. Nothing changes until you press Apply.')}</p>
-              <AskBox placeholder={t('e.g. A weather station that shows the temperature on a small screen')} />
-              <div className="next-options">
-                {[t('A plant watering system'), t('A distance alarm with a buzzer'), t('A room monitor with a display')].map((x) => (
-                  <button key={x} className="btn small ghost" onClick={() => void askAi(x)}>
-                    {x}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
           <div className="row between">
             <div className="label">{t('Start from a template')}</div>
             <button className="btn small ghost" onClick={() => setShowTemplates(!showTemplates)}>

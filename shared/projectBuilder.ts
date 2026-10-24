@@ -287,11 +287,17 @@ export function extrasText(scene: Scene, board: BoardDef, parts: Record<string, 
   for (const c of x.onewirePullups) out.push(t('A {k} kΩ pull-up on {part} {pin}.', { k: c.kOhm, part: c.part.label ?? c.def.name, pin: c.pin.name }));
   for (const c of x.dividers) out.push(t('A 1 kΩ + 2 kΩ divider: {part} {pin} sends 5 V into {board}.', { part: c.part.label ?? c.def.name, pin: c.pin.name, board: c.boardPin.label }));
   if (x.shifterLines) out.push(t('A level shifter for {n} line(s) between 5 V and 3.3 V.', { n: x.shifterLines }));
-  // Coils (pumps, solenoids, motors) whose library pin notes ask for a flyback diode.
   for (const inst of scene.parts) {
     const def = parts[inst.partId];
-    if (def?.pins.some((p) => /flyback diode across the (coil|motor)/i.test(p.notes ?? '')))
+    if (!def) continue;
+    // Coils (pumps, solenoids, motors) whose library pin notes ask for a flyback diode.
+    if (def.pins.some((p) => /flyback diode across the (coil|motor)/i.test(p.notes ?? '')))
       out.push(t('A flyback diode (e.g. 1N4007) across {part}, stripe to +.', { part: inst.label ?? def.name }));
+    // Bare resistive sensors (LDR, FSR, flex) read through a divider: "through 10 kΩ to GND".
+    for (const p of def.pins) {
+      const m = /(\d+(?:\.\d+)?)\s*kΩ[^.;]{0,25}?\bto (?:GND|ground)/i.exec(p.notes ?? '');
+      if (m) out.push(t('A {k} kΩ resistor from {part} {pin} to GND: with the sensor it makes the voltage divider the ADC reads.', { k: m[1], part: inst.label ?? def.name, pin: p.name }));
+    }
   }
   return out;
 }

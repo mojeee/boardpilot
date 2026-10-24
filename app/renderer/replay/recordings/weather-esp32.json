@@ -19,33 +19,30 @@
   {
    "kind": "assistant",
    "reply": {
-    "message": "For a weather station you need a sensor that reads temperature, humidity and pressure, plus a small screen to show the numbers. I found three good sensor options that all talk over I2C and work at this board's 3.3 V — pick one and I'll also set up a small OLED display (SSD1306, 128x64) to go with it.\n\nWhich sensor should measure temperature, humidity and pressure?",
+    "message": "Here are three sensor options that all give you temperature, humidity and pressure over the same I2C wiring. Pick one and I'll ask about the screen next.\n\nWhich sensor module for temperature, humidity and pressure?",
     "confidence": "documented",
     "sources": [
      {
       "kind": "library",
-      "label": "parts library: bme280-gy, bme680, aht20-bmp280"
+      "label": "bme280-gy, bme680, aht20-bmp280 parts"
      }
     ],
-    "highlight": [
-     "pin:D21",
-     "pin:D22"
-    ],
+    "highlight": [],
     "nextOptions": [],
     "choices": [
      {
-      "label": "BME280 breakout (GY-BME280)",
-      "detail": "The classic choice: temperature, humidity and pressure over I2C. Cheap and tiny, but some boards sold as BME280 are actually BMP280 (no humidity) — we can check the chip ID after wiring.",
+      "label": "GY-BME280",
+      "detail": "The classic choice: one chip, I2C, measures all three. Cheap and tiny. Note: many cheap boards sold as 'BME280' are actually BMP280 (no humidity) - we can check the chip ID once it's wired.",
       "partId": "bme280-gy"
      },
      {
       "label": "BME680",
-      "detail": "Same three readings plus a gas/air-quality sensor. Slightly pricier, same I2C wiring and 3.3 V logic as the BME280.",
+      "detail": "Same three readings plus air quality (gas). Slightly pricier, same I2C wiring.",
       "partId": "bme680"
      },
      {
-      "label": "AHT20 + BMP280 combo module",
-      "detail": "Two chips on one small board: AHT20 for temperature/humidity, BMP280 for pressure. Works from 3.3 V to 5 V, so it's forgiving if you ever switch boards.",
+      "label": "AHT20 + BMP280 combo",
+      "detail": "Two chips on one small board, same three readings. Works from 3.3 V or 5 V.",
       "partId": "aht20-bmp280"
      }
     ],
@@ -71,21 +68,21 @@
      {
       "name": "offer_choices",
       "input": {
-       "question": "Which sensor should measure temperature, humidity and pressure?",
+       "question": "Which sensor module for temperature, humidity and pressure?",
        "choices": [
         {
-         "label": "BME280 breakout (GY-BME280)",
-         "detail": "The classic choice: temperature, humidity and pressure over I2C. Cheap and tiny, but some boards sold as BME280 are actually BMP280 (no humidity) — we can check the chip ID after wiring.",
+         "label": "GY-BME280",
+         "detail": "The classic choice: one chip, I2C, measures all three. Cheap and tiny. Note: many cheap boards sold as 'BME280' are actually BMP280 (no humidity) - we can check the chip ID once it's wired.",
          "partId": "bme280-gy"
         },
         {
          "label": "BME680",
-         "detail": "Same three readings plus a gas/air-quality sensor. Slightly pricier, same I2C wiring and 3.3 V logic as the BME280.",
+         "detail": "Same three readings plus air quality (gas). Slightly pricier, same I2C wiring.",
          "partId": "bme680"
         },
         {
-         "label": "AHT20 + BMP280 combo module",
-         "detail": "Two chips on one small board: AHT20 for temperature/humidity, BMP280 for pressure. Works from 3.3 V to 5 V, so it's forgiving if you ever switch boards.",
+         "label": "AHT20 + BMP280 combo",
+         "detail": "Two chips on one small board, same three readings. Works from 3.3 V or 5 V.",
          "partId": "aht20-bmp280"
         }
        ]
@@ -94,46 +91,100 @@
      }
     ]
    },
-   "ms": 13189
+   "ms": 12669
   },
   {
    "kind": "pick",
-   "label": "BME280 breakout (GY-BME280)"
+   "label": "GY-BME280"
   },
   {
    "kind": "user",
-   "text": "BME280 breakout (GY-BME280)"
+   "text": "GY-BME280"
   },
   {
    "kind": "assistant",
    "reply": {
-    "message": "Here's the plan: a BME280 sensor for temperature, humidity and pressure, plus a small SSD1306 OLED screen, both sharing the I2C bus on D21 (GPIO 21, SDA) and D22 (GPIO 22, SCL). Both run from the board's 3.3 V and GND. The checker found no errors or unwired pins, and nothing extra to buy. One thing to watch later: some boards sold as 'BME280' are really a BMP280 without humidity — once wired, I can read its chip-ID register (0xD0) to confirm which one you have. Nothing is changed yet — press Apply on the card when you're happy, then I can write starter code or help you test it in the simulator.",
+    "message": "Both are small I2C OLED screens that share the same two wires as the BME280. Pick one.\n\nWhich little screen to show the readings?",
     "confidence": "documented",
     "sources": [
      {
       "kind": "library",
-      "label": "parts library: bme280-gy, ssd1306-i2c"
+      "label": "ssd1306-i2c, sh1106-oled parts"
+     }
+    ],
+    "highlight": [],
+    "nextOptions": [],
+    "choices": [
+     {
+      "label": "SSD1306 OLED 0.96\"",
+      "detail": "128x64 pixels, I2C (same two wires as the sensor). The most common small OLED, cheap and easy to read text on.",
+      "partId": "ssd1306-i2c"
+     },
+     {
+      "label": "SH1106 OLED 1.3\"",
+      "detail": "Also 128x64 but a bit bigger physically, I2C. Slightly different driver chip, same wiring effort.",
+      "partId": "sh1106-oled"
+     }
+    ],
+    "toolCalls": [
+     {
+      "name": "offer_choices",
+      "input": {
+       "question": "Which little screen to show the readings?",
+       "choices": [
+        {
+         "label": "SSD1306 OLED 0.96\"",
+         "detail": "128x64 pixels, I2C (same two wires as the sensor). The most common small OLED, cheap and easy to read text on.",
+         "partId": "ssd1306-i2c"
+        },
+        {
+         "label": "SH1106 OLED 1.3\"",
+         "detail": "Also 128x64 but a bit bigger physically, I2C. Slightly different driver chip, same wiring effort.",
+         "partId": "sh1106-oled"
+        }
+       ]
+      },
+      "ok": true
+     }
+    ]
+   },
+   "ms": 4999
+  },
+  {
+   "kind": "pick",
+   "label": "SSD1306 OLED 0.96\""
+  },
+  {
+   "kind": "user",
+   "text": "SSD1306 OLED 0.96\""
+  },
+  {
+   "kind": "assistant",
+   "reply": {
+    "message": "Here's the plan: a BME280 sensor (bme1) for temperature, humidity and pressure, and an SSD1306 OLED screen (oled1), both sharing the I2C bus on D21 (GPIO 21, SDA) and D22 (GPIO 22, SCL), powered from 3V3 and GND. No errors, nothing extra to buy. Nothing is wired yet - press Apply on the card to write it to your project. Note: cheap BME280 boards sometimes turn out to be BMP280 (no humidity) - once it's wired I can check the chip ID register to confirm which one you have.",
+    "confidence": "documented",
+    "sources": [
+     {
+      "kind": "library",
+      "label": "bme280-gy and ssd1306-i2c part entries"
      },
      {
       "kind": "library",
-      "label": "board file: esp32-devkitc-30 i2cDefault (SDA D21 / SCL D22)"
+      "label": "esp32-devkitc-30 board file: i2cDefault SDA D21 / SCL D22"
      }
     ],
     "highlight": [
      "part:bme1",
-     "part:oled1",
-     "pin:D21",
-     "pin:D22"
+     "part:oled1"
     ],
     "nextOptions": [
      "Apply and write starter code",
-     "Check the chip ID once wired",
-     "Show me the shopping list",
-     "Test it in the simulator"
+     "Check the BME280 chip ID once wired",
+     "Show the shopping list"
     ],
     "proposal": {
-     "title": "Weather Station",
-     "summary": "An ESP32 reads temperature, humidity and pressure from a BME280 sensor and shows them on a small OLED screen, both over the same I2C bus.",
+     "title": "Weather station",
+     "summary": "An ESP32 reads temperature, humidity and pressure from a BME280 and shows them on a small OLED screen, both sharing the I2C bus.",
      "board": "esp32-devkitc-30",
      "boardName": "ESP32 DevKit (30 pins)",
      "parts": [
@@ -141,16 +192,16 @@
        "id": "bme1",
        "partId": "bme280-gy",
        "name": "GY-BME280 breakout",
-       "label": "Weather sensor",
-       "why": "Measures temperature, humidity and pressure over I2C at 3.3 V.",
+       "label": "BME280 sensor",
+       "why": "Measures temperature, humidity and pressure over I2C.",
        "added": true
       },
       {
        "id": "oled1",
        "partId": "ssd1306-i2c",
        "name": "SSD1306 OLED 128x64 (I2C)",
-       "label": "Display",
-       "why": "Small, cheap 128x64 I2C screen to show the readings, shares the same bus as the sensor.",
+       "label": "OLED display",
+       "why": "Shows the three readings, shares the same I2C bus as the sensor.",
        "added": true
       }
      ],
@@ -160,7 +211,7 @@
        {
         "id": "bme1",
         "partId": "bme280-gy",
-        "label": "Weather sensor",
+        "label": "BME280 sensor",
         "position": [
          -22,
          0,
@@ -171,7 +222,7 @@
        {
         "id": "oled1",
         "partId": "ssd1306-i2c",
-        "label": "Display",
+        "label": "OLED display",
         "position": [
          15,
          0,
@@ -282,7 +333,7 @@
      "wiring": [
       {
        "part": "bme1",
-       "partLabel": "Weather sensor",
+       "partLabel": "BME280 sensor",
        "pin": "VIN",
        "role": "power",
        "boardPin": "3V3",
@@ -293,7 +344,7 @@
       },
       {
        "part": "bme1",
-       "partLabel": "Weather sensor",
+       "partLabel": "BME280 sensor",
        "pin": "GND",
        "role": "ground",
        "boardPin": "GND2",
@@ -304,7 +355,7 @@
       },
       {
        "part": "bme1",
-       "partLabel": "Weather sensor",
+       "partLabel": "BME280 sensor",
        "pin": "SCL",
        "role": "i2c_scl",
        "boardPin": "D22",
@@ -315,7 +366,7 @@
       },
       {
        "part": "bme1",
-       "partLabel": "Weather sensor",
+       "partLabel": "BME280 sensor",
        "pin": "SDA",
        "role": "i2c_sda",
        "boardPin": "D21",
@@ -326,7 +377,7 @@
       },
       {
        "part": "oled1",
-       "partLabel": "Display",
+       "partLabel": "OLED display",
        "pin": "GND",
        "role": "ground",
        "boardPin": "GND1",
@@ -337,7 +388,7 @@
       },
       {
        "part": "oled1",
-       "partLabel": "Display",
+       "partLabel": "OLED display",
        "pin": "VCC",
        "role": "power",
        "boardPin": "3V3",
@@ -348,7 +399,7 @@
       },
       {
        "part": "oled1",
-       "partLabel": "Display",
+       "partLabel": "OLED display",
        "pin": "SCL",
        "role": "i2c_scl",
        "boardPin": "D22",
@@ -359,7 +410,7 @@
       },
       {
        "part": "oled1",
-       "partLabel": "Display",
+       "partLabel": "OLED display",
        "pin": "SDA",
        "role": "i2c_sda",
        "boardPin": "D21",
@@ -378,22 +429,22 @@
      {
       "name": "propose_project",
       "input": {
-       "title": "Weather Station",
-       "summary": "An ESP32 reads temperature, humidity and pressure from a BME280 sensor and shows them on a small OLED screen, both over the same I2C bus.",
+       "title": "Weather station",
+       "summary": "An ESP32 reads temperature, humidity and pressure from a BME280 and shows them on a small OLED screen, both sharing the I2C bus.",
        "board": null,
-       "keepExisting": false,
+       "keepExisting": true,
        "parts": [
         {
          "id": "bme1",
          "partId": "bme280-gy",
-         "label": "Weather sensor",
-         "why": "Measures temperature, humidity and pressure over I2C at 3.3 V."
+         "label": "BME280 sensor",
+         "why": "Measures temperature, humidity and pressure over I2C."
         },
         {
          "id": "oled1",
          "partId": "ssd1306-i2c",
-         "label": "Display",
-         "why": "Small, cheap 128x64 I2C screen to show the readings, shares the same bus as the sensor."
+         "label": "OLED display",
+         "why": "Shows the three readings, shares the same I2C bus as the sensor."
         }
        ],
        "wires": [],
@@ -403,7 +454,7 @@
      }
     ]
    },
-   "ms": 10850
+   "ms": 9145
   },
   {
    "kind": "apply"

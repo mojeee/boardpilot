@@ -10,6 +10,7 @@ import { getLanguage } from '@shared/i18n';
 import { useAi, useScene } from '../state/store';
 import { applyProposal, openCode } from '../components/ProposalCard';
 import { useLayout } from '../state/layout';
+import { useProjects } from '../state/projects';
 import { openTask } from '../components/TaskRail';
 
 // Recordings are written by `BP_EVAL_RECORD=1 npm run eval:ai` and loaded only when played.
@@ -48,6 +49,9 @@ interface ReplayState {
 
 export const useReplay = create<ReplayState>(() => ({ rec: null, playing: false, done: false, speed: 1, step: 0, run: 0 }));
 
+/** The project tab the last replay played in. */
+let replayTab: string | null = null;
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** Waits `ms` of replay time, honouring pause and speed; false when the replay was stopped or restarted. */
@@ -78,7 +82,12 @@ export async function playRecording(rec: ChatRecording) {
   useLayout.getState().setRightTab('assistant');
   useAi.getState().clear();
   useAi.getState().set({ busy: false });
-  useScene.getState().openScene(structuredClone(rec.start));
+  // Its own project tab, named after the recording (reused on Replay): the user's projects stay as they are.
+  const pj = useProjects.getState();
+  if (replayTab && pj.tabs.some((x) => x.id === replayTab)) {
+    pj.switchTo(replayTab);
+    useScene.getState().openScene(structuredClone(rec.start));
+  } else replayTab = pj.add(structuredClone(rec.start), rec.title);
   if (!(await wait(900, run))) return;
 
   for (let i = 0; i < rec.steps.length; i++) {

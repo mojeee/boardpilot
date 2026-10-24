@@ -19,6 +19,8 @@ import type { PartDef } from '@shared/types';
 /** Minimal .env.local reader (KEY=value lines). Keys stay in this process only; they are the
  *  fallback when no key is saved in AI settings (ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY). */
 function loadEnvLocal() {
+  // End-to-end tests run without a developer's own keys (BP_NO_ENV_LOCAL=1, see e2e/app.ts).
+  if (process.env.BP_NO_ENV_LOCAL) return;
   const candidates = [join(process.cwd(), '.env.local'), join(app.getAppPath(), '.env.local')];
   for (const p of candidates) {
     if (!existsSync(p)) continue;

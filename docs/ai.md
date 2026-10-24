@@ -26,7 +26,7 @@ Top bar → **AI** → pick a provider and paste your key:
 
 ## Describe your project
 
-In **New project → Describe your project**, say what you want to make ("a weather station with a small screen"). The assistant:
+In the **Assistant** tab (or **New project → Describe it**, which opens a new project and continues in the chat), say what you want to make ("a weather station with a small screen"). The assistant:
 
 1. looks first: the board, the parts already drawn and the log are in its context;
 2. asks only what changes the design, one question per turn (power, indoors or outdoors, which board);
@@ -35,7 +35,9 @@ In **New project → Describe your project**, say what you want to make ("a weat
 
 Every proposal goes through the same wiring checker as a drawing made by hand; the assistant must fix errors and unwired pins before it answers. Nothing changes until you press **Apply to my project** (undoable), and nothing is ever written to the board from the chat.
 
-Tools the model can call for this: `search_parts`, `get_part`, `offer_choices`, `propose_project`, `check_project` (`app/main/ai/tools.ts`, logic in `shared/projectBuilder.ts`).
+A new project goes in a new project tab when the open one already has parts; its starter code goes in the Code panel. "Add a BME280 and an OLED" adds to the open project the same way, checked the same way. The assistant can also run the app's actions ("back up my board, then open the monitor") and change settings ("switch to Italian", "high contrast", "use my real board"); API keys and the MCP server stay yours to change.
+
+Tools the model can call for this: `search_parts`, `get_part`, `offer_choices`, `propose_project`, `check_project`, plus `app_action` (with `change_setting`) and `write_code` (`app/main/ai/tools.ts`, logic in `shared/projectBuilder.ts` and `shared/actions.ts`).
 
 ### Testing it against the real model
 

@@ -20,15 +20,21 @@ export async function launch(opts: { hash?: string; env?: Record<string, string>
   const profile = mkdtempSync(join(tmpdir(), 'bp-e2e-'));
   const saveDir = mkdtempSync(join(tmpdir(), 'bp-e2e-save-'));
   const app = await electron.launch({
-    args: ['.', '--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
+    // Software WebGL for Linux CI without a GPU; on macOS SwiftShader cannot start, the real GPU is used.
+    args: ['.', '--no-sandbox', ...(process.platform === 'linux' ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [])],
     cwd: root,
     env: {
       ...process.env,
       BP_PROFILE: profile,
       BP_SAVE_DIR: saveDir,
       BOARDPILOT_MODE: 'sim',
-      // No network AI unless a test points the demo relay at its own fake server.
+      // No network AI unless a test points the demo relay at its own fake server, and no key from
+      // a developer's .env.local.
       BOARDPILOT_DEMO_AI_URL: 'off',
+      BP_NO_ENV_LOCAL: '1',
+      ANTHROPIC_API_KEY: '',
+      OPENAI_API_KEY: '',
+      GEMINI_API_KEY: '',
       BP_SNAPSHOT_HASH: opts.hash ?? '',
       ...opts.env,
     },

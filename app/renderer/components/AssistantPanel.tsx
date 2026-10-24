@@ -14,7 +14,7 @@ import { Icon } from './Icon';
 import { t } from '@shared/i18n';
 import { openAiSettings } from './AiSettings';
 import { ChoiceCards, ProposalCard, applyProposal } from './ProposalCard';
-import { ReplayBar } from '../replay/ReplayBar';
+import { ExampleChats, ReplayBar } from '../replay/ReplayBar';
 import { useReplay } from '../replay/player';
 
 const CONF_TEXT = { measured: 'Measured', documented: 'From documentation', suggestion: 'Suggestion' };
@@ -263,7 +263,17 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
         {items.length === 0 && !replaying && (
           <div className="ai-empty">
             {ai.enabled ? (
-              t('Ask anything about your board, wiring or code. I only state measurements I actually took, and show where every fact comes from.')
+              <>
+                {t('Ask anything about your board, wiring or code. I only state measurements I actually took, and show where every fact comes from.')}
+                <div className="label">{t('Describe a project to build')}</div>
+                <div className="next-options">
+                  {[t('A plant watering system'), t('A distance alarm with a buzzer'), t('A room monitor with a display')].map((x) => (
+                    <button key={x} className="btn small ghost" onClick={() => void askAi(x)}>
+                      {x}
+                    </button>
+                  ))}
+                </div>
+              </>
             ) : (
               <>
                 {t('The assistant is off because no API key is set. Add your own key for Claude, GPT or Gemini. Every check and measurement works without it.')}{' '}
@@ -272,6 +282,7 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
                 </button>
               </>
             )}
+            <ExampleChats />
           </div>
         )}
         {items.map((it) =>
