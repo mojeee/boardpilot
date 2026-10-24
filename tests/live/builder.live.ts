@@ -24,6 +24,7 @@ import { PROVIDER_INFO } from '@shared/ai';
 import type { AiContext, AiReply, LogEntry, Scene } from '@shared/types';
 import type { ChatRecording, ReplayStep } from '@shared/chatReplay';
 import { checkScene } from '@shared/projectBuilder';
+import { assignPins } from '@shared/assign';
 import { Assistant } from '../../app/main/ai/assistant';
 import { AiSettingsStore } from '../../app/main/settings/settings';
 import { makeHub } from '../helpers';
@@ -75,12 +76,21 @@ interface Scenario {
   expectBoard?: string;
   /** parts already drawn when the chat starts */
   start?: Scene['parts'];
+  /** wire the start parts with the safe-pin rules before the chat */
+  startWired?: boolean;
   /** expect the assistant to ask at least one question before proposing */
   expectQuestion?: boolean;
   /** a request the library cannot do: success is an honest answer, not a proposal */
   expectNoProposal?: boolean;
   /** save as a website demo recording */
   record?: boolean;
+  /** a request to do something in the app, not to build: graded on the first answer only */
+  act?: {
+    /** app actions expected, in order, as "action" or "action:text the argument contains" */
+    actions?: string[];
+    /** the assistant must ask for code in the Code panel (write_code) */
+    code?: boolean;
+  };
 }
 
 /** Parts that are a poor choice on 3.3 V boards (the library says why); checked on every scenario. */
@@ -343,6 +353,44 @@ const S: Scenario[] = [
       { what: 'OLED display', category: 'display' },
     ],
   },
+  {
+    id: 'settings',
+    title: 'Change settings',
+    blurb: 'Switch the app to Italian and the 3D view to high contrast.',
+    board: 'esp32-devkitc-30',
+    lang: 'en',
+    request: 'Please switch the app to Italian and make the 3D view high contrast, I can hardly see the pins.',
+    persona: 'A user who wants the settings changed.',
+    needs: [],
+    act: { actions: ['change_setting:language', 'change_setting:contrast'] },
+  },
+  {
+    id: 'backup-then-monitor',
+    title: 'Back up, then monitor',
+    blurb: 'Two app actions in one sentence.',
+    board: 'esp32-devkitc-30',
+    lang: 'en',
+    request: 'Back up my board, then open the serial monitor at 115200.',
+    persona: 'A user with an ESP32 plugged in.',
+    needs: [],
+    act: { actions: ['backup_flash', 'open_monitor:115200'] },
+  },
+  {
+    id: 'code-for-drawing',
+    title: 'Code for the drawing',
+    blurb: 'Ask for code for a project already drawn.',
+    board: 'esp32-devkitc-30',
+    lang: 'en',
+    request: 'Make it show the temperature on the OLED every 2 seconds.',
+    persona: 'A user with a BME280 and an OLED already wired in the project.',
+    start: [
+      { id: 'bme1', partId: 'bme280-gy', label: 'BME280', position: [-20, 0, 40], confirmed: true },
+      { id: 'oled1', partId: 'ssd1306-i2c', label: 'OLED', position: [20, 0, 40], confirmed: true },
+    ],
+    startWired: true,
+    needs: [],
+    act: { code: true },
+  },
 ];
 
 /* ---------------- the simulated user ---------------- */
@@ -517,6 +565,7 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
   const assistant = new Assistant(hub, settings, env);
 
   let scene: Scene = { board: sc.board, parts: sc.start ?? [], wires: [] };
+  if (sc.startWired) scene = assignPins(scene, BOARDS[sc.board], PARTS).scene;
   const log: LogEntry[] = [];
   const steps: ReplayStep[] = [];
   const lines: string[] = [];
@@ -527,6 +576,7 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
   let applied: AiReply['proposal'] | undefined;
   let lastProposal: AiReply['proposal'] | undefined;
   let measuredClaim = false;
+  let actsSeen: AiReply | undefined;
   let languageOk = true;
   let error: string | undefined;
   const t0 = Date.now();
@@ -554,6 +604,12 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
         (reply.toolCalls?.length ? `\n  TOOLS: ${reply.toolCalls.map((c) => `${c.ok ? '' : '✗'}${c.name}`).join(', ')}` : '') +
         (reply.toolCalls ?? []).filter((c) => !c.ok).map((c) => `\n  TOOL ERROR ${c.name}: ${c.error ?? '?'}`).join(''),
     );
+    if (reply.actions?.length) lines.push(`  ACTIONS: ${reply.actions.map((x) => `${x.action}(${x.arg})`).join(', ')}`);
+    if (reply.codeRequest) lines.push(`  CODE REQUEST: ${reply.codeRequest}`);
+    if (sc.act) {
+      actsSeen = reply;
+      break;
+    }
     if (reply.proposal) {
       proposals++;
       lastProposal = reply.proposal;
@@ -594,7 +650,18 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
     if (!pass) failures.push(`${name}: ${why}`);
   };
   check('no API error', !error, error ?? '');
-  if (sc.expectNoProposal) {
+  if (sc.act) {
+    const got = actsSeen?.actions ?? [];
+    let from = 0;
+    for (const want of sc.act.actions ?? []) {
+      const [action, argPart] = want.split(':');
+      const i = got.findIndex((x, j) => j >= from && x.action === action && (!argPart || x.arg.toLowerCase().includes(argPart)));
+      check(`runs ${want}`, i >= 0, `actions: ${got.map((x) => `${x.action}(${x.arg})`).join(', ') || 'none'}`);
+      if (i >= 0) from = i + 1;
+    }
+    if (sc.act.code) check('asks for code in the Code panel', !!actsSeen?.codeRequest, 'no write_code call');
+    check('changes nothing else', !actsSeen?.proposal && !actsSeen?.pendingWrite, 'made a proposal or asked for a board write');
+  } else if (sc.expectNoProposal) {
     const first = steps.find((x): x is Extract<ReplayStep, { kind: 'assistant' }> => x.kind === 'assistant');
     check('honest: no proposal for a part the library lacks', !first?.reply.proposal, `proposed ${partIds.join(', ')}`);
     check('says the library lacks it', !!first && /\b(no|not|nothing|isn.t|doesn.t|lacks?)\b[^.]{0,80}\b(library|match)|\blibrary\b[^.]{0,60}\b(no|not|nothing|lacks?)\b/i.test(first.reply.message), 'the first answer does not say the part is missing');

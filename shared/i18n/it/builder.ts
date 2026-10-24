@@ -57,6 +57,7 @@ const it: Record<string, string> = {
     'Due resistenze di pull-up da 4,7 kΩ per SDA e SCL (nessun componente I2C del progetto ha le sue).',
   'A {k} kΩ pull-up on {part} {pin}.': 'Un pull-up da {k} kΩ su {part} {pin}.',
   'A 1 kΩ + 2 kΩ divider: {part} {pin} sends 5 V into {board}.': 'Un partitore da 1 kΩ + 2 kΩ: {part} {pin} manda 5 V in {board}.',
+  'A flyback diode (e.g. 1N4007) across {part}, stripe to +.': 'Un diodo di ricircolo (es. 1N4007) ai capi di {part}, con la fascia verso il +.',
   'A level shifter for {n} line(s) between 5 V and 3.3 V.': 'Un traslatore di livello per {n} linea/e tra 5 V e 3,3 V.',
   'Ignored the wire {wire}: there is no part "{part}" in the proposal.': 'Ignorato il filo {wire}: nella proposta non c’è il componente "{part}".',
   'Ignored the wire {wire}: {board} has no pin "{pin}". A safe pin was picked instead.': 'Ignorato il filo {wire}: la {board} non ha il pin "{pin}". È stato scelto un pin sicuro.',

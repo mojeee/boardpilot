@@ -169,6 +169,8 @@ describe('buildProposal', () => {
     expect(link?.to.part).toBe('fet1');
     expect(r.proposal.wiring.some((w) => w.part === 'pump1' && w.boardPin === '')).toBe(true);
     expect(r.proposal.notes.some((n) => n.includes('pump1.nope'))).toBe(true);
+    // The pump's library notes ask for a flyback diode: it is on the shopping list.
+    expect(r.proposal.extras.some((e) => /flyback diode/.test(e))).toBe(true);
   });
 
   it('routes a 3.3 V RC522 through a level shifter on a 5 V Uno, never straight to the board', () => {
