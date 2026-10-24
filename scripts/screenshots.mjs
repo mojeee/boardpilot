@@ -48,7 +48,10 @@ const headless = process.platform === 'linux' && !process.env.DISPLAY;
 const profile = () => mkdtempSync(join(tmpdir(), 'bp-shot-'));
 
 function run(env, delay) {
-  const electron = ['electron', '.', '--no-sandbox', '--force-device-scale-factor=2', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
+  // Software WebGL only where there is no GPU (Linux CI); on macOS SwiftShader cannot start and the
+  // capture comes out blank.
+  const gl = process.platform === 'linux' ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [];
+  const electron = ['electron', '.', '--no-sandbox', '--force-device-scale-factor=2', ...gl];
   const cmd = headless ? 'xvfb-run' : 'npx';
   const args = headless ? ['-a', '-s', '-screen 0 3300x2100x24', 'npx', ...electron] : electron;
   spawnSync(cmd, args, { cwd: root, env: { ...process.env, BP_PROFILE: profile(), ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });

@@ -150,7 +150,7 @@ No big code changes needed to help:
 npm install
 npm run dev          # the app, in simulator mode
 npm test             # 3100+ tests (Vitest); npm run typecheck
-npm run eval:ai      # live AI evaluation of the project builder (needs ANTHROPIC_API_KEY, about $2.50)
+npm run eval:ai      # live AI evaluation of the project builder (needs ANTHROPIC_API_KEY, about $3)
 npm run build:agent  # rebuild the ESP32 diagnostic agent (arduino-cli + esp32 core)
 npm run dist:mac     # .dmg files in dist/
 npm run dist:win     # Windows installer in dist/

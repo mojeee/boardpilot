@@ -125,7 +125,8 @@ const recordings = existsSync(RECORDINGS_DIR)
 function chatBlock(lang) {
   if (!existsSync(join(root, 'site/demo/index.html'))) return '';
   // Each language shows its own recordings first; Italian ones only on the Italian page.
-  const list = recordings.filter((r) => r.lang === 'en' || r.lang === lang);
+  // The weather station first: the poster image (node scripts/screenshots.mjs chat) shows that one.
+  const list = recordings.filter((r) => r.lang === 'en' || r.lang === lang).sort((a, b) => Number(b.id === 'weather-esp32') - Number(a.id === 'weather-esp32'));
   const image = ['img/chat.jpg', 'img/live.jpg'].find((p) => existsSync(join(root, 'site', p)));
   return chatDemo({ lang, recordings: list, boardName: (id) => boards.find((b) => b.id === id)?.name ?? id, image: `/${image}` });
 }

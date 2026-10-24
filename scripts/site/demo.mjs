@@ -76,6 +76,7 @@ export const chatUrl = (lang, id) => `/demo/#demo=chat&chat=${encodeURIComponent
 export function chatDemo({ lang, recordings, boardName, image, width = 1800, height = 1125 }) {
   const t = CHAT_T[lang === 'it' ? 'it' : 'en'];
   if (!recordings.length) return '';
+  // Stable sort: the caller's order, with recordings in the page language first.
   const ordered = [...recordings].sort((a, b) => Number(b.lang === lang) - Number(a.lang === lang));
   const [main, ...rest] = ordered;
   const box = tryLive({

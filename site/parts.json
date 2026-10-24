@@ -3,7 +3,7 @@
  "license": "CC-BY-4.0",
  "attribution": "BoardPilot (https://boardpilot.agentflowbind.com)",
  "source": "https://github.com/mojeee/boardpilot/tree/main/parts",
- "generated": "2026-09-30",
+ "generated": "2026-10-24",
  "count": 383,
  "parts": [
   {
@@ -15824,6 +15824,16 @@
     "pwm",
     "transistor",
     "interruttore"
+   ],
+   "gotchas": [
+    {
+     "text": "On a 3.3 V board the IRF520 only half turns on: its gate threshold is 2 to 4 V and its on-resistance is specified at 10 V. It gets hot and weak with pumps, motors and heaters. Use a logic-level MOSFET module such as the AOD4184, or a relay.",
+     "when": "logic3v3",
+     "source": {
+      "title": "Vishay IRF520 datasheet",
+      "section": "VGS(th) 2.0 to 4.0 V; RDS(on) specified at VGS = 10 V"
+     }
+    }
    ],
    "sources": [
     {
