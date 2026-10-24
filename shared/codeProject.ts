@@ -17,7 +17,9 @@ export const isHeaderFile = (name: string) => /\.(h|hh|hpp|hxx)$/i.test(name);
 /** Every file of the project, the main sketch first. */
 export function projectFiles(sketch: ProjectSketch | undefined): ProjectFile[] {
   if (!sketch) return [{ name: DEFAULT_SKETCH_NAME, text: '' }];
-  return [{ name: sketch.name, text: sketch.text }, ...(sketch.files ?? []).filter((f) => f.name !== sketch.name)];
+  // A project file from disk may hold anything: keep only well-formed files.
+  const others = Array.isArray(sketch.files) ? sketch.files.filter((f) => typeof f?.name === 'string' && typeof f.text === 'string' && f.name !== sketch.name) : [];
+  return [{ name: sketch.name, text: sketch.text }, ...others];
 }
 
 /** The text of one file of the project (undefined when there is no such file). */

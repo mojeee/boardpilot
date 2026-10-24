@@ -94,7 +94,12 @@ export function CodeEditor({ findings, runLine }: { findings: CodeFinding[]; run
               acceptSuggestion();
               return true;
             }
-            if (completionStatus(v.state) === 'active') return acceptCompletion(v);
+            // With a list open, Tab accepts; right after the list opens CodeMirror waits a moment
+            // before accepting, and the Tab must not move the focus out of the editor meanwhile.
+            if (completionStatus(v.state) !== null) {
+              if (!acceptCompletion(v)) setTimeout(() => acceptCompletion(v), 120);
+              return true;
+            }
             return indentMore(v);
           },
           shift: indentLess,

@@ -57,6 +57,10 @@ describe('project files', () => {
     expect(renamedFile(two, 'pins.h', 'board_pins.h').files?.[0].name).toBe('board_pins.h');
     expect(renamedFile(two, 'blink.ino', 'main.ino').name).toBe('main.ino');
   });
+  it('ignores malformed files from a project file on disk', () => {
+    const bad = { ...sk, files: [{ name: 'ok.h', text: '' }, { name: 3, text: 'x' }, null, { name: 'n.h' }] } as unknown as typeof sk;
+    expect(projectFiles(bad).map((f) => f.name)).toEqual(['blink.ino', 'ok.h']);
+  });
   it('checks new file names: safe, unique', () => {
     expect(fileNameProblem(sk, '')).toBe('empty');
     expect(fileNameProblem(sk, '../evil.h')).toBe('unsafe');
@@ -195,6 +199,13 @@ Error during build: exit status 1
     expect(ok.ram).toEqual({ used: 20520, pct: 6, max: 327680 });
     expect(compileSummary({ ...ok, ok: true, ms: 1 })).toBe('Compiled without errors (22% of the flash).');
     expect(parseCompileOutput("Error during build: Platform 'esp32:esp32' not found: platform not installed", dir, []).missingCore).toBe('esp32:esp32');
+  });
+  it('adds the compiler’s own suggestion to the hint', () => {
+    const r2 = parseCompileOutput(`${dir}/blink.ino:4:3: error: 'pinmode' was not declared in this scope; did you mean 'pinMode'?`, dir, ['blink.ino']);
+    expect(r2.diagnostics[0].hint).toMatch(/The compiler suggests: pinMode/);
+    const old = parseCompileOutput(`${dir}/blink.ino:4:3: error: 'pinmode' was not declared in this scope\n${dir}/blink.ino:4:3: note: suggested alternative: 'pinMode'`, dir, ['blink.ino']);
+    expect(old.diagnostics).toHaveLength(1);
+    expect(old.diagnostics[0].hint).toMatch(/suggests: pinMode/);
   });
   it('explains common messages in plain words', () => {
     expect(explainCompilerMessage("expected ';' before 'delay'")).toMatch(/semicolon/);

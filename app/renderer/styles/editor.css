@@ -44,8 +44,9 @@
 
 /* ---------- run line (simulated template run) ---------- */
 .cm-line.ce-line.run { background: rgba(92, 203, 143, 0.13); box-shadow: inset 3px 0 0 var(--ok); }
-.cm-gutterElement.ce-run-gutter { color: var(--ok); font-weight: 600; position: relative; }
-.cm-lineNumbers .cm-gutterElement.ce-run-gutter::before { content: '▶'; position: absolute; left: 4px; font-size: 9px; }
+.cm-lineNumbers .cm-gutterElement.ce-run-gutter { color: var(--ok); font-weight: 600; }
+.cm-foldGutter .cm-gutterElement.ce-run-gutter { position: relative; }
+.cm-foldGutter .cm-gutterElement.ce-run-gutter::before { content: '▶'; position: absolute; left: 1px; color: var(--ok); font-size: 9px; }
 
 /* ---------- a waiting suggestion, in place ---------- */
 .cm-sug { margin: 4px 0 6px; padding: 8px 10px; background: var(--ai-bg); border: 1px solid var(--ai-line); border-left: 3px solid var(--ai); border-radius: 6px; font-family: var(--font-ui); display: flex; flex-direction: column; gap: 5px; max-width: 760px; }
