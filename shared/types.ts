@@ -574,6 +574,8 @@ export interface Scene {
   stateMachine?: StateMachine;
   /** The project's sketch, edited in the Code panel and saved with the project. */
   sketch?: ProjectSketch;
+  /** Ids of the project memories (old projects, notes, datasheets) the assistant searches for this project. */
+  memories?: string[];
 }
 
 export interface ProjectSketch {
@@ -613,7 +615,8 @@ export interface WiringFinding {
 export type Confidence = 'measured' | 'documented' | 'suggestion';
 
 export interface AiSource {
-  kind: 'measurement' | 'datasheet' | 'library' | 'user';
+  /** memory: the user's project memory, label "memory · <name> · <file>:<lines>" (shared/memory.ts) */
+  kind: 'measurement' | 'datasheet' | 'library' | 'user' | 'memory';
   label: string;
 }
 

@@ -1,0 +1,16 @@
+/* Project memory panel (Project tools) and memory sources in the assistant's replies. */
+
+.memory-panel { display: flex; flex-direction: column; gap: 8px; }
+.memory-panel .grow { flex: 1; min-width: 0; }
+.memory-panel p { margin: 0; }
+.memory-card { border: 1px solid var(--line); border-left: 3px solid var(--line); border-radius: var(--radius-sm); background: var(--chrome); padding: 7px 9px; display: flex; flex-direction: column; gap: 6px; }
+.memory-card.on { border-left-color: var(--gold); }
+.memory-attach { cursor: pointer; }
+.memory-attach input { accent-color: var(--gold); }
+.memory-note { display: flex; flex-direction: column; gap: 6px; }
+.memory-sources { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.memory-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memory-hit summary { cursor: pointer; color: var(--muted); }
+.memory-hit pre.code { max-height: 220px; margin: 4px 0 0; }
+.memory-err { color: var(--err); }
+.src-memory span { color: var(--gold); }

@@ -1,0 +1,87 @@
+// Italian translations. Key = the exact English text passed to t().
+// Project memory: the Memory panel (Project tools), its dialogs and errors, memory sources in replies.
+const it: Record<string, string> = {
+  // Dialogs and errors (app/main/memory)
+  'Choose the folder of an old project': 'Scegli la cartella di un vecchio progetto',
+  'No folder chosen.': 'Nessuna cartella scelta.',
+  'Reading PDF datasheets is not built in yet.': 'La lettura dei datasheet PDF non è ancora disponibile.',
+  'Copy the facts you need (an init sequence, a timing) from the datasheet into a note for now.':
+    'Per ora copia in una nota i dati che ti servono dal datasheet (una sequenza di init, un tempo).',
+  'Choose a memory file': 'Scegli un file di memoria',
+  'This memory is too big to import.': 'Questa memoria è troppo grande da importare.',
+  'Ask for a smaller export.': 'Chiedi un’esportazione più piccola.',
+  'That memory does not exist any more.': 'Quella memoria non esiste più.',
+  'Pick another memory, or create a new one.': 'Scegli un’altra memoria, o creane una nuova.',
+  'Give the memory a name.': 'Dai un nome alla memoria.',
+  'For example the customer or the product line: "acme-panels".': 'Per esempio il cliente o la linea di prodotti: "acme-panels".',
+  'That is not a folder.': 'Questa non è una cartella.',
+  'Pick the folder of an old project.': 'Scegli la cartella di un vecchio progetto.',
+  'The folder could not be read.': 'Non è stato possibile leggere la cartella.',
+  'Check that it still exists and that BoardPilot may read it.': 'Controlla che esista ancora e che BoardPilot possa leggerla.',
+  'No source files were found in that folder.': 'In quella cartella non ci sono file sorgente.',
+  'BoardPilot reads .ino, .c, .cpp, .h, CMakeLists.txt, .ioc, README and .txt files. Build folders and .git are skipped.':
+    'BoardPilot legge file .ino, .c, .cpp, .h, CMakeLists.txt, .ioc, README e .txt. Le cartelle di build e .git vengono saltate.',
+  'This memory is full.': 'Questa memoria è piena.',
+  'Remove a source or start a second memory for these files.': 'Togli una fonte o crea una seconda memoria per questi file.',
+  'No text could be read from this PDF.': 'Da questo PDF non è stato possibile leggere testo.',
+  'It may be a scanned document. Type the facts you need as a note instead.': 'Forse è un documento scansionato. Scrivi invece i dati che ti servono in una nota.',
+  'The note is empty.': 'La nota è vuota.',
+  'Write what you learnt, e.g. "This ST7789 needs 120 ms after reset".': 'Scrivi cosa hai imparato, per esempio "Questo ST7789 vuole 120 ms dopo il reset".',
+  'That file is not a BoardPilot memory.': 'Quel file non è una memoria di BoardPilot.',
+  'Pick a .bpmemory.json file exported from the Memory panel.': 'Scegli un file .bpmemory.json esportato dal pannello Memoria.',
+
+  // Memory panel (MemoryPanel.tsx)
+  'Project memory: your old projects': 'Memoria di progetto: i tuoi vecchi progetti',
+  'Created the memory “{name}” and attached it to this project.': 'Creata la memoria “{name}” e collegata a questo progetto.',
+  'Read {files} files into {chunks} pieces.': 'Letti {files} file in {chunks} parti.',
+  '{n} files were too big or not text and were left out.': '{n} file erano troppo grandi o non di testo e sono stati esclusi.',
+  'Skipped build and vendor folders: {dirs}.': 'Cartelle di build e di terze parti saltate: {dirs}.',
+  'The folder is very big: the import stopped at the size limit.': 'La cartella è molto grande: l’importazione si è fermata al limite di dimensione.',
+  'Added the PDF text.': 'Aggiunto il testo del PDF.',
+  'Saved the note in “{name}”.': 'Nota salvata in “{name}”.',
+  'Removed “{label}” from the memory.': 'Tolto “{label}” dalla memoria.',
+  'Deleted the memory “{name}”.': 'Eliminata la memoria “{name}”.',
+  'Exported “{name}” to {path}. Send this file to a colleague; they import it here.': 'Esportata “{name}” in {path}. Manda questo file a un collega: lo importa qui.',
+  'Imported the memory “{name}”.': 'Importata la memoria “{name}”.',
+  'Teach the assistant your old projects: code folders, datasheets and notes. Everything stays on this computer. The chat searches the memories attached to this project and shows the file and lines it used.':
+    'Insegna all’assistente i tuoi vecchi progetti: cartelle di codice, datasheet e note. Tutto resta su questo computer. La chat cerca nelle memorie collegate a questo progetto e mostra il file e le righe che ha usato.',
+  'New memory name, e.g. acme-panels': 'Nome della nuova memoria, per esempio acme-panels',
+  'New memory name': 'Nome della nuova memoria',
+  Create: 'Crea',
+  'Import a memory file…': 'Importa un file di memoria…',
+  'This project uses a memory that is not on this computer.': 'Questo progetto usa una memoria che non è su questo computer.',
+  'Import the file your colleague exported, or detach it.': 'Importa il file esportato dal tuo collega, o scollegala.',
+  Detach: 'Scollega',
+  'No memories yet. Create one, then add the folder of an old project.': 'Ancora nessuna memoria. Creane una, poi aggiungi la cartella di un vecchio progetto.',
+  'The chat on this project searches attached memories': 'La chat di questo progetto cerca nelle memorie collegate',
+  Open: 'Apri',
+  '{sources} sources, {chunks} pieces': '{sources} fonti, {chunks} parti',
+  'used by this project': 'usata da questo progetto',
+  'not used by this project': 'non usata da questo progetto',
+  'Reading…': 'Lettura…',
+  'Add a code folder…': 'Aggiungi una cartella di codice…',
+  'Add a PDF…': 'Aggiungi un PDF…',
+  'Add a note': 'Aggiungi una nota',
+  'What you learnt, e.g. "This ST7789 needs 120 ms after reset, then MADCTL 0x36 = 0x70 for landscape".':
+    'Cosa hai imparato, per esempio "Questo ST7789 vuole 120 ms dopo il reset, poi MADCTL 0x36 = 0x70 per l’orizzontale".',
+  Note: 'Nota',
+  'Save note': 'Salva la nota',
+  '{n} files': '{n} file',
+  'Export to share…': 'Esporta per condividere…',
+  'Click again to delete': 'Clicca di nuovo per eliminare',
+  'Delete memory': 'Elimina la memoria',
+  'Try a search, e.g. ST7789 init': 'Prova una ricerca, per esempio ST7789 init',
+  'Search the memory': 'Cerca nella memoria',
+  Search: 'Cerca',
+  'Nothing found. Try the chip name, a register or a function name.': 'Niente trovato. Prova il nome del chip, un registro o il nome di una funzione.',
+  // source kinds (shown through t(KIND[...]) and t(SRC_KIND[...]))
+  'code folder': 'cartella di codice',
+  PDF: 'PDF',
+  note: 'nota',
+  'project memory': 'memoria di progetto',
+
+  // Browser demo (app/web/bpWeb.ts)
+  'Project memory reads your old projects from your computer, so it needs the BoardPilot app.':
+    'La memoria di progetto legge i tuoi vecchi progetti dal computer, quindi serve l’app BoardPilot.',
+};
+export default it;
