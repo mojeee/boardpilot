@@ -167,6 +167,7 @@ function landing(lang) {
     .replaceAll('{{TRY_LIVE}}', tryBlock(lang, board, false))
     .replaceAll('{{DEMO_GALLERY}}', galleryBlock(lang))
     .replaceAll('{{CHAT_URL}}', chatUrl(lang, 'weather-esp32'))
+    .replaceAll('{{DISPLAY_URL}}', chatUrl(lang, 'display-patterns'))
     .replaceAll('{{DEBUG_URL}}', debugUrl(lang))
     .replaceAll('{{PLANT_URL}}', chatUrl(lang, 'plant-pico'))
     .replaceAll('{{CODE_URL}}', `/demo/#demo=code&lang=${lang}`)

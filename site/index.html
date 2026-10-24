@@ -84,6 +84,7 @@
             <p class="fine" data-i18n="cta.fine">Free for 30 days · macOS 12+ and Windows 10/11 · Works without a board in simulator mode</p>
             <nav class="jump" data-i18n-aria-label="jump.label" aria-label="What BoardPilot does">
               <a href="#f-build"><i class="d-ai"></i><span data-i18n="jump.build">Build by chatting</span></a>
+              <a href="#f-display"><i class="d-sda"></i><span data-i18n="jump.display">Display Studio</span></a>
               <a href="#f-3d"><i class="d-sda"></i><span data-i18n="jump.3d">3D board</span></a>
               <a href="#f-debug"><i class="d-err"></i><span data-i18n="jump.debug">Debug with measurements</span></a>
               <a href="#f-flash"><i class="d-ok"></i><span data-i18n="jump.flash">Safe flashing</span></a>
@@ -129,7 +130,7 @@
               <ul class="ticks">
                 <li data-i18n="fb.1">Parts from the open library, pins from the board’s own rules</li>
                 <li data-i18n="fb.2">Every proposal runs through the same wiring checker as your own drawing</li>
-                <li data-i18n="fb.3">Tested on 23 real requests with Claude Sonnet 5 and 5.5: 23 of 23 passed</li>
+                <li data-i18n="fb.3">Tested on 26 real requests, display designs included: 26 of 26 passed with Claude Sonnet 5.5 (23 of 23 with Sonnet 5)</li>
               </ul>
               <div class="feat-links">
                 <a class="more" href="/demo/#demo=chat&chat=weather-esp32&lang=en" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&chat=weather-esp32&lang=en" data-i18n="fb.cta">Watch a recorded conversation →</a>
@@ -142,9 +143,29 @@
             </figure>
           </article>
 
-          <article class="feat flip" id="f-3d">
+          <article class="feat flip" id="f-display">
             <div class="feat-copy">
-              <span class="feat-tag t-sda"><b>2</b><span data-i18n="f3d.tag">See inside the board</span></span>
+              <span class="feat-tag t-sda"><b>2</b><span data-i18n="fd.tag">Display Studio</span></span>
+              <h3 data-i18n="fd.t">See what your screen will show, before you have it.</h3>
+              <p data-i18n="fd.d">Describe the screens you want, or ask for test patterns. The app draws them pixel for pixel at your display’s real resolution and colours, runs them with simulated values, then writes the Arduino code for your wiring.</p>
+              <ul class="ticks">
+                <li data-i18n="fd.1">22 display modules: SSD1306 and SH1106 OLEDs, ST7789, ST7735, ILI9341 and the round GC9A01, e-paper and more</li>
+                <li data-i18n="fd.2">Text, values, bars, graphs, gauges, icons, test patterns and blinking warnings, with timed or conditional screens</li>
+                <li data-i18n="fd.3">The generated code is built with the real Adafruit GFX library and compared pixel by pixel with the preview</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="/demo/#demo=chat&chat=display-patterns&lang=en" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&chat=display-patterns&lang=en" data-i18n="fd.cta">Watch the test-pattern conversation →</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/display.jpg?v=d5514e9d44" srcset="/img/display-900.jpg?v=aa7ba989b7 900w, /img/display.jpg?v=d5514e9d44 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fd.alt" alt="Display Studio: an ST7789 screen wired to an ESP32 in 3D, the simulated checkerboard test pattern, and the generated code in the Code panel" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-3d">
+            <div class="feat-copy">
+              <span class="feat-tag t-sda"><b>3</b><span data-i18n="f3d.tag">See inside the board</span></span>
               <h3 data-i18n="f3d.t">Every pin, wire and part, live in 3D.</h3>
               <p data-i18n="f3d.d">The board is built from its datasheet, so every pin is real: click it to see what it can do, what to avoid and its live level. Wires glow when the bus talks.</p>
               <ul class="ticks">
@@ -160,9 +181,9 @@
             </figure>
           </article>
 
-          <article class="feat" id="f-debug">
+          <article class="feat flip" id="f-debug">
             <div class="feat-copy">
-              <span class="feat-tag t-err"><b>3</b><span data-i18n="fd.tag">Debug with real measurements</span></span>
+              <span class="feat-tag t-err"><b>4</b><span data-i18n="fd.tag">Debug with real measurements</span></span>
               <h3 data-i18n="fd.t">From “it doesn’t work” to the exact wire.</h3>
               <p data-i18n="fd.d">Tell it what is wrong. BoardPilot checks the pull-ups, scans the bus as wired and with SDA and SCL swapped, reads the chip ID, and tells you the cause with the evidence.</p>
               <ul class="ticks">
@@ -178,10 +199,10 @@
             </figure>
           </article>
 
-          <article class="feat flip" id="f-flash">
+          <article class="feat" id="f-flash">
             <span id="safety" class="anchor"></span>
             <div class="feat-copy">
-              <span class="feat-tag t-ok"><b>4</b><span data-i18n="ff.tag">Flash safely</span></span>
+              <span class="feat-tag t-ok"><b>5</b><span data-i18n="ff.tag">Flash safely</span></span>
               <h3 data-i18n="ff.t">Your old program is backed up first.</h3>
               <p data-i18n="ff.d">BoardPilot only reads by default. Before the first write it saves the whole flash, and anything that writes to the board waits for your click.</p>
               <ul class="ticks">
@@ -197,9 +218,9 @@
             </figure>
           </article>
 
-          <article class="feat" id="f-monitor">
+          <article class="feat flip" id="f-monitor">
             <div class="feat-copy">
-              <span class="feat-tag t-adc"><b>5</b><span data-i18n="fm.tag">Monitor and test hardware</span></span>
+              <span class="feat-tag t-adc"><b>6</b><span data-i18n="fm.tag">Monitor and test hardware</span></span>
               <h3 data-i18n="fm.t">Watch your firmware and your bus, live.</h3>
               <p data-i18n="fm.d">Plot sensor values and memory while your own program runs, read its serial output, and see every I2C transaction decoded bit by bit.</p>
               <ul class="ticks">
@@ -214,10 +235,10 @@
             </figure>
           </article>
 
-          <article class="feat flip" id="f-learn">
+          <article class="feat" id="f-learn">
             <span id="start" class="anchor"></span>
             <div class="feat-copy">
-              <span class="feat-tag t-ok"><b>6</b><span data-i18n="fl.tag">Learn embedded</span></span>
+              <span class="feat-tag t-ok"><b>7</b><span data-i18n="fl.tag">Learn embedded</span></span>
               <h3 data-i18n="fl.t">Start from zero. Check what you learn on a board.</h3>
               <p data-i18n="fl.d">11 visual lessons, from what a microcontroller is to RTOS. Labs at the end check your wiring with live measurements, in the simulator or on your own board.</p>
               <ul class="ticks">
@@ -237,9 +258,9 @@
             </figure>
           </article>
 
-          <article class="feat" id="f-mcp">
+          <article class="feat flip" id="f-mcp">
             <div class="feat-copy">
-              <span class="feat-tag t-ai"><b>7</b><span data-i18n="fmcp.tag">AI agents via MCP</span></span>
+              <span class="feat-tag t-ai"><b>8</b><span data-i18n="fmcp.tag">AI agents via MCP</span></span>
               <h3 data-i18n="fmcp.t">Your AI coding agent can see the board.</h3>
               <p data-i18n="fmcp.d">BoardPilot is an MCP server. Claude Code, Cursor or Claude Desktop can scan the bus, read pins and check your wiring and code on the real board, instead of guessing.</p>
               <ul class="ticks">
@@ -395,7 +416,7 @@
                   <ul class="ticks">
                     <li data-i18n="hs.1">Simulated values are always labelled “simulated”, so you never mistake them for measurements.</li>
                     <li data-i18n="hs.2">The simulated board works through the same interface as a real one, so the steps you learn are the steps you will use.</li>
-                    <li data-i18n="hs.3">Coming next, Display Studio: it shows what your display module will draw, pixel by pixel, and checks that the generated code draws exactly the same pixels with the real Adafruit GFX library.</li>
+                    <li data-i18n="hs.3">Display Studio shows what your display module will draw, pixel by pixel, before you have it, and a test checks that the generated code draws exactly the same pixels with the real Adafruit GFX library.</li>
                   </ul>
                 </div>
                 <a class="more" href="/demo/#demo=template&id=plant-watering&lang=en" target="_blank" rel="noopener" data-demo="/demo/#demo=template&id=plant-watering&lang=en" data-i18n="hs.cta">Run a template in the simulator →</a>
@@ -420,8 +441,8 @@
                 <p data-i18n="tr.2">writes without your click. Flashing, the diagnostic agent and driving a pin wait for your confirmation, after a full backup. The AI and AI agents can only ask.</p>
               </div>
               <div class="trust-tile">
-                <b class="trust-num">23/23</b>
-                <p data-i18n="tr.3">real conversations with Claude Sonnet 5 and 5.5 passed, graded by the app’s own wiring rules and read for safety by a second model.</p>
+                <b class="trust-num">26/26</b>
+                <p data-i18n="tr.3">real conversations with Claude Sonnet 5.5 passed (23 of 23 with Sonnet 5), graded by the app’s own wiring rules and read for safety by a second model.</p>
                 <a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/ai-evals/README.md" data-i18n="tr.3cta">Read the evaluation →</a>
               </div>
               <div class="trust-tile">

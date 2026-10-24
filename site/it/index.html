@@ -84,6 +84,7 @@
             <p class="fine" data-i18n="cta.fine">Gratis per 30 giorni · macOS 12+ e Windows 10/11 · Funziona anche senza scheda, in modalità simulatore</p>
             <nav class="jump" data-i18n-aria-label="jump.label" aria-label="Cosa fa BoardPilot">
               <a href="#f-build"><i class="d-ai"></i><span data-i18n="jump.build">Progetti in chat</span></a>
+              <a href="#f-display"><i class="d-sda"></i><span data-i18n="jump.display">Display Studio</span></a>
               <a href="#f-3d"><i class="d-sda"></i><span data-i18n="jump.3d">Scheda 3D</span></a>
               <a href="#f-debug"><i class="d-err"></i><span data-i18n="jump.debug">Debug con misure vere</span></a>
               <a href="#f-flash"><i class="d-ok"></i><span data-i18n="jump.flash">Scrittura sicura</span></a>
@@ -129,7 +130,7 @@
               <ul class="ticks">
                 <li data-i18n="fb.1">Componenti dalla libreria aperta, pin scelti con le regole della scheda</li>
                 <li data-i18n="fb.2">Ogni proposta passa dallo stesso controllo dei collegamenti dei tuoi disegni</li>
-                <li data-i18n="fb.3">Provato su 23 richieste vere con Claude Sonnet 5 e 5.5: superate 23 su 23</li>
+                <li data-i18n="fb.3">Provato su 26 richieste vere, compresi i progetti di display: superate 26 su 26 con Claude Sonnet 5.5 (23 su 23 con Sonnet 5)</li>
               </ul>
               <div class="feat-links">
                 <a class="more" href="/demo/#demo=chat&chat=weather-esp32&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&chat=weather-esp32&lang=it" data-i18n="fb.cta">Guarda una conversazione registrata →</a>
@@ -142,9 +143,29 @@
             </figure>
           </article>
 
-          <article class="feat flip" id="f-3d">
+          <article class="feat flip" id="f-display">
             <div class="feat-copy">
-              <span class="feat-tag t-sda"><b>2</b><span data-i18n="f3d.tag">Guarda dentro la scheda</span></span>
+              <span class="feat-tag t-sda"><b>2</b><span data-i18n="fd.tag">Debug con misure vere</span></span>
+              <h3 data-i18n="fd.t">Da “non funziona” al filo esatto.</h3>
+              <p data-i18n="fd.d">Dicci cosa non va. BoardPilot controlla i pull-up, scansiona il bus così com’è collegato e con SDA e SCL scambiati, legge l’ID del chip e ti dice la causa, con le prove.</p>
+              <ul class="ticks">
+                <li data-i18n="fd.1">Ogni risposta ha un’etichetta: misurato, dal datasheet o suggerimento</li>
+                <li data-i18n="fd.2">Guide per una scheda che non viene trovata, che si riavvia o che stampa caratteri strani</li>
+                <li data-i18n="fd.3">Con un clic crei un report da condividere</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="/demo/#demo=chat&chat=display-patterns&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&chat=display-patterns&lang=it" data-i18n="fd.cta">Guarda la demo di debug →</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/display.jpg?v=d5514e9d44" srcset="/img/display-900.jpg?v=aa7ba989b7 900w, /img/display.jpg?v=d5514e9d44 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fd.alt" alt="Display Studio: uno schermo ST7789 collegato a un ESP32 in 3D, il pattern a scacchiera simulato e il codice generato nel pannello Codice" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-3d">
+            <div class="feat-copy">
+              <span class="feat-tag t-sda"><b>3</b><span data-i18n="f3d.tag">Guarda dentro la scheda</span></span>
               <h3 data-i18n="f3d.t">Ogni pin, filo e componente, dal vivo in 3D.</h3>
               <p data-i18n="f3d.d">La scheda è costruita dal suo datasheet, quindi ogni pin è reale: cliccalo per vedere cosa sa fare, cosa evitare e il suo livello in tempo reale. I fili si illuminano quando il bus comunica.</p>
               <ul class="ticks">
@@ -160,9 +181,9 @@
             </figure>
           </article>
 
-          <article class="feat" id="f-debug">
+          <article class="feat flip" id="f-debug">
             <div class="feat-copy">
-              <span class="feat-tag t-err"><b>3</b><span data-i18n="fd.tag">Debug con misure vere</span></span>
+              <span class="feat-tag t-err"><b>4</b><span data-i18n="fd.tag">Debug con misure vere</span></span>
               <h3 data-i18n="fd.t">Da “non funziona” al filo esatto.</h3>
               <p data-i18n="fd.d">Dicci cosa non va. BoardPilot controlla i pull-up, scansiona il bus così com’è collegato e con SDA e SCL scambiati, legge l’ID del chip e ti dice la causa, con le prove.</p>
               <ul class="ticks">
@@ -178,10 +199,10 @@
             </figure>
           </article>
 
-          <article class="feat flip" id="f-flash">
+          <article class="feat" id="f-flash">
             <span id="safety" class="anchor"></span>
             <div class="feat-copy">
-              <span class="feat-tag t-ok"><b>4</b><span data-i18n="ff.tag">Scrittura sicura</span></span>
+              <span class="feat-tag t-ok"><b>5</b><span data-i18n="ff.tag">Scrittura sicura</span></span>
               <h3 data-i18n="ff.t">Prima viene salvato il tuo vecchio programma.</h3>
               <p data-i18n="ff.d">Di base BoardPilot legge soltanto. Prima della prima scrittura salva tutta la flash, e qualsiasi scrittura sulla scheda aspetta il tuo clic.</p>
               <ul class="ticks">
@@ -197,9 +218,9 @@
             </figure>
           </article>
 
-          <article class="feat" id="f-monitor">
+          <article class="feat flip" id="f-monitor">
             <div class="feat-copy">
-              <span class="feat-tag t-adc"><b>5</b><span data-i18n="fm.tag">Monitor e test dell’hardware</span></span>
+              <span class="feat-tag t-adc"><b>6</b><span data-i18n="fm.tag">Monitor e test dell’hardware</span></span>
               <h3 data-i18n="fm.t">Guarda il tuo firmware e il tuo bus, dal vivo.</h3>
               <p data-i18n="fm.d">Traccia i valori dei sensori e la memoria mentre gira il tuo programma, leggi l’uscita seriale e guarda ogni transazione I2C decodificata bit per bit.</p>
               <ul class="ticks">
@@ -214,10 +235,10 @@
             </figure>
           </article>
 
-          <article class="feat flip" id="f-learn">
+          <article class="feat" id="f-learn">
             <span id="start" class="anchor"></span>
             <div class="feat-copy">
-              <span class="feat-tag t-ok"><b>6</b><span data-i18n="fl.tag">Impara l’embedded</span></span>
+              <span class="feat-tag t-ok"><b>7</b><span data-i18n="fl.tag">Impara l’embedded</span></span>
               <h3 data-i18n="fl.t">Parti da zero. Verifica quello che impari su una scheda.</h3>
               <p data-i18n="fl.d">11 lezioni visive, da cos’è un microcontrollore fino all’RTOS. I laboratori finali verificano i tuoi collegamenti con misure dal vivo, nel simulatore o sulla tua scheda.</p>
               <ul class="ticks">
@@ -237,9 +258,9 @@
             </figure>
           </article>
 
-          <article class="feat" id="f-mcp">
+          <article class="feat flip" id="f-mcp">
             <div class="feat-copy">
-              <span class="feat-tag t-ai"><b>7</b><span data-i18n="fmcp.tag">Agenti AI con MCP</span></span>
+              <span class="feat-tag t-ai"><b>8</b><span data-i18n="fmcp.tag">Agenti AI con MCP</span></span>
               <h3 data-i18n="fmcp.t">Il tuo agente AI vede la scheda.</h3>
               <p data-i18n="fmcp.d">BoardPilot è un server MCP. Claude Code, Cursor o Claude Desktop possono scansionare il bus, leggere i pin e controllare collegamenti e codice sulla scheda vera, invece di tirare a indovinare.</p>
               <ul class="ticks">
@@ -395,7 +416,7 @@
                   <ul class="ticks">
                     <li data-i18n="hs.1">I valori simulati hanno sempre l’etichetta “simulato”, così non li scambi mai per misure.</li>
                     <li data-i18n="hs.2">La scheda simulata funziona con la stessa interfaccia di una vera, quindi i passi che impari sono quelli che userai.</li>
-                    <li data-i18n="hs.3">In arrivo, Display Studio: mostra cosa disegnerà il tuo modulo display, pixel per pixel, e verifica che il codice generato disegni esattamente gli stessi pixel con la vera libreria Adafruit GFX.</li>
+                    <li data-i18n="hs.3">Display Studio mostra cosa disegnerà il tuo modulo display, pixel per pixel, prima ancora di averlo, e un test verifica che il codice generato disegni esattamente gli stessi pixel con la vera libreria Adafruit GFX.</li>
                   </ul>
                 </div>
                 <a class="more" href="/demo/#demo=template&id=plant-watering&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=template&id=plant-watering&lang=it" data-i18n="hs.cta">Fai girare un progetto modello nel simulatore →</a>
@@ -420,8 +441,8 @@
                 <p data-i18n="tr.2">scritture senza il tuo clic. Programmazione, agente diagnostico e comando di un pin aspettano la tua conferma, dopo un backup completo. L’AI e gli agenti AI possono solo chiedere.</p>
               </div>
               <div class="trust-tile">
-                <b class="trust-num">23/23</b>
-                <p data-i18n="tr.3">vere conversazioni con Claude Sonnet 5 e 5.5 superate, valutate con le regole di cablaggio dell’app e rilette per la sicurezza da un secondo modello.</p>
+                <b class="trust-num">26/26</b>
+                <p data-i18n="tr.3">vere conversazioni con Claude Sonnet 5.5 superate (23 su 23 con Sonnet 5), valutate con le regole di cablaggio dell’app e rilette per la sicurezza da un secondo modello.</p>
                 <a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/ai-evals/README.md" data-i18n="tr.3cta">Leggi la valutazione →</a>
               </div>
               <div class="trust-tile">
