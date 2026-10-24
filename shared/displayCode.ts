@@ -40,6 +40,8 @@ interface Pins {
   mosi: string;
   sck: string;
   addr: string;
+  /** the module is wired over SPI (an SSD1306 comes in I2C and SPI versions) */
+  spi: boolean;
 }
 
 const DRIVERS: Record<string, Driver> = {
@@ -48,10 +50,16 @@ const DRIVERS: Record<string, Driver> = {
     libraries: ['Adafruit SSD1306', 'Adafruit GFX Library'],
     bus: 'i2c',
     mono: true,
-    setup: (p, panel) => ({
-      decl: `Adafruit_SSD1306 tft(${panel.widthPx}, ${panel.heightPx}, &Wire, -1);`,
-      begin: [`  if (!tft.begin(SSD1306_SWITCHCAPVCC, ${p.addr})) {  // 0x3C on most modules, 0x3D on some`, '    for (;;) delay(100);  // not found: check the wiring and the address', '  }'],
-    }),
+    setup: (p, panel) =>
+      p.spi
+        ? {
+            decl: `Adafruit_SSD1306 tft(${panel.widthPx}, ${panel.heightPx}, &SPI, ${p.dc}, ${p.rst}, ${p.cs});  // SPI module`,
+            begin: ['  if (!tft.begin(SSD1306_SWITCHCAPVCC)) {', '    for (;;) delay(100);  // no answer: check the wiring', '  }'],
+          }
+        : {
+            decl: `Adafruit_SSD1306 tft(${panel.widthPx}, ${panel.heightPx}, &Wire, -1);`,
+            begin: [`  if (!tft.begin(SSD1306_SWITCHCAPVCC, ${p.addr})) {  // 0x3C on most modules, 0x3D on some`, '    for (;;) delay(100);  // not found: check the wiring and the address', '  }'],
+          },
   },
   SH1106: {
     include: ['#include <Wire.h>', '#include <Adafruit_GFX.h>', '#include <Adafruit_SH110X.h>'],
@@ -274,8 +282,10 @@ export function generateDisplayCode(
     mosi: pinOf('SDA', 'MOSI', 'SDI(MOSI)', 'DIN'),
     sck: pinOf('SCL', 'SCK', 'CLK'),
     addr: (def.addresses?.[0] ?? '0x3C').toUpperCase().replace('0X', '0x'),
+    spi: def.bus === 'spi',
   };
-  if (driver?.bus === 'spi') {
+  const bus = driver?.bus === 'i2c' && pins.spi ? 'spi' : driver?.bus;
+  if (bus === 'spi') {
     if (pins.dc === '-1') notes.push(t('The display’s DC pin is not wired: wire it, then generate the code again.'));
     if (pins.rst === '-1') notes.push(t('RST is not wired: the code uses -1 (no reset pin). Tie RST high or wire it to a free pin.'));
   }
@@ -293,7 +303,7 @@ export function generateDisplayCode(
     `// ${spec.title} — Display Studio sketch for ${def.name} on ${board.name}`,
     '// Written by BoardPilot. The preview in the app shows the same pixels (same font, shapes and',
     '// pattern maths). Values are simulated like in the app; replace the lines marked TODO with your sensors.',
-    ...(opts.host ? [] : [`// Libraries (Arduino Library Manager): ${driver!.libraries.join(', ')}`, '', ...driver!.include]),
+    ...(opts.host ? [] : [`// Libraries (Arduino Library Manager): ${driver!.libraries.join(', ')}`, '', ...driver!.include, ...(bus === 'spi' && !driver!.include.includes('#include <SPI.h>') ? ['#include <SPI.h>'] : [])]),
     '',
   );
   const { decl, begin } = opts.host ? { decl: '', begin: [] } : driver!.setup(pins, panel);
@@ -430,7 +440,7 @@ export function generateDisplayCode(
   if (opts.host) return { code: L.join('\n'), libraries: [], notes };
   const drv = driver!;
   L.push('void setup() {', '  Serial.begin(115200);');
-  if (drv.bus === 'i2c') L.push('  Wire.begin();');
+  if (bus === 'i2c') L.push('  Wire.begin();');
   else if (board.family.startsWith('esp32') && pins.sck !== '-1' && pins.mosi !== '-1') L.push(`  SPI.begin(${pins.sck}, -1, ${pins.mosi});  // the pins in your drawing`);
   else if ((board.family === 'rp2040' || board.family === 'rp2350') && pins.sck !== '-1') L.push(`  SPI.setSCK(${pins.sck}); SPI.setTX(${pins.mosi});`);
   L.push(...begin, `  tft.setRotation(${spec.rotation & 3});`, '  t0 = millis();', '}', '');

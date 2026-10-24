@@ -46,6 +46,7 @@ describe('font and panels', () => {
     expect(panel('st7789-240')).toMatchObject({ widthPx: 240, heightPx: 240, color: 'rgb565', controller: 'ST7789' });
     expect(panel('gc9a01-round')).toMatchObject({ round: true, controller: 'GC9A01' });
     expect(panelOf(PARTS['lcd1602-i2c'])).toBeNull();
+    expect(panel('ssd1351-oled-15')).toMatchObject({ color: 'rgb565', controller: 'SSD1351' });
   });
 });
 
@@ -121,6 +122,14 @@ describe('generated sketch', () => {
     expect(r.notes).toEqual([]);
   });
 
+  it('drives an SPI SSD1306 over SPI, not I2C', () => {
+    const scene = sceneWith('ssd1306-spi', 'esp32-devkitc-30');
+    const r = generateDisplayCode(testPatternSpec('disp1', panel('ssd1306-spi')), panel('ssd1306-spi'), PARTS['ssd1306-spi'], scene, getBoard('esp32-devkitc-30'));
+    expect(r.code).toContain('&SPI,');
+    expect(r.code).not.toContain('Wire.begin()');
+    expect(r.code).toContain('#include <SPI.h>');
+  });
+
   it('drives an SSD1306 on an Uno and says when a controller has no generator', () => {
     const scene = sceneWith('ssd1306-i2c', 'arduino-uno-r3');
     const r = generateDisplayCode(testPatternSpec('disp1', panel('ssd1306-i2c')), panel('ssd1306-i2c'), PARTS['ssd1306-i2c'], scene, getBoard('arduino-uno-r3'));
@@ -174,6 +183,7 @@ describe.skipIf(process.env.BP_DISPLAY_COMPILE !== '1')('compiles for real board
     ['ssd1306-i2c', 'arduino-uno-r3', 'arduino:avr:uno'],
     ['ili9341-tft-28', 'rpi-pico', 'rp2040:rp2040:rpipico'],
     ['gc9a01-round', 'esp32-s3-devkitc-1', 'esp32:esp32:esp32s3'],
+    ['ssd1306-spi', 'esp32-devkitc-30', 'esp32:esp32:esp32'],
   ];
   for (const [part, boardId, fqbn] of cases) {
     it(`${part} on ${boardId}`, () => {

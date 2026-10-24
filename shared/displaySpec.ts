@@ -31,7 +31,7 @@ export interface PartDisplay {
   round?: boolean;
 }
 
-const CONTROLLERS = ['SSD1306', 'SH1106', 'SSD1309', 'ST7789', 'ST7735', 'ST7796', 'ILI9341', 'ILI9488', 'GC9A01', 'PCD8544', 'ST7920', 'SSD1680', 'UC8151', 'IL3820'];
+const CONTROLLERS = ['SSD1306', 'SH1106', 'SSD1309', 'SSD1351', 'SSD1327', 'ST7789', 'ST7735', 'ST7796', 'ILI9341', 'ILI9488', 'GC9A01', 'PCD8544', 'ST7920', 'SSD1680', 'UC8151', 'IL3820'];
 
 /**
  * The pixel panel of a part, or null when it is not a pixel display (a 16x2 character LCD, a
@@ -51,7 +51,8 @@ export function panelOf(def: PartDef & { display?: PartDisplay }): PanelInfo | n
   }
   if (!w || !h || def.category !== 'display' || /lcd1602|lcd2004|7seg|max7219/i.test(def.id)) return null;
   const epaper = /e-?paper|e-?ink|epd/i.test(text);
-  const mono = /oled|ssd13|sh1106|nokia|pcd8544|st7920|12864/i.test(text);
+  // SSD1351 is a colour OLED; SSD1327 has 16 greys, shown here as on/off (the closest the studio draws).
+  const mono = controller !== 'SSD1351' && /oled|ssd13|sh1106|nokia|pcd8544|st7920|12864/i.test(text);
   const color: PanelColor = d?.color ?? (epaper ? 'epaper' : mono ? 'mono' : 'rgb565');
   // OLED modules come with white, blue or yellow-blue glass; white is the common one.
   const ink = color === 'mono' ? (/blue/i.test(text) ? '#5AC8FA' : /yellow/i.test(text) ? '#FFD84A' : '#E8F1FF') : '#FFFFFF';

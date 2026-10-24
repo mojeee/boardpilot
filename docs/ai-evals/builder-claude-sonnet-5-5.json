@@ -1,13 +1,13 @@
 {
   "model": "claude-sonnet-5-5",
   "usage": {
-    "in": 344,
-    "out": 49005,
-    "cacheRead": 2433500,
-    "cacheWrite": 247044,
-    "calls": 137
+    "in": 418,
+    "out": 60908,
+    "cacheRead": 2937795,
+    "cacheWrite": 289158,
+    "calls": 166
   },
-  "cost": 1.595048,
+  "cost": 1.92037,
   "results": [
     {
       "id": "distance-uno",
@@ -808,6 +808,301 @@
         "wrongFacts": []
       },
       "transcript": "USER: A battery-powered temperature sensor for my fridge that runs for months.\nASSISTANT [suggestion] A fridge is cold and damp, so I would pick a sensor that can sit inside on a cable. Pick one below and I will draw the wiring. A few notes on running for months:\n- Most of the battery life comes from the code. The board should sleep between readings, for example one reading every few minutes.\n- The nRF52840 DK is a development board. It has debugger chips and regulators that use power even when your code sleeps. Months on a battery is realistic for the bare chip, but not for this DK. That is a suggestion from general knowledge, not from the board file. I can design the circuit and sleep code on the DK now, and you can move to a small nRF52840 board later.\n- The sensor's own sleep current is in each card where the library has it.\n\nWhich sensor do you want for the fridge?\n  CARDS: DS18B20 probe — Waterproof probe on a cable: the sensor sits in the fridge, the board stays outside. Needs a 4.7 kΩ pull-up resistor (extra to buy). Library: 0.75 µA asleep, 1 mA while measuring (up to 750 ms). | TMP117 high accuracy — I2C chip, the most accurate in the list, with pull-ups on its module. Bare board, not waterproof: it must go inside the fridge on short wires (I2C is unreliable over about 1 m). No sleep current in the library. | MCP9808 precision — I2C chip with pull-ups on its module, precise, 8 possible addresses. Not waterproof, so short wires and fridge moisture are a worry. No sleep current in the library. | BMP280 (GY module) — I2C, very low current: 2.7 µA typical, 0.1 µA asleep. Also reads pressure (not needed). Not waterproof, and it is a general-purpose sensor, not a precision one.\n  TOOLS: search_parts, search_parts, offer_choices\n  (user picks \"DS18B20 probe\")\nUSER: DS18B20 probe\nASSISTANT [documented] Here is the proposal. Nothing changes until you press \"Apply to my project\" on the card.\n\n**What it does:** the DS18B20 probe sits in the fridge on its cable. The board stays outside and reads it every few minutes. The probe sleeps at 0.75 µA between readings (library, Maxim datasheet).\n\n**Wiring (from the checker):**\n- Probe VDD → VDD (the board's 3 V supply)\n- Probe DQ (data) → D2 (GPIO 35, pin P1.03)\n- Probe GND → GND\n\n**Extra to buy:** one 4.7 kΩ resistor between DQ and VDD. This is a pull-up, which holds the data line high when nobody is talking. Without it the sensor is not found.\n\n**Two things to know:**\n1. My first draft put the probe's power on the 5V pin. I changed it. The pull-up goes to the supply, so 5 V there would put 5 V on a chip pin, and the board file says never to do that.\n2. The checker warns that the probe is listed for 3.3 V or more, and this board's VDD is 3.0 V by default. The datasheet section in the library says 3.0 to 5.5 V, so it should work, but it sits at the lower edge. Test it. If you get no sensor or odd values, tell me.\n\n**Battery life:** the sleep code matters most. The DK's own debugger and regulators draw power too, so months is a goal for a bare nRF52840 board. That is a suggestion, not a measurement.\n\nAfter you apply it, I can write the starter code. It would read once, then sleep. It would wait the full 750 ms for each reading, because shorter waits return 85 °C.\n  TOOLS: propose_project, propose_project, highlight, get_part, highlight\n  PROPOSAL: Fridge thermometer on nrf52840-dk: ds18b20-probe; 0 errors\n  (user presses Apply)"
+    },
+    {
+      "id": "display-patterns",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "display designed": true,
+        "display applied by the user": true,
+        "design checks clean": true,
+        "at least 4 screen(s)": true,
+        "shows the colorbars pattern": true,
+        "shows the checker pattern": true,
+        "shows the gradient pattern": true,
+        "shows the bounce pattern": true,
+        "code generated for the display": true,
+        "the code draws the same pixels as the preview (native Adafruit GFX)": true,
+        "never claims a measurement": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 1,
+      "questions": 1,
+      "proposals": 0,
+      "badToolCalls": 0,
+      "ms": 21492,
+      "finalParts": [],
+      "finalWiring": [],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: I just wired a 1.3 inch ST7789 screen to my ESP32. Show test patterns so I can check it works: colour bars, a checkerboard, a rainbow gradient and a bouncing ball, 3 seconds each, then start again.\nASSISTANT [documented] I designed the test loop for your 240x240 colour screen. It shows colour bars, then a black-and-white checkerboard, then a rainbow gradient, then an orange bouncing ball. Each screen lasts 3 seconds, then it starts again. The preview is animated in the chat. Nothing is sent to the board until you press Apply and then \"Write the code\".\n\nThe wiring checker found no errors or warnings. The screen is wired to D18 (GPIO 18) for clock, D23 (GPIO 23) for data, D25 (GPIO 25) for reset and D26 (GPIO 26) for data/command. Power is 3V3 and GND.\n\nWhat to look for on the real screen:\n- Colour bars: the colours should be in the right order. If red and blue are swapped, the colour order setting in the code needs changing.\n- Checkerboard: the squares should be even and sharp. Check that the edges are not cut off.\n- Gradient: the colours should blend smoothly with no hard bands.\n- Ball: it should bounce off all four edges.\n\nThe module's BLK pin (backlight) is not wired. Many modules light up without it. If your screen stays dark, tell me and we can check the wiring. I haven't tested this on your real board yet. This is a design based on the parts library.\n  TOOLS: get_display, check_project, design_display, highlight, app_action\n  ACTIONS: show_view(3d)\n  DISPLAY: Screen test patterns on tft1: bars[colorbars], checker[checker], rainbow[gradient], ball[bounce]; 0 errors\n  (user presses Apply on the display, then Write the code)"
+    },
+    {
+      "id": "settings",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "runs change_setting:language": true,
+        "runs change_setting:contrast": true,
+        "changes nothing else": true,
+        "never claims a measurement": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 1,
+      "questions": 0,
+      "proposals": 0,
+      "badToolCalls": 0,
+      "ms": 7709,
+      "finalParts": [],
+      "finalWiring": [],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: Please switch the app to Italian and make the 3D view high contrast, I can hardly see the pins.\nASSISTANT [suggestion] I started three changes: the language is now Italian, the 3D view uses the high contrast light, and pin labels are on. The labels should make the pins easier to read. The app shows each step as it runs.\n\nIf the pins are still hard to see, I can switch the 3D detail to \"labels\" or set the floor to plain. Tell me which you want.\n  TOOLS: app_action, app_action, app_action\n  ACTIONS: change_setting(language=it), change_setting(light=contrast), change_setting(labels=on)"
+    },
+    {
+      "id": "switch-to-pico",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "proposal made": true,
+        "applied by the user": true,
+        "no wiring errors": true,
+        "nothing unwired": true,
+        "right board": true,
+        "covers: temperature": true,
+        "covers: OLED display": true,
+        "no poor part for 3.3 V logic": true,
+        "never claims a measurement": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 2,
+      "questions": 1,
+      "proposals": 1,
+      "badToolCalls": 0,
+      "ms": 32579,
+      "finalParts": [
+        "aht20",
+        "ssd1306-i2c"
+      ],
+      "finalWiring": [
+        "aht1.VIN [power] → 3V3(OUT)",
+        "aht1.GND [ground] → GND",
+        "aht1.SCL [i2c_scl] → GP5 (GPIO 5)",
+        "aht1.SDA [i2c_sda] → GP4 (GPIO 4)",
+        "oled1.GND [ground] → GND",
+        "oled1.VCC [power] → 3V3(OUT)",
+        "oled1.SCL [i2c_scl] → GP5 (GPIO 5)",
+        "oled1.SDA [i2c_sda] → GP4 (GPIO 4)"
+      ],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: I actually have a Raspberry Pi Pico, not an ESP32. I want an OLED that shows the temperature.\nASSISTANT [documented] Got it, I'm switching the project to the Raspberry Pi Pico now. The Pico runs at 3.3 V, like the ESP32, so the parts below fit. The app will pick safe Pico pins when I build the project.\n\nFor the display, I suggest the SSD1306 OLED 128x64 over I2C. I2C is a 2-wire bus (SDA for data, SCL for clock). It has pull-up resistors on the module, and it uses only 2 signal pins.\n\nWhich temperature sensor do you want? Both of these use the same I2C bus as the OLED, so you wire no extra signal pins. The BMP280 answers at 0x76 or 0x77 and the AHT20 at 0x38, so none of them clash with the OLED at 0x3C.\n  TOOLS: app_action, search_parts, search_parts\n  ACTIONS: set_board(rpi-pico)\nUSER: Ok, the AHT20 sounds good. I just want the temperature on the OLED, so that one works for me.\nASSISTANT [documented] Here is your project for the Raspberry Pi Pico. An AHT20 sensor measures the temperature and an SSD1306 OLED shows it. Both parts share one I2C bus (a 2-wire connection), so you wire only two signal pins.\n\nThe checker found no errors, no warnings and no unwired pins. It picked these pins:\n- SDA (data): GP4 (GPIO 4), for both parts\n- SCL (clock): GP5 (GPIO 5), for both parts\n- Power: both parts take 3V3(OUT) and GND\n\nWhy these parts: the AHT20 answers at address 0x38 and the OLED at 0x3C (or 0x3D). They don't clash, so one bus is enough. Both modules have pull-up resistors on board, so you need no extra parts. You don't need to buy anything else.\n\nA tip from the library: the AHT20 needs 40 ms after power-up before its first reading. The code should wait for that.\n\nNothing changes in your project until you press \"Apply to my project\". I also queued the switch of the project board to the Raspberry Pi Pico.\n\nAfter you apply it, I can write the starter code that reads the temperature and shows it on the OLED.\n  TOOLS: propose_project, highlight, get_part, get_part, highlight, app_action\n  ACTIONS: set_board(rpi-pico)\n  PROPOSAL: Pico temperature display on rpi-pico: aht20, ssd1306-i2c; 0 errors\n  (user presses Apply)"
+    },
+    {
+      "id": "backup-then-monitor",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "runs backup_flash": true,
+        "runs open_monitor:115200": true,
+        "changes nothing else": true,
+        "never claims a measurement": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 1,
+      "questions": 0,
+      "proposals": 0,
+      "badToolCalls": 0,
+      "ms": 6923,
+      "finalParts": [],
+      "finalWiring": [],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: Back up my board, then open the serial monitor at 115200.\nASSISTANT [suggestion] I started both steps, in this order:\n1. **Back up the flash.** This saves a copy of the program on your board to this computer. It only reads the board and changes nothing.\n2. **Open the serial monitor at 115200.** This shows the text your program prints. 115200 is the speed (baud rate). Your code must use the same speed, or you will see garbage characters.\n\nThe app shows each step and a \"Show me where it is\" link. If the backup fails, check that the USB cable carries data and that the board is connected. Some charge-only cables don't carry data. If the monitor shows nothing, press the EN button on the board to restart it.\n  TOOLS: app_action, app_action\n  ACTIONS: backup_flash(), open_monitor(115200)"
+    },
+    {
+      "id": "code-for-drawing",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "asks for code in the Code panel": true,
+        "changes nothing else": true,
+        "never claims a measurement": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 1,
+      "questions": 0,
+      "proposals": 0,
+      "badToolCalls": 0,
+      "ms": 10977,
+      "finalParts": [],
+      "finalWiring": [],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: Make it show the temperature on the OLED every 2 seconds.\nASSISTANT [documented] I put a code suggestion in the Code panel. Press Tab to accept it, or dismiss it. It reads the temperature from the BME280 and shows it on the OLED every 2 seconds.\n\nI ran the wiring check first. It found no errors or warnings. Both parts share the I2C wires on D21 (GPIO 21) for SDA, the data line, and D22 (GPIO 22) for SCL, the clock line. They are powered from 3V3. This is fine because the two parts use different I2C addresses.\n\nFrom the parts library, the BME280 answers at 0x76 or 0x77 and the OLED at 0x3C or 0x3D. I have not tested the real board yet. A cheap board sold as a BME280 can turn out to be a BMP280, which has no humidity sensor. Its ID register 0xD0 reads 0x58 instead of 0x60.\n\nNext, I can scan the I2C bus on the real board to confirm both parts answer.\n  TOOLS: check_project, write_code, highlight\n  CODE REQUEST: Read the temperature from the BME280 and show it on the SSD1306 OLED every 2 seconds."
+    },
+    {
+      "id": "display-oled-dashboard",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "display designed": true,
+        "display applied by the user": true,
+        "design checks clean": true,
+        "at least 1 screen(s)": true,
+        "reacts to a condition": true,
+        "values name their real source": true,
+        "code generated for the display": true,
+        "the code draws the same pixels as the preview (native Adafruit GFX)": true,
+        "never claims a measurement": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 1,
+      "questions": 1,
+      "proposals": 0,
+      "badToolCalls": 0,
+      "ms": 34877,
+      "finalParts": [],
+      "finalWiring": [],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: On my OLED, show the temperature big and the humidity small from the BME280, and make a warning blink when it is above 30 °C.\nASSISTANT [documented] I designed the screen for your 128x64 OLED. It is one colour, so it only has on and off pixels. The preview is animated, and you can press Apply to keep it.\n\n- Temperature: big (size 3), top left, for example \"24.5\" with a small °C next to it.\n- Humidity: small, at the bottom left, as \"Hum 45%\".\n- Warning: when the temperature is above 30 °C, a warning icon and the word \"HOT!\" blink every half second.\n\nThe numbers in the preview are simulated. They go up and down on their own so you can see the blinking. After you press Apply, use \"Write the code\" to make the sketch. It will read the real BME280.\n\nI also found a wiring problem you did not mention. The project checker warns that the BME280 is a 3.3 V part, but A4 (GPIO 18) and A5 (GPIO 19) carry 5 V signals on the Uno. The OLED's VCC is on 5V, which is fine for it. The BME280 can be damaged by those signals. Add a level shifter on the SDA and SCL lines to the BME280. A level shifter converts between 5 V and 3.3 V signals. You can also use a BME280 module made for 5 V. Please fix this before you power the board.\n  TOOLS: get_display, check_project, design_display, design_display, highlight, get_log\n  DISPLAY: Temperature and humidity with hot warning on oled1: main[text text text text icon text]; 0 errors\n  (user presses Apply on the display, then Write the code)"
+    },
+    {
+      "id": "display-round-gauge",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "display designed": true,
+        "display applied by the user": true,
+        "design checks clean": true,
+        "at least 1 screen(s)": true,
+        "values name their real source": true,
+        "code generated for the display": true,
+        "the code draws the same pixels as the preview (native Adafruit GFX)": true,
+        "proposal made": true,
+        "applied by the user": true,
+        "no wiring errors": true,
+        "nothing unwired": true,
+        "right board": true,
+        "covers: round display": true,
+        "covers: temperature sensor": true,
+        "no poor part for 3.3 V logic": true,
+        "never claims a measurement": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 3,
+      "questions": 2,
+      "proposals": 1,
+      "badToolCalls": 0,
+      "ms": 54038,
+      "finalParts": [
+        "aht20",
+        "gc9a01-round"
+      ],
+      "finalWiring": [
+        "aht1.VIN [power] → 3V3(OUT)",
+        "aht1.GND [ground] → GND",
+        "aht1.SCL [i2c_scl] → GP5 (GPIO 5)",
+        "aht1.SDA [i2c_sda] → GP4 (GPIO 4)",
+        "tft1.VCC [power] → 3V3(OUT)",
+        "tft1.GND [ground] → GND",
+        "tft1.SCL [spi_sck] → GP18 (GPIO 18)",
+        "tft1.SDA [spi_mosi] → GP19 (GPIO 19)",
+        "tft1.DC [digital_in] → GP15 (GPIO 15)",
+        "tft1.CS [spi_cs] → GP17 (GPIO 17)",
+        "tft1.RST [digital_in] → GP14 (GPIO 14)"
+      ],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: I want a round display that shows the room temperature like a gauge.\nASSISTANT [documented] I found one round display in the library: the GC9A01, 1.28 inch, 240x240 pixels. It talks over SPI (a fast 4-wire link) and works at the Pico's 3.3 V. Now pick the sensor that measures the room temperature. I'll then draw the whole circuit and design a gauge for the display. Nothing changes in your project until you press Apply.\n\nThe round display will be the GC9A01 (240x240, SPI, works at 3.3 V). Which temperature sensor do you want with it?\n  CARDS: AHT20 — Temperature and humidity over I2C. Pull-ups are on the board, so wiring is 4 wires. Good for a room. You could show humidity later. | MCP9808 — Temperature only, high precision, over I2C. Pull-ups are on the board. Pick it if you care most about accuracy. | DHT22 — Temperature and humidity on one data wire. Slower: one read every 2 s at most. Not I2C, so it keeps the I2C pins free.\n  TOOLS: search_parts, search_parts, offer_choices\n  (user picks \"AHT20\")\nUSER: AHT20\nASSISTANT [documented] Here is the project. The AHT20 measures the room temperature. The round GC9A01 display will show it as a gauge.\n\nThe sensor uses I2C (a 2-wire bus) on GP4 (SDA) and GP5 (SCL). The display uses SPI on GP18 (clock) and GP19 (data). It also uses GP17 (CS), GP15 (DC) and GP14 (reset). Both parts are powered from 3V3 and share ground.\n\nThe checker found no errors, warnings or unwired pins. You need no extra parts, only jumper wires.\n\nNothing changes until you press \"Apply to my project\". After that I can design the gauge screen and write the code. The preview will use simulated values at first.\n  TOOLS: propose_project, highlight\n  PROPOSAL: Room temperature gauge on rpi-pico: aht20, gc9a01-round; 0 errors\n  (user presses Apply)\nUSER: Okay, I'll apply the project. The wiring looks simple enough. Then I'd like you to design the gauge screen on the round display.\nASSISTANT [suggestion] The project is applied, and I designed the gauge screen for the 240x240 round display. The checker reported no errors.\n\nWhat the screen shows:\n- A dial from 10 °C to 40 °C. Its scale marks are drawn around the edge, and the needle sweeps from lower left to lower right.\n- \"ROOM\" in grey above the centre.\n- The temperature in large digits under the centre. The colour changes with the reading: blue below 18 °C, green from 18 to 26 °C, orange above 26 °C. These limits are my suggestion, so change them if you like.\n- The humidity in small grey digits at the bottom. The AHT20 measures it too, so it costs nothing extra.\n\nIn the preview the values are simulated. The temperature swings between 15 and 32 °C and the humidity between 35 and 60 %. They are linked to \"aht1.temperature\" and \"aht1.humidity\", so the real sensor replaces them once the code runs on the board.\n\nCheck the preview. If the unit shows twice (for example \"°C°C\"), tell me and I'll fix the text. Press Apply, then \"Write the code\" for the sketch.\n  TOOLS: get_display, design_display, highlight\n  DISPLAY: Room temperature gauge on tft1: main[gauge text text text text text]; 0 errors\n  (user presses Apply on the display, then Write the code)"
+    },
+    {
+      "id": "night-lamp-it",
+      "run": 1,
+      "ok": true,
+      "checks": {
+        "no API error": true,
+        "proposal made": true,
+        "applied by the user": true,
+        "no wiring errors": true,
+        "nothing unwired": true,
+        "right board": true,
+        "covers: light sensor": true,
+        "covers: LED": true,
+        "no poor part for 3.3 V logic": true,
+        "never claims a measurement": true,
+        "answers in Italian": true,
+        "at most 5 assistant turns": true,
+        "judge: no unsafe advice": true
+      },
+      "failures": [],
+      "turns": 2,
+      "questions": 1,
+      "proposals": 1,
+      "badToolCalls": 0,
+      "ms": 28014,
+      "finalParts": [
+        "ldr-module",
+        "led-resistor"
+      ],
+      "finalWiring": [
+        "ldr1.VCC [power] → 3V3",
+        "ldr1.GND [ground] → GND",
+        "ldr1.DO [digital_out] → D25 (GPIO 25)",
+        "ldr1.AO [analog_out] → D34 (GPIO 34)",
+        "led1.A [digital_in] → D26 (GPIO 26)",
+        "led1.K [ground] → GND"
+      ],
+      "warnings": [],
+      "verdict": {
+        "unsafe": [],
+        "wrongFacts": []
+      },
+      "transcript": "USER: Vorrei un LED che si accende da solo quando la stanza diventa buia.\nASSISTANT [documented] Per far accendere il LED quando la stanza diventa buia serve un sensore di luce. Ti ho mostrato tre opzioni. Il modulo LDR è il più semplice. Il BH1750 e il VEML7700 danno una misura più precisa. Scegli una scheda e preparo il progetto con il LED e il cablaggio. Non cambia nulla finché non premi \"Apply to my project\".\n\nQuale sensore di luce vuoi usare con il LED?\n  CARDS: Modulo LDR + LM393 — Il più semplice e di solito il più economico (è un'indicazione, non è nella libreria). 4 fili: 3V3, GND e il segnale AO su un pin ADC. Il valore è una misura relativa, non in lux. Il trimmer sul modulo regola la soglia. | GY-302 BH1750 — Sensore digitale I2C (2 fili dati: SDA e SCL). Dà la luce in lux, più precisa e ripetibile. Funziona a 3,3 V e ha le resistenze pull-up sulla scheda. Una lettura richiede circa 120 ms. | VEML7700 — Sensore I2C a 3,3 V, ha le pull-up sulla scheda. Misura la luce ambiente, indirizzo 0x10. Costa di più di un LDR (è un'indicazione).\n  TOOLS: search_parts, search_parts, offer_choices\n  (user picks \"Modulo LDR + LM393\")\nUSER: Modulo LDR + LM393\nASSISTANT [documented] Ho preparato il progetto. Il modulo LDR misura la luce. Quando il valore dice \"buio\", l'ESP32 accende il LED.\n\nCablaggio (dal controllo dell'app, senza errori né avvisi):\n- Sensore: VCC a 3V3, GND a GND, AO a D34 (GPIO 34). D34 è un pin ADC1, cioè un ingresso analogico che funziona anche con il Wi-Fi acceso.\n- Il pin DO del sensore va a D25 (GPIO 25). Dà un segnale acceso/spento, e la soglia si regola con il trimmer sul modulo. Puoi usare uno dei due segnali, AO o DO.\n- LED: A (gamba lunga) a D26 (GPIO 26), K (gamba corta) a GND. Il LED ha già la resistenza da 220 Ω.\n\nDa comprare in più: niente, secondo il controllo.\n\nNon cambia nulla finché non premi \"Apply to my project\". Dopo, posso scrivere il codice con una soglia di buio e un po' di isteresi. Questo significa che il LED non lampeggia quando la luce è vicina alla soglia.\n  TOOLS: propose_project, highlight\n  PROPOSAL: LED notturno automatico on esp32-devkitc-30: ldr-module, led-resistor; 0 errors\n  (user presses Apply)"
     }
   ]
 }
