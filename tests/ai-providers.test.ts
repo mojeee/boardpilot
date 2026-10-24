@@ -416,7 +416,7 @@ describe('AI settings store', () => {
     const bad = s.save({ provider: 'anthropic', model: '', apiKey: 'sk-ant short' });
     expect(bad.ok).toBe(false);
     expect(s.save({ provider: 'anthropic', model: '', apiKey: KEY }).ok).toBe(true);
-    expect(s.model()).toBe('claude-sonnet-5');
+    expect(s.model()).toBe('claude-sonnet-5-5');
     const cleared = s.clearKey('anthropic');
     expect(cleared.ok && cleared.value.providers.anthropic.hasKey).toBe(false);
     expect(s.getKey('anthropic')).toBeNull();

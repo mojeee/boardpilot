@@ -23,7 +23,8 @@ export interface AiProviderInfo {
 }
 
 // Default models, checked against the providers' docs in September 2026:
-// - Anthropic: CLAUDE.md (claude-sonnet-5, fast claude-haiku-4-5-20251001).
+// - Anthropic: CLAUDE.md (claude-sonnet-5-5, fast claude-haiku-4-5-20251001). Sonnet 5.5 replaced Sonnet 5
+//   in October 2026 after the live evaluation (docs/ai-evals/): same 23/23, faster and cheaper.
 // - OpenAI: https://developers.openai.com/api/docs/models ("GPT-6 Sol ... balance intelligence and
 //   cost", "GPT-6 Luna for cost-sensitive, high-volume workloads"); both support the Responses API,
 //   function calling, structured outputs and image input.
@@ -34,7 +35,7 @@ export const PROVIDER_INFO: Record<AiProviderId, AiProviderInfo> = {
     id: 'anthropic',
     short: 'Claude',
     name: 'Claude (Anthropic)',
-    defaultModel: 'claude-sonnet-5',
+    defaultModel: 'claude-sonnet-5-5',
     fastModel: 'claude-haiku-4-5-20251001',
     keyUrl: 'https://console.anthropic.com/settings/keys',
     envVar: 'ANTHROPIC_API_KEY',
