@@ -106,7 +106,7 @@ describe.skipIf(!existsSync(join(root, 'site/index.html')))('built landing pages
   ]) {
     const html = readFileSync(join(root, file), 'utf8');
     it(`${lang}: has every section, no placeholder and FAQ structured data`, () => {
-      for (const id of ['features', 'f-build', 'f-3d', 'f-debug', 'f-flash', 'f-monitor', 'f-learn', 'f-mcp', 'boards', 'demos', 'try', 'compare', 'pricing', 'faq', 'download']) {
+      for (const id of ['features', 'f-build', 'f-3d', 'f-debug', 'f-flash', 'f-monitor', 'f-learn', 'f-mcp', 'boards', 'how', 'how-parts', 'how-wiring', 'how-debug', 'how-code', 'how-sim', 'trust', 'demos', 'try', 'compare', 'pricing', 'faq', 'download']) {
         expect(html, id).toContain(`id="${id}"`);
       }
       expect(html).not.toContain('{{');
@@ -118,7 +118,7 @@ describe.skipIf(!existsSync(join(root, 'site/index.html')))('built landing pages
       const ids = new Set(RECORDINGS.map((r) => r.id));
       for (const m of html.matchAll(/data-demo="([^"]+)"/g)) {
         const url = m[1].replace(/&amp;/g, '&');
-        expect(url).toMatch(/^\/demo\/#demo=(chat|debug)&/);
+        expect(url).toMatch(/^\/demo\/#demo=(chat|debug|code|template)&/);
         const chat = /chat=([\w-]+)/.exec(url)?.[1];
         if (chat) expect(ids.has(chat), chat).toBe(true);
         expect(url).toContain(`lang=${lang}`);

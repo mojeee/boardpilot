@@ -90,6 +90,7 @@
               <a href="#f-monitor"><i class="d-adc"></i><span data-i18n="jump.monitor">Monitor and test</span></a>
               <a href="#f-learn"><i class="d-ok"></i><span data-i18n="jump.learn">Learn embedded</span></a>
               <a href="#f-mcp"><i class="d-ai"></i><span data-i18n="jump.mcp">AI agents (MCP)</span></a>
+              <a href="#how"><i class="d-ok"></i><span data-i18n="jump.how">How you can be sure</span></a>
               <a href="#boards"><i class="d-sda"></i><span data-i18n="jump.boards">{{BOARDS_COUNT}} boards, {{PARTS_COUNT}} parts</span></a>
             </nav>
           </div>
@@ -291,7 +292,137 @@
         </div>
       </section>
 
-      <section id="demos" class="section demos">
+      <section id="how" class="section how">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="how.eyebrow">How it works</span>
+          <h2 data-i18n="how.title">How it works, and how you can be sure.</h2>
+          <p class="lead wide" data-i18n="how.lead">Five steps from an idea to a working board. For each one: what BoardPilot does, and how you can check it yourself instead of taking our word for it.</p>
+          <ol class="how-steps">
+            <li class="how-step" id="how-parts">
+              <div class="how-text">
+                <h3><span class="how-num">1</span><span data-i18n="hp.t">Choosing the parts</span></h3>
+                <p data-i18n="hp.d">Tell the assistant what you want to build. It asks only what changes the design, such as the power supply or indoors or outdoors, one question at a time. When there is a real choice, it shows the options as cards that say what is different: what they measure, the voltage, the wiring and the known traps.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">How you can be sure</span>
+                  <ul class="ticks">
+                    <li data-i18n="hp.1">It can only use parts from the open library: {{PARTS_COUNT}} parts, each with its pins, voltage, I2C addresses and known traps, and their sources.</li>
+                    <li data-i18n="hp.2">A part that is not in the library is refused, never invented. If the library cannot do what you ask, it says so.</li>
+                    <li data-i18n="hp.3">You make the choice, and nothing is added until you press Apply.</li>
+                  </ul>
+                </div>
+                <a class="more" href="{{PLANT_URL}}" target="_blank" rel="noopener" data-demo="{{PLANT_URL}}" data-i18n="hp.cta">Watch it choose the parts for a plant waterer →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/chat-plant.jpg" srcset="/img/chat-plant-900.jpg 900w, /img/chat-plant.jpg 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hp.alt" alt="The assistant’s plant-watering project: a soil sensor, a MOSFET module and a pump, why each was chosen, and a flyback diode on the shopping list" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-wiring">
+              <div class="how-text">
+                <h3><span class="how-num">2</span><span data-i18n="hw.t">Wiring</span></h3>
+                <p data-i18n="hw.d">Pins are picked by the board’s own rules, written from its datasheet. The assistant draws the wires, adds part-to-part wires for loads such as a pump on a MOSFET module, and lists what else to buy.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">How you can be sure</span>
+                  <ul class="ticks">
+                    <li data-i18n="hw.1">Every proposal goes through the wiring checker before you see it: flash pins, input-only pins, strapping pins, ADC2 with Wi-Fi, 5 V parts on 3.3 V pins, crossed I2C, two parts at the same I2C address, missing power or ground. Errors must be fixed first.</li>
+                    <li data-i18n="hw.2">Pull-ups, voltage dividers, level shifters and flyback diodes go on the shopping list from the parts’ own library notes.</li>
+                    <li data-i18n="hw.3">Nothing changes until you press Apply, and Undo takes it back. Wires you draw yourself are checked by the same rules.</li>
+                  </ul>
+                </div>
+                <a class="more" href="#try" data-i18n="hw.cta">Try it: draw a wire in the live demo →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/chat-distance.jpg" srcset="/img/chat-distance-900.jpg 900w, /img/chat-distance.jpg 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hw.alt" alt="A distance alarm on an Arduino Uno: six wires, each signal on a safe pin, and “Checks passed”" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-debug">
+              <div class="how-text">
+                <h3><span class="how-num">3</span><span data-i18n="hd.t">Debugging</span></h3>
+                <p data-i18n="hd.d">With your OK, BoardPilot installs a small diagnostic agent on the board, after backing up your program. Then it measures: the pull-ups on the I2C pins, a bus scan as wired and with SDA and SCL swapped, and the chip’s ID register.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">How you can be sure</span>
+                  <ul class="ticks">
+                    <li data-i18n="hd.1">Every fact has a label: Measured (in this session, with the tool that measured it), From documentation (with the datasheet section) or Suggestion (you confirm it before anything relies on it).</li>
+                    <li data-i18n="hd.2">Crossed wires are shown by a measurement, not a guess: the sensor answers only when SDA and SCL are exchanged.</li>
+                    <li data-i18n="hd.3">It never shows a voltage it did not measure. On pins without an ADC it reports only HIGH or LOW.</li>
+                  </ul>
+                </div>
+                <a class="more" href="{{DEBUG_URL}}" target="_blank" rel="noopener" data-demo="{{DEBUG_URL}}" data-i18n="fd.cta">Watch the debugging demo →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/newproject.jpg" srcset="/img/newproject-900.jpg 900w, /img/newproject.jpg 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hd.alt" alt="Reading the board: each finding with “measured” and the tool that measured it, such as the swap test and the chip ID read" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-code">
+              <div class="how-text">
+                <h3><span class="how-num">4</span><span data-i18n="hc.t">Code and flashing</span></h3>
+                <p data-i18n="hc.d">BoardPilot writes starter code from your drawing, using only the pins you wired, for Arduino, the Pico SDK, ESP-IDF or STM32 HAL. You can also open your own sketch in the Code panel.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">How you can be sure</span>
+                  <ul class="ticks">
+                    <li data-i18n="hc.1">The code checker compares the code with the wiring as you type: I2C pins in the wrong order, a serial speed that does not match the monitor, an LED on another pin. Each finding marks its line, and simple ones have a one-click Fix.</li>
+                    <li data-i18n="hc.2">Code from the AI goes through the same checker before it is shown, and waits for you to accept it.</li>
+                    <li data-i18n="hc.3">Flashing needs your confirmation. Before the first write the whole flash is backed up, and one click puts your old program back.</li>
+                  </ul>
+                </div>
+                <a class="more" href="{{CODE_URL}}" target="_blank" rel="noopener" data-demo="{{CODE_URL}}" data-i18n="hc.cta">See the code checker in the live demo →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/code.jpg" srcset="/img/code-900.jpg 900w, /img/code.jpg 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hc.alt" alt="A sketch checked against the drawing: swapped I2C pins and an LED on the wrong pin marked on their lines" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-sim">
+              <div class="how-text">
+                <h3><span class="how-num">5</span><span data-i18n="hs.t">Simulation</span></h3>
+                <p data-i18n="hs.d">Simulator mode runs the whole app without a board: the same screens and checks, on a virtual board with realistic faults such as crossed wires, a fake sensor, brownouts or the wrong baud rate. Template projects run step by step, with the running line highlighted and the value of every part and pin beside the code.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">How you can be sure</span>
+                  <ul class="ticks">
+                    <li data-i18n="hs.1">Simulated values are always labelled “simulated”, so you never mistake them for measurements.</li>
+                    <li data-i18n="hs.2">The simulated board works through the same interface as a real one, so the steps you learn are the steps you will use.</li>
+                    <li data-i18n="hs.3">Coming next, Display Studio: it shows what your display module will draw, pixel by pixel, and checks that the generated code draws exactly the same pixels with the real Adafruit GFX library.</li>
+                  </ul>
+                </div>
+                <a class="more" href="{{SIM_URL}}" target="_blank" rel="noopener" data-demo="{{SIM_URL}}" data-i18n="hs.cta">Run a template in the simulator →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/simrun.jpg" srcset="/img/simrun-900.jpg 900w, /img/simrun.jpg 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hs.alt" alt="The plant-watering template running in the simulator: the current line highlighted, the state, and the soil moisture labelled simulated" loading="lazy" />
+              </figure>
+            </li>
+          </ol>
+
+          <div class="trust" id="trust">
+            <h3 data-i18n="tr.t">How you can be sure of all of it</h3>
+            <p data-i18n="tr.d">You should not have to take an app’s word for what is on your desk. This is what BoardPilot does so you can check.</p>
+            <div class="trust-grid">
+              <div class="trust-tile">
+                <div class="trust-labels"><span class="tag measured" data-i18n="chip.measured">Measured</span><span class="tag documented" data-i18n="tr.doc">From documentation</span><span class="tag suggestion" data-i18n="tr.sug">Suggestion</span></div>
+                <p data-i18n="tr.1">Three labels on every answer, the assistant’s too, each with its source: the tool that measured it, the datasheet section or the library entry.</p>
+              </div>
+              <div class="trust-tile">
+                <b class="trust-num">0</b>
+                <p data-i18n="tr.2">writes without your click. Flashing, the diagnostic agent and driving a pin wait for your confirmation, after a full backup. The AI and AI agents can only ask.</p>
+              </div>
+              <div class="trust-tile">
+                <b class="trust-num">23/23</b>
+                <p data-i18n="tr.3">real conversations with Claude Sonnet 5 and 5.5 passed, graded by the app’s own wiring rules and read for safety by a second model.</p>
+                <a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/ai-evals/README.md" data-i18n="tr.3cta">Read the evaluation →</a>
+              </div>
+              <div class="trust-tile">
+                <b class="trust-num" data-i18n="tr.4n">3,200+</b>
+                <p data-i18n="tr.4">automated tests of the wiring rules, the code checker, the flows, the parsers and every board file, plus end-to-end tests that drive the built app through every task.</p>
+                <a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/testing.md" data-i18n="tr.4cta">How it is tested →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="demos" class="section alt demos">
         <div class="wrap">
           <span class="eyebrow" data-i18n="demos.eyebrow">Demos · no install</span>
           <h2 data-i18n="demos.title">Watch it work before you install anything.</h2>
@@ -313,7 +444,7 @@
         </div>
       </section>
 
-      <section id="compare" class="section alt compare">
+      <section id="compare" class="section compare">
         <div class="wrap">
           <span class="eyebrow" data-i18n="cmp.eyebrow">Compare</span>
           <h2 data-i18n="cmp.title">How BoardPilot fits with the tools you already use.</h2>
@@ -322,7 +453,7 @@
         </div>
       </section>
 
-      <section class="section showcase">
+      <section class="section alt showcase">
         <div class="wrap">
           <span class="eyebrow" data-i18n="show.eyebrow">Screens</span>
           <h2 data-i18n="show.title">More of the app.</h2>
@@ -343,19 +474,6 @@
             <img id="shot" src="/img/workspace.jpg" srcset="/img/workspace-900.jpg 900w, /img/workspace.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1125" data-i18n-alt="img.shot" alt="BoardPilot screenshot: the project workspace with the 3D board, code, log and assistant" loading="lazy" />
           </div>
           <p class="caption" id="shot-caption" data-i18n="cap.workspace">The project page: 3D board, code with the checker’s fixes, the log, the assistant doing the work, and a warnings banner.</p>
-        </div>
-      </section>
-
-      <section id="how" class="section alt">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="how.eyebrow">How it works</span>
-          <h2 data-i18n="how.title">Look first. Ask only what it cannot see.</h2>
-          <ol class="steps">
-            <li><span class="num">1</span><h3 data-i18n="s1.t">Plug in</h3><p data-i18n="s1.d">BoardPilot finds the port, reads the chip, flash size and MAC. No port? It walks you through cable, driver and BOOT-button fixes.</p></li>
-            <li><span class="num">2</span><h3 data-i18n="s2.t">Pick a task</h3><p data-i18n="s2.d">Connect, new project, flash, debug, monitor, test, report. Or just describe the problem in your own words.</p></li>
-            <li><span class="num">3</span><h3 data-i18n="s3.t">Get the cause, with proof</h3><p data-i18n="s3.d">Every result lists what was measured, what the datasheet says, and what to do next. One click writes a report to share.</p></li>
-          </ol>
-          <p class="fine center how-note" data-i18n="how.ai">The AI assistant is optional: try it with the free demo AI, or use your own Claude, GPT or Gemini key. Checks, measurements and the simulator work offline.</p>
         </div>
       </section>
 

@@ -41,6 +41,8 @@ const SHOTS = {
   'chat-distance': { hash: `#demo=chat&chat=distance-uno&stage=desk${LOOK}`, delay: 34000 },
   'chat-lamp': { hash: `#demo=chat&chat=night-lamp-it&stage=desk${LOOK}`, delay: 34000 },
   // The assistant backing up the board before a write (the website's "flash safely" row).
+  // A template running in the simulator, step by step (the website's "How it works").
+  simrun: { hash: `#demo=template&id=plant-watering&speed=4&stage=desk${LOOK}`, delay: 16000 },
   backup: { hash: `#demo=action&do=backup_flash&stage=desk${LOOK}`, delay: 16000 },
 };
 
