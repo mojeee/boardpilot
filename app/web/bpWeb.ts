@@ -61,6 +61,7 @@ const WHY = {
   mcp: () => t('Letting AI coding agents use your board (MCP) needs the BoardPilot app on your computer.'),
   link: () => t('Importing a part from a web link needs the BoardPilot app: a web page cannot read other websites.'),
   license: () => t('License keys are entered in the BoardPilot app.'),
+  memory: () => t('Project memory reads your old projects from your computer, so it needs the BoardPilot app.'),
 };
 
 /* ---------- IPC-like copying: the renderer never shares objects with the "main" side ---------- */
@@ -257,6 +258,20 @@ const api: BoardPilotApi = {
         return { ok: false, error: { code: 'bad_project', humanMessage: t('That file is not a BoardPilot project.'), hint: t('Pick a .boardpilot.json file saved from the app.') } };
       }
     },
+  },
+  // Project memory reads folders and keeps them on the computer: the app only.
+  memory: {
+    list: async () => [],
+    create: async () => needsApp(WHY.memory()),
+    rename: async () => needsApp(WHY.memory()),
+    remove: async () => needsApp(WHY.memory()),
+    importFolder: async () => needsApp(WHY.memory()),
+    importPdf: async () => needsApp(WHY.memory()),
+    addNote: async () => needsApp(WHY.memory()),
+    removeSource: async () => needsApp(WHY.memory()),
+    exportFile: async () => needsApp(WHY.memory()),
+    importFile: async () => needsApp(WHY.memory()),
+    search: async () => [],
   },
   mcp: {
     status: async () => mcpOff,

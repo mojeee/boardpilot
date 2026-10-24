@@ -8,6 +8,7 @@ import { BOARDS, PARTS } from '@shared/board';
 import { buildProposal, checkScene, partDetails, proposalForModel, searchParts, type ProjectProposal, type ProposalInput } from '@shared/projectBuilder';
 import type { HardwareHub } from '../hardware/hub';
 import type { JsonSchema, ToolSpec } from './providers/types';
+import { MEMORY_TOOLS, runMemoryTool, type MemoryToolContext } from '../memory/aiTools';
 
 // Written as strict JSON Schema; providers/schema.ts adapts it (Gemini subset, OpenAI strict check).
 const obj = (properties: Record<string, unknown>, required: string[]): JsonSchema => ({
@@ -173,6 +174,7 @@ export const TOOLS: ToolSpec[] = [
     description: 'Run the wiring checker on the user\'s current project (as drawn now) and list its wiring, errors, warnings, unwired pins and extras to buy.',
     parameters: obj({}, []),
   },
+  ...MEMORY_TOOLS,
 ];
 
 /** The board argument of propose_project: null, "", '""' or "current" keep the current board. */
@@ -194,6 +196,8 @@ export interface ToolTurnState {
   codeRequest?: string;
   choices?: { question: string; choices: AiChoice[] };
   proposal?: ProjectProposal;
+  /** citation labels search_memory / read_memory returned (the reply may cite only these) */
+  memoryCited?: string[];
   calls: { name: string; input: unknown; ok: boolean; error?: string }[];
 }
 
@@ -201,6 +205,8 @@ export interface ToolTurnState {
 export interface BuilderContext {
   scene: Scene;
   parts?: Record<string, PartDef>;
+  /** the project memories attached to the project (scene.memories) and the store */
+  memory?: MemoryToolContext;
 }
 
 const num = (v: unknown, name: string): number => {
@@ -363,6 +369,9 @@ export async function runTool(
         if (!builder) return { content: 'No project available.', isError: true };
         return done(checkScene(builder.scene, builder.parts ?? PARTS));
       }
+      case 'search_memory':
+      case 'read_memory':
+        return await runMemoryTool(name, input, builder?.memory, (turn.memoryCited ??= []));
       default:
         return { content: `Unknown tool ${name}`, isError: true };
     }

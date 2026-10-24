@@ -18,7 +18,7 @@ import { ExampleChats, ReplayBar } from '../replay/ReplayBar';
 import { useReplay } from '../replay/player';
 
 const CONF_TEXT = { measured: 'Measured', documented: 'From documentation', suggestion: 'Suggestion' };
-const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said' };
+const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said', memory: 'project memory' };
 
 export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
   const scene = useScene((s) => s.scene);
@@ -43,7 +43,7 @@ export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
         <div className="ai-sources">
           {reply.sources.map((s, i) => (
             <div key={i} className={`src-line src-${s.kind}`}>
-              <span>{t(SRC_KIND[s.kind] ?? s.kind)}</span> {s.label}
+              <span>{t(SRC_KIND[s.kind] ?? s.kind)}</span> {s.kind === 'memory' ? s.label.replace(/^memory\s*·\s*/i, '') : s.label}
             </div>
           ))}
         </div>

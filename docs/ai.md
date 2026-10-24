@@ -45,10 +45,33 @@ Tools the model can call for this: `search_parts`, `get_part`, `offer_choices`, 
 
 The website plays those recordings in the browser demo (`/demo/#demo=chat&chat=<id>`) with a "Recorded conversation" banner: no AI call is made while you watch.
 
+## Project memory
+
+Teach the assistant your old projects. In **Project tools → Project memory**, create a memory (for example one per customer or product line, "acme-panels"), then add to it:
+
+- **a code folder**: Arduino (`.ino`, `.cpp`, `.h`), ESP-IDF, STM32 HAL / CubeMX (`.c`, `.h`, `.ioc`), Pico SDK and PlatformIO projects, with their `CMakeLists.txt`, `Kconfig`, README and `.txt` notes. Build output, `.git`, `node_modules`, `.pio`, `managed_components`, ST's `*_HAL_Driver`, `CMSIS` and `Middlewares` folders, binary files and files over 512 KB are skipped (at most 3000 files and 25 MB of text per folder; the panel says what was left out). Adding the same folder again replaces it;
+- **a note** you type: "This ST7789 needs 120 ms after reset, then MADCTL 0x36 = 0x70 for landscape";
+- **a datasheet PDF**: not yet. Reading PDF text needs a PDF library (`pdfjs-dist` is the candidate) and CLAUDE.md asks before a new dependency; until it is added the button says so and offers a note. The store already takes extracted text (`MemoryStore.importPdfText`).
+
+Everything stays on this computer: one JSON file per memory in the app data folder (`<userData>/memory/<id>.json`), read and written only by the main process. Nothing is sent anywhere until the assistant quotes a piece in a chat, the same as the project's code. **Export to share…** writes one `.bpmemory.json` file (without the paths it came from) that a colleague imports with **Import a memory file…**.
+
+Tick a memory to **attach** it to the open project; the list is saved in the project file (`scene.memories`), and a memory can be attached to any number of projects. A project opened on a computer without that memory says so and offers to detach it.
+
+How the assistant uses it:
+
+- The context says which memories are attached. The system prompt asks the model to search before it writes driver or init code, and whenever you name a part, a chip or a register.
+- `search_memory(query, limit)` ranks chunks locally with BM25 (no embeddings service; nothing leaves the computer to build an index). Files are cut into chunks of about 40 lines at top-level blocks (a function with its comment stays whole), notes and text by paragraph. Tokens are code-aware: identifiers whole and split (`ST7789_MADCTL` → `st7789_madctl`, `st7789`, `madctl`; `setAddrWindow` → `set`, `addr`, `window`), part numbers with and without suffix (`ST7789V` → `st7789`), hex values normalised (`0x36`, `0x0036`, `36h`), "initialise / initialize / init" as one word, Italian question words dropped. Names a chunk defines (functions, `#define`, structs) and its file name count extra; big data tables (fonts, bitmaps) are searched by name only, so a register value finds the init code, not a font.
+- `read_memory(ref)` reads more: a result ref, or `file:start-end` (200 lines at most).
+- Every result carries its citation, e.g. `memory · acme-panels · drivers/st7789_init.c:21-36`, which the reply lists as a source of kind `memory` (shown as "project memory" under the answer). The app drops memory sources that no tool returned in the conversation, so a reply rests on "From documentation" only with a real file and lines. Memory is old code for another board or wiring, not a datasheet: what the assistant changes or infers stays a suggestion.
+- "Suggest code" and `write_code` get the three best chunks for the request and the project's parts, so the code panel reuses your own init sequence, with the same citation check.
+
+Code: `shared/memory.ts` (chunking, tokens, BM25, citations, file format), `app/main/memory/store.ts` (the store, folder import, `MemoryAccess`), `app/main/memory/aiTools.ts` (the two tools), `app/main/memory/ipc.ts`, `app/renderer/components/MemoryPanel.tsx`. Other features (Display Studio) use `MemoryAccess.search(query, memoryIds, limit)` and `read(ref, memoryIds)` from the main process, or the same two tools. The browser demo shows "needs the app".
+
 ## Honesty rules
 
 - Only measurements from this session are labelled **Measured**.
 - Datasheet or library facts are **From documentation**, with the section named.
+- Facts from your project memory are **From documentation** only with the file and lines the search returned.
 - Anything else is a **Suggestion** that you confirm before later steps rely on it.
 
 ## Hosting the demo relay (maintainers)

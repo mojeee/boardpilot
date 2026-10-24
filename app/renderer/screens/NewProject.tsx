@@ -23,6 +23,7 @@ import { useTemplate } from '../state/templateRun';
 import { TEMPLATES } from '@shared/templates';
 import { t } from '@shared/i18n';
 import '../styles/starter.css';
+import { MemoryPanel } from '../components/MemoryPanel';
 
 export function NewProjectPanel() {
   const scene = useScene((s) => s.scene);
@@ -159,6 +160,10 @@ export function NewProjectPanel() {
               <PowerBudget />
             </details>
           )}
+          <details className="bom-details" data-where="right:memory">
+            <summary className="label">{t('Project memory: your old projects')}</summary>
+            <MemoryPanel />
+          </details>
           <details className="bom-details">
             <summary className="label">{t('Portfolio project, stage by stage')}</summary>
             <PortfolioPanel />

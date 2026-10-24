@@ -19,6 +19,8 @@ import { toAppError } from './hardware/errors';
 import { CoachStore } from './session/coachStore';
 import { isSafeProjectName, isSafeProjectPath, type StarterFile } from '@shared/starter/common';
 import { makeCoachApi } from './session/coachApi';
+import { MemoryStore } from './memory/store';
+import { registerMemoryIpc } from './memory/ipc';
 
 export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
@@ -246,6 +248,11 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('coach:history', (lessonId: string, question: string) => coach.history(lessonId, question));
   h('coach:remove', (lessonId: string, question: string) => coach.remove(lessonId, question));
   h('coach:removeAll', () => coach.removeAll());
+
+  // Project memory: old projects, notes and datasheets, kept only on this computer.
+  const memory = new MemoryStore(join(dataDir, 'memory'));
+  ai.setMemory(memory);
+  registerMemoryIpc(memory);
 
   h('license:status', () => license.status());
   h('license:activate', (key: string) => license.activate(key));
