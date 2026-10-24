@@ -3,7 +3,7 @@
 import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve, sep } from 'node:path';
-import type { AgentRequest, AiContext, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
+import type { AgentRequest, AiContext, CodeSuggestionRequest, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { BUY_URL } from '@shared/brand';
 import { setLanguage, t } from '@shared/i18n';
@@ -32,6 +32,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('hw:connectAgent', () => hub.connectAgent());
   h('hw:agent', (req: AgentRequest) => hub.agent(req));
   h('hw:agentWrite', (req: AgentRequest, token: string) => hub.agentWrite(req, token));
+  h('hw:backup', () => hub.backup());
   h('hw:restore', (id: string, token: string) => hub.restore(id, token));
   h('hw:flashUser', (token: string, path: string) => hub.flashUser(token, path));
   h('hw:openSerial', (baud: number) => hub.openSerial(baud));
@@ -56,6 +57,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('ai:ask', (q: string, ctx: AiContext) => ai.ask(q, { ...ctx, log: ctx.log.length ? ctx.log : log.recent(50) }));
   h('ai:recognize', (b64: string, mt: 'image/jpeg' | 'image/png' | 'image/webp') => ai.recognizePart(b64, mt));
   h('ai:classify', (text: string, options: { id: string; label: string }[]) => ai.classify(text, options));
+  h('ai:suggestCode', (ctx: AiContext, req: CodeSuggestionRequest) => ai.suggestCode({ ...ctx, log: ctx.log.length ? ctx.log : log.recent(50) }, req));
   h('ai:reset', () => ai.reset());
 
   ipcMain.on('session:append', (_e, entry: LogEntry) => log.append(entry));
@@ -167,6 +169,25 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
       pdfWin.destroy();
       await writeFile(pdfPath, pdf);
       return { ok: true, value: { markdownPath, pdfPath } };
+    } catch (e) {
+      return { ok: false, error: toAppError(e) };
+    }
+  });
+
+  h('session:exportPdf', async (html: string, name: string, paper: 'A4' | 'A3' | 'Letter' | 'Tabloid'): Promise<Result<string>> => {
+    try {
+      // BP_SAVE_DIR (end-to-end tests): save there without asking.
+      const auto = process.env.BP_SAVE_DIR ? join(process.env.BP_SAVE_DIR, `${name.replace(/[\\/:*?"<>|]+/g, '')}.pdf`) : null;
+      const win = BrowserWindow.getFocusedWindow();
+      const opts: Electron.SaveDialogOptions = { defaultPath: `${name}.pdf`, filters: [{ name: 'PDF', extensions: ['pdf'] }] };
+      const r = auto ? { canceled: false, filePath: auto } : win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
+      if (r.canceled || !r.filePath) return { ok: false, error: { code: 'cancelled', humanMessage: t('Export cancelled.'), hint: '' } };
+      const pdfWin = new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false } });
+      await pdfWin.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+      const pdf = await pdfWin.webContents.printToPDF({ printBackground: true, landscape: true, pageSize: ['A4', 'A3', 'Letter', 'Tabloid'].includes(paper) ? paper : 'A4', margins: { top: 0, bottom: 0, left: 0, right: 0 }, preferCSSPageSize: true });
+      pdfWin.destroy();
+      await writeFile(r.filePath, pdf);
+      return { ok: true, value: r.filePath };
     } catch (e) {
       return { ok: false, error: toAppError(e) };
     }

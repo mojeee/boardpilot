@@ -32,6 +32,12 @@ export async function runDemo(name: string, scenario: string | null) {
   // &clean=1 hides the viewport overlays (toolbar, legend, badges) for social images.
   if (hp.get('clean')) document.body.classList.add('snapshot-clean');
   const cam = hp.get('cam');
+  // &light=studio|bench|contrast and &detail=simple|full|labels: the 3D look (screenshots).
+  const { useView3d } = await import('./state/view3d');
+  const light = hp.get('light');
+  const detail = hp.get('detail');
+  if (light === 'studio' || light === 'bench' || light === 'contrast') useView3d.getState().setLight(light);
+  if (detail === 'simple' || detail === 'full' || detail === 'labels') useView3d.getState().setDetail(detail);
   try {
     await runNamedDemo(name, scenario);
     const view = hp.get('view');
@@ -204,6 +210,100 @@ async function runNamedDemo(name: string, scenario: string | null) {
         '}',
       ].join('\n'),
     );
+  } else if (name === 'new-project') {
+    // #demo=new-project[&mode=port|template|blank]: the New project dialog (Read from port runs on the simulated bench).
+    const { openNewProject } = await import('./state/projects');
+    const mode = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('mode');
+    // The scripted confirmation stands in for the user's click on "Back up and install".
+    if (mode === 'port') await connectAndInstall();
+    openNewProject(mode === 'port' || mode === 'template' || mode === 'blank' ? mode : null);
+  } else if (name === 'tabs') {
+    // #demo=tabs: three projects open (two templates and the simulator's bench), the first one active.
+    const { useProjects } = await import('./state/projects');
+    const { useTemplate } = await import('./state/templateRun');
+    const { t } = await import('@shared/i18n');
+    const bench = useScene.getState().scene;
+    for (const [id, board] of [
+      ['plant-watering', 'esp32-devkitc-30'],
+      ['blink-button', 'rpi-pico'],
+    ] as const) {
+      const { TEMPLATES } = await import('@shared/templates');
+      const tpl = TEMPLATES.find((x) => x.id === id);
+      if (!tpl) continue;
+      useProjects.getState().add({ board, parts: [], wires: [] }, t(tpl.name));
+      await until(() => useApp.getState().conn.board === board);
+      useTemplate.getState().open(id);
+    }
+    useProjects.getState().switchTo(useProjects.getState().tabs[0].id);
+    void bench;
+  } else if (name === 'action') {
+    // #demo=action[&do=backup_flash]: the assistant runs an app action step by step (as after "back up my board").
+    const { runAction } = await import('./state/appActions');
+    const { useAi } = await import('./state/store');
+    const act = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('do') ?? 'backup_flash';
+    useAi.getState().push({ role: 'user', text: 'I can’t find where to back up my board before flashing.' });
+    await runAction(act, '', 'ai');
+  } else if (name === 'workspace') {
+    // #demo=workspace: the redesigned project page as in the mockup: three project tabs, the weather
+    // station with SDA/SCL swapped in the code (warnings banner, fix chips), and the assistant
+    // backing up the board step by step.
+    const { useProjects } = await import('./state/projects');
+    const { useTemplate } = await import('./state/templateRun');
+    const { TEMPLATES } = await import('@shared/templates');
+    const { t } = await import('@shared/i18n');
+    const first = useProjects.getState().tabs[0].id;
+    useProjects.getState().rename(first, t('Weather station'));
+    for (const [id, board] of [
+      ['plant-watering', 'esp32-devkitc-30'],
+      ['blink-button', 'rpi-pico'],
+    ] as const) {
+      const tpl = TEMPLATES.find((x) => x.id === id);
+      if (!tpl) continue;
+      useProjects.getState().add({ board, parts: [], wires: [] }, t(tpl.name));
+      await until(() => useApp.getState().conn.board === board);
+      useTemplate.getState().open(id);
+    }
+    useProjects.getState().switchTo(first);
+    await until(() => useApp.getState().conn.board === 'esp32-devkitc-30');
+    const { loadSketch } = await import('./components/CodeCheck');
+    loadSketch(
+      'weather_station.ino',
+      [
+        '#include <Wire.h>',
+        '#include <Adafruit_BME280.h>',
+        'Adafruit_BME280 bme;',
+        '',
+        'void setup() {',
+        '  Serial.begin(115200);',
+        '  Wire.begin(22, 21);',
+        '  bme.begin(0x76);',
+        '}',
+        '',
+        'void loop() {',
+        '  float t = bme.readTemperature();',
+        '  Serial.printf("%.1f C\\n", t);',
+        '  delay(1000);',
+        '}',
+      ].join('\n'),
+    );
+    const { runAction } = await import('./state/appActions');
+    const { useAi } = await import('./state/store');
+    useAi.getState().push({ role: 'user', text: t('I can’t find where to back up my board before flashing.') });
+    void runAction('backup_flash', '', 'ai');
+  } else if (name === 'export') {
+    // #demo=export[&id=weather-station]: a template project and the Export PDF dialog.
+    const { useTemplate } = await import('./state/templateRun');
+    useTemplate.getState().open(new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('id') ?? 'weather-station');
+    await sleep(500);
+    (await import('./components/ExportDialog')).openExport();
+    // &save=1: press "Save PDF" (with BP_SAVE_DIR set, the app saves without a dialog).
+    if (new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('save')) {
+      await sleep(1500);
+      document.querySelector<HTMLButtonElement>('.ex-actions .btn.primary')?.click();
+    }
+  } else if (name === 'cmdk') {
+    // #demo=cmdk: the "Ask AI or find anything" box open.
+    (await import('./components/CommandBox')).openCommandBox();
   } else if (name === 'project') {
     useScene.getState().openScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

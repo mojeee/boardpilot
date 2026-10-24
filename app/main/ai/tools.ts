@@ -3,6 +3,7 @@
 // Tool definitions are provider-neutral (ToolSpec); providers/*.ts convert them for Claude, GPT and Gemini.
 
 import type { AiChoice, LogEntry, PartDef, Scene, TargetRef, WriteRequest } from '@shared/types';
+import { ACTION_IDS, APP_ACTIONS, type AppActionId } from '@shared/actions';
 import { BOARDS, PARTS } from '@shared/board';
 import { buildProposal, checkScene, partDetails, proposalForModel, searchParts, type ProjectProposal, type ProposalInput } from '@shared/projectBuilder';
 import type { HardwareHub } from '../hardware/hub';
@@ -67,6 +68,26 @@ export const TOOLS: ToolSpec[] = [
     name: 'ask_user',
     description: 'Ask the user a question with a few short answer options (shown as buttons). End your turn after calling this.',
     parameters: obj({ question: { type: 'string' }, options: { type: 'array', items: { type: 'string' } } }, ['question', 'options']),
+  },
+  {
+    name: 'app_action',
+    description:
+      'Run one of the app\'s own actions for the user, the same as clicking it, when they ask you to do something or cannot find it. The app shows each step and a "Show me where it is" link. ' +
+      'Actions that write to the board only open the usual confirmation dialog. Actions: ' +
+      APP_ACTIONS.map((a) => `${a.id} (${a.hint}${a.arg ? ` Arg: ${a.arg}.` : ''})`).join('; '),
+    parameters: obj(
+      {
+        action: { type: 'string', enum: ACTION_IDS },
+        arg: { type: 'string', description: 'the action\'s argument, or "" when it takes none' },
+      },
+      ['action', 'arg'],
+    ),
+  },
+  {
+    name: 'write_code',
+    description:
+      'Put a code suggestion in the Code panel for what the user asked (e.g. "read the temperature every 2 s"). The app writes it with the drawing and the current code, checks it against the wiring, and the user accepts it with Tab or dismisses it.',
+    parameters: obj({ request: { type: 'string', description: 'what the code should do, in the user\'s words' } }, ['request']),
   },
   {
     name: 'request_flash',
@@ -167,6 +188,10 @@ export interface ToolTurnState {
   highlight: TargetRef[];
   ask?: { question: string; options: string[] };
   pendingWrite?: WriteRequest;
+  /** app actions to run after the reply, in order */
+  actions?: { action: AppActionId; arg: string }[];
+  /** a code suggestion to write in the Code panel */
+  codeRequest?: string;
   choices?: { question: string; choices: AiChoice[] };
   proposal?: ProjectProposal;
   calls: { name: string; input: unknown; ok: boolean; error?: string }[];
@@ -245,6 +270,24 @@ export async function runTool(
           options: (Array.isArray(input.options) ? input.options : []).filter((o): o is string => typeof o === 'string').slice(0, 5),
         };
         return done({ shown: true, note: 'The question is shown to the user. Finish your reply now; their answer arrives as the next message.' });
+      }
+      case 'app_action': {
+        const action = str(input.action, 'action');
+        if (!(ACTION_IDS as string[]).includes(action)) throw new Error(`unknown action ${action}`);
+        const arg = typeof input.arg === 'string' ? input.arg : '';
+        (turn.actions ??= []).push({ action: action as AppActionId, arg });
+        if (turn.actions.length > 4) throw new Error('at most 4 actions per answer');
+        const def = APP_ACTIONS.find((a) => a.id === action);
+        return done({
+          queued: true,
+          note: def?.writes
+            ? 'The app opens its confirmation dialog for this; nothing is written unless the user confirms. Tell the user what will happen.'
+            : 'The app runs this right after your reply and shows each step to the user.',
+        });
+      }
+      case 'write_code': {
+        turn.codeRequest = str(input.request, 'request');
+        return done({ queued: true, note: 'A code suggestion will appear in the Code panel for the user to accept or dismiss.' });
       }
       case 'request_flash': {
         turn.pendingWrite = { kind: 'flash_agent', reason: str(input.reason, 'reason') };

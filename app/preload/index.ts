@@ -29,6 +29,7 @@ const api: BoardPilotApi = {
     connectAgent: call('hw:connectAgent'),
     agent: call('hw:agent'),
     agentWrite: call('hw:agentWrite'),
+    backup: call('hw:backup'),
     restore: call('hw:restore'),
     flashUser: call('hw:flashUser'),
     openSerial: call('hw:openSerial'),
@@ -54,6 +55,7 @@ const api: BoardPilotApi = {
     ask: call('ai:ask'),
     recognize: call('ai:recognize'),
     classify: call('ai:classify'),
+    suggestCode: call('ai:suggestCode'),
     reset: call('ai:reset'),
   } as BoardPilotApi['ai'],
   session: {
@@ -64,6 +66,7 @@ const api: BoardPilotApi = {
     savePng: call('session:savePng'),
     saveProject: call('session:saveProject'),
     exportReport: call('session:exportReport'),
+    exportPdf: call('session:exportPdf'),
     info: call('session:info'),
   } as BoardPilotApi['session'],
   parts: {

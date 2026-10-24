@@ -10,6 +10,8 @@ import { ROLE_HEX, pinMount, pinOutward, pinPositionMm, pinRoleInScene } from '@
 import { useLive, useScene } from '../state/store';
 import { useTemplate } from '../state/templateRun';
 import { pinLiftMm } from './geometry';
+import { glowTexture } from './textures';
+import { useDetailed } from '../state/view3d';
 
 const GOLD = '#D9B45A';
 /** Gold plating: very metallic and fairly smooth, so it catches the studio lights. */
@@ -44,6 +46,9 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
   const ring = useRef<THREE.Mesh>(null);
   const ringMat = useRef<THREE.MeshStandardMaterial>(null);
   const bar = useRef<THREE.Mesh>(null);
+  const halo = useRef<THREE.SpriteMaterial>(null);
+  // Full detail: pins in use glow softly in their role colour, brighter while HIGH.
+  const detailed = useDetailed();
 
   useFrame(({ clock }) => {
     const live = useLive.getState();
@@ -56,6 +61,7 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
     else if (st?.level === 1) glow = 0.9;
     if (isHighlighted) glow = Math.max(glow, 0.6 + 0.4 * Math.sin(clock.elapsedTime * 5));
     if (ringMat.current) ringMat.current.emissiveIntensity = glow;
+    if (halo.current) halo.current.opacity = Math.min(0.85, 0.18 + glow * 0.6);
     if (ring.current) {
       const s = isHighlighted || isSelected ? 1.35 : 1;
       ring.current.scale.setScalar(THREE.MathUtils.lerp(ring.current.scale.x, s, 0.2));
@@ -134,6 +140,11 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
         <torusGeometry args={[1.05, 0.2, 10, 28]} />
         <meshStandardMaterial ref={ringMat} color={color} emissive={color} emissiveIntensity={0.2} roughness={0.4} transparent opacity={dimmed ? 0.3 : 1} />
       </mesh>
+      {detailed && inUse && (
+        <sprite position={[0, lift + 0.4, 0]} scale={[6.5, 6.5, 1]}>
+          <spriteMaterial ref={halo} map={glowTexture()} color={color} transparent depthWrite={false} blending={THREE.AdditiveBlending} opacity={0.3} />
+        </sprite>
+      )}
       {isSelected && (
         <mesh position={[0, lift + 0.25, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.55, 1.8, 32]} />

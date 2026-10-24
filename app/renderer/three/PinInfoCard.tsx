@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { BoardDef, PinFlag, TargetRef } from '@shared/types';
 import { PARTS, ROLE_HEX, ROLE_VAR, canOutput, getBoard, gotchasFor, partRoleColor, pinById, pinRoleInScene, targetLabel } from '@shared/board';
-import { useApp, useLive, useScene } from '../state/store';
+import { log, useApp, useLive, useScene } from '../state/store';
 import { confirmGpioWrite } from '../state/hw';
 import { duplicateSelected, removeTarget, renamePart, rotateSelected } from '../state/sceneActions';
 import { isBuiltin } from '../state/partsLib';
@@ -125,6 +125,30 @@ function PartCard({ id }: { id: string }) {
         <input className="text-in rename" value={sp.label ?? ''} placeholder={def.name} onChange={(e) => renamePart(id, e.target.value)} title={t('Rename')} />
       </div>
       <div className="dim">{def.name}</div>
+      {sp.detected && (
+        <p className="card-flag info">
+          <b>{t('Detected')}</b> {sp.detected}
+        </p>
+      )}
+      {sp.confirmed === false && (
+        <div className="card-flag warn">
+          {t('This part is a suggestion: it was guessed, not measured. Confirm it before the next steps rely on it.')}
+          <div className="row gap" style={{ marginTop: 6 }}>
+            <button
+              className="btn small primary"
+              onClick={() => {
+                useScene.getState().updateScene((s) => ({ ...s, parts: s.parts.map((p) => (p.id === id ? { ...p, confirmed: true } : p)) }));
+                log('action', t('You confirmed {part}.', { part: sp.label ?? def.name }), { target: `part:${id}` as TargetRef, source: 'you said' });
+              }}
+            >
+              {t('Yes, this is right')}
+            </button>
+            <button className="btn small danger" onClick={() => removeTarget(`part:${id}`)}>
+              {t('No, remove it')}
+            </button>
+          </div>
+        </div>
+      )}
       <div className="chips">
         {def.bus && <span className="chip mono">{def.bus.toUpperCase()}</span>}
         {def.addresses?.map((a) => (

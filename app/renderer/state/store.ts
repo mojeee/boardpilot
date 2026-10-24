@@ -35,7 +35,7 @@ interface AppStore {
 }
 
 export const useApp = create<AppStore>((set) => ({
-  screen: 'home',
+  screen: 'newProject',
   conn: { mode: 'sim', board: DEFAULT_BOARD_ID, port: null, chip: null, agent: null, streaming: false, serialOpen: false, scenario: null, backups: [] },
   progress: null,
   ai: { enabled: false, provider: 'anthropic', model: '' },
@@ -143,6 +143,15 @@ function withFindings(scene: Scene) {
 }
 
 /**
+ * The code is not part of the drawing's undo history (the editor has its own undo): undoing a
+ * wiring change keeps the code as typed. Only a different file (a template was opened) comes back.
+ */
+function keepSketch(target: Scene, current: Scene): Scene {
+  if (!current.sketch || target.sketch?.name !== current.sketch.name || target.sketch.text === current.sketch.text) return target;
+  return { ...target, sketch: current.sketch };
+}
+
+/**
  * The simulator's demo scene, as loaded at start-up. New project starts empty while the scene is
  * still exactly this object: any edit makes a new scene object, so the user's own work is never cleared.
  */
@@ -197,13 +206,13 @@ export const useScene = create<SceneStore>((set, get) => ({
     const { past, scene, future } = get();
     const prev = past[past.length - 1];
     if (!prev) return;
-    set({ ...withFindings(prev), past: past.slice(0, -1), future: [scene, ...future] });
+    set({ ...withFindings(keepSketch(prev, scene)), past: past.slice(0, -1), future: [scene, ...future] });
   },
   redo: () => {
     const { past, scene, future } = get();
     const next = future[0];
     if (!next) return;
-    set({ ...withFindings(next), past: [...past, scene], future: future.slice(1) });
+    set({ ...withFindings(keepSketch(next, scene)), past: [...past, scene], future: future.slice(1) });
   },
   select: (selected) => set({ selected }),
   focusOn: (targets) => set((s) => ({ focus: { targets, nonce: s.focus.nonce + 1 }, highlight: targets, selected: targets[0] ?? s.selected })),
@@ -219,6 +228,11 @@ export const useScene = create<SceneStore>((set, get) => ({
   },
   preset: (name) => set((s) => ({ cameraPreset: { name, nonce: s.cameraPreset.nonce + 1 } })),
 }));
+
+/** Replace the project's code (typing, a loaded file, an accepted suggestion). Not an undo step. */
+export function setSketch(name: string, text: string) {
+  useScene.getState().updateScene((s) => (s.sketch?.name === name && s.sketch.text === text ? s : { ...s, sketch: { name, text } }), { transient: true });
+}
 
 /* ---------------- live data ---------------- */
 
@@ -372,26 +386,36 @@ export const useConfirm = create<ConfirmStore>((set, get) => ({
 
 /* ---------------- assistant ---------------- */
 
+export interface ActionStep {
+  text: string;
+  status: 'run' | 'ok' | 'fail' | 'skip';
+}
+
 export type ChatItem =
   | { id: number; role: 'user'; text: string }
   | { id: number; role: 'assistant'; reply: AiReply }
-  | { id: number; role: 'error'; text: string; hint: string };
+  | { id: number; role: 'error'; text: string; hint: string }
+  /** an app action the assistant (or the ⌘K box) runs, step by step */
+  | { id: number; role: 'action'; actionId: string; arg: string; title: string; steps: ActionStep[]; state: 'running' | 'done' | 'failed' | 'stopped'; where: string; readOnly: boolean }
+  /** something the app noticed by itself (a check that fired), with its source */
+  | { id: number; role: 'notice'; /** which check found it (see stillFound in events.ts) */ key?: string; severity: 'error' | 'warning' | 'info'; text: string; hint: string; source: string; targets: TargetRef[]; line?: number; /** the project tab it is about */ tab?: string };
 
 type NewChatItem = ChatItem extends infer T ? (T extends ChatItem ? Omit<T, 'id'> : never) : never;
 
 /** What the user did with a reply's cards: the option picked, whether the proposal was applied. */
 export interface ChatMark {
   picked?: string;
-  applied?: boolean;
-  /** the proposal's starter code is open */
-  code?: boolean;
+  /** where the proposal was applied: in the open project or as a new project tab */
+  applied?: 'here' | 'tab';
 }
 
 interface AiStore {
   items: ChatItem[];
   busy: boolean;
   marks: Record<number, ChatMark>;
-  push(i: NewChatItem): void;
+  push(i: NewChatItem): number;
+  /** Change an item in place (an action's steps as they happen). */
+  patch(id: number, fn: (item: ChatItem) => ChatItem): void;
   set(p: Partial<Pick<AiStore, 'busy'>>): void;
   mark(id: number, m: ChatMark): void;
   clear(): void;
@@ -402,7 +426,12 @@ export const useAi = create<AiStore>((set) => ({
   items: [],
   busy: false,
   marks: {},
-  push: (i) => set((s) => ({ items: [...s.items, { ...i, id: chatId++ } as ChatItem] })),
+  push: (i) => {
+    const id = chatId++;
+    set((s) => ({ items: [...s.items.slice(-300), { ...i, id } as ChatItem] }));
+    return id;
+  },
+  patch: (id, fn) => set((s) => ({ items: s.items.map((x) => (x.id === id ? fn(x) : x)) })),
   set: (p) => set(p),
   mark: (id, m) => set((s) => ({ marks: { ...s.marks, [id]: { ...s.marks[id], ...m } } })),
   clear: () => set({ items: [], marks: {} }),

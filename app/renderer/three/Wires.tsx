@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import type { BoardDef, Scene, SceneWire, TargetRef } from '@shared/types';
 import { useLive, useScene } from '../state/store';
 import { PLUG_MM, wireCurve, wireEndWorld, wireSpread } from './geometry';
+import { useDetailed } from '../state/view3d';
 
 const PULSES = 4;
 
@@ -30,6 +31,9 @@ function Wire({ board, scene, wire }: { board: BoardDef; scene: Scene; wire: Sce
   useEffect(() => () => halo?.dispose(), [halo]);
   const pulses = useRef<(THREE.Mesh | null)[]>([]);
   const haloMat = useRef<THREE.MeshBasicMaterial>(null);
+  const cableMat = useRef<THREE.MeshStandardMaterial>(null);
+  // Full detail: the cable glows in its colour, and brighter while data goes through it.
+  const detailed = useDetailed();
 
   useFrame(({ clock }) => {
     const until = useLive.getState().activeWires[wire.id] ?? 0;
@@ -39,7 +43,11 @@ function Wire({ board, scene, wire }: { board: BoardDef; scene: Scene; wire: Sce
       m.visible = active;
       if (active) m.position.copy(curve.getPoint(((clock.elapsedTime * 0.9 + i / PULSES) % 1 + 1) % 1));
     });
-    if (haloMat.current) haloMat.current.opacity = highlighted ? 0.25 + 0.2 * Math.sin(clock.elapsedTime * 5) : selected ? 0.3 : finding ? 0.28 : 0;
+    if (haloMat.current) {
+      haloMat.current.opacity = highlighted ? 0.25 + 0.2 * Math.sin(clock.elapsedTime * 5) : selected ? 0.3 : finding ? 0.28 : detailed && active ? 0.22 : 0;
+      if (detailed && active && !highlighted && !selected && !finding) haloMat.current.color.set(wire.color);
+    }
+    if (cableMat.current) cableMat.current.emissiveIntensity = detailed ? (active ? 0.75 : 0.32) : 0.12;
   });
 
   if (!geo || !halo) return null;
@@ -53,7 +61,7 @@ function Wire({ board, scene, wire }: { board: BoardDef; scene: Scene; wire: Sce
       }}
     >
       <mesh geometry={geo}>
-        <meshStandardMaterial color={wire.color} roughness={0.42} emissive={wire.color} emissiveIntensity={0.12} transparent opacity={faded ? 0.22 : 1} depthWrite={!faded} />
+        <meshStandardMaterial ref={cableMat} color={wire.color} roughness={0.42} emissive={wire.color} emissiveIntensity={0.12} transparent opacity={faded ? 0.22 : 1} depthWrite={!faded} />
       </mesh>
       {/* plug housings: black Dupont shells standing on the pins */}
       {ends?.map((p, i) => (

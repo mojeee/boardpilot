@@ -30,6 +30,12 @@ export interface CodeFinding {
   line: number;
   targets: TargetRef[];
   source: string;
+  /** A one-click fix: the whole line rewritten (only offered when it is a plain, safe edit). */
+  fix?: CodeFix;
+}
+
+export interface CodeFix {
+  text: string;
 }
 
 export interface CodeCheckOptions {
@@ -117,6 +123,20 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
   };
   const esp = isEspFamily(board);
   const headerNumbering = board.family === 'stm32' || board.family === 'nrf52';
+  const srcLines = source.split('\n');
+  /**
+   * The line with the first arguments of `name(…)` replaced, when the call sits on that one line
+   * and those arguments are plain numbers (a named constant is left for the user to change).
+   */
+  const fixCall = (line: number, name: string, args: string[]): CodeFix | undefined => {
+    const src = srcLines[line - 1];
+    if (!src || args.some((a) => !a)) return undefined;
+    const m = new RegExp(`${name.replace('.', '\\s*\\.\\s*')}\\s*\\(([^()]*)\\)`).exec(src);
+    if (!m) return undefined;
+    const old = m[1].split(',').map((a) => a.trim());
+    if (old.length < args.length || old.slice(0, args.length).some((a) => !/^\d+$/.test(a))) return undefined;
+    return { text: `${src.slice(0, m.index)}${name}(${[...args, ...old.slice(args.length)].join(', ')})${src.slice(m.index + m[0].length)}` };
+  };
 
   /** The board pin an expression in code refers to, if it can be worked out from the text. */
   const resolve = (expr: string, depth = 0): PinDef | null | undefined => {
@@ -273,7 +293,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
       const sda = resolve(c.args[0]);
       const scl = resolve(c.args[1]);
       if (!sda || !scl) continue;
-      i2cCompare(sda, scl, c.line);
+      i2cCompare(sda, scl, c.line, c.name);
     }
     if ((c.name === 'Wire.setSDA' || c.name === 'Wire.setSCL') && drawnSda && drawnScl) {
       const p = resolve(first);
@@ -293,6 +313,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
           hint: t('Change the code to {call}({want}), or move the wire.', { call: c.name, want: want.gpio !== null ? String(want.gpio) : want.label }),
           line: c.line,
           targets: [pinT(p), pinT(want)],
+          fix: !headerNumbering && want.gpio !== null ? fixCall(c.line, c.name, [String(want.gpio)]) : undefined,
         });
       }
     }
@@ -311,12 +332,13 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
           hint: t('Set the monitor to {baud} baud, or change Serial.begin.', { baud }),
           line: c.line,
           targets: [],
+          fix: fixCall(c.line, 'Serial.begin', [String(opts.monitorBaud)]),
         });
       }
     }
   }
 
-  function i2cCompare(sda: PinDef, scl: PinDef, line: number) {
+  function i2cCompare(sda: PinDef, scl: PinDef, line: number, call?: string) {
     if (!drawnSda || !drawnScl || (sda.id === drawnSda.id && scl.id === drawnScl.id)) return;
     const swapped = sda.id === drawnScl.id && scl.id === drawnSda.id;
     add({
@@ -340,6 +362,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
       hint: t('Change the code to Wire.begin({sda}, {scl}), or move the wires to match the code.', { sda: String(drawnSda.gpio), scl: String(drawnScl.gpio) }),
       line,
       targets: [pinT(sda), pinT(scl), pinT(drawnSda), pinT(drawnScl)],
+      fix: call && drawnSda.gpio !== null && drawnScl.gpio !== null ? fixCall(line, call, [String(drawnSda.gpio), String(drawnScl.gpio)]) : undefined,
     });
   }
 

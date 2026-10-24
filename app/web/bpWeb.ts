@@ -12,7 +12,7 @@
 
 import type { BoardPilotApi, McpStatus, TraceEvent, Unsubscribe } from '@shared/api';
 import { EVENT_CHANNELS } from '@shared/api';
-import type { HardwareMode, LicenseStatus, LogEntry, PartDef, Result, Scene } from '@shared/types';
+import type { AiContext, CodeSuggestionRequest, HardwareMode, LicenseStatus, LogEntry, PartDef, Result, Scene } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { PROVIDER_INFO } from '@shared/ai';
 import { BUY_URL, TRIAL_DAYS } from '@shared/brand';
@@ -139,6 +139,7 @@ const api: BoardPilotApi = {
     connectAgent: wrap(() => hub.connectAgent()),
     agent: wrap((req) => hub.agent(req)),
     agentWrite: wrap((req, token: string) => hub.agentWrite(req, token)),
+    backup: wrap(() => hub.backup()),
     restore: wrap((id: string, token: string) => hub.restore(id, token)),
     flashUser: wrap((token: string, path: string) => hub.flashUser(token, path)),
     openSerial: wrap((baud: number) => hub.openSerial(baud)),
@@ -167,6 +168,7 @@ const api: BoardPilotApi = {
     ask: wrap((q: string, ctx) => assistant.ask(q, { ...ctx, log: ctx.log.length ? ctx.log : sessionLog.slice(-50) })),
     recognize: wrap((b64: string, mt: 'image/jpeg' | 'image/png' | 'image/webp') => assistant.recognizePart(b64, mt)),
     classify: wrap((text: string, options: { id: string; label: string }[]) => assistant.classify(text, options)),
+    suggestCode: wrap((ctx: AiContext, req: CodeSuggestionRequest) => assistant.suggestCode({ ...ctx, log: ctx.log.length ? ctx.log : sessionLog.slice(-50) }, req)),
     reset: wrap(() => assistant.reset()),
   },
   session: {
@@ -214,6 +216,15 @@ const api: BoardPilotApi = {
       download(`${name}.md`, markdown, 'text/markdown;charset=utf-8');
       download(`${name}.html`, html, 'text/html;charset=utf-8');
       return { ok: true, value: { markdownPath: inDownloads(`${name}.md`), pdfPath: inDownloads(`${name}.html`) } };
+    },
+    // The browser prints the drawing set itself: it opens in a new tab with the print dialog ("Save as PDF").
+    exportPdf: async (html: string, name: string) => {
+      const printable = html.replace('</body>', '<script>addEventListener("load", () => setTimeout(() => print(), 300));</script></body>');
+      const url = URL.createObjectURL(new Blob([printable], { type: 'text/html;charset=utf-8' }));
+      const w = window.open(url, '_blank');
+      if (!w) download(`${name}.html`, html, 'text/html;charset=utf-8');
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      return { ok: true as const, value: w ? t('a new tab (choose “Save as PDF” in the print dialog)') : inDownloads(`${name}.html`) };
     },
     info: async () => ({ dataDir: t('This browser tab (nothing is kept after you close it)'), logPath: '', version: __BP_VERSION__ }),
   },

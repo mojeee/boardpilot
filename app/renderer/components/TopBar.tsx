@@ -12,36 +12,53 @@ import { openAiSettings } from './AiSettings';
 import { openBoardPicker } from './BoardPicker';
 import { useScene } from '../state/store';
 import { getBoard } from '@shared/board';
+import { TopMenu, openTask } from './TaskRail';
+import { openExport } from './ExportDialog';
 
-export function TopBar() {
+/** Board and connection, one compact group: the board picker and the USB status (click to connect). */
+function BoardStatus() {
   const conn = useApp((s) => s.conn);
-  const progress = useApp((s) => s.progress);
-  const ai = useApp((s) => s.ai);
-  const devOpen = useApp((s) => s.devOpen);
   const board = getBoard(useScene((s) => s.scene.board));
-
   return (
-    <header className="topbar">
-      <div className="brand">
-        <LogoMark size={24} />
-        BoardPilot
-      </div>
-      <button className="chip board-chip" onClick={openBoardPicker} title={t('Change the board')}>
+    <div className="conn">
+      <button className="chip board-chip" onClick={openBoardPicker} title={t('Change the board')} data-where="top:board">
         <Icon name="board" size={14} /> {board.name}
       </button>
-      <div className="conn">
+      <button
+        className="conn-status"
+        onClick={() => openTask('connect')}
+        title={conn.chip ? `${conn.chip.chip} · ${conn.port ?? ''}` : t('Find the board and read its chip')}
+      >
         <span className={`dot ${conn.chip ? 'ok' : 'off'}`} />
         {conn.chip ? (
           <>
             <span className="mono">{conn.chip.chip}</span>
-            <span className="dim mono">{conn.port}</span>
             {conn.agent ? <span className="chip ok-chip">{t('agent {ver}', { ver: conn.agent.ver })}</span> : <span className="chip">{t('your firmware')}</span>}
           </>
         ) : (
           <span className="dim">{t('No board connected')}</span>
         )}
-        {conn.mode === 'sim' && <span className="chip sim-chip">{t('Simulator')}</span>}
-      </div>
+      </button>
+      {conn.mode === 'sim' && <span className="chip sim-chip">{t('Simulator')}</span>}
+    </div>
+  );
+}
+
+export function TopBar({ children }: { children?: React.ReactNode }) {
+  const conn = useApp((s) => s.conn);
+  const progress = useApp((s) => s.progress);
+  const ai = useApp((s) => s.ai);
+  const devOpen = useApp((s) => s.devOpen);
+
+  return (
+    <header className="topbar">
+      <button className="brand" onClick={() => useApp.getState().setScreen('home')} title={t('Home')}>
+        <LogoMark size={22} />
+        <span>BoardPilot</span>
+      </button>
+      <TopMenu />
+      <div className="top-mid">{children}</div>
+      <BoardStatus />
       {progress && (
         <div className="progress" title={t(progress.task)}>
           <span className="small">{t(progress.task)}</span>
@@ -52,9 +69,12 @@ export function TopBar() {
         </div>
       )}
       <div className="top-actions">
+        <button className="btn small ghost" onClick={openExport} title={t('The electrical design as a PDF drawing set')} data-where="top:export">
+          <Icon name="report" size={14} /> <span className="wide-only-2">{t('Export PDF')}</span>
+        </button>
         {conn.backups.length > 0 && conn.agent && (
-          <button className="btn small" onClick={() => confirmRestore()}>
-            <Icon name="restore" size={15} /> {t('Restore my firmware')}
+          <button className="btn small" onClick={() => confirmRestore()} title={t('Restore my firmware')} data-where="top:restore">
+            <Icon name="restore" size={15} /> <span className="wide-only">{t('Restore my firmware')}</span>
           </button>
         )}
         {isWebDemo() ? <GetAppChip /> : <LicenseChip />}
@@ -68,6 +88,7 @@ export function TopBar() {
         <button
           className={`chip ai-set-chip ${ai.enabled ? 'ai-chip' : ''}`}
           onClick={openAiSettings}
+          data-where="top:ai"
           title={
             !ai.enabled
               ? t('Set up the AI assistant')

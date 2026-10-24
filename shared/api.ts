@@ -2,9 +2,12 @@
 
 import type {
   AgentRequest,
+  AiCodeSuggestion,
   AiContext,
   AiReply,
+  BackupInfo,
   ChipInfo,
+  CodeSuggestionRequest,
   ConnectionState,
   HardwareMode,
   HelloReply,
@@ -49,6 +52,8 @@ export interface BoardPilotApi {
     connectAgent(): Promise<Result<HelloReply>>;
     agent(req: AgentRequest): Promise<Result<unknown>>;
     agentWrite(req: AgentRequest, token: string): Promise<Result<unknown>>;
+    /** Reads the whole program on the board into a backup (read-only, no confirmation needed). */
+    backup(): Promise<Result<BackupInfo>>;
     restore(backupId: string, token: string): Promise<Result<true>>;
     flashUser(token: string, filePath: string): Promise<Result<{ bytes: number }>>;
     openSerial(baud: number): Promise<Result<true>>;
@@ -81,6 +86,8 @@ export interface BoardPilotApi {
     ask(question: string, ctx: AiContext): Promise<Result<AiReply>>;
     recognize(imageBase64: string, mediaType: 'image/jpeg' | 'image/png' | 'image/webp'): Promise<Result<PhotoRecognition>>;
     classify(text: string, options: { id: string; label: string }[]): Promise<Result<{ optionId: string | null; reason: string }>>;
+    /** Code for the Code panel, from the drawing and the code so far. A suggestion to accept or dismiss. */
+    suggestCode(ctx: AiContext, req: CodeSuggestionRequest): Promise<Result<AiCodeSuggestion>>;
     reset(): Promise<void>;
   };
   session: {
@@ -98,6 +105,8 @@ export interface BoardPilotApi {
      */
     saveProject(folder: string, files: StarterFile[]): Promise<Result<string>>;
     exportReport(markdown: string, html: string, suggestedName: string): Promise<Result<{ markdownPath: string; pdfPath: string }>>;
+    /** Asks where to save, prints the drawing set (landscape, the given paper) to PDF and writes it. */
+    exportPdf(html: string, suggestedName: string, paper: 'A4' | 'A3' | 'Letter' | 'Tabloid'): Promise<Result<string>>;
     info(): Promise<{ dataDir: string; logPath: string; version: string }>;
   };
   parts: {

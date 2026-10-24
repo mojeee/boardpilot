@@ -26,6 +26,14 @@ Using tools:
 - You can never write to the board yourself. Use request_flash or request_gpio_write; the user decides.
 - Use highlight with targets like "pin:D21", "wire:w1", "part:bme1" whenever you talk about a pin, wire or part, and put the same targets in the reply's highlight list.
 
+Doing things in the app (you see the drawing, the code, the log and recent app events in the context):
+- When the user asks you to do something the app can do ("back up my board", "flash my code, then open the monitor"), or cannot find it, run it with app_action (several in order if asked). Say in one line what you started; the app shows each step and where the button is, so they learn the way.
+- Building by writing: "add a BME280 and an OLED" → propose_project with keepExisting true (see "Building a project" below); the user clicks Apply.
+- "Make it read the temperature every 2 s" → write_code with that request; the suggestion appears in the Code panel and is checked against the wiring.
+- Settings ("switch to Italian", "high contrast", "show all pin labels", "use my real board"): app_action change_setting with name=value. API keys and letting AI agents in (MCP) stay the user's: open ai_settings and say what to click.
+- After a proposal is applied to a project that already had code, offer write_code for the new parts.
+- If you notice something wrong in the drawing, code or log that the user has not mentioned, say it briefly with its source.
+
 Pin flags in the board file (from the board's datasheet):
 - flash: wired to the flash memory, never use. input_only: cannot drive outputs, often no internal pull-ups.
 - strapping: the level at reset changes boot behaviour; strapping_critical: a wrong level stops the board from booting.
@@ -99,17 +107,28 @@ export function buildContextBlock(board: BoardDef, ctx: AiContext): string {
         Object.entries(ctx.live.pins).map(([g, s]) => [g, s.mv !== undefined ? `${s.mode} ${s.mv} mV (measured)` : `${s.mode} level ${s.level ?? '?'}`]),
       )
     : null;
+  const { sketch, ...drawing } = ctx.scene;
   return [
     '<context>',
     `Reply language: ${getLanguage() === 'it' ? 'Italian (keep pin names, code and units as they are)' : 'English'}`,
     `Screen: ${ctx.screen}${ctx.flowId ? `, flow ${ctx.flowId}, step ${ctx.stepId ?? '?'}` : ''}`,
     `Board: ${board.name} (${board.id}), facts from the board file: ${JSON.stringify(boardFacts)}`,
     `Board pins: ${JSON.stringify(pins)}`,
-    `Project scene (what the user drew; may differ from the real bench): ${JSON.stringify(ctx.scene)}`,
+    `Project scene (what the user drew; may differ from the real bench): ${JSON.stringify(drawing)}`,
+    sketch?.text.trim() ? `Project code (${sketch.name}, numbered lines, as the user has it in the Code panel):\n${numberedCode(sketch.text)}` : 'Project code: none yet',
+    ...(ctx.events?.length ? [`Recent app events (newest last): ${JSON.stringify(ctx.events.slice(-30))}`] : []),
     `Parts library entries for the scene: ${JSON.stringify(partFacts)}`,
     `User answers so far: ${JSON.stringify(ctx.answers)}`,
     `Latest live pin readings: ${live ? JSON.stringify(live) : 'none (agent not streaming)'}`,
     `Last session log entries: ${JSON.stringify(ctx.log.slice(-50).map((e) => ({ type: e.type, text: e.text, source: e.source, target: e.target })))}`,
     '</context>',
   ].join('\n');
+}
+
+/** The code with line numbers, cut to a size the models take comfortably. */
+export function numberedCode(text: string, maxLines = 400): string {
+  const lines = text.split('\n');
+  const shown = lines.slice(0, maxLines).map((l, i) => `${String(i + 1).padStart(4)}| ${l.slice(0, 240)}`);
+  if (lines.length > maxLines) shown.push(`… ${lines.length - maxLines} more lines not shown`);
+  return shown.join('\n');
 }

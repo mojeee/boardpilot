@@ -15,7 +15,7 @@ const it: Record<string, string> = {
 
   // ---------- Home ----------
   'Debug: {label} ({hint})': 'Debug: {label} ({hint})',
-  '{reason} Pick a task on the left, or ask the assistant.': '{reason} Scegli un’attività a sinistra, oppure chiedi all’assistente.',
+  '{reason} Pick a task above, or ask the assistant.': '{reason} Scegli un’attività qui sopra, oppure chiedi all’assistente.',
   'You wrote: “{text}”. Suggested: {option}.': 'Hai scritto: “{text}”. Suggerimento: {option}.',
   'Not sure where to start? Describe it in your own words': 'Non sai da dove iniziare? Descrivilo con parole tue',
   'e.g. “my temperature sensor only shows zeros”': 'es. “il mio sensore di temperatura mostra solo zeri”',

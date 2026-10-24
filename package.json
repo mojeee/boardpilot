@@ -1,7 +1,7 @@
 {
   "name": "boardpilot",
   "productName": "BoardPilot",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Guided embedded software work on a real ESP32 board, with a live 3D view.",
   "private": true,
   "main": "out/main/index.js",
@@ -20,7 +20,8 @@
     "build:site": "npm run build:web && npm run build:tools && node scripts/build-site.mjs",
     "motion": "electron-vite build && node scripts/render-motion.mjs",
     "seo:ping": "node scripts/indexnow.mjs",
-    "dist:win": "electron-vite build && electron-builder --win"
+    "dist:win": "electron-vite build && electron-builder --win",
+    "test:e2e": "node scripts/e2e.mjs"
   },
   "build": {
     "appId": "com.agentflowbind.boardpilot",
@@ -89,6 +90,7 @@
     "serialport": "^13.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",
     "@types/node": "^26.6.3",

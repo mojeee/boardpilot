@@ -14,9 +14,9 @@ const it: Record<string, string> = {
   'Also buy': 'Da comprare anche',
   'Applied to your project': 'Applicato al tuo progetto',
   Undo: 'Annulla',
-  'Hide starter code': 'Nascondi il codice di partenza',
-  'Show starter code': 'Mostra il codice di partenza',
   'Apply to my project': 'Applica al mio progetto',
+  'Opened as a new project': 'Aperto come nuovo progetto',
+  'Open the code': 'Apri il codice',
   'A suggestion built from the parts library and the board file, checked by the wiring rules. Check it against your real parts before you wire.':
     'Un suggerimento costruito dalla libreria dei componenti e dal file della scheda, verificato dalle regole di cablaggio. Confrontalo con i tuoi componenti reali prima di collegare.',
 
@@ -28,7 +28,19 @@ const it: Record<string, string> = {
   'Try it yourself': 'Prova tu',
   'Watch an example conversation ({n})': 'Guarda una conversazione di esempio ({n})',
 
+  // change_setting (appActions.ts)
+  'Change a setting': 'Cambia un’impostazione',
+  'Language, how the 3D view looks (light, detail, desk, pin labels), simulator or real board, simulator scenario.':
+    'Lingua, aspetto della vista 3D (luce, dettaglio, banco, etichette dei pin), scheda simulata o reale, scenario del simulatore.',
+  'Switching to your real board on USB': 'Passo alla tua scheda reale su USB',
+  'Switching to the simulated board': 'Passo alla scheda simulata',
+  'Scenarios are for the simulated board. Switch to the simulator first.': 'Gli scenari sono per la scheda simulata. Passa prima al simulatore.',
+  'There is no scenario “{name}”. Scenarios: {list}.': 'Non c’è uno scenario “{name}”. Scenari: {list}.',
+  '{setting} is now {value}.': '{setting} ora è {value}.',
+
   // New project
+  'The assistant continues in the chat: it asks what it needs, compares parts with you and proposes the wiring, checked by the wiring rules. Nothing changes until you press Apply.':
+    'L’assistente continua nella chat: chiede quello che gli serve, confronta i componenti con te e propone i collegamenti, verificati dalle regole di cablaggio. Non cambia nulla finché non premi Applica.',
   'Describe your project': 'Descrivi il tuo progetto',
   'Say what you want to make. The assistant asks what it needs, compares parts with you, then proposes the parts and wiring. Nothing changes until you press Apply.':
     'Di’ cosa vuoi costruire. L’assistente chiede quello che gli serve, confronta i componenti con te, poi propone componenti e collegamenti. Non cambia nulla finché non premi Applica.',

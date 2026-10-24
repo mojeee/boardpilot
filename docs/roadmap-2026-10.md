@@ -486,90 +486,162 @@ draw wires and run the debug demo on a simulated board, with no install.
 This is also the first half of the "Web version using WebSerial" backlog item: the same build
 later talks to real boards through Chrome's WebSerial.
 
-## Next · Workspace redesign (your plan, Sep 29, not started)
+## Next · Workspace redesign (your plan, Sep 29; being built, see the ticks)
 
-Planned only. Nothing here is built yet. To continue on another computer: clone the repo, `npm install`,
-`npm run dev`, and start from this section (everything else in this file is done and released as 0.6.1).
+Built in order, one commit per step. To continue on another computer: clone the repo, `npm install`,
+`npm run dev`, and start from the first unticked item. Decisions taken with the defaults: no new
+dependency for the code editor (a plain textarea with syntax colouring), and the old task screens stay
+reachable from the top menu.
 
 Goal: a cleaner, IDE-like workspace where the AI sees everything that happens and helps at every step.
 
 1. **Layout**
-   - [ ] The left task rail becomes a narrow top menu (tasks as compact tabs or a dropdown), so the
+   - [x] The left task rail becomes a narrow top menu (tasks as compact tabs or a dropdown), so the
          3D view gets the space.
-   - [ ] Default project page: the 3D view in the middle, the **AI chat open on the right**, and a
+   - [x] Default project page: the 3D view in the middle, the **AI chat open on the right**, and a
          **bottom panel with two tabs: Code and Log**. Running the code switches the bottom panel
          to the Log tab.
-   - [ ] Every panel can be expanded and collapsed (the resize handles from 0.6.0 stay).
+   - [x] Every panel can be expanded and collapsed (the resize handles from 0.6.0 stay).
 2. **Code in the app**
-   - [ ] A code editor for the project's sketch in the bottom panel (no new dependency without
+   - [x] A code editor for the project's sketch in the bottom panel (no new dependency without
          asking; a lightweight editor or a plain textarea with syntax colouring first).
-   - [ ] A debugger view for the code: run in the simulator, step, the running line highlighted
+   - [x] A debugger view for the code: run in the simulator, step, the running line highlighted
          (builds on the template live run view and the BoardPilotProbe step markers).
 3. **Many projects**
-   - [ ] Project tabs above the 3D view, so several projects are open at once.
-   - [ ] "+" on the tab bar opens a new project with three choices: **Blank**, **Read from port**,
+   - [x] Project tabs above the 3D view, so several projects are open at once.
+   - [x] "+" on the tab bar opens a new project with three choices: **Blank**, **Read from port**,
          **Template**.
 4. **Read from port** (the hardest part)
-   - [ ] Find the board on USB automatically (port scan, chip identify, USB ids), set the board,
+   - [x] Find the board on USB automatically (port scan, chip identify, USB ids), set the board,
          then look for what is connected: I2C scan on the default bus with the swap test, known
          chip IDs from the parts library, pull-ups, ADC pins that read a real voltage.
-   - [ ] Build the scene from what was found, every part marked "detected" with its measurement,
+   - [x] Build the scene from what was found, every part marked "detected" with its measurement,
          and ask the user to confirm anything that was guessed (honest AI rule).
 5. **AI that sees everything and helps at each step**
-   - [ ] The assistant receives every app event (log, scene changes, code changes, measurements)
+   - [x] The assistant receives every app event (log, scene changes, code changes, measurements)
          and raises warnings by itself when something looks wrong, with the source of each claim.
-   - [ ] Build by writing: "add a BME280 and an OLED on I2C" adds the parts and suggests the wiring;
+   - [x] Build by writing: "add a BME280 and an OLED on I2C" adds the parts and suggests the wiring;
          "make it read the temperature every 2 s" writes the code.
    - [x] Before building, it asks several short questions (board, power, what the project must do),
          then proposes the parts, pins and wiring for the user to confirm. Nothing is written to the
-         board without the usual confirmation. (Done: "Describe your project", see docs/ai.md.)
-   - [ ] **The AI can do everything the app does.** If the user can't find something or doesn't
+         board without the usual confirmation.
+   - [x] **The AI can do everything the app does.** If the user can't find something or doesn't
          know how, they ask ("back up my board", "flash my code, then open the monitor") and the
          assistant runs the same app actions, showing each step and a "Show me where it is" link
          so the user learns the way. An "Ask AI or find anything" box (⌘K) sits in the top menu.
          Writes to the board still go through the confirmation dialog.
-   - [ ] **AI code suggestions** in the Code panel: a "Suggest code" button and inline suggestions
+   - [x] **AI code suggestions** in the Code panel: a "Suggest code" button and inline suggestions
          (accept with Tab, explain, dismiss) that use the parts and pins in the drawing, each with
          its source (part library entry, library name).
    - [x] New project also offers **"Describe it"**: the assistant asks questions, then suggests
-         parts, wiring and starter code for the user to confirm. Tested against Claude with
+         parts, wiring and starter code for the user to confirm. Since 0.7.1 the proposal is
+         checked by the wiring rules before the user sees it; tested against Claude with
          `npm run eval:ai` (docs/ai-evals/); recorded conversations play on the website.
 6. **Warnings as a banner**
-   - [ ] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the
+   - [x] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the
          project page: plain text, the source, and buttons Fix, Show on the board, Ask why, with
          "1 of N" to step through them. They stay in the log too.
 7. **Better 3D view**
-   - [ ] Better lighting: a studio light setup with soft shadows, a floor grid that fades out,
+   - [x] Better lighting: a studio light setup with soft shadows, a floor grid that fades out,
          metal and gold materials, glowing wires and pins, and a Light switch (Studio / Bench /
          High contrast).
-   - [ ] More detail on the boards and parts: silkscreen pin labels, the main chips (USB-serial
+   - [x] More detail on the boards and parts: silkscreen pin labels, the main chips (USB-serial
          chip, voltage regulator), small resistors and capacitors, LEDs (power LED lit when the
          board is powered), mounting holes, PCB traces, connector heads on the wire ends, and part
          breakouts with their own chips and labels. A Detail switch (Simple / Full / Labels) keeps
          slow computers fast. Every detail stays generated from the board and part JSON files.
 8. **Electrical design export (PDF)**
-   - [ ] "Export PDF" makes a technical drawing set: 1 schematic (IEC 60617 or ANSI symbols),
+   - [x] "Export PDF" makes a technical drawing set: 1 schematic (IEC 60617 or ANSI symbols),
          2 wiring diagram and pin map, 3 bill of materials, 4 checks, power budget and the
          measurements from this session (optional 5: code listing). A3, A4, Letter or Tabloid,
          a title block (project, drawn by, date, revision, sheet n of m), notes with datasheet
          sources, and open warnings listed.
 9. **Update every screenshot** (after the redesign is built)
-   - [ ] Retake all screenshots on the website (landing page, Learn and tool pages) and in the
+   - [x] Retake all screenshots on the website (landing page, Learn and tool pages) and in the
          GitHub README with the new workspace, using the existing screenshot scripts in simulator
-         mode.
+         mode. *Done Sep 29, plus three new ones (workspace, Read from port, Export PDF), the board
+         social images and the "Try it live" posters. The "Import from a link" picture still needs a
+         retake on a normal connection (the product site refused this machine).*
 10. **Last step: real end-to-end tests of each scenario**
-   - [ ] Playwright tests on the built Electron app, one per scenario (connect and identify, new
+   - [x] Playwright tests on the built Electron app, one per scenario (connect and identify, new
          project Blank / Read from port / Template / Describe it, flash with backup, each debug
          flow, monitor, test hardware, report, PDF export, AI doing an action), in simulator mode.
-   - [ ] Claude drives the app for real: clicks through each scenario, performs the actions,
+   - [x] Claude drives the app for real: clicks through each scenario, performs the actions,
          checks what the screen, 3D view and log show, and reports anything broken, before the
-         release.
+         release. *Report in `docs/testing.md` (Sep 29): 18 of 18 scenarios pass; eight problems found
+         and fixed; still to do by hand: real AI keys and real boards.*
 
 Design mockups of this plan (workspace, New project, PDF export), also in `design/redesign/`:
 https://claude.ai/artifact/7ZXocFamKF2neLh5cnJgeL
 
 Open decisions for you when we start: which code editor (new dependency?), and whether the old
 task screens stay reachable from the top menu or merge into the project page.
+
+## Next · Offline model (your request, Sep 30, in progress)
+
+Goal: the assistant works with no API key and no internet, or with a cheap API. The app looks at
+the computer, picks the best model that runs well on it, and downloads it after the user says yes.
+
+**Decisions (made with you)**
+- Runtime: the llama.cpp engine bundled through `node-llama-cpp` (new dependency, approved: "best
+  approach"). It runs Qwen and Llama style models. No Ollama needed, so a beginner installs nothing.
+- Models: 3 sizes of Qwen 3 (Q4_K_M files from Hugging Face): small 4B (about 2.5 GB, 8 GB memory),
+  medium 8B (about 5 GB, 16 GB), large 14B (about 9 GB, 32 GB or a good GPU). The app recommends
+  one from memory, GPU and free disk; the others stay pickable with a "slow on this computer" label.
+- Cloud stays as it is: Claude, GPT, Gemini with your key, the free demo, and the cheap models
+  (Claude Haiku, GPT Luna, Gemini Flash-Lite) for the cheap-API option.
+- Order of use when the picked provider has no key: your own key, then the installed offline model,
+  then the free demo.
+
+**Steps** (each ends with typecheck, tests and a commit; the UI text is in English and Italian)
+1. [ ] `shared/localModels.ts`: the model catalog (id, tier, repo, file, approximate size, memory
+       needed) and `recommendLocalModel(hardware)` (pure, tested on Mac 8/16/32 GB, Windows with
+       and without GPU, low disk, very low memory).
+2. [ ] Hardware detection in main (`app/main/ai/local/hardware.ts`): memory, free disk, CPU, GPU
+       type (Metal, CUDA, Vulkan or none) and video memory from the engine.
+3. [ ] Model store (`app/main/ai/local/store.ts`): download into the app data folder with
+       progress, resume (Range), cancel, size and SHA-256 check (the hash Hugging Face reports),
+       list installed, delete. Tested against a local HTTP server. `BOARDPILOT_MODEL_BASE_URL`
+       can point at a mirror (https or localhost only).
+4. [ ] Engine and provider (`app/main/ai/local/engine.ts`, `providers/local.ts`): load lazily
+       (dynamic import, so the app still starts if the engine cannot load), `LlamaChat` for tool
+       calls that the assistant loop runs itself, JSON grammar for structured replies, Qwen 3
+       thinking switched off, the request trimmed to the context (compact context, oldest turns
+       first), photos and PDFs refused in plain words (text-only models).
+5. [ ] Settings and assistant: provider `local`, selected model saved, `active()` and `usable`
+       follow the order above, plain-language errors (`toAiError`).
+6. [ ] IPC and preload: status, recommend, download, cancel, remove, progress events.
+7. [ ] AI settings screen: an "Offline model" card with this computer's memory, GPU and disk, the
+       recommended model, a Download button with progress and Cancel, the other sizes with their
+       fit label, Use and Delete, and one honest line: smaller models can be wrong more often;
+       measurements and checks are unchanged. Top bar chip shows "Offline · Qwen 3 8B".
+8. [ ] Packaging (cannot be tested from the cloud container; the release build is the test):
+       - `asarUnpack` for `node-llama-cpp` and `@node-llama-cpp/*`.
+       - Windows: leave out the CUDA engine (176 MB); keep the CPU (30 MB) and Vulkan (74 MB)
+         engines, so NVIDIA, AMD and Intel GPUs work. Installer grows by about 100 MB.
+       - macOS: `release.yml` builds Intel and Apple Silicon on one Apple Silicon runner, so
+         `npm ci` installs only the arm64 engine. Add a step that installs `@node-llama-cpp/mac-x64`
+         (same version) before packaging, or the Intel app has no offline model.
+       - Check the three installers' size in the release, and open each once.
+9. [ ] Tests: catalog and recommendation, store (download, resume, bad hash, cancel), provider with
+       a fake engine, and an opt-in real-engine test:
+       `BP_LOCAL_MODEL=/path/to/model.gguf npm test -- local-engine` (skipped when unset).
+10. [ ] `scripts/check-models.mjs` (`npm run check:models`): checks that every catalog file exists
+       on Hugging Face and that its size is close to the catalog. Run it on a computer with internet.
+11. [ ] Docs and site, after it works on a real machine: `docs/local-ai.md`, README, CHANGELOG, the
+       FAQ answer "Does it need internet or an AI account?", screenshots of the new settings card.
+
+**Not verified yet (say so in the release notes until done)**
+- The container that built this could not reach Hugging Face, so the file names, sizes and hashes
+  in the catalog have not been checked and no model was run. Step 10 and the opt-in test in step 9
+  are how you check them on your computer.
+- Reply quality and speed of each size, and the recommendation limits, need a real Mac and a real
+  Windows PC. Expect CPU-only computers to answer slowly with the medium and large models.
+- The Windows and macOS installers with the engine inside (step 8).
+
+**Continue on another computer:** `git pull`, `npm install` (adds `node-llama-cpp`), start at the
+first unchecked step. A first version of the engine and download code may already be in the
+branch `claude/gracious-gates-0zmgaj`; the checkboxes above say what is done.
 
 ## Backlog (November and December, ordered by what users ask for)
 

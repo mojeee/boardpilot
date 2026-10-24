@@ -8,7 +8,8 @@ import type { AiReply } from '@shared/types';
 import { isRecording, type ChatRecording } from '@shared/chatReplay';
 import { getLanguage } from '@shared/i18n';
 import { useAi, useScene } from '../state/store';
-import { applyProposal } from '../components/ProposalCard';
+import { applyProposal, openCode } from '../components/ProposalCard';
+import { useLayout } from '../state/layout';
 import { openTask } from '../components/TaskRail';
 
 // Recordings are written by `BP_EVAL_RECORD=1 npm run eval:ai` and loaded only when played.
@@ -72,6 +73,9 @@ export async function playRecording(rec: ChatRecording) {
   const run = useReplay.getState().run + 1;
   useReplay.setState({ rec, playing: true, done: false, step: 0, run });
   openTask('newProject');
+  // The chat is the thing to watch: the right panel open on the assistant.
+  useLayout.getState().toggleRight(true);
+  useLayout.getState().setRightTab('assistant');
   useAi.getState().clear();
   useAi.getState().set({ busy: false });
   useScene.getState().openScene(structuredClone(rec.start));
@@ -104,15 +108,14 @@ export async function playRecording(rec: ChatRecording) {
       if (!(await wait(3200, run))) return;
       const p = lastProposal();
       const id = [...useAi.getState().items].reverse().find((x) => x.role === 'assistant' && x.reply.proposal)?.id;
-      if (p) applyProposal(p);
-      if (id !== undefined) useAi.getState().mark(id, { applied: true });
+      const where = p ? applyProposal(p) : 'here';
+      if (id !== undefined) useAi.getState().mark(id, { applied: where });
       useScene.getState().select(null);
       useScene.getState().setHighlight([]);
       useScene.getState().preset('home');
     } else if (s.kind === 'code') {
       if (!(await wait(2200, run))) return;
-      const id = [...useAi.getState().items].reverse().find((x) => x.role === 'assistant' && x.reply.proposal)?.id;
-      if (id !== undefined) useAi.getState().mark(id, { code: true });
+      openCode();
     }
   }
   useReplay.setState({ playing: false, done: true });

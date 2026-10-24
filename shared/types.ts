@@ -263,6 +263,8 @@ export interface BoardComponent {
   /** Height above the PCB in mm (defaults per type). */
   heightMm?: number;
   color?: string;
+  /** Chip package when the part number does not say (shared/boardDetail.ts infers it otherwise). */
+  package?: 'qfn' | 'lqfp' | 'soic' | 'dip' | 'sot223' | 'sot23' | 'module' | 'none';
 }
 
 export type BoardFamily = 'esp32' | 'esp32s3' | 'esp32c3' | 'rp2040' | 'rp2350' | 'avr' | 'stm32' | 'nrf52' | 'imxrt';
@@ -560,6 +562,8 @@ export interface ScenePart {
   label?: string;
   /** Set when the user confirmed an AI suggestion ("this photo shows a BME280") */
   confirmed?: boolean;
+  /** Found by "Read from port": how (the measurement, e.g. the chip ID that answered). */
+  detected?: string;
 }
 
 export interface Scene {
@@ -568,6 +572,14 @@ export interface Scene {
   wires: SceneWire[];
   /** The project's state machine (New project → State machine designer), saved as it is. */
   stateMachine?: StateMachine;
+  /** The project's sketch, edited in the Code panel and saved with the project. */
+  sketch?: ProjectSketch;
+}
+
+export interface ProjectSketch {
+  /** file name, e.g. weather_station.ino */
+  name: string;
+  text: string;
 }
 
 export interface WiringFinding {
@@ -615,6 +627,10 @@ export interface AiReply {
   toolCalls?: { name: string; input: unknown; ok: boolean; error?: string }[];
   /** a write the model asked for; the UI must show a confirmation dialog */
   pendingWrite?: WriteRequest;
+  /** app actions the model asked the app to run (shared/actions.ts), in order */
+  actions?: { action: string; arg: string }[];
+  /** a code suggestion the app writes in the Code panel */
+  codeRequest?: string;
   /** options to pick from, each with what makes it different (shown as cards) */
   choices?: AiChoice[];
   /** a whole project (parts, wiring, checks) the user can apply with one click */
@@ -639,10 +655,32 @@ export interface AiContext {
   screen: string;
   answers: Record<string, unknown>;
   log: LogEntry[];
+  /** What happened in the app lately besides the log: scene and code edits, runs, screens (short lines). */
+  events?: string[];
   live?: LiveFrame | null;
   scene: Scene;
   flowId?: string;
   stepId?: string;
+}
+
+/** "Suggest code": what the Code panel sends with the context. */
+export interface CodeSuggestionRequest {
+  code: string;
+  /** 1-based line of the cursor, where new code is most useful */
+  cursorLine: number;
+  /** what the user asked for, in their words (may be empty: "what comes next") */
+  request: string;
+}
+
+/** A code suggestion from the assistant; always a suggestion the user accepts or dismisses. */
+export interface AiCodeSuggestion {
+  title: string;
+  /** Insert after this 1-based line (0: at the top); with replace, the text is the whole file. */
+  afterLine: number;
+  replace: boolean;
+  text: string;
+  explanation: string;
+  sources: AiSource[];
 }
 
 export interface PhotoRecognition {

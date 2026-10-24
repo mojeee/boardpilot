@@ -34,7 +34,7 @@ export function DevMenu() {
           <div className="label">{t('Scenario')}</div>
           <div className="scenarios">
             {scenarios.map((s) => (
-              <button key={s.id} className={`scenario ${conn.scenario === s.id ? 'on' : ''}`} onClick={() => load(s.id)}>
+              <button key={s.id} className={`scenario ${conn.scenario === s.id ? 'on' : ''}`} data-id={s.id} onClick={() => load(s.id)}>
                 <b>{t(s.name)}</b>
                 <span>{t(s.description)}</span>
               </button>

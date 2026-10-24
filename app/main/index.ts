@@ -42,6 +42,9 @@ if (MOTION) {
   rmSync(profile, { recursive: true, force: true });
   app.setPath('userData', profile);
 }
+// BP_PROFILE=<dir>: use this folder as the app's data (end-to-end tests and screenshots start from a
+// clean profile, so nothing remembered by an earlier run changes what they see).
+if (!MOTION && process.env.BP_PROFILE) app.setPath('userData', process.env.BP_PROFILE);
 const dataDir = app.getPath('userData');
 // `BoardPilot --mcp-stdio`: an MCP client started us. No window; talk MCP on stdin/stdout. Use a
 // separate Chromium profile so this process never locks the app's, but read the app's data.

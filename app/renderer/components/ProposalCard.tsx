@@ -2,22 +2,40 @@
 // choice different, and a project proposal (parts, wiring, checks, extras) with one Apply button.
 // Applying replaces the drawing with the proposal and is undoable; nothing is written to the board.
 
-import { useMemo } from 'react';
 import type { AiChoice, TargetRef } from '@shared/types';
 import type { ProjectProposal } from '@shared/projectBuilder';
 import { PARTS, getBoard } from '@shared/board';
 import { generateSketch } from '@shared/sketch';
 import { t } from '@shared/i18n';
 import { log, useScene } from '../state/store';
+import { useProjects } from '../state/projects';
+import { useLayout } from '../state/layout';
+import { sketchFileName } from '../state/buildProject';
 
-/** Replace the drawing with the proposal (Cmd+Z brings the previous one back). */
-export function applyProposal(p: ProjectProposal) {
-  useScene.getState().openScene(p.scene, true);
+/**
+ * Apply a proposal. A new project replaces an empty drawing (Cmd+Z undoes it) or opens in a new
+ * project tab, so the user's work is never overwritten. Its starter code goes in the Code panel; a
+ * project that already has code keeps it (the assistant can then suggest code for the new parts).
+ * Returns where it went.
+ */
+export function applyProposal(p: ProjectProposal): 'here' | 'tab' {
+  const current = useScene.getState().scene;
+  const isNew = p.parts.every((x) => x.added);
+  const board = getBoard(p.board);
+  const sketch = (!isNew && current.sketch?.text.trim() ? current.sketch : null) ?? { name: sketchFileName(p.title), text: generateSketch(p.scene, board, PARTS) };
+  const scene = { ...p.scene, sketch };
+  const where = isNew && current.parts.length > 0 ? 'tab' : 'here';
+  if (where === 'tab') useProjects.getState().add(scene, p.title);
+  else useScene.getState().openScene(scene, true);
   log('action', t('Applied the assistant’s project “{title}”: {parts} parts, {wires} wires on the {board}. Undo brings the previous drawing back.', { title: p.title, parts: p.scene.parts.length, wires: p.scene.wires.length, board: p.boardName }), {
     source: 'assistant proposal, checked by the wiring rules',
   });
   for (const f of p.findings.filter((x) => x.severity !== 'info')) log('warning', `${f.message} ${f.hint}`.trim(), { target: f.targets[0], source: f.source ?? 'wiring rules' });
+  return where;
 }
+
+/** Show the project's code (the starter code after Apply) in the Code panel. */
+export const openCode = () => useLayout.getState().showBottom('code');
 
 export function ChoiceCards({ choices, onPick, picked, locked }: { choices: AiChoice[]; onPick: (c: AiChoice) => void; picked?: string | null; locked?: boolean }) {
   return (
@@ -39,10 +57,7 @@ export function ChoiceCards({ choices, onPick, picked, locked }: { choices: AiCh
   );
 }
 
-export function ProposalCard({ proposal: p, applied, onApply, codeOpen, onCode }: { proposal: ProjectProposal; applied: boolean; onApply: () => void; codeOpen: boolean; onCode: (open: boolean) => void }) {
-  // The code follows the drawing as it is now (the user may have moved a wire after Apply).
-  const scene = useScene((s) => s.scene);
-  const code = useMemo(() => (codeOpen ? generateSketch(scene.board === p.board ? scene : p.scene, getBoard(p.board), PARTS) : null), [codeOpen, scene, p]);
+export function ProposalCard({ proposal: p, applied, onApply }: { proposal: ProjectProposal; applied: false | 'here' | 'tab'; onApply: () => void }) {
   const errors = p.findings.filter((f) => f.severity === 'error');
   const warnings = p.findings.filter((f) => f.severity === 'warning');
   const focus = (targets: TargetRef[]) => useScene.getState().focusOn(targets);
@@ -127,12 +142,14 @@ export function ProposalCard({ proposal: p, applied, onApply, codeOpen, onCode }
       <div className="row gap wrap">
         {applied ? (
           <>
-            <span className="ok-text small">✓ {t('Applied to your project')}</span>
-            <button className="btn small ghost" onClick={() => useScene.getState().undo()}>
-              {t('Undo')}
-            </button>
-            <button className="btn small" onClick={() => onCode(!codeOpen)} data-action="code">
-              {code ? t('Hide starter code') : t('Show starter code')}
+            <span className="ok-text small">✓ {applied === 'tab' ? t('Opened as a new project') : t('Applied to your project')}</span>
+            {applied === 'here' && (
+              <button className="btn small ghost" onClick={() => useScene.getState().undo()}>
+                {t('Undo')}
+              </button>
+            )}
+            <button className="btn small" onClick={openCode} data-action="code">
+              {t('Open the code')}
             </button>
           </>
         ) : (
@@ -141,14 +158,6 @@ export function ProposalCard({ proposal: p, applied, onApply, codeOpen, onCode }
           </button>
         )}
       </div>
-      {code && (
-        <>
-          <pre className="code">{code}</pre>
-          <button className="btn small ghost" onClick={() => window.bp.session.saveFile('BoardPilotProject.ino', code)}>
-            {t('Save .ino…')}
-          </button>
-        </>
-      )}
       <p className="small dim">{t('A suggestion built from the parts library and the board file, checked by the wiring rules. Check it against your real parts before you wire.')}</p>
     </div>
   );

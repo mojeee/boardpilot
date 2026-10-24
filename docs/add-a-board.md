@@ -39,7 +39,7 @@ Then `rules` (default I2C and SPI pins, safe pins in order of preference, ADC pi
 
 The vendor SDK starter projects in New project need one more `toolchain` field per family: `picoBoard` (Pico SDK `PICO_BOARD`) on RP2040/RP2350, `idfTarget` (`idf.py set-target`) on ESP32 boards, and `stm32Hal` on STM32 boards (CMSIS device, PLL and bus prescalers, flash wait states, the UART that `printf` uses). `check-boards` checks that the `stm32Hal` clock tree gives the board's `clocks`.
 
-`components` are optional boxes for the 3D view (chip, USB connector, buttons, LEDs): `rect` is `[x, y, w, h]` in layout pixels (`layoutPxPerMm` pixels per mm).
+`components` are optional boxes for the 3D view (chip, USB connector, buttons, LEDs): `rect` is `[x, y, w, h]` in layout pixels (`layoutPxPerMm` pixels per mm). With Detail → Full the 3D view draws each chip with the legs of its package, worked out from the part number in `label` (STM32 "…T6" is LQFP, "…U6" is QFN, AMS1117 is SOT-223…); when the label does not say, add `"package": "qfn" | "lqfp" | "soic" | "dip" | "sot223" | "sot23"` with its source. An `led` labelled `PWR` lights up while the board is on USB; the other LEDs follow the pin flagged `onboard_led`.
 
 ## 4. Sources (5 minutes)
 

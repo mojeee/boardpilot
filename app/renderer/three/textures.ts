@@ -146,3 +146,42 @@ export function labelTexture(text: string, bg = '#f1ede2', fg = '#23272d'): THRE
   ctx.fillText(text, c.width / 2, c.height / 2 + 1);
   return toTexture(c);
 }
+
+/**
+ * Text printed on a chip or a module shield (laser-etched look): transparent background, the text
+ * in one or two lines, sized to the aspect of the part.
+ */
+export function markingTexture(lines: string[], aspect: number, color = 'rgba(210,214,220,0.85)'): THREE.CanvasTexture {
+  const w = 256;
+  const h = Math.max(32, Math.round(w / Math.max(0.5, aspect)));
+  const [c, ctx] = canvas(w, h);
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const n = Math.max(1, lines.length);
+  let size = Math.min(h / (n * 1.5), 64);
+  ctx.font = `600 ${size}px "IBM Plex Mono", Menlo, monospace`;
+  const widest = Math.max(...lines.map((l) => ctx.measureText(l).width), 1);
+  if (widest > w * 0.9) {
+    size *= (w * 0.9) / widest;
+    ctx.font = `600 ${size}px "IBM Plex Mono", Menlo, monospace`;
+  }
+  lines.forEach((l, i) => ctx.fillText(l, w / 2, h / 2 + (i - (n - 1) / 2) * size * 1.25));
+  return toTexture(c);
+}
+
+/** A soft round glow (white centre fading out), tinted by the material colour; for LEDs and pins. */
+let glowTex: THREE.CanvasTexture | null = null;
+export function glowTexture(): THREE.CanvasTexture {
+  if (glowTex) return glowTex;
+  const [c, ctx] = canvas(128, 128);
+  const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.35, 'rgba(255,255,255,0.45)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  glowTex = toTexture(c);
+  return glowTex;
+}
