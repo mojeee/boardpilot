@@ -10,7 +10,15 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "module", "size": [37, 16, 5], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [37, 16, 5], "color": "#1F4FA8", "silk": "ZS-040",
+    "components": [
+      { "type": "block", "at": [-3, 2], "size": [27, 13, 0.8], "color": "#1f6b3a", "label": "HC-06" },
+      { "type": "antenna", "at": [8, 2], "size": [7, 10] },
+      { "type": "chip", "at": [-8, 2], "size": [6, 6, 0.9], "package": "qfn", "label": "BC417" },
+      { "type": "led", "at": [14, -4], "size": [1.6, 0.8], "color": "#ff3b30" }
+    ]
+  },
   "keywords": ["hc-06", "hc06", "bluetooth", "spp", "slave", "wireless", "seriale"],
   "sources": [
     { "title": "HC-06 Bluetooth module datasheet (Guangzhou HC)", "section": "UART 9600 baud default; slave only; 3.3 V logic levels" }

@@ -135,6 +135,33 @@ async function runNamedDemo(name: string, scenario: string | null) {
       await connectAndInstall();
       await startStream(20);
     }
+  } else if (name === 'parts') {
+    // #demo=parts&ids=dht22,hc-sr04[&board=esp32-devkitc-30][&cols=4]: parts in rows in front of
+    // the board, to look at their 3D models (the gallery image on the website, development).
+    const params = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
+    const id = params.get('board') ?? 'esp32-devkitc-30';
+    const ids = (params.get('ids') ?? 'bme280-gy,dht22,hc-sr04,ssd1306-i2c').split(',').filter(Boolean);
+    const { PARTS } = await import('@shared/board');
+    const cols = Number(params.get('cols') ?? 4);
+    const gap = Number(params.get('gap') ?? 0);
+    const sizes = ids.map((p) => PARTS[p]?.model.size ?? [20, 20, 5]);
+    const cell = gap || Math.max(30, ...sizes.map((s) => Math.max(s[0], s[1]) + 12));
+    const parts = ids.map((partId, i) => ({
+      id: `g${i}`,
+      partId,
+      position: [(i % cols - (Math.min(cols, ids.length) - 1) / 2) * cell, 0, 32 + cell / 2 + Math.floor(i / cols) * cell] as [number, number, number],
+      rotation: 0,
+    }));
+    useScene.getState().openScene({ board: id, parts, wires: [] });
+    await until(() => useApp.getState().conn.board === id);
+    openTask('connect');
+    // &close=1: the camera on the parts only, without the selection rings of a focus
+    if (params.get('close')) {
+      await sleep(800);
+      useScene.getState().focusOn(parts.map((p) => `part:${p.id}` as const));
+      await sleep(300);
+      useScene.setState({ highlight: [], selected: null });
+    }
   } else if (name === 'boards') {
     const { openBoardPicker } = await import('./components/BoardPicker');
     openBoardPicker();

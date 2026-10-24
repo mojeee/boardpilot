@@ -10,7 +10,13 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [42, 24, 12], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [42, 24, 12], "color": "#1F4FA8", "silk": "TM1637",
+    "components": [
+      { "type": "digits", "at": [0, 2.5], "size": [30, 14, 8], "count": 4 },
+      { "type": "chip", "at": [-15, 6], "size": [5, 4], "package": "soic", "label": "TM1637" }
+    ]
+  },
   "keywords": ["tm1637", "7 segment", "4 digit", "clock display", "display 7 segmenti", "orologio"],
   "gotchas": [
     { "text": "CLK and DIO are not I2C: use a TM1637 library. Any two pins work.", "source": { "title": "Titan Micro TM1637 datasheet", "section": "Two-wire serial interface" } }

@@ -14,7 +14,7 @@
   "addresses": ["0x12"],
   "voltage": "5",
   "pullupsOnBoard": true,
-  "model": { "shape": "module", "size": [38, 38, 21], "color": "#C9CED4" },
+  "model": { "shape": "module", "size": [38, 38, 21], "color": "#C9CED4", "kind": "box" },
   "keywords": ["pmsa003i", "plantower", "pm2.5", "pm10", "dust", "particulate", "polveri sottili", "qualità aria"],
   "sources": [
     { "title": "Plantower PMSA003I datasheet", "section": "I2C address 0x12; supply 5 V for the fan, 3.3 V logic" },

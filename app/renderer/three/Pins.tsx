@@ -189,7 +189,8 @@ function PinMesh({ board, pin }: { board: BoardDef; pin: PinDef }) {
         userData={{ target }}
       >
         <boxGeometry args={[2.3, 3, 2.3]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        {/* not drawn, but still hit by the pointer */}
+        <meshBasicMaterial visible={false} />
       </mesh>
       {/* Floating tags only where they help: pins in use, hovered, selected, highlighted or with a
           finding. The pin names are printed on the PCB; "Labels" shows a tag on every pin. */}

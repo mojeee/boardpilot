@@ -12,7 +12,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "motor", "size": [35, 32, 19], "color": "#C9CED4" },
+  "model": { "shape": "motor", "size": [35, 32, 19], "color": "#C9CED4", "kind": "stepper-28byj" },
   "keywords": ["28byj-48", "uln2003", "stepper", "step motor", "motore passo passo"],
   "gotchas": [
     { "text": "Each coil draws about 100 mA at 5 V (50 Ω). Power the ULN2003 board from 5 V, never from a GPIO pin.", "source": { "title": "28BYJ-48 stepper motor datasheet", "section": "Rated voltage 5 V, DC resistance 50 Ω per phase" } }

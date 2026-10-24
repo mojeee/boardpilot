@@ -14,6 +14,7 @@
   "bus": "spi",
   "voltage": "3.3-5",
   "model": { "shape": "oled", "size": [27, 27, 3], "color": "#1A1A1A" },
+  "display": { "widthPx": 128, "heightPx": 64, "activeMm": [21.744, 10.864], "glassMm": [26.7, 19.26], "color": "mono", "tint": "#FFFFFF", "source": { "title": "Univision UG-2864HSWEG01 datasheet (SAS1-9046-B)", "section": "1.2 Mechanical Specifications" } },
   "keywords": ["oled", "ssd1306", "spi", "0.96", "128x64", "display", "schermo"],
   "sources": [
     { "title": "Solomon Systech SSD1306 datasheet", "section": "4-wire SPI interface: D0 = SCLK, D1 = SDIN, D/C#, CS#, RES#" }

@@ -10,7 +10,12 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "module", "size": [32, 24, 25], "color": "#1E7A3C" },
+  "model": {
+    "shape": "module", "size": [32, 24, 25], "color": "#1E7A3C", "silk": "HC-SR501",
+    "components": [
+      { "type": "dome", "at": [0, 1.5], "size": [23, 23, 23] }
+    ]
+  },
   "keywords": ["hc-sr501", "pir", "motion", "movement", "infrared", "movimento", "presenza"],
   "gotchas": [
     { "text": "After power-up it needs about a minute to settle and may trigger by itself during that time.", "source": { "title": "HC-SR501 PIR motion detector user manual", "section": "Initialisation time" } }

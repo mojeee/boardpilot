@@ -14,7 +14,8 @@
   ],
   "bus": "spi",
   "voltage": "3.3",
-  "model": { "shape": "oled", "size": [80, 38, 4], "color": "#EDEDED" },
+  "model": { "shape": "oled", "size": [89.5, 38, 4], "color": "#EDEDED" },
+  "display": { "widthPx": 296, "heightPx": 128, "activeMm": [66.89, 29.05], "glassMm": [79.0, 36.7], "color": "epaper", "tint": "#111111", "source": { "title": "Waveshare 2.9inch e-Paper Module Manual + product page (SKU 12956)", "section": "Parameters: display dimensions 66.89 x 29.05 mm, outline (screen only) 79.0 x 36.7 x 1.05 mm; product page outline 89.50 x 38.00 mm" } },
   "keywords": ["e-paper", "e-ink", "epaper", "2.9", "waveshare", "display", "carta elettronica"],
   "sources": [
     { "title": "Waveshare 2.9inch e-Paper Module user manual", "section": "Pins VCC, GND, DIN, CLK, CS, DC, RST, BUSY" }

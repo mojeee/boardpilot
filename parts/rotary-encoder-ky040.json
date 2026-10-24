@@ -11,7 +11,14 @@
   ],
   "bus": "gpio",
   "voltage": "3.3",
-  "model": { "shape": "module", "size": [26, 19, 30], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [26, 19, 30], "color": "#1F4FA8", "silk": "KY-040",
+    "components": [
+      { "type": "block", "at": [0, 2], "size": [12, 13, 6.5], "color": "#b9bec5" },
+      { "type": "knob", "at": [0, 2], "size": [10, 10, 28], "color": "#1d1e21" },
+      { "type": "smd", "at": [-10, 4], "size": [1.6, 0.8], "count": 3 }
+    ]
+  },
   "keywords": ["rotary encoder", "ky-040", "encoder", "knob", "manopola", "encoder rotativo"],
   "sources": [
     { "title": "Joy-IT KY-040 datasheet", "section": "Pins CLK, DT, SW, +, GND" }

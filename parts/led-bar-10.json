@@ -26,7 +26,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "led", "size": [51.8, 10, 8], "color": "#B22222" },
+  "model": { "shape": "led", "size": [51.8, 10, 8], "color": "#B22222", "kind": "led-bar" },
   "keywords": ["led bar", "bar graph", "10 segment", "vu meter", "barra led", "indicatore"],
   "sources": [
     { "title": "Kingbright DC-10 series bar graph datasheet", "section": "Pin connection (anodes one side, cathodes the other)" }

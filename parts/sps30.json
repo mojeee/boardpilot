@@ -13,7 +13,7 @@
   "bus": "i2c",
   "addresses": ["0x69"],
   "voltage": "5",
-  "model": { "shape": "module", "size": [41, 41, 12], "color": "#C9CED4" },
+  "model": { "shape": "module", "size": [41, 41, 12], "color": "#C9CED4", "kind": "box" },
   "keywords": ["sps30", "sensirion", "pm2.5", "pm10", "dust", "particulate", "polveri sottili", "qualità aria"],
   "sources": [
     { "title": "Sensirion SPS30 datasheet", "section": "Pin 1 VDD, 2 RX/SDA, 3 TX/SCL, 4 SEL, 5 GND; supply 5 V" },

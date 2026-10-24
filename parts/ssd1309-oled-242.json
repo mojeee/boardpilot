@@ -13,7 +13,8 @@
   ],
   "bus": "spi",
   "voltage": "3.3-5",
-  "model": { "shape": "oled", "size": [70, 41, 5], "color": "#1A1A1A" },
+  "model": { "shape": "oled", "size": [61.5, 39.5, 5], "color": "#1A1A1A" },
+  "display": { "widthPx": 128, "heightPx": 64, "activeMm": [55.01, 27.49], "color": "mono", "tint": "#FFFFFF", "source": { "title": "Waveshare 2.42inch OLED Module product page (SSD1309)", "section": "Specifications: display size 55.01 x 27.49 mm, outline 61.50 x 39.50 mm, pixel 0.4 x 0.4 mm" } },
   "keywords": ["ssd1309", "oled", "2.42", "128x64", "display", "schermo", "big oled"],
   "sources": [
     { "title": "Solomon Systech SSD1309 datasheet", "section": "4-wire serial interface: CS#, D/C#, SCLK (D0), SDIN (D1); RES# low pulse at power-up" }

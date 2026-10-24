@@ -11,7 +11,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [50,40,30], "color": "#1A1A1A" },
+  "model": { "shape": "module", "size": [50, 40, 30], "color": "#1A1A1A", "kind": "box" },
   "keywords": ["a02yyuw", "dfrobot", "waterproof", "ultrasonic", "tank level", "ultrasuoni", "distanza", "impermeabile"],
   "sources": [
     { "title": "DFRobot SEN0311 A02YYUW wiki", "section": "Supply 3.3 to 5 V; UART 9600 baud; range 3 to 450 cm; wires red VCC, black GND, yellow RX, white TX" }

@@ -9,7 +9,7 @@
   ],
   "bus": "analog",
   "voltage": "3.3",
-  "model": { "shape": "led", "size": [7,73,0.5], "color": "#C8A04A" },
+  "model": { "shape": "led", "size": [7, 73, 0.5], "color": "#C8A04A", "kind": "flex" },
   "keywords": ["flex sensor", "bend sensor", "spectra symbol", "glove", "flessione", "piegamento"],
   "sources": [
     { "title": "Spectra Symbol Flex Sensor datasheet", "section": "Flat resistance about 25 kΩ ±30%; resistance rises when bent" }

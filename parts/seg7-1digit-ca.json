@@ -16,7 +16,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3",
-  "model": { "shape": "chip", "size": [26.4, 19, 8], "color": "#EDEDED" },
+  "model": { "shape": "chip", "size": [26.4, 19, 8], "color": "#EDEDED", "kind": "seg7" },
   "keywords": ["7 segment", "common anode", "5161bs", "digit", "display 7 segmenti", "anodo comune"],
   "sources": [
     { "title": "5161BS 0.56\" 7-segment datasheet", "section": "Pins 1 to 10: E D COM C DP B A COM F G" }

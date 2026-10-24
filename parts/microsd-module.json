@@ -12,7 +12,14 @@
   ],
   "bus": "spi",
   "voltage": "5",
-  "model": { "shape": "module", "size": [42, 24, 4], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [42, 24, 4], "color": "#1F4FA8", "silk": "MicroSD",
+    "components": [
+      { "type": "socket", "at": [4, 3], "size": [14.5, 15, 1.8] },
+      { "type": "chip", "at": [-12, 2], "size": [5, 4], "package": "soic", "label": "LVC125A" },
+      { "type": "chip", "at": [-12, 8], "size": [2.9, 1.6], "package": "sot23" }
+    ]
+  },
   "keywords": ["micro sd", "sd card", "tf card", "storage", "data logger", "scheda sd", "memoria"],
   "sources": [
     { "title": "SD Association Physical Layer Simplified Specification", "section": "SPI mode" }

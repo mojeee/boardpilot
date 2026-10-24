@@ -9,7 +9,7 @@
   ],
   "bus": "analog",
   "voltage": "3.3",
-  "model": { "shape": "led", "size": [18,56,0.5], "color": "#C8A04A" },
+  "model": { "shape": "led", "size": [18, 56, 0.5], "color": "#C8A04A", "kind": "fsr" },
   "keywords": ["fsr402", "fsr", "force sensor", "pressure pad", "interlink", "forza", "pressione"],
   "sources": [
     { "title": "Interlink FSR 400 Series datasheet", "section": "Resistance falls as force rises; voltage divider circuit; not meant for precise weighing" }

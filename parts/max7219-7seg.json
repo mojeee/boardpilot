@@ -11,7 +11,8 @@
   ],
   "bus": "spi",
   "voltage": "5",
-  "model": { "shape": "module", "size": [80, 15, 12], "color": "#B22222" },
+  "model": { "shape": "module", "size": [83, 21, 12], "color": "#B22222", "silk": "MAX7219" },
+  "display": { "widthPx": 8, "heightPx": 1, "activeMm": [60.5, 14.0], "color": "led", "tint": "#FF2A1A", "digits": 8, "source": { "title": "ProtoSupplies MAX7219 8-Digit 7-Segment Socketed Red Display Module", "section": "estimate: Specifications: 83 x 15 mm with mounting ears, 0.36 in (9.14 mm) digits, input header left end, output right end" } },
   "keywords": ["max7219", "7 segment", "8 digit", "seven segment", "display 7 segmenti", "cifre"],
   "sources": [
     { "title": "Maxim MAX7219 datasheet", "section": "Serial interface DIN, CLK, LOAD (CS)" }

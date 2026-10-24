@@ -8,7 +8,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3",
-  "model": { "shape": "button", "size": [6.1, 6, 12], "color": "#C9CED4" },
+  "model": { "shape": "button", "size": [6.1, 6, 12], "color": "#C9CED4", "kind": "tilt" },
   "keywords": ["tilt switch", "sw-520d", "ball switch", "tilt", "inclinazione"],
   "sources": [
     { "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" }

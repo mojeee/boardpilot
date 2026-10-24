@@ -11,7 +11,14 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "module", "size": [45, 20, 15], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [45, 20, 15], "color": "#1F4FA8", "silk": "HC-SR04",
+    "components": [
+      { "type": "transducer", "at": [-13, 1.5], "size": [16, 16, 12] },
+      { "type": "transducer", "at": [13, 1.5], "size": [16, 16, 12] },
+      { "type": "crystal", "at": [0, 3], "size": [4.6, 11, 3.5], "label": "4.000" }
+    ]
+  },
   "keywords": ["hc-sr04", "ultrasonic", "distance", "sonar", "ultrasuoni", "distanza", "sensore distanza"],
   "gotchas": [
     { "text": "ECHO outputs 5 V. On a 3.3 V board, put a voltage divider (for example 1 kΩ and 2 kΩ) between ECHO and the pin.", "when": "logic3v3", "source": { "title": "Cytron / ElecFreaks HC-SR04 user manual", "section": "Electric parameters: working voltage DC 5 V" } },

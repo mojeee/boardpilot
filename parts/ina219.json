@@ -15,7 +15,15 @@
   "addresses": ["0x40", "0x41", "0x44", "0x45"],
   "voltage": "3.3-5",
   "pullupsOnBoard": true,
-  "model": { "shape": "breakout", "size": [25, 20, 1.6], "color": "#5B2A86" },
+  "model": {
+    "shape": "breakout", "size": [25, 20, 1.6], "color": "#5B2A86", "silk": "INA219",
+    "components": [
+      { "type": "chip", "at": [-6, 1], "size": [3.0, 3.0, 1.0], "package": "msop", "label": "INA219" },
+      { "type": "block", "at": [3, 0], "size": [6.4, 3.2, 0.6], "label": "R100", "color": "#1d1e21" },
+      { "type": "terminal", "at": [7, 6], "size": [10, 6, 8], "count": 2, "color": "#2667c9" },
+      { "type": "smd", "at": [-6, 6], "size": [1.6, 0.8], "count": 3 }
+    ]
+  },
   "keywords": ["ina219", "current", "voltage", "power", "corrente", "tensione", "consumo"],
   "gotchas": [
     { "text": "With the usual 0.1 Ω shunt it measures up to 3.2 A (±320 mV across the shunt), and the bus voltage up to 26 V.", "source": { "title": "TI INA219 datasheet", "section": "Electrical characteristics: shunt voltage range ±320 mV, bus voltage 0 to 26 V" } },

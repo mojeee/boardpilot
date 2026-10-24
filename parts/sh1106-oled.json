@@ -13,6 +13,7 @@
   "voltage": "3.3-5",
   "pullupsOnBoard": true,
   "model": { "shape": "oled", "size": [35, 34, 3], "color": "#1A1A1A" },
+  "display": { "widthPx": 128, "heightPx": 64, "activeMm": [29.42, 14.7], "glassMm": [34.5, 23.0], "color": "mono", "tint": "#FFFFFF", "source": { "title": "Pololu Graphical OLED Display 128x64 1.3in (SH1106), item 3760", "section": "Specifications: active area 29.4 x 14.7 mm, module 35.4 x 33.5 mm" } },
   "keywords": ["oled", "sh1106", "1.3", "128x64", "display", "schermo"],
   "sources": [
     { "title": "Sino Wealth SH1106 datasheet", "section": "I2C interface: slave address 011110 SA0 (0x3C / 0x3D)" }

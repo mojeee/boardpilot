@@ -185,3 +185,140 @@ export function glowTexture(): THREE.CanvasTexture {
   glowTex = toTexture(c);
   return glowTex;
 }
+
+/** Chip markings are shared: one texture per text and aspect. */
+const markings = new Map<string, THREE.CanvasTexture>();
+export function cachedMarking(lines: string[], aspect: number, color?: string): THREE.CanvasTexture {
+  const key = `${lines.join('\n')}|${aspect.toFixed(2)}|${color ?? ''}`;
+  let tex = markings.get(key);
+  if (!tex) {
+    tex = markingTexture(lines, aspect, color);
+    markings.set(key, tex);
+  }
+  return tex;
+}
+
+export interface SilkText {
+  text: string;
+  /** centre, mm in the part frame (x along the pins, z away from them) */
+  x: number;
+  z: number;
+  /** text height, mm */
+  size: number;
+  vertical?: boolean;
+}
+
+/**
+ * The print on a part's PCB (w × d mm): an outline, the pin names and the part name, white on dark
+ * boards and black on light ones. Transparent elsewhere, laid over the PCB.
+ */
+export function partSilkTexture(w: number, d: number, texts: SilkText[], dark: boolean, outline = true): THREE.CanvasTexture {
+  const px = Math.min(24, 1024 / Math.max(w, d));
+  const [c, ctx] = canvas(Math.max(16, Math.round(w * px)), Math.max(16, Math.round(d * px)));
+  ctx.clearRect(0, 0, c.width, c.height);
+  const ink = dark ? 'rgba(238,241,244,0.92)' : 'rgba(30,34,40,0.9)';
+  ctx.strokeStyle = ink;
+  ctx.fillStyle = ink;
+  if (outline && w > 8 && d > 8) {
+    ctx.globalAlpha = 0.55;
+    ctx.lineWidth = Math.max(1, 0.18 * px);
+    ctx.strokeRect(0.7 * px, 0.7 * px, c.width - 1.4 * px, c.height - 1.4 * px);
+    ctx.globalAlpha = 1;
+  }
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (const t of texts) {
+    ctx.save();
+    // part frame: x right, z down the canvas (pins at the top edge)
+    ctx.translate((t.x + w / 2) * px, (t.z + d / 2) * px);
+    if (t.vertical) ctx.rotate(-Math.PI / 2);
+    ctx.font = `600 ${Math.max(6, t.size * px)}px "IBM Plex Mono", Menlo, monospace`;
+    ctx.fillText(t.text, 0, t.size * px * 0.06);
+    ctx.restore();
+  }
+  return toTexture(c);
+}
+
+/**
+ * What a display shows switched off, where that is visible: the dark LEDs of a matrix or of the
+ * 7-segment digits, the faint 5 × 8 dot cells of a character LCD. Null for OLED, TFT and e-paper
+ * (their glass alone looks right when off).
+ */
+const offTextures = new WeakMap<object, THREE.CanvasTexture | null>();
+export function offTexture(d: { widthPx: number; heightPx: number; activeMm: [number, number]; color: string; chars?: [number, number]; digits?: number; round?: boolean }): THREE.CanvasTexture | null {
+  if (offTextures.has(d)) return offTextures.get(d) ?? null;
+  let tex: THREE.CanvasTexture | null = null;
+  const aspect = d.activeMm[0] / d.activeMm[1];
+  if (d.color === 'led') {
+    const W = 512;
+    const H = Math.max(32, Math.round(W / aspect));
+    const [c, ctx] = canvas(W, H);
+    ctx.fillStyle = '#0b0b0c';
+    ctx.fillRect(0, 0, W, H);
+    if (d.digits) {
+      // dark segments of each digit
+      const dw = W / d.digits;
+      ctx.fillStyle = '#2a1a1a';
+      for (let k = 0; k < d.digits; k++) {
+        const x0 = k * dw + dw * 0.18;
+        const sw = dw * 0.52;
+        const sh = H * 0.36;
+        const t = Math.max(3, dw * 0.08);
+        const y0 = H * 0.12;
+        const bars: [number, number, number, number][] = [
+          [x0 + t, y0, sw - t * 2, t], [x0 + t, y0 + sh, sw - t * 2, t], [x0 + t, y0 + sh * 2, sw - t * 2, t],
+          [x0, y0 + t, t, sh - t], [x0 + sw - t, y0 + t, t, sh - t], [x0, y0 + sh + t, t, sh - t], [x0 + sw - t, y0 + sh + t, t, sh - t],
+        ];
+        for (const [x, y, w, h] of bars) ctx.fillRect(x, y, w, h);
+        ctx.beginPath();
+        ctx.arc(x0 + sw + t * 1.4, y0 + sh * 2 + t / 2, t * 0.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else {
+      const cw = W / d.widthPx;
+      const ch = H / d.heightPx;
+      ctx.fillStyle = '#2b1d1d';
+      for (let y = 0; y < d.heightPx; y++)
+        for (let x = 0; x < d.widthPx; x++) {
+          ctx.beginPath();
+          ctx.arc((x + 0.5) * cw, (y + 0.5) * ch, Math.min(cw, ch) * 0.36, 0, Math.PI * 2);
+          ctx.fill();
+        }
+    }
+    tex = toTexture(c);
+  } else if (d.color === 'lcd' && d.chars) {
+    const [cols, rows] = d.chars;
+    const W = 1024;
+    const H = Math.max(32, Math.round(W / aspect));
+    const [c, ctx] = canvas(W, H);
+    ctx.clearRect(0, 0, W, H);
+    const cw = W / cols;
+    const rh = H / rows;
+    ctx.fillStyle = 'rgba(0,0,0,0.07)';
+    for (let r = 0; r < rows; r++) for (let k = 0; k < cols; k++) ctx.fillRect(k * cw + cw * 0.06, r * rh + rh * 0.05, cw * 0.88, rh * 0.9);
+    tex = toTexture(c);
+  }
+  offTextures.set(d, tex);
+  return tex;
+}
+
+/** Over a live LED matrix: black with a round hole per LED, so lit pixels look like LEDs. */
+const ledMasks = new WeakMap<object, THREE.CanvasTexture>();
+export function ledMaskTexture(d: { widthPx: number; heightPx: number }): THREE.CanvasTexture {
+  const hit = ledMasks.get(d);
+  if (hit) return hit;
+  const cell = 32;
+  const [c, ctx] = canvas(d.widthPx * cell, d.heightPx * cell);
+  ctx.fillStyle = '#0b0b0c';
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.globalCompositeOperation = 'destination-out';
+  for (let y = 0; y < d.heightPx; y++)
+    for (let x = 0; x < d.widthPx; x++) {
+      ctx.beginPath();
+      ctx.arc((x + 0.5) * cell, (y + 0.5) * cell, cell * 0.38, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  const tex = toTexture(c);
+  ledMasks.set(d, tex);
+  return tex;
+}

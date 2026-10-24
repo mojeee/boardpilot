@@ -22,7 +22,14 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [41.6, 15.2, 10], "color": "#5B2A86" },
+  "model": {
+    "shape": "module", "size": [41.6, 15.2, 10], "color": "#5B2A86", "silk": "DRV8825",
+    "components": [
+      { "type": "chip", "at": [0, 0], "size": [6.4, 9.7, 1.1], "package": "tssop", "label": "DRV8825" },
+      { "type": "heatsink", "at": [0, 0], "size": [9, 9, 5] },
+      { "type": "trimpot", "at": [-10, 3], "size": [3, 3, 1.5], "color": "#e8e8e2" }
+    ]
+  },
   "keywords": ["drv8825", "stepper driver", "pololu", "nema17", "driver passo passo"],
   "sources": [
     { "title": "Texas Instruments DRV8825 datasheet", "section": "Motor supply 8.2 to 45 V; logic inputs 3.3 V / 5 V compatible" },

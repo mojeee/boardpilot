@@ -8,7 +8,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "led", "size": [12, 12, 9.5], "color": "#1A1A1A" },
+  "model": { "shape": "led", "size": [12, 12, 9.5], "color": "#1A1A1A", "kind": "buzzer" },
   "keywords": ["active buzzer", "buzzer", "beeper", "alarm", "cicalino", "allarme"],
   "sources": [
     { "title": "Generic 12 mm active buzzer datasheet", "section": "Built-in oscillator: sounds with DC applied" }

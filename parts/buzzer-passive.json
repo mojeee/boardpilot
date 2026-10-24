@@ -8,7 +8,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "led", "size": [12, 12, 8.5], "color": "#1A1A1A" },
+  "model": { "shape": "led", "size": [12, 12, 8.5], "color": "#1A1A1A", "kind": "buzzer" },
   "keywords": ["passive buzzer", "buzzer", "piezo", "tone", "melody", "cicalino", "melodia"],
   "sources": [
     { "title": "Espressif ESP-IDF Programming Guide", "section": "LEDC (LED PWM controller)" }

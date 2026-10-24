@@ -15,7 +15,16 @@
   "idCheck": { "register": "0x75", "expect": "0x68", "otherValues": { "0x70": "This is an MPU6500 clone, not an MPU6050. Most libraries still work with small changes." } },
   "voltage": "3.3-5",
   "pullupsOnBoard": true,
-  "model": { "shape": "breakout", "size": [16, 21, 1.6], "color": "#1F4FA8" },
+  "model": {
+    "shape": "breakout", "size": [16, 21, 1.6], "color": "#1F4FA8", "silk": "GY-521",
+    "components": [
+      { "type": "chip", "at": [0, 1], "size": [4, 4, 0.9], "package": "qfn", "label": "MPU 6050" },
+      { "type": "chip", "at": [-4.5, -4], "size": [2.9, 1.6], "package": "sot23", "label": "662K" },
+      { "type": "led", "at": [5, -5], "size": [1.6, 0.8], "color": "#ff3b30" },
+      { "type": "smd", "at": [5, 5], "size": [1.6, 0.8], "count": 3 },
+      { "type": "smd", "at": [-5, 5], "size": [1.0, 0.5], "count": 3 }
+    ]
+  },
   "keywords": ["mpu6050", "gy-521", "accelerometer", "gyro", "imu", "motion"],
   "gotchas": [
     { "text": "The address is 0x68, or 0x69 when AD0 is HIGH.", "source": { "title": "InvenSense MPU-6000/MPU-6050 Product Specification", "section": "I²C interface: slave address" } },

@@ -11,7 +11,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "button", "size": [33, 33, 35], "color": "#D0312D" },
+  "model": { "shape": "button", "size": [33, 33, 35], "color": "#D0312D", "kind": "arcade" },
   "keywords": ["arcade button", "push button", "led button", "microswitch", "pulsante", "pulsante arcade"],
   "sources": [
     { "title": "Omron V-series basic switch datasheet", "section": "Terminals COM, NO, NC" },

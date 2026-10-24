@@ -10,7 +10,12 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [80, 20, 12], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [80, 20, 12], "color": "#1F4FA8", "silk": "TM1637",
+    "components": [
+      { "type": "digits", "at": [0, 2.5], "size": [57, 14, 8], "count": 6 }
+    ]
+  },
   "keywords": ["tm1637", "7 segment", "6 digit", "display", "display 7 segmenti", "contatore"],
   "sources": [
     { "title": "Titan Micro TM1637 datasheet", "section": "Two-wire interface CLK / DIO (not I2C compatible); up to 6 digits" }

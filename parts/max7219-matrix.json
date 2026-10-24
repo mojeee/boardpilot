@@ -11,7 +11,8 @@
   ],
   "bus": "spi",
   "voltage": "5",
-  "model": { "shape": "module", "size": [32, 32, 12], "color": "#B22222" },
+  "model": { "shape": "module", "size": [32, 38, 12], "color": "#B22222", "silk": "FC-16" },
+  "display": { "widthPx": 8, "heightPx": 8, "activeMm": [32.0, 32.0], "color": "led", "tint": "#FF2A1A", "source": { "title": "AZ-Delivery MAX7219 8x8 1 Dot Matrix LED Display Module product page", "section": "Specifications: 32 x 32 x 7 mm (11 mm with pins), 3 mm red LEDs, 1 mm gap" } },
   "keywords": ["max7219", "led matrix", "8x8", "dot matrix", "matrice led", "display"],
   "sources": [
     { "title": "Maxim MAX7219 datasheet", "section": "Serial interface DIN, CLK, LOAD (CS); supply 4 to 5.5 V" }

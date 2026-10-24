@@ -8,7 +8,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "motor", "size": [20, 15, 25], "color": "#C9CED4" },
+  "model": { "shape": "motor", "size": [20, 15, 25], "color": "#C9CED4", "kind": "dc-motor" },
   "keywords": ["dc motor", "motor", "tt motor", "gear motor", "motore", "motore dc"],
   "sources": [
     { "title": "Espressif ESP32 datasheet", "section": "GPIO drive strength is far too low for a motor (about 40 mA max)" }

@@ -10,7 +10,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "motor", "size": [42.3, 42.3, 40], "color": "#1A1A1A" },
+  "model": { "shape": "motor", "size": [42.3, 42.3, 40], "color": "#1A1A1A", "kind": "stepper" },
   "keywords": ["nema17", "nema 17", "stepper", "bipolar", "step motor", "motore passo passo"],
   "sources": [
     { "title": "NEMA ICS 16 standard", "section": "42.3 mm frame size" }

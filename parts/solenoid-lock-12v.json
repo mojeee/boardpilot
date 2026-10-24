@@ -8,7 +8,7 @@
   ],
   "bus": "gpio",
   "voltage": "12",
-  "model": { "shape": "relay", "size": [54, 41, 28], "color": "#C9CED4" },
+  "model": { "shape": "relay", "size": [54, 41, 28], "color": "#C9CED4", "kind": "solenoid" },
   "keywords": ["solenoid", "door lock", "lock", "12v", "elettroserratura", "solenoide"],
   "sources": [
     { "title": "Adafruit Lock-style Solenoid 12 VDC product page", "section": "12 V, about 650 mA; flyback diode required" }

@@ -1,7 +1,7 @@
 // Validation for part definitions: user-imported parts are data from outside the app,
 // so every field is checked before the part enters the library.
 
-import type { CommandDef, PartDef, PartGotcha, PartPinRole, PartShape, RegAccess, RegisterDef, RegisterField, RegisterMapDef, Result } from './types';
+import type { CommandDef, PartComponent, PartDef, PartDisplay, PartGotcha, PartKind, PartPinRole, PartShape, RegAccess, RegisterDef, RegisterField, RegisterMapDef, Result } from './types';
 import { t } from './i18n';
 
 export const PIN_ROLES: PartPinRole[] = [
@@ -9,6 +9,19 @@ export const PIN_ROLES: PartPinRole[] = [
   'digital_in', 'digital_out', 'analog_out', 'onewire', 'int', 'passive',
 ];
 export const SHAPES: PartShape[] = ['breakout', 'module', 'chip', 'oled', 'led', 'button', 'pot', 'dht', 'motor', 'relay'];
+export const KINDS: PartKind[] = [
+  'led', 'rgb-led', 'buzzer', 'piezo', 'ldr', 'flex', 'fsr', 'led-bar', 'pixel',
+  'tactile', 'tactile-cap', 'arcade', 'slide', 'limit', 'reed', 'tilt', 'touch',
+  'dip', 'to92', 'soic', 'seg7', 'probe',
+  'servo', 'stepper', 'stepper-28byj', 'dc-motor', 'gear-motor', 'fan', 'speaker', 'pump', 'encoder',
+  'relay-module', 'solenoid', 'valve', 'ssr', 'box',
+];
+export const COMPONENT_TYPES: PartComponent['type'][] = [
+  'chip', 'crystal', 'transducer', 'dome', 'terminal', 'relay', 'trimpot', 'led', 'smd', 'capacitor', 'jst', 'button',
+  'can', 'shield', 'antenna', 'socket', 'inductor', 'lens', 'mic', 'knob', 'usb', 'diode', 'resistor', 'digits', 'battery', 'coil', 'patch', 'heatsink', 'block',
+];
+const PACKAGES: NonNullable<PartComponent['package']>[] = ['qfn', 'lga', 'soic', 'tssop', 'msop', 'sot23', 'sot223', 'dip', 'lqfp'];
+const DISPLAY_COLORS: PartDisplay['color'][] = ['mono', 'gray4', 'rgb565', 'rgb666', 'epaper', 'lcd', 'led'];
 export const CATEGORIES: PartDef['category'][] = ['sensor', 'display', 'output', 'input'];
 export const BUSES: NonNullable<PartDef['bus']>[] = ['i2c', 'spi', 'onewire', 'gpio', 'analog'];
 
@@ -75,13 +88,24 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
   for (let i = 0; i < 3; i++) size[i] = Math.round(size[i] * 10) / 10;
   const color = /^#[0-9a-f]{6}$/i.test(str(m.color, 7)) ? str(m.color, 7) : '#2E6FD8';
 
+  const model: PartDef['model'] = { shape, size, color };
+  if (KINDS.includes(m.kind as PartKind)) model.kind = m.kind as PartKind;
+  if (Array.isArray(m.components)) {
+    const comps = m.components.slice(0, 24).map((c) => validateComponent(c, size)).filter((c): c is PartComponent => !!c);
+    if (comps.length) model.components = comps;
+  }
+  if (m.outline === 'probe' || m.outline === 'round') model.outline = m.outline;
+  const silk = str(m.silk, 24);
+  if (silk) model.silk = silk;
+  if (HEX_COLOR.test(str(m.pcb, 7))) model.pcb = str(m.pcb, 7);
+
   const def: PartDef = {
     id,
     name,
     category,
     pins,
     voltage,
-    model: { shape, size, color },
+    model,
     keywords: Array.isArray(o.keywords) ? o.keywords.map((k) => str(k, 30).toLowerCase()).filter(Boolean).slice(0, 12) : [name.toLowerCase()],
     sources: Array.isArray(o.sources)
       ? o.sources
@@ -133,6 +157,8 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
       method: origin.method === 'ai' ? 'ai' : 'manual',
     };
   }
+  const display = validateDisplay(o.display);
+  if (display) def.display = display;
   const regs = validateRegisterMap(o.registers);
   if (regs) def.registers = regs;
   const regFrom = str(o.registersFrom, 60);
@@ -145,6 +171,58 @@ export function validatePartDef(raw: unknown): Result<PartDef> {
 
 function clamp(v: number | undefined, min: number, max: number, dflt: number) {
   return typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : dflt;
+}
+
+const HEX_COLOR = /^#[0-9a-f]{6}$/i;
+const num = (v: unknown, min: number, max: number) => (typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max ? Math.round(v * 1000) / 1000 : undefined);
+const pair = (v: unknown, min: number, max: number): [number, number] | undefined => {
+  if (!Array.isArray(v) || v.length !== 2) return undefined;
+  const a = num(v[0], min, max);
+  const b = num(v[1], min, max);
+  return a !== undefined && b !== undefined ? [a, b] : undefined;
+};
+
+/** A component on the part's PCB; dropped when it is unknown or outside the part. */
+function validateComponent(raw: unknown, size: [number, number, number]): PartComponent | null {
+  const c = obj(raw);
+  if (!COMPONENT_TYPES.includes(c.type as PartComponent['type'])) return null;
+  const at = pair(c.at, -150, 150);
+  if (!at || Math.abs(at[0]) > size[0] / 2 + 1 || Math.abs(at[1]) > size[1] / 2 + 1) return null;
+  const sz = Array.isArray(c.size) ? c.size.map((v) => num(v, 0.2, 150)) : [];
+  if (sz.length < 2 || sz.length > 3 || sz.some((v) => v === undefined)) return null;
+  const comp: PartComponent = { type: c.type as PartComponent['type'], at, size: sz as [number, number] | [number, number, number] };
+  const label = str(c.label, 24);
+  if (label) comp.label = label;
+  if (PACKAGES.includes(c.package as NonNullable<PartComponent['package']>)) comp.package = c.package as PartComponent['package'];
+  if (c.metal === true) comp.metal = true;
+  if (HEX_COLOR.test(str(c.color, 7))) comp.color = str(c.color, 7);
+  const count = num(c.count, 1, 16);
+  if (count !== undefined) comp.count = Math.round(count);
+  if (c.rot === true) comp.rot = true;
+  return comp;
+}
+
+/** The display's resolution and active area; dropped unless complete and sourced. */
+export function validateDisplay(raw: unknown): PartDisplay | undefined {
+  const d = obj(raw);
+  const widthPx = num(d.widthPx, 1, 4096);
+  const heightPx = num(d.heightPx, 1, 4096);
+  const activeMm = pair(d.activeMm, 1, 400);
+  const source = regSource(d.source);
+  if (!widthPx || !heightPx || !activeMm || !source.title || !DISPLAY_COLORS.includes(d.color as PartDisplay['color'])) return undefined;
+  const out: PartDisplay = { widthPx: Math.round(widthPx), heightPx: Math.round(heightPx), activeMm, color: d.color as PartDisplay['color'], source: { title: source.title, ...(source.section ? { section: source.section } : {}) } };
+  const glass = pair(d.glassMm, 1, 400);
+  if (glass) out.glassMm = glass;
+  const center = pair(d.centerMm, -200, 200);
+  if (center) out.centerMm = center;
+  if (HEX_COLOR.test(str(d.tint, 7))) out.tint = str(d.tint, 7);
+  if (HEX_COLOR.test(str(d.glassColor, 7))) out.glassColor = str(d.glassColor, 7);
+  if (d.round === true) out.round = true;
+  const chars = pair(d.chars, 1, 80);
+  if (chars) out.chars = [Math.round(chars[0]), Math.round(chars[1])];
+  const digits = num(d.digits, 1, 16);
+  if (digits) out.digits = Math.round(digits);
+  return out;
 }
 
 /* ---------- register maps ---------- */

@@ -416,6 +416,75 @@ export interface PartPin {
 
 export type PartShape = 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled' | 'chip' | 'module' | 'motor' | 'relay';
 
+/**
+ * What the body of a part looks like at Detail "Full", when its shape covers several kinds of
+ * parts (a buzzer and an LED are both shape "led"). Optional: without it the shape's usual body.
+ */
+export type PartKind =
+  | 'led' | 'rgb-led' | 'buzzer' | 'piezo' | 'ldr' | 'flex' | 'fsr' | 'led-bar' | 'pixel'
+  | 'tactile' | 'tactile-cap' | 'arcade' | 'slide' | 'limit' | 'reed' | 'tilt' | 'touch'
+  | 'dip' | 'to92' | 'soic' | 'seg7'
+  | 'probe'
+  | 'servo' | 'stepper' | 'stepper-28byj' | 'dc-motor' | 'gear-motor' | 'fan' | 'speaker' | 'pump' | 'encoder'
+  | 'relay-module' | 'solenoid' | 'valve' | 'ssr'
+  | 'box';
+
+/**
+ * Something that sits on a part's PCB at Detail "Full" (the chip, a crystal, the sonar's two
+ * transducers…), like BoardComponent for boards. Positions are in the part's own frame: x along
+ * the pin row, z away from it, (0, 0) the centre of the part, mm.
+ */
+export interface PartComponent {
+  type:
+    | 'chip' | 'crystal' | 'transducer' | 'dome' | 'terminal' | 'relay' | 'trimpot' | 'led' | 'smd'
+    | 'capacitor' | 'jst' | 'button' | 'can' | 'shield' | 'antenna' | 'socket' | 'inductor' | 'lens'
+    | 'mic' | 'knob' | 'usb' | 'diode' | 'resistor' | 'digits' | 'battery' | 'coil' | 'patch' | 'heatsink' | 'block';
+  /** centre, mm */
+  at: [number, number];
+  /** [along x, along z, height] mm; height defaults per type */
+  size: [number, number] | [number, number, number];
+  /** printed on top (chips, relays, shields) */
+  label?: string;
+  /** chip package */
+  package?: 'qfn' | 'lga' | 'soic' | 'tssop' | 'msop' | 'sot23' | 'sot223' | 'dip' | 'lqfp';
+  /** metal lid on top (the BME280's LGA package, crystals) */
+  metal?: boolean;
+  color?: string;
+  /** screw terminals: number of screws; smd: small parts in the row; digits: 7-segment digits */
+  count?: number;
+  /** turned 90° (long side along z) */
+  rot?: boolean;
+}
+
+/**
+ * A pixel display: resolution and where the pixels are. Used for the 3D screen (its size and
+ * aspect) and by the live display texture (app/renderer/three/displayTexture.ts).
+ */
+export interface PartDisplay {
+  /** pixels as the panel sits on the module: columns along the pin row (x), rows away from it */
+  widthPx: number;
+  heightPx: number;
+  /** active area, mm: [along the pin row (x), away from it (z)] */
+  activeMm: [number, number];
+  /** glass (or LED block / LCD window) outline, mm, same axes; default: active area plus a border */
+  glassMm?: [number, number];
+  /** centre of the active area in the part frame, mm (default: centred below the pin header) */
+  centerMm?: [number, number];
+  /** what a pixel is: OLED mono or 4-bit gray, TFT colour, e-paper, STN LCD with backlight, LEDs */
+  color: 'mono' | 'gray4' | 'rgb565' | 'rgb666' | 'epaper' | 'lcd' | 'led';
+  /** colour of a lit pixel for mono, lcd and led panels */
+  tint?: string;
+  /** colour of the glass (or LCD window) with nothing shown; default by `color` */
+  glassColor?: string;
+  /** round panel (GC9A01) */
+  round?: boolean;
+  /** character LCD: columns × rows of 5 × 8 dot cells */
+  chars?: [number, number];
+  /** 7-segment display: number of digits */
+  digits?: number;
+  source: { title: string; section?: string };
+}
+
 /** Supply current from a datasheet: typical in normal use, lowest standby, short peaks (mA). */
 /** Clock frequencies in Hz. Which clock each one is (APB1 timer clock, APB_CLK…) is in the note. */
 export interface BoardClocks {
@@ -524,7 +593,23 @@ export interface PartDef {
   voltage: string;
   /** the part pulls its data lines up to this voltage when powered (breakouts with on-board pull-ups) */
   pullupsOnBoard?: boolean;
-  model: { shape: PartShape; size: [number, number, number]; color: string };
+  model: {
+    shape: PartShape;
+    size: [number, number, number];
+    color: string;
+    /** body variant within the shape (Detail "Full") */
+    kind?: PartKind;
+    /** what sits on the PCB (Detail "Full"); without it a generic chip */
+    components?: PartComponent[];
+    /** PCB outline: a probe with a pointed end (soil sensors) or round (round displays) */
+    outline?: 'rect' | 'probe' | 'round';
+    /** name printed on the PCB (default: the first word of the part name) */
+    silk?: string;
+    /** PCB colour when `color` is the colour people recognise the part by (an LCD's blue window) */
+    pcb?: string;
+  };
+  /** Pixel displays: resolution and active area, with the datasheet that gives them. */
+  display?: PartDisplay;
   /** Small product photo (JPEG data URL, about 160 px) for imported parts. */
   image?: string;
   /** Where a user-imported part came from. Built-in parts have no origin. */

@@ -9,7 +9,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "motor", "size": [40.7, 19.7, 40], "color": "#1A1A1A" },
+  "model": { "shape": "motor", "size": [40.7, 19.7, 40], "color": "#1A1A1A", "kind": "servo" },
   "keywords": ["mg996r", "servo", "high torque", "motor", "servomotore"],
   "sources": [
     { "title": "Tower Pro MG996R datasheet", "section": "Supply 4.8 to 7.2 V; stall current about 2.5 A" }

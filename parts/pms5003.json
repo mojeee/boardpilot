@@ -15,7 +15,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "module", "size": [50, 38, 21], "color": "#C9CED4" },
+  "model": { "shape": "module", "size": [50, 38, 21], "color": "#C9CED4", "kind": "box" },
   "keywords": ["pms5003", "plantower", "pm2.5", "pm10", "dust", "particulate", "polveri sottili", "qualità aria"],
   "sources": [
     { "title": "Plantower PMS5003 datasheet", "section": "Pin 1 VCC, 2 GND, 3 SET, 4 RX, 5 TX, 6 RESET, 7-8 NC; 3.3 V logic" }

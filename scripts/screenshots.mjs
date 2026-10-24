@@ -39,7 +39,7 @@ const SHOTS = {
 };
 
 /** The 3D viewport inside the 1600 × 1000 window: under the top menu and the project tabs, left of the assistant, above the Code/Log panel. */
-const VIEWPORT = '0,84,1200,666';
+const VIEWPORT = '0,84,1200,616';
 
 const want = process.argv.slice(2);
 const headless = process.platform === 'linux' && !process.env.DISPLAY;

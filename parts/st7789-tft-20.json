@@ -15,6 +15,7 @@
   "bus": "spi",
   "voltage": "3.3",
   "model": { "shape": "oled", "size": [36, 53, 4], "color": "#1F4FA8" },
+  "display": { "widthPx": 240, "heightPx": 320, "activeMm": [30.6, 40.8], "color": "rgb666", "source": { "title": "Waveshare 2inch LCD Module product page (ST7789VW, 240x320 IPS)", "section": "Specifications: display size 30.60 x 40.80 mm, outline 58.0 x 35.0 mm, 262K colour" } },
   "keywords": ["st7789", "ips", "tft", "2.0", "240x320", "color display", "display", "schermo"],
   "sources": [
     { "title": "Sitronix ST7789V datasheet", "section": "4-line serial interface" }

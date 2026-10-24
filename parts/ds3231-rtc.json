@@ -15,7 +15,16 @@
   "addresses": ["0x68", "0x57"],
   "voltage": "3.3-5",
   "pullupsOnBoard": true,
-  "model": { "shape": "module", "size": [38, 22, 14], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [38, 22, 14], "color": "#1F4FA8", "silk": "ZS-042",
+    "components": [
+      { "type": "chip", "at": [-7, -2], "size": [10.3, 7.5], "package": "soic", "label": "DS3231SN" },
+      { "type": "chip", "at": [5, -4.5], "size": [5, 4], "package": "soic", "label": "24C32" },
+      { "type": "battery", "at": [8, 4], "size": [16, 16] },
+      { "type": "led", "at": [-15, 6], "size": [1.6, 0.8], "color": "#ff3b30" },
+      { "type": "smd", "at": [-7, 6], "size": [1.6, 0.8], "count": 4 }
+    ]
+  },
   "keywords": ["ds3231", "rtc", "real time clock", "zs-042", "clock", "orologio", "ora"],
   "sources": [
     { "title": "Maxim DS3231 datasheet", "section": "I2C address 0x68 (1101000)" },
