@@ -40,6 +40,8 @@ const it: Record<string, string> = {
   'RST is not wired: the code uses -1 (no reset pin). Tie RST high or wire it to a free pin.': 'RST non è collegato: il codice usa -1 (nessun pin di reset). Porta RST alto o collegalo a un pin libero.',
   'This board has too little RAM for a full-screen frame buffer ({kb} KB), so the code draws straight to the display: fast animations will flicker.':
     'Questa scheda ha troppa poca RAM per un frame buffer a schermo intero ({kb} KB), quindi il codice disegna direttamente sul display: le animazioni veloci sfarfalleranno.',
+  '{where}: the condition “{cond}” is not understood. Use forms like temp > 30, alarm, !alarm, joined with && or ||.':
+    '{where}: la condizione “{cond}” non è chiara. Usa forme come temp > 30, alarm, !alarm, unite con && o ||.',
   'The display has no screens.': 'Il display non ha schermate.',
   'The first screen “{id}” does not exist.': 'La prima schermata “{id}” non esiste.',
   'A change of screen goes from “{from}” to “{to}”, and one of them does not exist.': 'Un cambio di schermata va da “{from}” a “{to}”, e una delle due non esiste.',

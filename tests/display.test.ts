@@ -5,14 +5,15 @@
 // arduino-cli (slow).
 
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, writeFileSync } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { firstPixelDifference, nativeAvailable } from './native/harness';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PARTS, getBoard } from '@shared/board';
 import { buildProposal } from '@shared/projectBuilder';
 import { FONT_5X7, glyphCode, glyphPixel } from '@shared/displayFont';
-import { checkSpec, normalizeSpec, panelOf, rgb565, type DisplaySpec, type PanelInfo } from '@shared/displaySpec';
+import { checkSpec, normalizeSpec, panelOf, rgb565 } from '@shared/displaySpec';
 import { DisplaySim, Framebuffer } from '@shared/displayRender';
 import { generateDisplayCode } from '@shared/displayCode';
 import { testPatternSpec } from '@shared/displayExamples';
@@ -93,6 +94,9 @@ describe('renderer', () => {
     expect(msgs.some((m) => m.startsWith('error') && m.includes('ghost'))).toBe(true);
     expect(msgs.some((m) => m.startsWith('error') && m.includes('“b”'))).toBe(true);
     expect(msgs.some((m) => m.startsWith('warning') && m.includes('goes past'))).toBe(true);
+    const cond = normalizeSpec({ vars: [{ name: 'temp' }], screens: [{ id: 'a', elements: [{ type: 'rect', visibleIf: 'temp >= 10.5 && temp < 11.5' }, { type: 'rect', visibleIf: '(temp > 3)' }] }] });
+    const condMsgs = checkSpec(cond, panel('ssd1306-i2c')).map((x) => x.message);
+    expect(condMsgs.filter((m) => m.includes('not understood'))).toHaveLength(1);
     expect(checkSpec(testPatternSpec('disp1', p), p).filter((x) => x.severity === 'error')).toEqual([]);
     expect(checkSpec(testPatternSpec('disp1', panel('ssd1306-i2c')), panel('ssd1306-i2c')).filter((x) => x.severity === 'error')).toEqual([]);
   });
@@ -131,51 +135,33 @@ describe('generated sketch', () => {
 
 /* ---------------- native pixel test: the sketch's drawing vs the app's renderer ---------------- */
 
-const GFX = join(homedir(), 'Documents/Arduino/libraries/Adafruit_GFX_Library');
-const CXX = ['clang++', 'g++'].find((c) => spawnSync(c, ['--version']).status === 0);
-const STUB = join(__dirname, 'native/arduino-stub');
-
-function nativeFrames(spec: DisplaySpec, p: PanelInfo, times: number[]): number[][] {
-  const dir = mkdtempSync(join(tmpdir(), 'bp-display-'));
-  const board = getBoard('esp32-devkitc-30');
-  const { code } = generateDisplayCode(spec, p, PARTS['st7789-240'], { board: board.id, parts: [], wires: [] }, board, { host: true });
-  const mono = p.color !== 'rgb565';
-  const main = [
-    '#include "Arduino.h"',
-    code,
-    'int main(int argc, char **argv) {',
-    '  for (int a = 1; a < argc; a++) {',
-    '    unsigned long ms = strtoul(argv[a], 0, 10);',
-    '    changeScreens(ms); readValues(ms); drawScreen(ms);',
-    `    for (int y = 0; y < gfx.height(); y++) for (int x = 0; x < gfx.width(); x++) printf("%x,", ${mono ? 'gfx.getPixel(x, y) ? 1 : 0' : 'gfx.getBuffer()[y * gfx.width() + x]'});`,
-    '    printf("\\n");',
-    '  }',
-    '}',
-  ].join('\n');
-  writeFileSync(join(dir, 'main.cpp'), main);
-  const exe = join(dir, 'frames');
-  execFileSync(CXX!, ['-std=c++17', '-O1', '-w', '-DARDUINO=100', `-I${STUB}`, `-I${GFX}`, join(GFX, 'Adafruit_GFX.cpp'), join(dir, 'main.cpp'), '-o', exe], { stdio: 'pipe' });
-  const out = execFileSync(exe, times.map(String), { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-  return out.trim().split('\n').map((l) => l.split(',').filter(Boolean).map((h) => parseInt(h, 16)));
-}
-
-describe.skipIf(!CXX || !existsSync(join(GFX, 'Adafruit_GFX.cpp')))('the sketch draws the same pixels as the preview (Adafruit GFX built natively)', () => {
+describe.skipIf(!nativeAvailable)('the sketch draws the same pixels as the preview (Adafruit GFX built natively)', () => {
   // A moment on every test-pattern screen, the dashboard with the blinking warning on and off.
   const times = [0, 1234, 3000, 4567, 6100, 8000, 9100, 11_000, 13_300, 15_900, 18_000, 19_250, 22_222, 24_400, 26_000];
+  it('a gauge and compound conditions, on a round panel', () => {
+    const p = panel('gc9a01-round');
+    const spec = normalizeSpec({
+      title: 'Gauge',
+      vars: [{ name: 'temp', source: { sim: 'wave', min: 10, max: 35, periodS: 7 }, digits: 1 }, { name: 'hum', source: { sim: 'ramp', min: 20, max: 80, periodS: 5 } }],
+      screens: [
+        {
+          id: 'g',
+          elements: [
+            { type: 'gauge', x: 120, y: 120, r: 100, value: 'temp', min: 10, max: 35, color: '#FFFFFF', startDeg: -135, endDeg: 135, ticks: 25 },
+            { type: 'text', x: 120, y: 170, text: '{temp}°C', size: 3, color: '#FFA500', align: 'center' },
+            { type: 'icon', x: 112, y: 60, name: 'warning', scale: 2, color: 'red', visibleIf: 'temp > 30 && hum < 60 || temp > 34' },
+          ],
+        },
+      ],
+    });
+    expect(checkSpec(spec, p).filter((x) => x.severity === 'error')).toEqual([]);
+    expect(firstPixelDifference(spec, p, [0, 777, 1500, 2600, 3500, 4100, 5555, 6999])).toBeNull();
+  }, 120_000);
+
   for (const id of ['st7789-240', 'ssd1306-i2c', 'gc9a01-round', 'st7735-tft-18']) {
     it(`${id}: every pixel of ${times.length} frames`, () => {
       const p = panel(id);
-      for (const rotation of [0, 1]) {
-        const spec = { ...testPatternSpec('disp1', p), rotation };
-        const native = nativeFrames(spec, p, times);
-        const sim = new DisplaySim(spec, p);
-        times.forEach((ms, i) => {
-          const fb = new Framebuffer(p, rotation);
-          sim.frame(fb, ms);
-          const diff = [...fb.px].findIndex((v, k) => v !== native[i][k]);
-          expect(diff, `${id} rotation ${rotation} at ${ms} ms: first different pixel ${diff} (x ${diff % fb.w}, y ${Math.floor(diff / fb.w)})`).toBe(-1);
-        });
-      }
+      for (const rotation of [0, 1]) expect(firstPixelDifference({ ...testPatternSpec('disp1', p), rotation }, p, times), `${id} rotation ${rotation}`).toBeNull();
     }, 120_000);
   }
 });

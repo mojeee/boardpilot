@@ -104,8 +104,8 @@ function paint(key: string, r: Running, ms: number) {
   put(r.view, false);
   put(r.native, true);
   const prev = useDisplayFrames.getState().frames[key];
-  if (!key.startsWith('preview:'))
-    useDisplayFrames.setState((s) => ({ frames: { ...s.frames, [key]: { canvas: r.native, widthPx: r.panel.widthPx, heightPx: r.panel.heightPx, version: (prev?.version ?? 0) + 1 } } }));
+  // Chat previews ("preview:<id>") are here too, for their own canvases; the 3D view only reads part ids.
+  useDisplayFrames.setState((s) => ({ frames: { ...s.frames, [key]: { canvas: r.native, widthPx: r.panel.widthPx, heightPx: r.panel.heightPx, version: (prev?.version ?? 0) + 1 } } }));
   if (useDisplayClock.getState().screen[key] !== r.sim.state.screen) useDisplayClock.setState((s) => ({ screen: { ...s.screen, [key]: r.sim.state.screen } }));
 }
 

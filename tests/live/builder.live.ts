@@ -25,6 +25,9 @@ import type { AiContext, AiReply, LogEntry, Scene } from '@shared/types';
 import type { ChatRecording, ReplayStep } from '@shared/chatReplay';
 import { checkScene } from '@shared/projectBuilder';
 import { assignPins } from '@shared/assign';
+import { panelOf } from '@shared/displaySpec';
+import { generateDisplayCode } from '@shared/displayCode';
+import { firstPixelDifference, nativeAvailable } from '../native/harness';
 import { Assistant } from '../../app/main/ai/assistant';
 import { AiSettingsStore } from '../../app/main/settings/settings';
 import { makeHub } from '../helpers';
@@ -84,6 +87,8 @@ interface Scenario {
   expectNoProposal?: boolean;
   /** save as a website demo recording */
   record?: boolean;
+  /** a display design is expected (Display Studio): what it must contain */
+  display?: { minScreens: number; patterns?: string[]; condition?: boolean; fromParts?: boolean };
   /** a request to do something in the app, not to build: graded on the first answer only */
   act?: {
     /** app actions expected, in order, as "action" or "action:text the argument contains" */
@@ -354,6 +359,50 @@ const S: Scenario[] = [
     ],
   },
   {
+    id: 'display-patterns',
+    title: 'Display test patterns',
+    blurb: 'Test patterns on an ST7789 screen, simulated pixel by pixel, then the code.',
+    board: 'esp32-devkitc-30',
+    lang: 'en',
+    request: 'I just wired a 1.3 inch ST7789 screen to my ESP32. Show test patterns so I can check it works: colour bars, a checkerboard, a rainbow gradient and a bouncing ball, 3 seconds each, then start again.',
+    persona: 'Has an ESP32 DevKit and the ST7789 240x240 screen already wired in the project. Wants to check the screen works. Happy with the first good design; presses Apply.',
+    start: [{ id: 'tft1', partId: 'st7789-240', label: 'Screen', position: [0, 0, 45], confirmed: true }],
+    startWired: true,
+    needs: [],
+    display: { minScreens: 4, patterns: ['colorbars', 'checker', 'gradient', 'bounce'] },
+    record: true,
+  },
+  {
+    id: 'display-oled-dashboard',
+    title: 'OLED dashboard',
+    blurb: 'Temperature and humidity on an SSD1306 with a blinking warning, on an Arduino Uno.',
+    board: 'arduino-uno-r3',
+    lang: 'en',
+    request: 'On my OLED, show the temperature big and the humidity small from the BME280, and make a warning blink when it is above 30 °C.',
+    persona: 'Has an Arduino Uno with a BME280 and an SSD1306 OLED already wired in the project. Indoors. Presses Apply when the design looks right.',
+    start: [
+      { id: 'bme1', partId: 'bme280-gy', label: 'BME280', position: [-20, 0, 45], confirmed: true },
+      { id: 'oled1', partId: 'ssd1306-i2c', label: 'OLED', position: [20, 0, 45], confirmed: true },
+    ],
+    startWired: true,
+    needs: [],
+    display: { minScreens: 1, condition: true, fromParts: true },
+  },
+  {
+    id: 'display-round-gauge',
+    title: 'Round gauge',
+    blurb: 'A new project: a round GC9A01 screen showing the temperature as a gauge, on a Pico.',
+    board: 'rpi-pico',
+    lang: 'en',
+    request: 'I want a round display that shows the room temperature like a gauge.',
+    persona: 'Has a Raspberry Pi Pico, nothing else yet; will buy what is suggested. Indoors, USB power. Presses Apply on the parts, then asks the assistant to design the gauge on the screen, and presses Apply on that too.',
+    needs: [
+      { what: 'round display', keywords: ['gc9a01', 'round'] },
+      { what: 'temperature sensor', measures: ['temperature'] },
+    ],
+    display: { minScreens: 1, fromParts: true },
+  },
+  {
     id: 'settings',
     title: 'Change settings',
     blurb: 'Switch the app to Italian and the 3D view to high contrast.',
@@ -457,6 +506,7 @@ async function userTurn(sc: Scenario, transcript: string, reply: AiReply): Promi
           `Conversation so far:\n${transcript}\n\nThe assistant's last message:\n${reply.message}\n` +
           (options.length ? `Options shown as buttons: ${JSON.stringify(options)}\n` : '') +
           (reply.proposal ? `A project proposal card is shown: ${reply.proposal.title}, parts: ${reply.proposal.parts.map((p) => p.name).join(', ')}.\n` : '') +
+          (reply.display ? `An animated display preview card is shown: "${reply.display.spec.title}", screens: ${reply.display.spec.screens.map((x) => x.id).join(', ')}, with an Apply button.\n` : '') +
           'What do you do?',
       },
     ],
@@ -537,6 +587,8 @@ interface RunResult {
   verdict: Verdict;
   transcript: string;
   steps: ReplayStep[];
+  /** the drawing the conversation started from (wired when the scenario says so) */
+  start?: Scene;
   error?: string;
 }
 
@@ -566,6 +618,7 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
 
   let scene: Scene = { board: sc.board, parts: sc.start ?? [], wires: [] };
   if (sc.startWired) scene = assignPins(scene, BOARDS[sc.board], PARTS).scene;
+  const startScene = scene;
   const log: LogEntry[] = [];
   const steps: ReplayStep[] = [];
   const lines: string[] = [];
@@ -577,6 +630,8 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
   let lastProposal: AiReply['proposal'] | undefined;
   let measuredClaim = false;
   let actsSeen: AiReply | undefined;
+  let lastDisplay: AiReply['display'];
+  let displayApplied = false;
   let languageOk = true;
   let error: string | undefined;
   const t0 = Date.now();
@@ -606,10 +661,12 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
     );
     if (reply.actions?.length) lines.push(`  ACTIONS: ${reply.actions.map((x) => `${x.action}(${x.arg})`).join(', ')}`);
     if (reply.codeRequest) lines.push(`  CODE REQUEST: ${reply.codeRequest}`);
+    if (reply.display) lines.push(`  DISPLAY: ${reply.display.spec.title} on ${reply.display.spec.part}: ${reply.display.spec.screens.map((x) => `${x.id}[${x.elements.map((e) => (e.type === 'pattern' ? e.kind : e.type)).join(' ')}]`).join(', ')}; ${reply.display.problems.filter((p) => p.severity === 'error').length} errors`);
     if (sc.act) {
       actsSeen = reply;
       break;
     }
+    if (reply.display) lastDisplay = reply.display;
     if (reply.proposal) {
       proposals++;
       lastProposal = reply.proposal;
@@ -630,10 +687,21 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
       steps.push({ kind: 'apply' });
       lines.push('  (user presses Apply)');
       log.push({ id: log.length + 1, t: Date.now(), type: 'action', text: `Applied the assistant’s project “${reply.proposal.title}”.`, source: 'assistant proposal' });
-      if (reply.proposal.findings.every((f) => f.severity !== 'error')) {
-        steps.push({ kind: 'code' });
-        break;
+      // A project without a display design yet: the conversation goes on to the screen.
+      if (reply.proposal.findings.every((f) => f.severity !== 'error') && !(sc.display && !reply.display)) {
+        if (!reply.display) {
+          steps.push({ kind: 'code' });
+          break;
+        }
       }
+    }
+    if (reply.display && (move.apply || !move.message.trim()) && !reply.display.problems.some((p) => p.severity === 'error')) {
+      scene = { ...scene, displays: [...(scene.displays ?? []).filter((d) => d.part !== reply.display!.spec.part), reply.display.spec] };
+      displayApplied = true;
+      if (steps[steps.length - 1]?.kind !== 'apply') steps.push({ kind: 'apply' });
+      steps.push({ kind: 'code' });
+      lines.push('  (user presses Apply on the display, then Write the code)');
+      break;
     }
     // A request the library cannot do: the first answer is what counts.
     if (sc.expectNoProposal) break;
@@ -650,6 +718,32 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
     if (!pass) failures.push(`${name}: ${why}`);
   };
   check('no API error', !error, error ?? '');
+  if (sc.display) {
+    const d = lastDisplay;
+    check('display designed', !!d, 'no design_display result in the conversation');
+    check('display applied by the user', displayApplied, 'the simulated user never applied the design');
+    if (d) {
+      const inst = scene.parts.find((p) => p.id === d.spec.part);
+      const def = inst ? PARTS[inst.partId] : undefined;
+      const panel = def ? panelOf(def) : null;
+      check('design checks clean', !d.problems.some((p) => p.severity === 'error'), d.problems.map((p) => p.message).join(' | '));
+      check(`at least ${sc.display.minScreens} screen(s)`, d.spec.screens.length >= sc.display.minScreens, `${d.spec.screens.length} screens`);
+      const kinds = new Set(d.spec.screens.flatMap((x) => x.elements.flatMap((e) => (e.type === 'pattern' ? [e.kind] : []))));
+      for (const k of sc.display.patterns ?? []) check(`shows the ${k} pattern`, kinds.has(k as never), `patterns: ${[...kinds].join(', ') || 'none'}`);
+      if (sc.display.condition)
+        check('reacts to a condition', d.spec.screens.some((x) => x.elements.some((e) => e.visibleIf.trim())) || d.spec.transitions.some((tr) => tr.when.trim()), 'no visibleIf or when');
+      if (sc.display.fromParts) check('values name their real source', d.spec.vars.some((v) => scene.parts.some((p) => v.from.startsWith(`${p.id}.`))), `vars: ${d.spec.vars.map((v) => `${v.name}<-${v.from}`).join(', ')}`);
+      if (panel && def) {
+        const code = generateDisplayCode(d.spec, panel, def, scene, BOARDS[scene.board]);
+        check('code generated for the display', code.code.length > 0, code.notes.join(' '));
+        if (nativeAvailable) {
+          const times = [0, 500, 1500, 2999, 3000, 4200, 6100, 9000, 12_345, 15_000, 21_000];
+          const diff = firstPixelDifference(d.spec, panel, times);
+          check('the code draws the same pixels as the preview (native Adafruit GFX)', diff === null, diff ?? '');
+        }
+      }
+    }
+  }
   if (sc.act) {
     const got = actsSeen?.actions ?? [];
     let from = 0;
@@ -661,6 +755,8 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
     }
     if (sc.act.code) check('asks for code in the Code panel', !!actsSeen?.codeRequest, 'no write_code call');
     check('changes nothing else', !actsSeen?.proposal && !actsSeen?.pendingWrite, 'made a proposal or asked for a board write');
+  } else if (sc.display && !sc.needs.length) {
+    // A display on parts already wired: no new project needed.
   } else if (sc.expectNoProposal) {
     const first = steps.find((x): x is Extract<ReplayStep, { kind: 'assistant' }> => x.kind === 'assistant');
     check('honest: no proposal for a part the library lacks', !first?.reply.proposal, `proposed ${partIds.join(', ')}`);
@@ -700,6 +796,7 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
     verdict,
     transcript: lines.join('\n'),
     steps,
+    start: startScene,
     ...(error ? { error } : {}),
   };
 }
@@ -762,7 +859,7 @@ function saveRecording(sc: Scenario, r: RunResult) {
     lang: sc.lang,
     model: MODEL,
     recordedAt: new Date().toISOString().slice(0, 10),
-    start: { board: sc.board, parts: sc.start ?? [], wires: [] },
+    start: r.start ?? { board: sc.board, parts: sc.start ?? [], wires: [] },
     steps: r.steps,
   };
   writeFileSync(join(dir, `${sc.id}.json`), `${JSON.stringify(rec, null, 1)}\n`);

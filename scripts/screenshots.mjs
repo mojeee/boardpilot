@@ -36,6 +36,8 @@ const SHOTS = {
   import: { hash: `#demo=import${LOOK}`, delay: 30000 },
   // A recorded conversation with the assistant, replayed to the end (parts applied, code open).
   chat: { hash: `#demo=chat&chat=weather-esp32&stage=desk${LOOK}`, delay: 34000 },
+  // Display Studio: the recorded test-pattern chat, applied, with the screen running.
+  display: { hash: `#demo=chat&chat=display-patterns&stage=desk${LOOK}`, delay: 26000 },
 };
 
 /** The 3D viewport inside the 1600 × 1000 window: under the top menu and the project tabs, left of the assistant, above the Code/Log panel. */
@@ -54,7 +56,9 @@ function run(env, delay) {
   const electron = ['electron', '.', '--no-sandbox', '--force-device-scale-factor=2', ...gl];
   const cmd = headless ? 'xvfb-run' : 'npx';
   const args = headless ? ['-a', '-s', '-screen 0 3300x2100x24', 'npx', ...electron] : electron;
-  spawnSync(cmd, args, { cwd: root, env: { ...process.env, BP_PROFILE: profile(), ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });
+  // No developer keys from .env.local: screenshots never call an AI (recorded chats replay without one).
+  const noKeys = { BP_NO_ENV_LOCAL: '1', ANTHROPIC_API_KEY: '', OPENAI_API_KEY: '', GEMINI_API_KEY: '' };
+  spawnSync(cmd, args, { cwd: root, env: { ...process.env, ...noKeys, BP_PROFILE: profile(), ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });
 }
 
 if (want[0] === 'boards') {

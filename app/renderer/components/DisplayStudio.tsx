@@ -17,29 +17,31 @@ import { useLayout } from '../state/layout';
 import { panelForPart, repaint, restartDisplays, runDisplay, runningDisplay, showScreen, stopDisplay, useDisplayClock, useDisplayFrames } from '../state/displays';
 import { askAi } from './ai';
 
-/** Put a running display's preview canvas on screen, scaled with crisp pixels. */
+/** A running display's preview, scaled with crisp pixels. Each preview has its own canvas and copies
+ *  the frames, so the studio, the chat card and the picture-in-picture can show the same display. */
 export function DisplayCanvas({ runKey, maxW = 360, maxH = 300, round }: { runKey: string; maxW?: number; maxH?: number; round?: boolean }) {
-  const box = useRef<HTMLDivElement>(null);
-  // Re-attach when the display restarts with a new spec (a new canvas).
+  const ref = useRef<HTMLCanvasElement>(null);
   const version = useDisplayFrames((s) => s.frames[runKey]?.version ?? 0);
   const r = runningDisplay(runKey);
-  const view = r?.view;
   useEffect(() => {
-    const el = box.current;
-    if (!el || !view) return;
-    if (view.parentElement !== el) {
-      el.replaceChildren(view);
+    const c = ref.current;
+    if (!c || !r) return;
+    if (c.width !== r.view.width || c.height !== r.view.height) {
+      c.width = r.view.width;
+      c.height = r.view.height;
     }
-  }, [view, version]);
+    c.getContext('2d')?.drawImage(r.view, 0, 0);
+  }, [r, version]);
   if (!r) return null;
   const scale = Math.max(1, Math.floor(Math.min(maxW / r.fb.w, maxH / r.fb.h)));
   return (
     <div
-      ref={box}
       className={`display-canvas ${round ? 'round' : ''} panel-${r.panel.color}`}
       style={{ width: r.fb.w * scale, height: r.fb.h * scale }}
       title={t('Simulated: {w}x{h} pixels, as the {controller} shows them', { w: r.fb.w, h: r.fb.h, controller: r.panel.controller })}
-    />
+    >
+      <canvas ref={ref} />
+    </div>
   );
 }
 
@@ -115,10 +117,14 @@ function ClockControls() {
   );
 }
 
+const NO_OVERRIDES: Record<string, number> = {};
+
 function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
   const key = spec.part;
   const current = useDisplayClock((s) => s.screen[key]);
-  const overrides = useDisplayClock((s) => s.overrides[key] ?? {});
+  // Select the stored object itself (a new {} on every render would loop: zustand compares selections).
+  const held = useDisplayClock((s) => s.overrides[key]);
+  const overrides = held ?? NO_OVERRIDES;
   const problems = useMemo(() => checkSpec(spec, panel), [spec, panel]);
   const setOverride = (name: string, v: number | null) => {
     useDisplayClock.setState((s) => {
@@ -305,7 +311,7 @@ export function DisplayPip() {
           ×
         </button>
       </div>
-      <DisplayCanvas runKey={first.part} maxW={200} maxH={160} round={panel.round} />
+      <DisplayCanvas runKey={first.part} maxW={150} maxH={120} round={panel.round} />
     </div>
   );
 }

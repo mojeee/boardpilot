@@ -93,6 +93,8 @@ export type DisplayElement = ElBase &
     | { type: 'circle'; x: number; y: number; r: number; color: string; fill: boolean }
     | { type: 'bar'; x: number; y: number; w: number; h: number; value: string; min: number; max: number; color: string; vertical: boolean }
     | { type: 'graph'; x: number; y: number; w: number; h: number; value: string; min: number; max: number; color: string }
+    /** a dial: `ticks` scale marks and a needle, angles in degrees clockwise from 12 o'clock */
+    | { type: 'gauge'; x: number; y: number; r: number; value: string; min: number; max: number; color: string; startDeg: number; endDeg: number; ticks: number }
     | { type: 'icon'; x: number; y: number; name: IconName; scale: number; color: string }
     | { type: 'pattern'; x: number; y: number; w: number; h: number; kind: PatternKind; size: number; speed: number; colors: string[] }
   );
@@ -180,11 +182,32 @@ export function varValue(v: DisplayVar, ms: number): number {
   }
 }
 
-/** "temp > 30", "hum <= 40.5", "alarm" (non-zero), "!alarm": the condition language of a spec. */
+const ATOM = /^([A-Za-z_]\w*)\s*(<=|>=|==|!=|<|>)\s*(-?\d+(?:\.\d+)?)$/;
+const FLAG = /^!?[A-Za-z_]\w*$/;
+
+/** The parts of a condition: "a > 1 && b < 2 || c" → [["a > 1", "b < 2"], ["c"]] (|| of &&), or null if not understood. */
+export function parseCondition(cond: string): string[][] | null {
+  const ors = cond.split('||').map((o) => o.split('&&').map((a) => a.trim()));
+  return ors.every((and) => and.every((a) => ATOM.test(a) || FLAG.test(a))) ? ors : null;
+}
+
+/** Names of the values a condition uses. */
+export const conditionVars = (cond: string): string[] => (parseCondition(cond) ?? []).flat().map((a) => /^!?([A-Za-z_]\w*)/.exec(a)![1]);
+
+/**
+ * The condition language of a spec: "temp > 30", "hum <= 40.5", "alarm" (non-zero), "!alarm",
+ * joined with && and || (&& binds first, no brackets). Anything else is false (and checkSpec says so).
+ */
 export function testCondition(cond: string, vals: Record<string, number>): boolean {
   const c = cond.trim();
   if (!c) return true;
-  const m = /^([A-Za-z_]\w*)\s*(<=|>=|==|!=|<|>)\s*(-?\d+(?:\.\d+)?)$/.exec(c);
+  const ors = parseCondition(c);
+  if (!ors) return false;
+  return ors.some((and) => and.every((a) => testAtom(a, vals)));
+}
+
+function testAtom(c: string, vals: Record<string, number>): boolean {
+  const m = ATOM.exec(c);
   if (m) {
     const a = vals[m[1]] ?? 0;
     const b = Number(m[3]);
@@ -230,11 +253,15 @@ export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
     if (!tr.afterMs && !tr.when.trim()) err(t('The change from “{from}” to “{to}” has neither a time nor a condition.', { from: tr.from, to: tr.to }));
   }
   const usesVar = (s: string) => [...s.matchAll(/\{([A-Za-z_]\w*)\}/g)].map((m) => m[1]);
-  const condVar = (s: string) => /^!?([A-Za-z_]\w*)/.exec(s.trim())?.[1];
+  const badCond = (where: string, c: string) => {
+    if (c.trim() && !parseCondition(c.trim())) err(t('{where}: the condition “{cond}” is not understood. Use forms like temp > 30, alarm, !alarm, joined with && or ||.', { where, cond: c }));
+  };
+  for (const tr of spec.transitions) badCond(`${tr.from} → ${tr.to}`, tr.when);
   for (const sc of spec.screens) {
     for (const [i, el] of sc.elements.entries()) {
       const where = `${sc.id} #${i + 1} (${el.type})`;
-      for (const name of [...('text' in el ? usesVar(el.text) : []), ...('value' in el ? [el.value] : []), ...(el.visibleIf ? [condVar(el.visibleIf)] : [])]) {
+      badCond(where, el.visibleIf);
+      for (const name of [...('text' in el ? usesVar(el.text) : []), ...('value' in el ? [el.value] : []), ...conditionVars(el.visibleIf)]) {
         if (name && !varNames.has(name)) err(t('{where} uses the value “{name}”, which is not defined.', { where, name }));
       }
       if (el.type === 'text') {
@@ -243,6 +270,8 @@ export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
         const x0 = el.align === 'center' ? el.x - wPx / 2 : el.align === 'right' ? el.x - wPx : el.x;
         if (x0 < 0 || x0 + wPx > W || el.y < 0 || el.y + lines.length * 8 * el.size - el.size > H)
           warn(t('{where}: the text “{text}” goes past the {w}x{h} screen.', { where, text: el.text.slice(0, 24), w: W, h: H }));
+      } else if (el.type === 'gauge') {
+        if (el.x - el.r < 0 || el.y - el.r < 0 || el.x + el.r >= W || el.y + el.r >= H) warn(t('{where} goes past the {w}x{h} screen.', { where, w: W, h: H }));
       } else if ('w' in el && 'h' in el) {
         if (el.x < 0 || el.y < 0 || el.x + el.w > W || el.y + el.h > H) warn(t('{where} goes past the {w}x{h} screen.', { where, w: W, h: H }));
       }
@@ -261,7 +290,7 @@ const num = (v: unknown, d: number, lo = -10000, hi = 10000) => (typeof v === 'n
 const str = (v: unknown, d = '') => (typeof v === 'string' ? v : d);
 const obj = (v: unknown): Record<string, unknown> => (typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
-const ELEMENT_TYPES = ['text', 'rect', 'line', 'circle', 'bar', 'graph', 'icon', 'pattern'];
+const ELEMENT_TYPES = ['text', 'rect', 'line', 'circle', 'bar', 'graph', 'gauge', 'icon', 'pattern'];
 const PATTERNS: PatternKind[] = ['colorbars', 'checker', 'gradient', 'grid', 'stripes', 'bounce', 'scroll', 'rings', 'fill'];
 
 /** A spec from loose JSON (the assistant's tool input): defaults filled, numbers clamped, unknown types dropped. */
@@ -302,6 +331,20 @@ export function normalizeSpec(raw: unknown): DisplaySpec {
             return { ...base, type: 'bar', ...xy, ...wh, value: str(e.value), min: num(e.min, 0), max: num(e.max, 100), color: color(e.color, '#FFFFFF'), vertical: e.vertical === true };
           case 'graph':
             return { ...base, type: 'graph', ...xy, ...wh, value: str(e.value), min: num(e.min, 0), max: num(e.max, 100), color: color(e.color, '#FFFFFF') };
+          case 'gauge':
+            return {
+              ...base,
+              type: 'gauge',
+              ...xy,
+              r: Math.round(num(e.r, 40, 4, 1000)),
+              value: str(e.value),
+              min: num(e.min, 0),
+              max: num(e.max, 100),
+              color: color(e.color, '#FFFFFF'),
+              startDeg: num(e.startDeg, -120, -360, 360),
+              endDeg: num(e.endDeg, 120, -360, 360),
+              ticks: Math.round(num(e.ticks, 10, 0, 60)),
+            };
           case 'icon':
             return { ...base, type: 'icon', ...xy, name: (ICONS as string[]).includes(str(e.name)) ? (str(e.name) as IconName) : 'warning', scale: Math.round(num(e.scale, 1, 1, 8)), color: color(e.color, '#FFFFFF') };
           default:

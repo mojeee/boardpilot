@@ -13,7 +13,7 @@ import { boardPinFor, pinById } from './board';
 import { codePinName } from './planner';
 import { FONT_5X7 } from './displayFont';
 import { COLOR_BARS, GRAPH_STEP_MS, ICON_BITS } from './displayRender';
-import { parseColor, rgb565, rotatedSize, type DisplayElement, type DisplaySpec, type PanelInfo } from './displaySpec';
+import { parseColor, parseCondition, rgb565, rotatedSize, type DisplayElement, type DisplaySpec, type PanelInfo } from './displaySpec';
 import { t } from './i18n';
 
 export interface DisplayCode {
@@ -111,14 +111,18 @@ function colorLiteral(panel: PanelInfo, c: string): string {
   return (rgb[0] * 3 + rgb[1] * 6 + rgb[2]) / 10 >= 128 ? '1' : '0';
 }
 
-/** A spec condition ("temp > 30", "!alarm") as C. */
+/** A spec condition ("temp > 30 && !alarm") as C; one checkSpec does not understand is false, like in the app. */
 function condC(cond: string): string {
   const c = cond.trim();
   if (!c) return 'true';
-  const m = /^([A-Za-z_]\w*)\s*(<=|>=|==|!=|<|>)\s*(-?\d+(?:\.\d+)?)$/.exec(c);
-  if (m) return `(v_${ident(m[1])} ${m[2]} ${m[3]})`;
-  const neg = c.startsWith('!');
-  return `(v_${ident(c.replace(/^!/, ''))} ${neg ? '==' : '!='} 0)`;
+  const ors = parseCondition(c);
+  if (!ors) return 'false';
+  const atom = (a: string) => {
+    const m = /^([A-Za-z_]\w*)\s*(<=|>=|==|!=|<|>)\s*(-?\d+(?:\.\d+)?)$/.exec(a);
+    if (m) return `(v_${ident(m[1])} ${m[2]} ${m[3]})`;
+    return `(v_${ident(a.replace(/^!/, ''))} ${a.startsWith('!') ? '==' : '!='} 0)`;
+  };
+  return `(${ors.map((and) => `(${and.map(atom).join(' && ')})`).join(' || ')})`;
 }
 
 function varFunction(spec: DisplaySpec): string[] {
@@ -191,6 +195,23 @@ function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec): stri
         `    if (px >= 0) gfx.drawLine(px, py, x, y, ${col(el.color)});`,
         '    px = x; py = y;',
         '  }',
+        '}',
+      );
+      break;
+    }
+    case 'gauge': {
+      const v = `v_${ident(el.value)}`;
+      out.push(
+        '{',
+        `  for (int i = 0; i <= ${el.ticks}; i++) {`,
+        `    double deg = ${el.ticks ? `${fl(el.startDeg)} + (${fl(el.endDeg - el.startDeg)} * i) / ${el.ticks}` : fl(el.startDeg)};`,
+        `    int x0, y0, x1, y1; bpAt(${el.x}, ${el.y}, deg, ${Math.floor((el.r * 85) / 100)}, x0, y0); bpAt(${el.x}, ${el.y}, deg, ${el.r}, x1, y1);`,
+        `    gfx.drawLine(x0, y0, x1, y1, ${col(el.color)});`,
+        '  }',
+        `  double f = constrain((${v} - (${fl(el.min)})) / (${fl(el.max - el.min || 1)}), 0.0, 1.0);`,
+        `  int nx, ny; bpAt(${el.x}, ${el.y}, ${fl(el.startDeg)} + (${fl(el.endDeg - el.startDeg)}) * f, ${el.r - 6 > 2 ? el.r - 6 : 2}, nx, ny);`,
+        `  gfx.drawLine(${el.x}, ${el.y}, nx, ny, ${col(el.color)});`,
+        `  gfx.fillCircle(${el.x}, ${el.y}, ${el.r >= 20 ? 3 : 1}, ${col(el.color)});`,
         '}',
       );
       break;
@@ -342,6 +363,12 @@ export function generateDisplayCode(
     '}',
     '',
     'long bpMod(long a, long m) { return ((a % m) + m) % m; }',
+    '// A point on a dial: degrees clockwise from 12 o\'clock, rounded like the app (floor(x + 0.5)).',
+    'void bpAt(int cx, int cy, double deg, int len, int &x, int &y) {',
+    '  double rad = deg * PI / 180.0;',
+    '  x = cx + (int)floor(sin(rad) * len + 0.5);',
+    '  y = cy - (int)floor(cos(rad) * len + 0.5);',
+    '}',
     'long bpTri(long p, long len) { return len <= 0 ? 0 : len - labs(bpMod(p, 2 * len) - len); }',
     '',
     '// Test patterns: 0 colour bars, 1 checker, 2 gradient, 3 grid, 4 stripes, 5 scroll, 6 rings, 7 bounce, 8 fill.',

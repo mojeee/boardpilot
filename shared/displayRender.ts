@@ -381,6 +381,26 @@ export class DisplaySim {
           }
           break;
         }
+        case 'gauge': {
+          const v = vals[el.value] ?? 0;
+          const c = st(el.color);
+          // Same maths as the sketch: degrees clockwise from 12 o'clock, rounding with floor(x + 0.5).
+          const at = (deg: number, len: number): [number, number] => {
+            const rad = (deg * Math.PI) / 180;
+            return [el.x + Math.floor(Math.sin(rad) * len + 0.5), el.y - Math.floor(Math.cos(rad) * len + 0.5)];
+          };
+          for (let i = 0; i <= el.ticks; i++) {
+            const deg = el.ticks ? el.startDeg + ((el.endDeg - el.startDeg) * i) / el.ticks : el.startDeg;
+            const [x0, y0] = at(deg, Math.floor((el.r * 85) / 100));
+            const [x1, y1] = at(deg, el.r);
+            fb.line(x0, y0, x1, y1, c);
+          }
+          const frac = Math.max(0, Math.min(1, (v - el.min) / (el.max - el.min || 1)));
+          const [nx, ny] = at(el.startDeg + (el.endDeg - el.startDeg) * frac, el.r - 6 > 2 ? el.r - 6 : 2);
+          fb.line(el.x, el.y, nx, ny, c);
+          fb.fillCircle(el.x, el.y, el.r >= 20 ? 3 : 1, c);
+          break;
+        }
         case 'icon': {
           const bits = ICON_BITS[el.name] ?? ICON_BITS.warning;
           const s = Math.max(1, Math.round(el.scale));
