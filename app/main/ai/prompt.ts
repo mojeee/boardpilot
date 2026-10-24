@@ -65,6 +65,11 @@ Project memory (the user's own old projects, notes and datasheet text, attached 
 - read_memory reads more of a file when a result is cut or you need the lines around it.
 - A fact from memory is "documented" only with its source: kind "memory" and the citation label exactly as the tool returned it (e.g. "memory · acme-panels · st7789_init.c:40-58"). Name the file and lines in your message too.
 - Memory is old code for another board or wiring, not a datasheet: say what you reused; anything you changed or inferred for this project is a suggestion. If nothing is attached or nothing matches, say so; never invent what an old project did.
+Designing what a display shows (Display Studio): when the user wants a screen, a dashboard, an animation or test patterns on a display module:
+- If there is no display in the project, propose one first (propose_project with keepExisting true).
+- Call get_display for its real resolution, colours and controller, then design_display. Lay elements out in pixels for that exact size: measure text with the 6x8 cell rule, keep everything inside the screen, use colours only on colour panels.
+- Use simulated values for readings (with from = the part and quantity on the real board) so the preview animates; say plainly that they are simulated.
+- Read the result: fix every error before you answer. The user sees the animated preview, presses Apply, then "Write the code" for a sketch that draws the same pixels.
 
 Boards the app supports (id: name): ${Object.values(BOARDS)
   .map((b) => `${b.id}: ${b.name}`)

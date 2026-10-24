@@ -20,8 +20,7 @@
 import { useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import type { PartDef, PartDisplay } from '@shared/types';
-import { displayLayout } from '@shared/partModel';
+
 import { useDisplayFrames } from '../state/displays';
 
 /**
@@ -52,14 +51,5 @@ export function useDisplayTexture(partId: string | undefined): THREE.Texture | n
   return tex;
 }
 
-/**
- * Where the pixels are on a display part, in the part's own frame (mm; x along the pin row, z away
- * from the pins, centre of the part at 0, 0), from its `display` field. Null for parts that are not
- * pixel displays.
- */
-export function displayArea(def: PartDef): (PartDisplay & { centerMm: [number, number] }) | null {
-  const d = def.display;
-  const lay = displayLayout(def);
-  if (!d || !lay) return null;
-  return { ...d, centerMm: [lay.active.x, lay.active.z] };
-}
+// displayArea moved to shared/partModel.ts (pure, testable without a browser).
+export { displayArea } from '@shared/partModel';

@@ -5,6 +5,7 @@
 import type { AiChoice, LogEntry, PartDef, Scene, TargetRef, WriteRequest } from '@shared/types';
 import { ACTION_IDS, APP_ACTIONS, type AppActionId } from '@shared/actions';
 import { BOARDS, PARTS } from '@shared/board';
+import { checkSpec, normalizeSpec, panelOf, rotatedSize, ICONS, type DisplaySpec, type SpecProblem } from '@shared/displaySpec';
 import { buildProposal, checkScene, partDetails, proposalForModel, searchParts, type ProjectProposal, type ProposalInput } from '@shared/projectBuilder';
 import type { HardwareHub } from '../hardware/hub';
 import type { JsonSchema, ToolSpec } from './providers/types';
@@ -170,6 +171,34 @@ export const TOOLS: ToolSpec[] = [
     ),
   },
   {
+    name: 'get_display',
+    description:
+      'Facts about a display module in the project, before you design what it shows: resolution, colour type, controller, whether BoardPilot can write its code, and the current Display Studio design if any.',
+    parameters: obj({ part: { type: 'string', description: 'scene part id of the display, e.g. "tft1"' } }, ['part']),
+  },
+  {
+    name: 'design_display',
+    description:
+      'Design what a display module shows (Display Studio): screens made of elements, the changes between screens, and the values shown (simulated in the app). The app checks it against the panel (size, unknown values, missing screens), shows it animated in the chat with an Apply button and writes matching Arduino code on request. Fix every error it reports and call again before you answer. ' +
+      'Coordinates are pixels from the top-left of the rotated screen. Text uses a 5x7 font in 6x8 cells: a line is 6*size*chars-size wide and 8*size-size tall; "{name}" inserts a value; "°" works. ' +
+      'Elements (type and fields): text {x,y,text,size 1-8,color,align left|center|right}; rect {x,y,w,h,color,fill}; line {x,y,x2,y2,color}; circle {x,y,r,color,fill}; bar {x,y,w,h,value,min,max,color,vertical}; graph {x,y,w,h,value,min,max,color} (history, one sample every 250 ms); gauge {x,y,r,value,min,max,color,startDeg,endDeg,ticks} (a dial with scale marks and a needle; degrees clockwise from 12 o\'clock, e.g. -120 to 120); ' +
+      `icon {x,y,name,scale,color} (8x8, names: ${ICONS.join(', ')}); pattern {x,y,w,h,kind,size,speed,colors} (kinds: colorbars, checker, gradient (no colors on a colour panel = rainbow), grid, stripes, scroll, rings, bounce (ball of radius size), fill (cycles colors every size*100 ms); speed in pixels per second, 0 = still). ` +
+      'Every element may have visibleIf (e.g. "temp > 30", "temp > 30 && hum < 40", "alarm || !ok") and blinkMs. Colours: "#RRGGBB" or names; on one-colour panels light colours are on, dark are off. ' +
+      'Values: {name, source: {sim: wave|ramp (min,max,periodS) | steps (values, everyS) | random (min,max,everyS)}, unit, digits, from: the part and quantity on the real board, e.g. "bme1.temperature", or ""}. Transitions: {from, to, afterMs, when}.',
+    parameters: obj(
+      {
+        title: { type: 'string' },
+        part: { type: 'string', description: 'scene part id of the display' },
+        rotation: { type: 'integer', minimum: 0, maximum: 3 },
+        vars: { type: 'array', items: { type: 'object' } },
+        screens: { type: 'array', items: { type: 'object', description: '{id, background, elements: [...]}' } },
+        start: { type: 'string', description: 'id of the first screen' },
+        transitions: { type: 'array', items: { type: 'object' } },
+      },
+      ['title', 'part', 'rotation', 'vars', 'screens', 'start', 'transitions'],
+    ),
+  },
+  {
     name: 'check_project',
     description: 'Run the wiring checker on the user\'s current project (as drawn now) and list its wiring, errors, warnings, unwired pins and extras to buy.',
     parameters: obj({}, []),
@@ -198,6 +227,7 @@ export interface ToolTurnState {
   proposal?: ProjectProposal;
   /** citation labels search_memory / read_memory returned (the reply may cite only these) */
   memoryCited?: string[];
+  display?: { spec: DisplaySpec; problems: SpecProblem[] };
   calls: { name: string; input: unknown; ok: boolean; error?: string }[];
 }
 
@@ -363,6 +393,54 @@ export async function runTool(
           next: ok
             ? 'The proposal card is shown with an Apply button. Explain it briefly; mention warnings and extras to buy.'
             : 'Fix the errors or unwired pins (other parts, other pins, or keepExisting) and call propose_project again before you answer.',
+        });
+      }
+      case 'get_display':
+      case 'design_display': {
+        if (!builder) return { content: 'Displays can only be designed in the app.', isError: true };
+        const parts = builder.parts ?? PARTS;
+        const partId = str(input.part, 'part');
+        // The display may be in the drawing or in a proposal made earlier in this answer.
+        const scene = turn.proposal?.scene.parts.some((p) => p.id === partId) ? turn.proposal.scene : builder.scene;
+        const inst = scene.parts.find((p) => p.id === partId);
+        const def = inst ? parts[inst.partId] : undefined;
+        const panel = def ? panelOf(def) : null;
+        if (!inst || !def || !panel) {
+          const displays = scene.parts.filter((p) => parts[p.partId] && panelOf(parts[p.partId])).map((p) => `${p.id} (${parts[p.partId].name})`);
+          return {
+            content: `"${partId}" is not a pixel display in the project. Displays in the project: ${displays.join(', ') || 'none'}. Add one with propose_project first (search_parts "display").`,
+            isError: true,
+          };
+        }
+        const codeFor = ['SSD1306', 'SH1106', 'ST7789', 'ST7735', 'ILI9341', 'GC9A01'];
+        const facts = {
+          part: partId,
+          name: def.name,
+          widthPx: panel.widthPx,
+          heightPx: panel.heightPx,
+          colour: panel.color === 'rgb565' ? '16-bit colour (RGB565)' : panel.color === 'mono' ? 'one colour (on/off pixels)' : 'e-paper, black and white, slow refresh',
+          round: panel.round,
+          controller: panel.controller,
+          codeGenerator: codeFor.includes(panel.controller) ? 'yes (Adafruit GFX driver)' : 'no: the preview works, code must be written by hand',
+        };
+        if (name === 'get_display') {
+          const current = builder.scene.displays?.find((d) => d.part === partId);
+          return done({ ...facts, currentDesign: current ?? null });
+        }
+        const spec = normalizeSpec({ ...input, part: partId });
+        const problems = checkSpec(spec, panel);
+        turn.display = { spec, problems };
+        const [w, h] = rotatedSize(panel, spec.rotation);
+        const errors = problems.filter((p) => p.severity === 'error').map((p) => p.message);
+        return done({
+          shown: true,
+          screen: `${w}x${h} after rotation ${spec.rotation}`,
+          screens: spec.screens.map((s) => `${s.id}: ${s.elements.length} elements`),
+          errors,
+          warnings: problems.filter((p) => p.severity === 'warning').map((p) => p.message),
+          next: errors.length
+            ? 'Fix the errors and call design_display again before you answer.'
+            : 'The animated preview is shown with an Apply button; the user can then press "Write the code". Explain the screens and timing briefly; say values are simulated until the TODO lines read the real sensors.',
         });
       }
       case 'check_project': {

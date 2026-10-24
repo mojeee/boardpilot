@@ -407,6 +407,8 @@ export interface ChatMark {
   picked?: string;
   /** where the proposal was applied: in the open project or as a new project tab */
   applied?: 'here' | 'tab';
+  /** the reply's display design was applied (Display Studio) */
+  displayApplied?: boolean;
 }
 
 interface AiStore {

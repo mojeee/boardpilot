@@ -66,6 +66,9 @@ How the assistant uses it:
 - "Suggest code" and `write_code` get the three best chunks for the request and the project's parts, so the code panel reuses your own init sequence, with the same citation check.
 
 Code: `shared/memory.ts` (chunking, tokens, BM25, citations, file format), `app/main/memory/store.ts` (the store, folder import, `MemoryAccess`), `app/main/memory/aiTools.ts` (the two tools), `app/main/memory/ipc.ts`, `app/renderer/components/MemoryPanel.tsx`. Other features (Display Studio) use `MemoryAccess.search(query, memoryIds, limit)` and `read(ref, memoryIds)` from the main process, or the same two tools. The browser demo shows "needs the app".
+## Display Studio
+
+Ask for what a display should show ("test patterns on my ST7789", "temperature big, humidity small, a warning that blinks above 30 °C", "a round gauge"). The assistant reads the panel with `get_display` and designs it with `design_display`; the app checks the design against the panel and shows it animated, pixel for pixel. Apply runs it on the project (Project tools → Display Studio, and a live preview over the 3D view); "Write the code" offers a matching Arduino sketch in the Code panel. Values are simulated and labelled so; the sketch marks each line to replace with the real sensor. Logic: `shared/displaySpec.ts` (the spec, checks), `shared/displayRender.ts` (pixels), `shared/displayCode.ts` (the sketch); the native pixel comparison is in `tests/display.test.ts` (needs `arduino-cli lib install "Adafruit GFX Library"` and a C++ compiler; `BP_DISPLAY_COMPILE=1` also compiles for four boards).
 
 ## Honesty rules
 

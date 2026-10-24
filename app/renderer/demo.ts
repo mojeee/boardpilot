@@ -331,6 +331,27 @@ async function runNamedDemo(name: string, scenario: string | null) {
   } else if (name === 'cmdk') {
     // #demo=cmdk: the "Ask AI or find anything" box open.
     (await import('./components/CommandBox')).openCommandBox();
+  } else if (name === 'display') {
+    // #demo=display[&part=st7789-240][&board=esp32-devkitc-30]: Display Studio with the test patterns
+    // on a display wired by the safe-pin rules, in a project tab of its own.
+    const hp = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
+    const partId = hp.get('part') ?? 'st7789-240';
+    const boardId = hp.get('board') ?? 'esp32-devkitc-30';
+    const [{ buildProposal }, { PARTS }, { panelOf }, { testPatternSpec }, { useProjects }, { useLayout }] = await Promise.all([
+      import('@shared/projectBuilder'),
+      import('@shared/board'),
+      import('@shared/displaySpec'),
+      import('@shared/displayExamples'),
+      import('./state/projects'),
+      import('./state/layout'),
+    ]);
+    const panel = PARTS[partId] ? panelOf(PARTS[partId]) : null;
+    const r = buildProposal({ title: 'Display', summary: '', board: boardId, keepExisting: false, parts: [{ id: 'tft1', partId, label: 'Display', why: '' }], wires: [], links: [] }, { board: boardId, parts: [], wires: [] }, PARTS);
+    if (panel && r.ok) {
+      useProjects.getState().add({ ...r.proposal.scene, displays: [testPatternSpec('tft1', panel)] }, 'Display Studio');
+      useLayout.getState().toggleRight(true);
+      useLayout.getState().setRightTab('tools');
+    }
   } else if (name === 'project') {
     useScene.getState().openScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');
