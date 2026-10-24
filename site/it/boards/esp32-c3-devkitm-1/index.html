@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css?v=258c761411" />
+    <link rel="stylesheet" href="/style.css?v=4f451e3dd1" />
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Piedinatura ESP32-C3-DevKitM-1","description":"Piedinatura ESP32-C3-DevKitM-1 (ESP32-C3): tutti i 30 pin con le funzioni, i pin da evitare, i pin I2C/SPI predefiniti e come programmarla. Logica a 3.3 V.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/boards/esp32-c3-devkitm-1/","image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=acb78f29be","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"},"about":{"@type":"Product","name":"ESP32-C3-DevKitM-1","brand":"Espressif","description":"Espressif's small ESP32-C3 board with Wi-Fi, Bluetooth LE, a RISC-V core and an RGB LED. Breadboard friendly, 3.3 V logic."}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"BoardPilot","item":"https://boardpilot.agentflowbind.com/it/"},{"@type":"ListItem","position":2,"name":"Piedinature delle schede","item":"https://boardpilot.agentflowbind.com/it/boards/"},{"@type":"ListItem","position":3,"name":"ESP32-C3-DevKitM-1","item":"https://boardpilot.agentflowbind.com/it/boards/esp32-c3-devkitm-1/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quali sono i pin I2C di ESP32-C3-DevKitM-1?","acceptedAnswer":{"@type":"Answer","text":"SDA è 8 e SCL è 9 (quelli predefiniti della libreria Wire di Arduino). Puoi spostare l’I2C su altri pin con Wire.begin(sda, scl)."}},{"@type":"Question","name":"Quali pin di ESP32-C3-DevKitM-1 devo evitare?","acceptedAnswer":{"@type":"Answer","text":"TX, RX (seriale USB)."}},{"@type":"Question","name":"ESP32-C3-DevKitM-1 tollera i 5 V?","acceptedAnswer":{"@type":"Answer","text":"No. I pin accettano al massimo 3.3 V. Per segnali a 5 V usa un traslatore di livello o un partitore di tensione."}},{"@type":"Question","name":"Quali pin di ESP32-C3-DevKitM-1 leggono una tensione analogica?","acceptedAnswer":{"@type":"Answer","text":"0, 1, 3, 4, 2, da 0 a 3.3 V."}},{"@type":"Question","name":"Come carico il codice su ESP32-C3-DevKitM-1?","acceptedAnswer":{"@type":"Answer","text":"Nell’IDE Arduino scegli la scheda esp32:esp32:esp32c3 (core esp32:esp32). Se il caricamento non parte, tieni premuto BOOT, premi e rilascia RST, poi rilascia BOOT."}}]}]}</script>
   </head>
   <body>
@@ -32,6 +32,8 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#demos" data-i18n="nav.demos">Demo</a>
+          <a href="/it/#compare" data-i18n="nav.compare">Confronto</a>
           <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
           <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
@@ -67,7 +69,7 @@
             <p>La vera app con una scheda ESP32-C3-DevKitM-1 simulata, nel tuo browser. Niente da installare, niente da collegare.</p>
           </div>
         </div>
-        <script src="/try-live.js?v=adb7dbf53e" defer></script></div>
+        <script src="/try-live.js?v=1348001697" defer></script></div>
       <div class="wrap narrow">
         <h2>In breve</h2>
         <dl class="defaults">

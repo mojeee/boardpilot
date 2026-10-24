@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="preload" as="image" href="/img/debug.jpg" imagesrcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" imagesizes="(max-width: 920px) 100vw, 640px" />
+    <link rel="preload" as="image" href="/img/debug.jpg" imagesrcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" imagesizes="(max-width: 1180px) 100vw, 1130px" />
     <link rel="stylesheet" href="/style.css" />
     <script type="application/ld+json">{{JSONLD}}</script>
   </head>
@@ -40,6 +40,8 @@
         <a class="brand" href="{{HOME}}"><img class="logo-img" src="/logo-mark.svg" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#demos" data-i18n="nav.demos">Demos</a>
+          <a href="#compare" data-i18n="nav.compare">Compare</a>
           <a href="{{LEARN}}" data-i18n="nav.learn">Learn</a>
           <a href="{{TOOLS}}" data-i18n="nav.tools">Calculators</a>
           <a href="{{PARTS}}" data-i18n="nav.parts">Parts library</a>
@@ -66,7 +68,7 @@
           <div class="hero-copy">
             <span class="eyebrow" data-i18n="hero.eyebrow">For beginners, makers, students and firmware developers</span>
             <h1 data-i18n="hero.title">See inside your board.</h1>
-            <p class="lead" data-i18n="hero.lead">Learn embedded systems from zero, plan your project and debug a real board. BoardPilot shows every pin, wire and bus transaction in 3D, and every answer shows where it came from.</p>
+            <p class="lead" data-i18n="hero.lead">Describe a project and get wiring that passes the checks. Find a broken wire with real measurements. Flash with a backup first. BoardPilot shows every pin, wire and bus transaction in 3D, and every answer says where it came from.</p>
             <div class="cta" id="download">
               <a class="btn primary" href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.5 0 2 .8 3.3.8 1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.2zM14 5.3c.7-.9 1.2-2 1-3.3-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1.1 3.1 1.1.1 2.3-.6 3-1.3z"/></svg>
@@ -78,13 +80,23 @@
                 <span data-i18n="cta.win">Windows</span>
               </a>
             </div>
-            <p class="try-link"><a href="#try" data-i18n="cta.try">Or try it in your browser first, no install →</a></p>
+            <p class="try-link"><a href="#demos" data-i18n="cta.try">Or try it in your browser first, no install →</a></p>
             <p class="fine" data-i18n="cta.fine">Free for 30 days · macOS 12+ and Windows 10/11 · Works without a board in simulator mode</p>
+            <nav class="jump" data-i18n-aria-label="jump.label" aria-label="What BoardPilot does">
+              <a href="#f-build"><i class="d-ai"></i><span data-i18n="jump.build">Build by chatting</span></a>
+              <a href="#f-3d"><i class="d-sda"></i><span data-i18n="jump.3d">3D board</span></a>
+              <a href="#f-debug"><i class="d-err"></i><span data-i18n="jump.debug">Debug with measurements</span></a>
+              <a href="#f-flash"><i class="d-ok"></i><span data-i18n="jump.flash">Safe flashing</span></a>
+              <a href="#f-monitor"><i class="d-adc"></i><span data-i18n="jump.monitor">Monitor and test</span></a>
+              <a href="#f-learn"><i class="d-ok"></i><span data-i18n="jump.learn">Learn embedded</span></a>
+              <a href="#f-mcp"><i class="d-ai"></i><span data-i18n="jump.mcp">AI agents (MCP)</span></a>
+              <a href="#boards"><i class="d-sda"></i><span data-i18n="jump.boards">{{BOARDS_COUNT}} boards, {{PARTS_COUNT}} parts</span></a>
+            </nav>
           </div>
           <div class="hero-shot">
             <div class="window">
               <div class="window-bar"><i></i><i></i><i></i></div>
-              <img src="/img/debug.jpg" srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" sizes="(max-width: 920px) 100vw, 640px" width="1800" height="1125" data-i18n-alt="img.hero" alt="BoardPilot finds crossed SDA and SCL wires on a BME280 sensor connected to an ESP32" fetchpriority="high" />
+              <img src="/img/debug.jpg" srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1125" data-i18n-alt="img.hero" alt="BoardPilot finds crossed SDA and SCL wires on a BME280 sensor connected to an ESP32" fetchpriority="high" />
             </div>
             <div class="float-chip c1"><span class="tag measured" data-i18n="chip.measured">Measured</span> <span data-i18n="chip.crossed">SDA and SCL are crossed</span></div>
             <div class="float-chip c2 mono">0x76 W ACK · 0xD0 ACK · 0x60</div>
@@ -95,138 +107,166 @@
       <section class="strip">
         <div class="wrap strip-in">
           <div><b>{{BOARDS_COUNT}}</b><span data-i18n="strip.pins">boards: ESP32, Pico, Arduino, STM32, nRF52, Teensy</span></div>
-          <div><b>0</b><span data-i18n="strip.writes">writes to your board without your OK</span></div>
+          <div><b>{{PARTS_COUNT}}</b><span data-i18n="strip.parts">parts with safe wiring and sources</span></div>
           <div><b>{{LESSONS_COUNT}}</b><span data-i18n="strip.lessons">lessons, from zero to senior</span></div>
+          <div><b>0</b><span data-i18n="strip.writes">writes to your board without your OK</span></div>
           <div><b>EN · IT</b><span data-i18n="strip.lang">English and Italian</span></div>
         </div>
       </section>
 
-      <section id="try" class="section try-section">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="try.eyebrow">No install</span>
-          <h2 data-i18n="try.title">Try it in your browser.</h2>
-          <p class="lead try-lead" data-i18n="try.lead">This is the real app with a simulated ESP32 and a weather station that has one wiring mistake. Click a pin, drag a part, draw a wire, or open “Debug a problem” and watch it find the fault.</p>
-          {{TRY_LIVE}}
-        </div>
-      </section>
-
-      <section id="chat" class="section chat-section">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="chat.eyebrow">New · AI project builder</span>
-          <h2 data-i18n="chat.title">Describe it. Get the parts and the wiring.</h2>
-          <p class="lead try-lead" data-i18n="chat.lead">Tell the assistant what you want to build. It asks only what it needs, compares parts with you in plain words, then puts the whole project on the 3D board: the parts, wires on safe pins, what else to buy and starter code. The app’s wiring rules check every proposal, and nothing changes until you press Apply.</p>
-          {{CHAT_DEMO}}
-        </div>
-      </section>
-
-      <section id="start" class="section alt">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="start.eyebrow">New to embedded?</span>
-          <h2 data-i18n="start.title">Start from zero. No board needed.</h2>
-          <p class="lead" data-i18n="start.lead">Microcontrollers, GPIO, I2C, UART, SPI, ADC, PWM, interrupts and RTOS, explained in plain words with pictures. Read the lessons here for free, then practise on the simulated board or your own.</p>
-          <div class="grid3 start-grid">
-            <a class="card link-card" href="{{LEARN}}">
-              <h3 data-i18n="start.learn.t">Embedded lessons</h3>
-              <p data-i18n="start.learn.d">{{LESSONS_COUNT}} short lessons, from “what is a microcontroller” to RTOS and a senior roadmap, with the interview questions for each topic.</p>
-              <span class="more" data-i18n="start.learn.cta">Start learning →</span>
-            </a>
-            <a class="card link-card" href="{{TOOLS}}">
-              <h3 data-i18n="start.tools.t">Free calculators</h3>
-              <p data-i18n="start.tools.d">LED resistor, voltage divider, I2C pull-up, UART baud rate error and timer/PWM values for your board, with the formula and its source.</p>
-              <span class="more" data-i18n="start.tools.cta">Open the calculators →</span>
-            </a>
-            <a class="card link-card" href="{{GLOSSARY}}">
-              <h3 data-i18n="start.glossary.t">Embedded glossary</h3>
-              <p data-i18n="start.glossary.d">Pull-up, open-drain, ISR, DMA, watchdog, bootloader, strapping pin: the words you will meet, each explained in two or three sentences.</p>
-              <span class="more" data-i18n="start.glossary.cta">Read the glossary →</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="features" class="section">
+      <section id="features" class="section features">
         <div class="wrap">
           <span class="eyebrow" data-i18n="feat.eyebrow">What it does</span>
-          <h2 data-i18n="feat.title">From “it doesn’t work” to the exact wire.</h2>
-          <div class="grid3">
-            <article class="card">
-              <div class="icon i-green"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div>
-              <h3 data-i18n="f1.t">A live 3D board</h3>
-              <p data-i18n="f1.d">Generated from the datasheet: every pin is clickable and shows its functions, warnings and live level. Wires glow when the bus talks.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-violet"><svg viewBox="0 0 24 24"><path d="M8 9a4 4 0 0 1 8 0v5a4 4 0 0 1-8 0zM12 9v9M4 12h4M16 12h4"/></svg></div>
-              <h3 data-i18n="f2.t">A debug wizard that measures</h3>
-              <p data-i18n="f2.d">Pull-ups, bus scan, the SDA/SCL swap test, chip ID: the app checks it step by step and tells you the cause, with evidence.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-blue"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-8 4 5M3 21h18"/></svg></div>
-              <h3 data-i18n="f3.t">Decoded I2C, live plots</h3>
-              <p data-i18n="f3.d">See start, address, ACK and data bits under the waveform. Plot sensor values and memory while your own firmware runs.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-yellow"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16.5 13v7M13 16.5h7"/></svg></div>
-              <h3 data-i18n="f4.t">Parts library, from any link</h3>
-              <p data-i18n="f4.d">Add sensors, displays and buttons, move and rotate them in 3D. Paste a product link and BoardPilot drafts the part and its 3D model for you to check.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-red"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.5"/></svg></div>
-              <h3 data-i18n="f5.t">Wiring checked as you build</h3>
-              <p data-i18n="f5.d">Flash pins, input-only pins, strapping pins, 5 V on a 3.3 V part, crossed buses, missing ground: flagged on the pin, before you power up.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-ai"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/></svg></div>
-              <h3 data-i18n="f6.t">An honest assistant</h3>
-              <p data-i18n="f6.d">Optional AI (free demo, or your own Claude, GPT or Gemini key) that only states what it measured, labels guesses as suggestions and cites the datasheet section for everything else.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-blue"><svg viewBox="0 0 24 24"><path d="M4 5h6v6H4zM14 13h6v6h-6zM10 8h4v8M4 16h6"/></svg></div>
-              <h3 data-i18n="f7.t">Plan the whole project</h3>
-              <p data-i18n="f7.d">Templates that build on any board, a pin planner, wiring diagram and schematic, shopping list, power budget, timer and UART calculators, state machines, and starter code for Arduino and the Pico SDK.</p>
-              <span class="new-tag" data-i18n="new.tag">New in 0.6</span>
-            </article>
-            <article class="card">
-              <div class="icon i-green"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4zM7 10v5c3 2 7 2 10 0v-5"/></svg></div>
-              <h3 data-i18n="f8.t">Learn embedded, checked on your board</h3>
-              <p data-i18n="f8.d">11 visual lessons from zero to senior, hands-on labs the app checks with live measurements, three portfolio projects built stage by stage, and an interview coach.</p>
-              <span class="new-tag" data-i18n="new.tag">New in 0.6</span>
-            </article>
-            <article class="card">
-              <div class="icon i-violet"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13 5l-2 14"/></svg></div>
-              <h3 data-i18n="f9.t">Your AI coding agent sees the board</h3>
-              <p data-i18n="f9.d">BoardPilot is an MCP server: Claude Code, Cursor or Claude Desktop can scan the bus, read pins and check wiring on your real board. Writes only happen after your click.</p>
-              <span class="new-tag" data-i18n="new.tag">New in 0.6</span>
-            </article>
-          </div>
+          <h2 data-i18n="feat.title">From the idea to a working board.</h2>
+          <p class="lead wide" data-i18n="feat.lead">One app for the whole job: plan the project, wire it, flash it, find what is wrong and learn why. Every feature works in simulator mode too, so you can try all of it without a board.</p>
+
+          <article class="feat" id="f-build">
+            <div class="feat-copy">
+              <span class="feat-tag t-ai"><b>1</b><span data-i18n="fb.tag">Build by chatting</span></span>
+              <h3 data-i18n="fb.t">Describe it. Get parts and wiring that pass the checks.</h3>
+              <p data-i18n="fb.d">Say what you want to make. The assistant asks only what it needs, compares parts with you, then proposes the parts, the wires, what else to buy and starter code. Nothing changes until you press Apply.</p>
+              <ul class="ticks">
+                <li data-i18n="fb.1">Parts from the open library, pins from the board’s own rules</li>
+                <li data-i18n="fb.2">Every proposal runs through the same wiring checker as your own drawing</li>
+                <li data-i18n="fb.3">Tested on 23 real requests with Claude Sonnet 5 and 5.5: 23 of 23 passed</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="{{CHAT_URL}}" target="_blank" rel="noopener" data-demo="{{CHAT_URL}}" data-i18n="fb.cta">Watch a recorded conversation →</a>
+                <a class="more quiet" href="https://github.com/mojeee/boardpilot/tree/main/docs/ai-evals" data-i18n="fb.eval">Read the test reports</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/chat.jpg" srcset="/img/chat-900.jpg 900w, /img/chat.jpg 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fb.alt" alt="The assistant’s proposal for a weather station: parts, eight wires on safe pins and “Checks passed”, with the result on the 3D board" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat flip" id="f-3d">
+            <div class="feat-copy">
+              <span class="feat-tag t-sda"><b>2</b><span data-i18n="f3d.tag">See inside the board</span></span>
+              <h3 data-i18n="f3d.t">Every pin, wire and part, live in 3D.</h3>
+              <p data-i18n="f3d.d">The board is built from its datasheet, so every pin is real: click it to see what it can do, what to avoid and its live level. Wires glow when the bus talks.</p>
+              <ul class="ticks">
+                <li data-i18n="f3d.1">Wiring checked as you draw: flash pins, 5 V on a 3.3 V part, crossed buses, missing ground</li>
+                <li data-i18n="f3d.2">The same project as a 2D pinout, a wiring diagram and a schematic</li>
+                <li data-i18n="f3d.3">Click any log line or AI answer to point the camera at its pin</li>
+              </ul>
+              <div class="feat-links"><a class="more" href="#try" data-i18n="f3d.cta">Try it live in your browser →</a></div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/live.jpg" srcset="/img/live-900.jpg 900w, /img/live.jpg 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="f3d.alt" alt="An ESP32 in 3D with a sensor, an LED, a button and a knob wired, the chip details measured and a strapping-pin warning" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-debug">
+            <div class="feat-copy">
+              <span class="feat-tag t-err"><b>3</b><span data-i18n="fd.tag">Debug with real measurements</span></span>
+              <h3 data-i18n="fd.t">From “it doesn’t work” to the exact wire.</h3>
+              <p data-i18n="fd.d">Tell it what is wrong. BoardPilot checks the pull-ups, scans the bus as wired and with SDA and SCL swapped, reads the chip ID, and tells you the cause with the evidence.</p>
+              <ul class="ticks">
+                <li data-i18n="fd.1">Every answer is labelled: measured, from a datasheet, or a suggestion</li>
+                <li data-i18n="fd.2">Guided fixes for a board that is not found, keeps resetting or prints garbage</li>
+                <li data-i18n="fd.3">One click writes a report to share</li>
+              </ul>
+              <div class="feat-links"><a class="more" href="{{DEBUG_URL}}" target="_blank" rel="noopener" data-demo="{{DEBUG_URL}}" data-i18n="fd.cta">Watch the debugging demo →</a></div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/debug.jpg" srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="img.hero" alt="BoardPilot finds crossed SDA and SCL wires on a BME280 sensor connected to an ESP32" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat flip" id="f-flash">
+            <span id="safety" class="anchor"></span>
+            <div class="feat-copy">
+              <span class="feat-tag t-ok"><b>4</b><span data-i18n="ff.tag">Flash safely</span></span>
+              <h3 data-i18n="ff.t">Your old program is backed up first.</h3>
+              <p data-i18n="ff.d">BoardPilot only reads by default. Before the first write it saves the whole flash, and anything that writes to the board waits for your click.</p>
+              <ul class="ticks">
+                <li data-i18n="safe.1">Full flash backup before the first write, restored with one click</li>
+                <li data-i18n="safe.2">The AI can ask to write, but only you can confirm</li>
+                <li data-i18n="safe.3">Refuses flash pins and outputs on input-only pins, even in firmware</li>
+                <li data-i18n="safe.4">Never shows a voltage it did not measure</li>
+              </ul>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/backup.jpg" srcset="/img/backup-900.jpg 900w, /img/backup.jpg 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="ff.alt" alt="The assistant backs up the board’s flash step by step before anything is written" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-monitor">
+            <div class="feat-copy">
+              <span class="feat-tag t-adc"><b>5</b><span data-i18n="fm.tag">Monitor and test hardware</span></span>
+              <h3 data-i18n="fm.t">Watch your firmware and your bus, live.</h3>
+              <p data-i18n="fm.d">Plot sensor values and memory while your own program runs, read its serial output, and see every I2C transaction decoded bit by bit.</p>
+              <ul class="ticks">
+                <li data-i18n="fm.1">Plots coloured like the pin the data comes from</li>
+                <li data-i18n="fm.2">Bus scan, chip ID check and a timing view with cursors</li>
+                <li data-i18n="fm.3">Sensor registers read from the chip and explained bit by bit</li>
+              </ul>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/test.jpg" srcset="/img/test-900.jpg 900w, /img/test.jpg 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fm.alt" alt="Test hardware: I2C address scan, bus wiring diagram and the transaction decoded bit by bit" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat flip" id="f-learn">
+            <span id="start" class="anchor"></span>
+            <div class="feat-copy">
+              <span class="feat-tag t-ok"><b>6</b><span data-i18n="fl.tag">Learn embedded</span></span>
+              <h3 data-i18n="fl.t">Start from zero. Check what you learn on a board.</h3>
+              <p data-i18n="fl.d">{{LESSONS_COUNT}} visual lessons, from what a microcontroller is to RTOS. Labs at the end check your wiring with live measurements, in the simulator or on your own board.</p>
+              <ul class="ticks">
+                <li data-i18n="fl.1">Free on this site: the lessons, a glossary and calculators</li>
+                <li data-i18n="fl.2">Three portfolio projects, built stage by stage</li>
+                <li data-i18n="fl.3">An interview coach for every topic</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="{{LEARN}}" data-i18n="start.learn.cta">Start learning →</a>
+                <a class="more quiet" href="{{TOOLS}}" data-i18n="start.tools.cta">Open the calculators →</a>
+                <a class="more quiet" href="{{GLOSSARY}}" data-i18n="start.glossary.cta">Read the glossary →</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/learn.jpg" srcset="/img/learn-900.jpg 900w, /img/learn.jpg 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fl.alt" alt="A GPIO lesson with its example shown on the 3D board" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-mcp">
+            <div class="feat-copy">
+              <span class="feat-tag t-ai"><b>7</b><span data-i18n="fmcp.tag">AI agents via MCP</span></span>
+              <h3 data-i18n="fmcp.t">Your AI coding agent can see the board.</h3>
+              <p data-i18n="fmcp.d">BoardPilot is an MCP server. Claude Code, Cursor or Claude Desktop can scan the bus, read pins and check your wiring and code on the real board, instead of guessing.</p>
+              <ul class="ticks">
+                <li data-i18n="fmcp.1">Off by default, on your computer only, with a token</li>
+                <li data-i18n="fmcp.2">Every result says if it was measured or read from a datasheet</li>
+                <li data-i18n="fmcp.3">Writes open the app’s confirmation dialog: nothing happens without your click</li>
+              </ul>
+              <div class="feat-links"><a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/mcp.md" data-i18n="fmcp.cta">How to set it up →</a></div>
+            </div>
+            <figure class="feat-shot term" aria-label="Example">
+              <div class="window-bar"><i></i><i></i><i></i><span>Terminal</span></div>
+              <pre><code><span class="p">$</span> claude mcp add boardpilot -- \
+    /Applications/BoardPilot.app/Contents/MacOS/BoardPilot --mcp-stdio
+
+<span class="c"># i2c_scan, through BoardPilot</span>
+{
+  <span class="k">"value"</span>: { <span class="k">"found"</span>: [<span class="s">"0x76"</span>], <span class="k">"trace"</span>: [ … ] },
+  <span class="k">"confidence"</span>: <span class="s">"measured"</span>,
+  <span class="k">"source"</span>: <span class="s">"diagnostic agent: i2c_scan"</span>,
+  <span class="k">"boardId"</span>: <span class="s">"esp32-devkitc-30"</span>
+}</code></pre>
+              <div class="tool-chips"><code>identify_board</code><code>check_wiring</code><code>check_code</code><code>i2c_scan</code><code>i2c_read</code><code>read_pins</code><code>pullup_check</code><code>adc_read</code><code>read_serial</code><code>search_parts</code><code>get_part</code><code class="w">request_flash</code><code class="w">request_gpio_write</code></div>
+            </figure>
+          </article>
         </div>
       </section>
 
-      <section class="section showcase">
-        <div class="wrap">
-          <div class="tabs" role="tablist">
-            <button class="on" data-shot="workspace" data-src="/img/workspace.jpg" data-srcset="/img/workspace-900.jpg 900w, /img/workspace.jpg 1800w" data-i18n="tab.workspace">Workspace</button>
-            <button data-shot="newproject" data-src="/img/newproject.jpg" data-srcset="/img/newproject-900.jpg 900w, /img/newproject.jpg 1800w" data-i18n="tab.newproject">Read from port</button>
-            <button data-shot="export" data-src="/img/export.jpg" data-srcset="/img/export-900.jpg 900w, /img/export.jpg 1800w" data-i18n="tab.export">Export PDF</button>
-            <button data-shot="test" data-src="/img/test.jpg" data-srcset="/img/test-900.jpg 900w, /img/test.jpg 1800w" data-i18n="tab.test">Test hardware</button>
-            <button data-shot="debug" data-src="/img/debug.jpg" data-srcset="/img/debug-900.jpg 900w, /img/debug.jpg 1800w" data-i18n="tab.debug">Debug</button>
-            <button data-shot="monitor" data-src="/img/monitor.jpg" data-srcset="/img/monitor-900.jpg 900w, /img/monitor.jpg 1800w" data-i18n="tab.monitor">Monitor</button>
-            <button data-shot="library" data-src="/img/library.jpg" data-srcset="/img/library-900.jpg 900w, /img/library.jpg 1800w" data-i18n="tab.library">Parts library</button>
-            <button data-shot="schematic" data-src="/img/schematic.jpg" data-srcset="/img/schematic-900.jpg 900w, /img/schematic.jpg 1800w" data-i18n="tab.schematic">Schematic</button>
-            <button data-shot="timing" data-src="/img/timing.jpg" data-srcset="/img/timing-900.jpg 900w, /img/timing.jpg 1800w" data-i18n="tab.timing">Timing view</button>
-            <button data-shot="learn" data-src="/img/learn.jpg" data-srcset="/img/learn-900.jpg 900w, /img/learn.jpg 1800w" data-i18n="tab.learn">Lessons</button>
-            <button data-shot="code" data-src="/img/code.jpg" data-srcset="/img/code-900.jpg 900w, /img/code.jpg 1800w" data-i18n="tab.code">Code check</button>
-            <button data-shot="import" data-src="/img/import.jpg" data-srcset="/img/import-900.jpg 900w, /img/import.jpg 1800w" data-i18n="tab.import">Import from a link</button>
-            <button data-shot="home" data-src="/img/home.jpg" data-srcset="/img/home-900.jpg 900w, /img/home.jpg 1800w" data-i18n="tab.home">Home</button>
-          </div>
-          <div class="window big">
-            <div class="window-bar"><i></i><i></i><i></i></div>
-            <img id="shot" src="/img/workspace.jpg" srcset="/img/workspace-900.jpg 900w, /img/workspace.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1125" data-i18n-alt="img.shot" alt="BoardPilot screenshot: the project workspace with the 3D board, code, log and assistant" loading="lazy" />
-          </div>
-          <p class="caption" id="shot-caption" data-i18n="cap.workspace">The project page: 3D board, code with the checker’s fixes, the log, the assistant doing the work, and a warnings banner.</p>
-        </div>
-      </section>
-
-      <section class="section parts-promo">
+      <section class="section parts-promo" id="parts">
         <div class="wrap two">
           <div>
             <span class="eyebrow" data-i18n="lib.eyebrow">Open parts library</span>
@@ -251,7 +291,62 @@
         </div>
       </section>
 
-      <section id="how" class="section">
+      <section id="demos" class="section demos">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="demos.eyebrow">Demos · no install</span>
+          <h2 data-i18n="demos.title">Watch it work before you install anything.</h2>
+          <p class="lead wide" data-i18n="demos.lead">Every demo runs in your browser. None of them needs a board, an account or an AI key. There are three kinds:</p>
+          <ul class="demo-kinds">
+            <li><span class="kind k-live" data-i18n="kind.live">Live app</span><span data-i18n="kind.live.d">The real app with a simulated board. Click, drag and wire whatever you like.</span></li>
+            <li><span class="kind k-rec" data-i18n="kind.rec">Recording</span><span data-i18n="kind.rec.d">A real conversation with Claude, recorded once and replayed. No AI is called while you watch.</span></li>
+            <li><span class="kind k-script" data-i18n="kind.script">Scripted</span><span data-i18n="kind.script.d">The app runs a task by itself on a simulated board, step by step.</span></li>
+          </ul>
+          <div id="try" class="demo-stage">
+            <div class="demo-stage-head">
+              <span class="kind k-live" data-i18n="kind.live">Live app</span>
+              <h3 data-i18n="try.title">Try it in your browser.</h3>
+            </div>
+            <p class="demo-stage-lead" data-i18n="try.lead">This is the real app with a simulated ESP32 and a weather station that has one wiring mistake. Click a pin, drag a part, draw a wire, or open “Debug a problem” and watch it find the fault.</p>
+            {{TRY_LIVE}}
+          </div>
+          {{DEMO_GALLERY}}
+        </div>
+      </section>
+
+      <section id="compare" class="section alt compare">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="cmp.eyebrow">Compare</span>
+          <h2 data-i18n="cmp.title">How BoardPilot fits with the tools you already use.</h2>
+          <p class="lead wide" data-i18n="cmp.lead">BoardPilot does not replace your code editor or your PCB tool. It is the part that looks at the board: wiring, measurements, safe flashing and plain explanations. Here is what each tool offers, taken from its own website.</p>
+          {{COMPARE}}
+        </div>
+      </section>
+
+      <section class="section showcase">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="show.eyebrow">Screens</span>
+          <h2 data-i18n="show.title">More of the app.</h2>
+          <div class="tabs" role="tablist">
+            <button class="on" data-shot="workspace" data-src="/img/workspace.jpg" data-srcset="/img/workspace-900.jpg 900w, /img/workspace.jpg 1800w" data-i18n="tab.workspace">Workspace</button>
+            <button data-shot="newproject" data-src="/img/newproject.jpg" data-srcset="/img/newproject-900.jpg 900w, /img/newproject.jpg 1800w" data-i18n="tab.newproject">Read from port</button>
+            <button data-shot="schematic" data-src="/img/schematic.jpg" data-srcset="/img/schematic-900.jpg 900w, /img/schematic.jpg 1800w" data-i18n="tab.schematic">Schematic</button>
+            <button data-shot="export" data-src="/img/export.jpg" data-srcset="/img/export-900.jpg 900w, /img/export.jpg 1800w" data-i18n="tab.export">Export PDF</button>
+            <button data-shot="monitor" data-src="/img/monitor.jpg" data-srcset="/img/monitor-900.jpg 900w, /img/monitor.jpg 1800w" data-i18n="tab.monitor">Monitor</button>
+            <button data-shot="timing" data-src="/img/timing.jpg" data-srcset="/img/timing-900.jpg 900w, /img/timing.jpg 1800w" data-i18n="tab.timing">Timing view</button>
+            <button data-shot="code" data-src="/img/code.jpg" data-srcset="/img/code-900.jpg 900w, /img/code.jpg 1800w" data-i18n="tab.code">Code check</button>
+            <button data-shot="library" data-src="/img/library.jpg" data-srcset="/img/library-900.jpg 900w, /img/library.jpg 1800w" data-i18n="tab.library">Parts library</button>
+            <button data-shot="import" data-src="/img/import.jpg" data-srcset="/img/import-900.jpg 900w, /img/import.jpg 1800w" data-i18n="tab.import">Import from a link</button>
+            <button data-shot="home" data-src="/img/home.jpg" data-srcset="/img/home-900.jpg 900w, /img/home.jpg 1800w" data-i18n="tab.home">Home</button>
+          </div>
+          <div class="window big">
+            <div class="window-bar"><i></i><i></i><i></i></div>
+            <img id="shot" src="/img/workspace.jpg" srcset="/img/workspace-900.jpg 900w, /img/workspace.jpg 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1125" data-i18n-alt="img.shot" alt="BoardPilot screenshot: the project workspace with the 3D board, code, log and assistant" loading="lazy" />
+          </div>
+          <p class="caption" id="shot-caption" data-i18n="cap.workspace">The project page: 3D board, code with the checker’s fixes, the log, the assistant doing the work, and a warnings banner.</p>
+        </div>
+      </section>
+
+      <section id="how" class="section alt">
         <div class="wrap">
           <span class="eyebrow" data-i18n="how.eyebrow">How it works</span>
           <h2 data-i18n="how.title">Look first. Ask only what it cannot see.</h2>
@@ -260,23 +355,7 @@
             <li><span class="num">2</span><h3 data-i18n="s2.t">Pick a task</h3><p data-i18n="s2.d">Connect, new project, flash, debug, monitor, test, report. Or just describe the problem in your own words.</p></li>
             <li><span class="num">3</span><h3 data-i18n="s3.t">Get the cause, with proof</h3><p data-i18n="s3.d">Every result lists what was measured, what the datasheet says, and what to do next. One click writes a report to share.</p></li>
           </ol>
-        </div>
-      </section>
-
-      <section id="safety" class="section alt">
-        <div class="wrap two">
-          <div>
-            <span class="eyebrow" data-i18n="safe.eyebrow">Safety</span>
-            <h2 data-i18n="safe.title">Your board, your program, your call.</h2>
-            <p class="lead" data-i18n="safe.lead">BoardPilot is read-only by default. Anything that writes to the board needs your explicit confirmation, and it backs up your firmware first.</p>
-          </div>
-          <ul class="checks">
-            <li data-i18n="safe.1">Full flash backup before the first write, restored with one click</li>
-            <li data-i18n="safe.2">The AI can ask to write, but only you can confirm</li>
-            <li data-i18n="safe.3">Refuses flash pins and outputs on input-only pins, even in firmware</li>
-            <li data-i18n="safe.4">Never shows a voltage it did not measure</li>
-            <li data-i18n="safe.5">Simulator mode: learn and demo with no hardware at all</li>
-          </ul>
+          <p class="fine center how-note" data-i18n="how.ai">The AI assistant is optional: try it with the free demo AI, or use your own Claude, GPT or Gemini key. Checks, measurements and the simulator work offline.</p>
         </div>
       </section>
 
@@ -326,6 +405,8 @@
           <h2 data-i18n="faq.title">Questions</h2>
           <details><summary data-i18n="q1">Is BoardPilot open source?</summary><p data-i18n="a1">It is source-available. All the code is public on GitHub under the BoardPilot License: you can read, study, modify and build it. Using it after the 30-day trial needs a license key. The firmware (diagnostic agent and BoardPilotProbe library) is MIT licensed.</p></details>
           <details><summary data-i18n="q0">I am a complete beginner. Where do I start?</summary><p data-i18n="a0">Start with the free lessons on this site: what a microcontroller is, then electronics basics, GPIO, buses, ADC and timers. You do not need a board: the app’s simulator (and the browser demo on this page) lets you wire parts and see what happens. When you get a board, an ESP32 DevKit or a Raspberry Pi Pico is a good first choice, and the app’s hands-on labs check your wiring with real measurements.</p></details>
+          <details><summary data-i18n="q9">How is BoardPilot different from the Arduino IDE, PlatformIO or Wokwi?</summary><p data-i18n="a9">Those are tools for writing code (Arduino IDE, PlatformIO) or simulating it in the browser (Wokwi), and they do that very well. BoardPilot sits next to them and looks at the board: it checks your wiring against the pin rules, measures pins and buses on the real board, backs up the flash before any write and explains each result with its source. Many people write code in their usual editor and use BoardPilot to wire, check and debug.</p></details>
+          <details><summary data-i18n="q10">Do the demos on this page call an AI?</summary><p data-i18n="a10">The recorded conversations do not: they are real conversations with Claude, recorded once and replayed in your browser. In the live demo, the assistant answers with the free demo AI only when you ask it something. Everything else in the demos, including the checks and the simulated board, runs in your browser.</p></details>
           <details><summary data-i18n="q2">Which boards does it support?</summary><p data-i18n="a2">ESP32 DevKit, ESP32-S3 and ESP32-C3 DevKits, Raspberry Pi Pico, Pico W and Pico 2, Arduino Uno, Nano and Mega, STM32 Nucleo-F401RE and Black Pill, Nordic nRF52840 DK and Teensy 4.1. Boards are data files, so more are easy to add.</p></details>
           <details><summary data-i18n="q3">My computer warns that the app is from an unknown developer.</summary><p data-i18n="a3">The early builds are not signed yet. On Mac, right-click BoardPilot in Applications and choose Open (or System Settings → Privacy &amp; Security → Open Anyway). On Windows, click More info → Run anyway in the SmartScreen window.</p></details>
           <details><summary data-i18n="q4">Do I need a board to try it?</summary><p data-i18n="a4">No. Simulator mode runs the whole app with a virtual board and realistic faults: crossed wires, a fake BME280, brownouts, wrong baud rate.</p></details>
