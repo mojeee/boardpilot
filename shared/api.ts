@@ -19,6 +19,7 @@ import type {
   PhotoRecognition,
   PortInfo,
   ProbeFrame,
+  ProjectFile,
   Result,
   Scene,
   ScenarioInfo,
@@ -29,6 +30,7 @@ import type { PreflightReport } from './preflight';
 import type { CoachAttempt } from './coach';
 import type { StarterFile } from './starter/common';
 import type { MemoryFolderImport, MemoryHit, MemoryInfo } from './memory';
+import type { CompileReport } from './compileOutput';
 
 export type Unsubscribe = () => void;
 
@@ -162,6 +164,10 @@ export interface BoardPilotApi {
     status(): Promise<LicenseStatus>;
     activate(key: string): Promise<Result<LicenseStatus>>;
     openBuyPage(): Promise<void>;
+  };
+  code: {
+    /** Compile the project with arduino-cli for the board (nothing is uploaded). Desktop app only. */
+    compile(boardId: string, files: ProjectFile[], main: string): Promise<Result<CompileReport>>;
   };
   app: {
     setLanguage(lang: 'en' | 'it'): Promise<void>;

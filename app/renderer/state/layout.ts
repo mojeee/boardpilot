@@ -78,6 +78,8 @@ useLayout.subscribe((s) => save(s));
 
 /** Keyboard shortcuts for the panels: ⌘J the bottom panel, ⌘I the assistant, ⌘⇧F the 3D view alone. */
 export function handleLayoutKey(e: KeyboardEvent): boolean {
+  // Already handled where it was typed (the code editor's own ⌘I, for example).
+  if (e.defaultPrevented) return false;
   const mod = e.metaKey || e.ctrlKey;
   if (!mod || e.altKey) return false;
   const k = e.key.toLowerCase();

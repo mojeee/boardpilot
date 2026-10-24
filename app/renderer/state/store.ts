@@ -147,7 +147,8 @@ function withFindings(scene: Scene) {
  * wiring change keeps the code as typed. Only a different file (a template was opened) comes back.
  */
 function keepSketch(target: Scene, current: Scene): Scene {
-  if (!current.sketch || target.sketch?.name !== current.sketch.name || target.sketch.text === current.sketch.text) return target;
+  const same = (a: Scene['sketch'], b: Scene['sketch']) => a?.text === b?.text && JSON.stringify(a?.files ?? []) === JSON.stringify(b?.files ?? []);
+  if (!current.sketch || target.sketch?.name !== current.sketch.name || same(target.sketch, current.sketch)) return target;
   return { ...target, sketch: current.sketch };
 }
 
@@ -229,9 +230,14 @@ export const useScene = create<SceneStore>((set, get) => ({
   preset: (name) => set((s) => ({ cameraPreset: { name, nonce: s.cameraPreset.nonce + 1 } })),
 }));
 
-/** Replace the project's code (typing, a loaded file, an accepted suggestion). Not an undo step. */
+/**
+ * Replace the project's main sketch (typing, a loaded file, an accepted suggestion). Not an undo
+ * step. The project's other files stay while the sketch keeps its name; a new name starts afresh.
+ */
 export function setSketch(name: string, text: string) {
-  useScene.getState().updateScene((s) => (s.sketch?.name === name && s.sketch.text === text ? s : { ...s, sketch: { name, text } }), { transient: true });
+  useScene
+    .getState()
+    .updateScene((s) => (s.sketch?.name === name && s.sketch.text === text ? s : { ...s, sketch: s.sketch?.name === name && s.sketch.files ? { name, text, files: s.sketch.files } : { name, text } }), { transient: true });
 }
 
 /* ---------------- live data ---------------- */

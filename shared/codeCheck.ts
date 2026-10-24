@@ -26,8 +26,12 @@ export interface CodeFinding {
   severity: 'error' | 'warning' | 'info';
   message: string;
   hint: string;
-  /** 1-based line in the sketch */
+  /** 1-based line in the sketch (in `file` when set) */
   line: number;
+  /** The project file the line is in (checkProject); absent for a single sketch. */
+  file?: string;
+  /** Where on the line: 0-based column and length of the call the finding is about. */
+  span?: { col: number; len: number };
   targets: TargetRef[];
   source: string;
   /** A one-click fix: the whole line rewritten (only offered when it is a plain, safe edit). */
@@ -41,12 +45,18 @@ export interface CodeFix {
 export interface CodeCheckOptions {
   /** Baud rate the serial monitor listens at, to compare with Serial.begin(). */
   monitorBaud?: number;
+  /** For several files checked as one text (checkProject): the file and line a line of the text came from. */
+  mapLine?: (line: number) => { line: number; file?: string };
 }
 
-interface Call {
+export interface Call {
   name: string;
   args: string[];
   line: number;
+  /** Offset of the call's name in the code, of each argument, and just after the closing parenthesis. */
+  index: number;
+  argPos: number[];
+  end: number;
 }
 
 /** Roles where the board drives the part: the code should write this pin. */
@@ -62,25 +72,33 @@ export function stripComments(src: string): string {
 
 const lineAt = (src: string, index: number) => src.slice(0, index).split('\n').length;
 
-/** Split call arguments at top-level commas. */
-function splitArgs(s: string): string[] {
-  const out: string[] = [];
+/** Split call arguments at top-level commas, with the offset of each (trimmed) argument in `s`. */
+function splitArgs(s: string): { args: string[]; pos: number[] } {
+  const args: string[] = [];
+  const pos: number[] = [];
   let depth = 0;
-  let cur = '';
-  for (const ch of s) {
+  let start = 0;
+  const push = (end: number) => {
+    const raw = s.slice(start, end);
+    if (!raw.trim()) return;
+    args.push(raw.trim());
+    pos.push(start + (raw.length - raw.trimStart().length));
+  };
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
     if (ch === '(' || ch === '[' || ch === '{') depth++;
     if (ch === ')' || ch === ']' || ch === '}') depth--;
     if (ch === ',' && depth === 0) {
-      out.push(cur.trim());
-      cur = '';
-    } else cur += ch;
+      push(i);
+      start = i + 1;
+    }
   }
-  if (cur.trim()) out.push(cur.trim());
-  return out;
+  push(s.length);
+  return { args, pos };
 }
 
-/** Every function call (including Wire.begin, Serial.begin, obj.attach) with its arguments. */
-function calls(code: string): Call[] {
+/** Every function call (including Wire.begin, Serial.begin, obj.attach) with its arguments. Pass comment-free code (stripComments). */
+export function calls(code: string): Call[] {
   const out: Call[] = [];
   const re = /([A-Za-z_][\w.]*(?:->\w+)?)\s*\(/g;
   let m: RegExpExecArray | null;
@@ -94,18 +112,45 @@ function calls(code: string): Call[] {
       else if (code[i] === ')') depth--;
       i++;
     }
-    out.push({ name: m[1], args: splitArgs(code.slice(start, i - 1)), line: lineAt(code, m.index) });
+    const { args, pos } = splitArgs(code.slice(start, i - 1));
+    out.push({ name: m[1], args, line: lineAt(code, m.index), index: m.index, argPos: pos.map((p) => start + p), end: i });
   }
   return out;
 }
 
 /** Constants: #define NAME value, and (const) integer variables assigned a literal or a pin name. */
-function constants(code: string): Map<string, string> {
+export function constants(code: string): Map<string, string> {
   const out = new Map<string, string>();
   for (const m of code.matchAll(/^[ \t]*#define[ \t]+(\w+)[ \t]+\(?([\w]+)\)?[ \t]*$/gm)) out.set(m[1], m[2]);
   const decl = /\b(?:static\s+)?(?:const\s+|constexpr\s+)?(?:unsigned\s+)?(?:int|uint8_t|int8_t|uint16_t|int16_t|byte|short|long|pin_size_t|gpio_num_t|auto)\s+(\w+)\s*=\s*\(?(\w+)\)?\s*[;,]/g;
   for (const m of code.matchAll(decl)) if (!out.has(m[1])) out.set(m[1], m[2]);
   return out;
+}
+
+/**
+ * The board pin an expression in code refers to, if it can be worked out from the text: a number,
+ * a #define or constant, LED_BUILTIN, GPIO_NUM_n, A0/D5, or an STM32 chip name (PA5, PB_3).
+ * undefined: an expression we cannot follow (a variable, a sum); null: a pin the board does not have.
+ */
+export function pinResolver(consts: Map<string, string>, board: BoardDef): (expr: string) => PinDef | null | undefined {
+  const headerNumbering = board.family === 'stm32' || board.family === 'nrf52';
+  const resolve = (expr: string, depth = 0): PinDef | null | undefined => {
+    const e = expr.trim().replace(/^\(|\)$/g, '').replace(/^(?:\(?\s*(?:uint8_t|int|gpio_num_t|pin_size_t)\s*\)\s*)/, '');
+    if (!e) return undefined;
+    if (consts.has(e) && depth < 4) return resolve(consts.get(e) ?? '', depth + 1);
+    if (e === 'LED_BUILTIN') return board.pins.find((p) => p.flags.includes('onboard_led')) ?? null;
+    const gpioNum = /^GPIO_NUM_(\d+)$/.exec(e);
+    if (/^\d+$/.test(e) || gpioNum) {
+      const n = Number(gpioNum ? gpioNum[1] : e);
+      if (headerNumbering) return pinById(board, `D${n}`) ?? null;
+      return board.pins.find((p) => p.gpio === n && p.kind === 'gpio' && !p.sameAs) ?? board.pins.find((p) => p.gpio === n) ?? null;
+    }
+    if (/^[AD]\d+$/.test(e)) return pinById(board, e) ?? board.pins.find((p) => p.label === e) ?? null;
+    const chip = /^P([A-K])_?(\d+)$/.exec(e);
+    if (chip) return board.pins.find((p) => (p.chipPin ?? p.id).replace('_', '') === `P${chip[1]}${chip[2]}` && p.kind === 'gpio') ?? null;
+    return undefined; // an expression we cannot follow (a variable, a sum): stay quiet
+  };
+  return (expr) => resolve(expr);
 }
 
 export function checkCode(source: string, scene: Scene, board: BoardDef, parts: Record<string, PartDef>, opts: CodeCheckOptions = {}): CodeFinding[] {
@@ -115,11 +160,26 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
   const findings: CodeFinding[] = [];
   const seen = new Set<string>();
   const SRC = t('check of the drawing against your code (not a measurement)');
+  const where = (line: number) => (opts.mapLine && line > 0 ? opts.mapLine(line) : { line });
+  /** The line for a message: "12", or "3 (pins.h)" for a line in another project file. */
+  const ln = (line: number) => {
+    const w = where(line);
+    return w.file ? `${w.line} (${w.file})` : w.line;
+  };
+  /** The call the current finding is about, for its span on the line. */
+  let cur: Call | undefined;
   const add = (f: Omit<CodeFinding, 'id' | 'source'>) => {
-    const id = `${f.rule}:${f.line}:${f.targets.join(',')}`;
+    const w = where(f.line);
+    const id = `${f.rule}:${w.file ? `${w.file}:` : ''}${w.line}:${f.targets.join(',')}`;
     if (seen.has(id)) return;
     seen.add(id);
-    findings.push({ id, source: SRC, ...f });
+    let span: CodeFinding['span'];
+    if (cur && f.line > 0 && cur.line === f.line) {
+      const lineStart = code.lastIndexOf('\n', cur.index - 1) + 1;
+      const lineEnd = code.indexOf('\n', cur.index);
+      span = { col: cur.index - lineStart, len: Math.max(1, Math.min(cur.end, lineEnd < 0 ? code.length : lineEnd) - cur.index) };
+    }
+    findings.push({ id, source: SRC, ...f, line: w.line, ...(w.file ? { file: w.file } : {}), ...(span ? { span } : {}) });
   };
   const esp = isEspFamily(board);
   const headerNumbering = board.family === 'stm32' || board.family === 'nrf52';
@@ -138,23 +198,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
     return { text: `${src.slice(0, m.index)}${name}(${[...args, ...old.slice(args.length)].join(', ')})${src.slice(m.index + m[0].length)}` };
   };
 
-  /** The board pin an expression in code refers to, if it can be worked out from the text. */
-  const resolve = (expr: string, depth = 0): PinDef | null | undefined => {
-    const e = expr.trim().replace(/^\(|\)$/g, '').replace(/^(?:\(?\s*(?:uint8_t|int|gpio_num_t|pin_size_t)\s*\)\s*)/, '');
-    if (!e) return undefined;
-    if (consts.has(e) && depth < 4) return resolve(consts.get(e) ?? '', depth + 1);
-    if (e === 'LED_BUILTIN') return board.pins.find((p) => p.flags.includes('onboard_led')) ?? null;
-    const gpioNum = /^GPIO_NUM_(\d+)$/.exec(e);
-    if (/^\d+$/.test(e) || gpioNum) {
-      const n = Number(gpioNum ? gpioNum[1] : e);
-      if (headerNumbering) return pinById(board, `D${n}`) ?? null;
-      return board.pins.find((p) => p.gpio === n && p.kind === 'gpio' && !p.sameAs) ?? board.pins.find((p) => p.gpio === n) ?? null;
-    }
-    if (/^[AD]\d+$/.test(e)) return pinById(board, e) ?? board.pins.find((p) => p.label === e) ?? null;
-    const chip = /^P([A-K])_?(\d+)$/.exec(e);
-    if (chip) return board.pins.find((p) => (p.chipPin ?? p.id).replace('_', '') === `P${chip[1]}${chip[2]}` && p.kind === 'gpio') ?? null;
-    return undefined; // an expression we cannot follow (a variable, a sum): stay quiet
-  };
+  const resolve = pinResolver(consts, board);
   const label = (p: PinDef) => (p.gpio !== null && !headerNumbering && p.label !== String(p.gpio) ? `${p.label} (GPIO ${p.gpio})` : p.label);
   const pinT = (p: PinDef): TargetRef => `pin:${p.id}`;
 
@@ -183,10 +227,11 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
 
   /* ---- pin use in the code ---- */
   const usesWifi = /\bWiFi\s*\.\s*(begin|softAP|mode)\s*\(/.test(code) || /\besp_wifi_start\s*\(/.test(code);
-  const written = new Map<string, { pin: PinDef; line: number }>();
+  const written = new Map<string, { pin: PinDef; line: number; call: Call }>();
   const mentioned = new Set<string>();
 
   for (const c of all) {
+    cur = c;
     // Any resolvable argument of any call counts as "the code uses this pin" (library objects too).
     for (const a of c.args) {
       const p = resolve(a);
@@ -202,7 +247,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
         add({
           rule: 'code_unknown_pin',
           severity: 'warning',
-          message: t('Line {line}: pin {pin} is not on this board’s header.', { line: c.line, pin: first }),
+          message: t('Line {line}: pin {pin} is not on this board’s header.', { line: ln(c.line), pin: first }),
           hint: t('Check the pin number against the board’s pinout (2D pinout view).'),
           line: c.line,
           targets: [],
@@ -215,7 +260,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
         add({
           rule: 'code_flash_pin',
           severity: 'error',
-          message: t('Line {line}: {pin} is connected to the board’s flash memory. Using it stops the program.', { line: c.line, pin: label(p) }),
+          message: t('Line {line}: {pin} is connected to the board’s flash memory. Using it stops the program.', { line: ln(c.line), pin: label(p) }),
           hint: t('Use another pin.'),
           line: c.line,
           targets: [pinT(p)],
@@ -224,7 +269,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
         add({
           rule: 'code_output_on_input_only',
           severity: 'error',
-          message: t('Line {line}: pinMode({pin}, OUTPUT), but {pin} can only be an input.', { line: c.line, pin: label(p) }),
+          message: t('Line {line}: pinMode({pin}, OUTPUT), but {pin} can only be an input.', { line: ln(c.line), pin: label(p) }),
           hint: t('Pick an output-capable pin for this signal and move the wire to it.'),
           line: c.line,
           targets: [pinT(p)],
@@ -234,7 +279,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
           rule: 'code_no_pullup',
           severity: 'warning',
           message: t('Line {line}: {mode} on {pin}, but this pin has no internal pull resistor. A button there reads random values.', {
-            line: c.line,
+            line: ln(c.line),
             mode: mode.trim(),
             pin: label(p),
           }),
@@ -243,7 +288,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
           targets: [pinT(p)],
         });
       }
-      if (/OUTPUT/.test(mode)) written.set(p.id, { pin: p, line: c.line });
+      if (/OUTPUT/.test(mode)) written.set(p.id, { pin: p, line: c.line, call: c });
     }
 
     if (['digitalWrite', 'analogWrite', 'ledcAttachPin', 'ledcAttach', 'tone'].includes(c.name)) {
@@ -253,13 +298,13 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
         add({
           rule: 'code_output_on_input_only',
           severity: 'error',
-          message: t('Line {line}: {fn}({pin}, …), but {pin} can only be an input.', { line: c.line, fn: c.name, pin: label(p) }),
+          message: t('Line {line}: {fn}({pin}, …), but {pin} can only be an input.', { line: ln(c.line), fn: c.name, pin: label(p) }),
           hint: t('Pick an output-capable pin for this signal and move the wire to it.'),
           line: c.line,
           targets: [pinT(p)],
         });
       }
-      if (!written.has(p.id)) written.set(p.id, { pin: p, line: c.line });
+      if (!written.has(p.id)) written.set(p.id, { pin: p, line: c.line, call: c });
     }
 
     if (c.name === 'analogRead' || c.name === 'analogReadMilliVolts') {
@@ -269,7 +314,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
         add({
           rule: 'code_not_adc',
           severity: 'error',
-          message: t('Line {line}: {fn}({pin}), but {pin} has no analog input.', { line: c.line, fn: c.name, pin: label(p) }),
+          message: t('Line {line}: {fn}({pin}), but {pin} has no analog input.', { line: ln(c.line), fn: c.name, pin: label(p) }),
           hint: t('Use an analog pin such as {pins}.', { pins: board.rules.adcPins.slice(0, 3).map((id) => pinById(board, id)?.label ?? id).join(', ') }),
           line: c.line,
           targets: [pinT(p)],
@@ -278,7 +323,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
         add({
           rule: 'code_adc2_wifi',
           severity: 'warning',
-          message: t('Line {line}: {pin} is an ADC2 pin, and this sketch turns on Wi-Fi. ADC2 readings fail while Wi-Fi is on.', { line: c.line, pin: label(p) }),
+          message: t('Line {line}: {pin} is an ADC2 pin, and this sketch turns on Wi-Fi. ADC2 readings fail while Wi-Fi is on.', { line: ln(c.line), pin: label(p) }),
           hint: t('Move the analog wire to an ADC1 pin such as {pins}.', {
             pins: board.rules.adcPins.filter((id) => pinById(board, id)?.flags.includes('adc1')).slice(0, 3).map((id) => pinById(board, id)?.label ?? id).join(', '),
           }),
@@ -304,7 +349,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
           rule: 'code_i2c_pins',
           severity: p.id === other.id ? 'error' : 'warning',
           message: t('Line {line}: {call}({pin}), but the drawing has {role} on {want}.', {
-            line: c.line,
+            line: ln(c.line),
             call: c.name,
             pin: label(p),
             role: c.name === 'Wire.setSDA' ? 'SDA' : 'SCL',
@@ -325,7 +370,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
           rule: 'code_baud',
           severity: 'warning',
           message: t('Line {line}: Serial.begin({baud}), but the monitor listens at {monitor}. The output will look like garbage.', {
-            line: c.line,
+            line: ln(c.line),
             baud,
             monitor: opts.monitorBaud,
           }),
@@ -346,14 +391,14 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
       severity: swapped ? 'error' : 'warning',
       message: swapped
         ? t('Line {line}: the code sets SDA = {sda} and SCL = {scl}, the reverse of the drawing (SDA on {dsda}, SCL on {dscl}).', {
-            line,
+            line: ln(line),
             sda: label(sda),
             scl: label(scl),
             dsda: label(drawnSda),
             dscl: label(drawnScl),
           })
         : t('Line {line}: the code sets SDA = {sda} and SCL = {scl}, but the drawing has SDA on {dsda} and SCL on {dscl}.', {
-            line,
+            line: ln(line),
             sda: label(sda),
             scl: label(scl),
             dsda: label(drawnSda),
@@ -372,6 +417,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
     const withPins = all.some((c) => (c.name === 'Wire.begin' || c.name === 'Wire.setPins') && c.args.length >= 2);
     const dsda = pinById(board, board.rules.i2c.sda);
     const dscl = pinById(board, board.rules.i2c.scl);
+    cur = plain;
     if (plain && !withPins && dsda && dscl) i2cCompare(dsda, dscl, plain.line);
   }
 
@@ -380,18 +426,19 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
   const unusedDriven = drivenPins.filter((p) => !mentioned.has(p.id));
   const strayWrites = [...written.values()].filter((w) => wiresTo(w.pin.id).length === 0);
   for (const w of strayWrites) {
+    cur = w.call;
     const guess = unusedDriven.length === 1 ? unusedDriven[0] : undefined;
     add({
       rule: 'code_pin_not_wired',
       severity: 'warning',
       message: guess
         ? t('Line {line}: the code drives {pin}, but nothing is wired there. In the drawing, {part} is on {wired}.', {
-            line: w.line,
+            line: ln(w.line),
             pin: label(w.pin),
             part: partPinOn(guess.id).filter((x) => x.role && BOARD_DRIVES.includes(x.role)).map(partLabel).join(', '),
             wired: label(guess),
           })
-        : t('Line {line}: the code drives {pin}, but nothing is wired there in the drawing.', { line: w.line, pin: label(w.pin) }),
+        : t('Line {line}: the code drives {pin}, but nothing is wired there in the drawing.', { line: ln(w.line), pin: label(w.pin) }),
       hint: guess
         ? t('Change the pin in the code to {wired}, or move the wire to {pin}.', { wired: guess.gpio !== null && !headerNumbering ? String(guess.gpio) : guess.label, pin: label(w.pin) })
         : t('Check the pin number, or add the part to the drawing.'),
@@ -401,6 +448,7 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
   }
   // A driven part the code never mentions (only when the code does use pins, to avoid noise on
   // sketches that set everything up through libraries).
+  cur = undefined;
   if (mentioned.size > 0) {
     for (const p of unusedDriven) {
       if (strayWrites.length === 1 && unusedDriven.length === 1) continue; // already explained above
