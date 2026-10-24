@@ -27,7 +27,8 @@
       10,
       6.4
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "limit"
   },
   "keywords": [
     "limit switch",

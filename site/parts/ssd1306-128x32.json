@@ -35,6 +35,24 @@
     ],
     "color": "#1A1A1A"
   },
+  "display": {
+    "widthPx": 128,
+    "heightPx": 32,
+    "activeMm": [
+      22.38,
+      5.58
+    ],
+    "glassMm": [
+      30,
+      11.5
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+      "title": "Waveshare 0.91inch OLED Module product page (SSD1306)",
+      "section": "Specifications: display size 22.38 x 5.58 mm, outline 36.0 x 12.5 mm"
+    }
+  },
   "keywords": [
     "oled",
     "ssd1306",

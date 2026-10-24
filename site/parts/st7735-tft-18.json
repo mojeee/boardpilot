@@ -46,11 +46,24 @@
   "model": {
     "shape": "oled",
     "size": [
-      34,
-      56,
+      34.5,
+      58,
       4
     ],
     "color": "#B22222"
+  },
+  "display": {
+    "widthPx": 128,
+    "heightPx": 160,
+    "activeMm": [
+      28.03,
+      35.04
+    ],
+    "color": "rgb565",
+    "source": {
+      "title": "LCDwiki 1.8inch SPI Module ST7735S (SKU MSP1803)",
+      "section": "Product parameters: active area 28.03 x 35.04 mm, module PCB 34.5 x 58.0 mm"
+    }
   },
   "keywords": [
     "st7735",

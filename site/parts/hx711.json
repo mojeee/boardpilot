@@ -55,7 +55,60 @@
       21,
       3
     ],
-    "color": "#1E7A3C"
+    "color": "#1E7A3C",
+    "silk": "HX711",
+    "components": [
+      {
+        "type": "chip",
+        "at": [
+          0,
+          1.5
+        ],
+        "size": [
+          10.3,
+          7.5
+        ],
+        "package": "soic",
+        "label": "HX711"
+      },
+      {
+        "type": "chip",
+        "at": [
+          -12,
+          3
+        ],
+        "size": [
+          2.9,
+          1.6
+        ],
+        "package": "sot23"
+      },
+      {
+        "type": "smd",
+        "at": [
+          10.5,
+          -1
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "count": 4
+      },
+      {
+        "type": "smd",
+        "at": [
+          -11,
+          -4
+        ],
+        "size": [
+          1,
+          0.5
+        ],
+        "count": 3,
+        "rot": true
+      }
+    ]
   },
   "keywords": [
     "hx711",

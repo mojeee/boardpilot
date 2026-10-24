@@ -52,7 +52,22 @@
       40,
       4
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "outline": "round"
+  },
+  "display": {
+    "widthPx": 240,
+    "heightPx": 240,
+    "activeMm": [
+      32.4,
+      32.4
+    ],
+    "color": "rgb565",
+    "round": true,
+    "source": {
+      "title": "Waveshare 1.28inch Round LCD Module product page (GC9A01)",
+      "section": "Specifications: display size diameter 32.4 mm, outline 40.4 x 37.5 mm (round body diameter 37.5), 65K RGB"
+    }
   },
   "keywords": [
     "gc9a01",

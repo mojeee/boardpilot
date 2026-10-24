@@ -9,7 +9,7 @@ import { join, resolve } from 'node:path';
 // @ts-expect-error plain JS site generator
 import { compareTable, ROWS, SOURCES, TOOLS } from '../scripts/site/compare-tools.mjs';
 // @ts-expect-error plain JS site generator
-import { chatUrl, demoGallery, modelName } from '../scripts/site/demo.mjs';
+import { chatUrl, demoGallery, isDisplayRecording, modelName } from '../scripts/site/demo.mjs';
 
 interface Cell {
   v: string;
@@ -74,11 +74,14 @@ describe('demo gallery', () => {
   const boardName = (id: string) => id;
   const poster = () => '/img/chat.jpg';
 
+  // Recordings that are not Display Studio ones (those fill the Display Studio slot instead).
+  const CHATS = RECORDINGS.filter((r) => !isDisplayRecording(r));
+
   it('shows the debugging demo, every recording and the Display Studio placeholder', () => {
     for (const lang of ['en', 'it']) {
-      const html = demoGallery({ lang, recordings: RECORDINGS, boardName, poster, boardsHref: '/boards/' });
-      expect(html.match(/<article class="demo-card/g)).toHaveLength(RECORDINGS.length + 2);
-      for (const r of RECORDINGS) expect(html).toContain(chatUrl(lang, r.id).replace(/&/g, '&amp;'));
+      const html = demoGallery({ lang, recordings: CHATS, boardName, poster, boardsHref: '/boards/' });
+      expect(html.match(/<article class="demo-card/g)).toHaveLength(CHATS.length + 2);
+      for (const r of CHATS) expect(html).toContain(chatUrl(lang, r.id).replace(/&/g, '&amp;'));
       expect(html).toContain('#demo=debug');
       expect(html).toContain('Display Studio');
       expect(html).toContain('k-soon');
@@ -86,9 +89,9 @@ describe('demo gallery', () => {
   });
 
   it('puts a Display Studio recording in its slot', () => {
-    const display = { ...RECORDINGS[0], id: 'display-oled', title: 'OLED dashboard', slot: 'display-studio' };
-    const html = demoGallery({ lang: 'en', recordings: [...RECORDINGS, display], boardName, poster, boardsHref: '/boards/' });
-    expect(html.match(/<article class="demo-card/g)).toHaveLength(RECORDINGS.length + 2);
+    const display = { ...CHATS[0], id: 'display-oled', title: 'OLED dashboard', slot: 'display-studio' };
+    const html = demoGallery({ lang: 'en', recordings: [...CHATS, display], boardName, poster, boardsHref: '/boards/' });
+    expect(html.match(/<article class="demo-card/g)).toHaveLength(CHATS.length + 2);
     expect(html).not.toContain('k-soon');
     expect(html).toContain('OLED dashboard');
   });

@@ -123,7 +123,7 @@ const recordings = existsSync(RECORDINGS_DIR)
   : [];
 
 /** A recording's screenshot for the demo gallery (`node scripts/screenshots.mjs chat chat-plant …`). */
-const RECORDING_POSTERS = { 'weather-esp32': 'chat', 'plant-pico': 'chat-plant', 'distance-uno': 'chat-distance', 'night-lamp-it': 'chat-lamp' };
+const RECORDING_POSTERS = { 'weather-esp32': 'chat', 'plant-pico': 'chat-plant', 'distance-uno': 'chat-distance', 'night-lamp-it': 'chat-lamp', 'display-patterns': 'display' };
 function recordingPoster(lang, r) {
   const shot = `img/${RECORDING_POSTERS[r.id] ?? `chat-${r.id}`}.jpg`;
   if (existsSync(join(root, 'site', shot))) return `/${shot}`;

@@ -38,7 +38,47 @@
       24,
       4
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MicroSD",
+    "components": [
+      {
+        "type": "socket",
+        "at": [
+          4,
+          3
+        ],
+        "size": [
+          14.5,
+          15,
+          1.8
+        ]
+      },
+      {
+        "type": "chip",
+        "at": [
+          -12,
+          2
+        ],
+        "size": [
+          5,
+          4
+        ],
+        "package": "soic",
+        "label": "LVC125A"
+      },
+      {
+        "type": "chip",
+        "at": [
+          -12,
+          8
+        ],
+        "size": [
+          2.9,
+          1.6
+        ],
+        "package": "sot23"
+      }
+    ]
   },
   "keywords": [
     "micro sd",

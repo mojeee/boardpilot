@@ -33,7 +33,38 @@
       34,
       25
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "kind": "relay-module",
+    "silk": "SSR",
+    "components": [
+      {
+        "type": "block",
+        "at": [
+          -3,
+          4
+        ],
+        "size": [
+          20,
+          8,
+          12
+        ],
+        "color": "#1d1e21",
+        "label": "G3MB-202P"
+      },
+      {
+        "type": "terminal",
+        "at": [
+          9,
+          8
+        ],
+        "size": [
+          7.6,
+          10,
+          10
+        ],
+        "count": 2
+      }
+    ]
   },
   "keywords": [
     "ssr",

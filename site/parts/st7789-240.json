@@ -51,6 +51,19 @@
     ],
     "color": "#1F4FA8"
   },
+  "display": {
+    "widthPx": 240,
+    "heightPx": 240,
+    "activeMm": [
+      23.4,
+      23.4
+    ],
+    "color": "rgb565",
+    "source": {
+      "title": "Waveshare 1.3inch LCD Module product page (ST7789, 240x240 IPS)",
+      "section": "Specifications: display size 23.40 x 23.40 mm, 65K"
+    }
+  },
   "keywords": [
     "st7789",
     "ips",

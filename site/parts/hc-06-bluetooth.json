@@ -33,7 +33,61 @@
       16,
       5
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "ZS-040",
+    "components": [
+      {
+        "type": "block",
+        "at": [
+          -3,
+          2
+        ],
+        "size": [
+          27,
+          13,
+          0.8
+        ],
+        "color": "#1f6b3a",
+        "label": "HC-06"
+      },
+      {
+        "type": "antenna",
+        "at": [
+          8,
+          2
+        ],
+        "size": [
+          7,
+          10
+        ]
+      },
+      {
+        "type": "chip",
+        "at": [
+          -8,
+          2
+        ],
+        "size": [
+          6,
+          6,
+          0.9
+        ],
+        "package": "qfn",
+        "label": "BC417"
+      },
+      {
+        "type": "led",
+        "at": [
+          14,
+          -4
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "color": "#ff3b30"
+      }
+    ]
   },
   "keywords": [
     "hc-06",

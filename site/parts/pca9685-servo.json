@@ -107,7 +107,62 @@
       25,
       3
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "PCA9685",
+    "components": [
+      {
+        "type": "chip",
+        "at": [
+          -6,
+          2
+        ],
+        "size": [
+          9.7,
+          6.4,
+          1.1
+        ],
+        "package": "tssop",
+        "label": "PCA9685"
+      },
+      {
+        "type": "terminal",
+        "at": [
+          -24,
+          6
+        ],
+        "size": [
+          7.6,
+          10,
+          10
+        ],
+        "count": 2,
+        "color": "#2667c9"
+      },
+      {
+        "type": "capacitor",
+        "at": [
+          24,
+          6
+        ],
+        "size": [
+          6.3,
+          6.3,
+          8
+        ]
+      },
+      {
+        "type": "led",
+        "at": [
+          8,
+          6
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "color": "#ff3b30"
+      }
+    ]
   },
   "keywords": [
     "pca9685",

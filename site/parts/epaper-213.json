@@ -55,6 +55,24 @@
     ],
     "color": "#EDEDED"
   },
+  "display": {
+    "widthPx": 250,
+    "heightPx": 122,
+    "activeMm": [
+      48.55,
+      23.71
+    ],
+    "glassMm": [
+      59.2,
+      29.2
+    ],
+    "color": "epaper",
+    "tint": "#111111",
+    "source": {
+      "title": "Waveshare 2.13inch e-Paper HAT Manual",
+      "section": "Parameters: display dimensions 48.55 x 23.71 mm, outline (screen only) 59.2 x 29.2 x 1.05 mm, driver board 65 x 30.2 mm"
+    }
+  },
   "keywords": [
     "e-paper",
     "e-ink",

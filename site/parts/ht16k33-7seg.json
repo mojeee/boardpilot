@@ -42,7 +42,23 @@
       19,
       10
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "silk": "HT16K33",
+    "components": [
+      {
+        "type": "digits",
+        "at": [
+          0,
+          2.5
+        ],
+        "size": [
+          42,
+          13,
+          8
+        ],
+        "count": 4
+      }
+    ]
   },
   "keywords": [
     "ht16k33",

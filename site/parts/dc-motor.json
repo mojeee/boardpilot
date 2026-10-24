@@ -23,7 +23,8 @@
       15,
       25
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "dc-motor"
   },
   "keywords": [
     "dc motor",

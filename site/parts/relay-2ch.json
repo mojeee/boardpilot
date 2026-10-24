@@ -63,7 +63,86 @@
       39,
       19
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "kind": "relay-module",
+    "silk": "2 Relay Module",
+    "components": [
+      {
+        "type": "relay",
+        "at": [
+          -11,
+          4
+        ],
+        "size": [
+          19,
+          15.5,
+          15.3
+        ]
+      },
+      {
+        "type": "relay",
+        "at": [
+          11,
+          4
+        ],
+        "size": [
+          19,
+          15.5,
+          15.3
+        ]
+      },
+      {
+        "type": "terminal",
+        "at": [
+          -11,
+          15.5
+        ],
+        "size": [
+          15.2,
+          7.6,
+          10
+        ],
+        "count": 3
+      },
+      {
+        "type": "terminal",
+        "at": [
+          11,
+          15.5
+        ],
+        "size": [
+          15.2,
+          7.6,
+          10
+        ],
+        "count": 3
+      },
+      {
+        "type": "chip",
+        "at": [
+          -22,
+          -8
+        ],
+        "size": [
+          4.6,
+          6.5
+        ],
+        "package": "dip",
+        "label": "PC817"
+      },
+      {
+        "type": "led",
+        "at": [
+          22,
+          -9
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "color": "#ff3b30"
+      }
+    ]
   },
   "keywords": [
     "relay",
