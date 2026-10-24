@@ -457,3 +457,22 @@ section[id], article[id] { scroll-margin-top: 76px; }
   .how-step { padding: 16px; }
   .how-text h3 { font-size: 21px; }
 }
+/* How BoardPilot works (technical page) */
+.hiw .crumbs { font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+.hiw .crumbs a { color: var(--sda); }
+.hiw-toc { display: flex; flex-direction: column; gap: 4px; margin: 26px 0 8px; padding: 14px 18px; border: 1px solid #334050; border-radius: 10px; background: var(--bg2); font-size: 15px; }
+.hiw-toc b { font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 4px; }
+.hiw-toc a { color: var(--text); }
+.hiw-toc a:hover { color: var(--sda); }
+.hiw section { scroll-margin-top: 72px; }
+.hiw p, .hiw li { line-height: 1.65; }
+.hiw ol, .hiw ul { padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+.hiw code { font-family: var(--mono); font-size: 0.9em; background: var(--bg2); border: 1px solid #2c3540; border-radius: 4px; padding: 0 4px; }
+.hiw-src { font-size: 13px; color: var(--muted); margin-top: 10px; }
+.hiw-src a { color: var(--muted); }
+.hiw-src a:hover code { border-color: var(--sda); color: var(--text); }
+.hiw-table { overflow-x: auto; margin: 16px 0; }
+.hiw-table table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.hiw-table th, .hiw-table td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid #2c3540; }
+.hiw-table th { font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.hiw-table td:first-child { white-space: nowrap; }

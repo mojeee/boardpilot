@@ -12,6 +12,7 @@ import { buildParts } from './site/parts.mjs';
 import { buildBoards, boardCards } from './site/boards.mjs';
 import { buildCompare, buildGuides, compareLinks, partBoardLinks } from './site/guides.mjs';
 import { chatUrl, debugUrl, demoGallery, tryLive } from './site/demo.mjs';
+import { buildHowItWorks, howItWorksPath } from './site/howitworks.mjs';
 import { compareTable } from './site/compare-tools.mjs';
 import { buildLearn, learnLinks, learnNavLabel, learnPath } from './site/learn.mjs';
 import { buildTools } from './site/tools.mjs';
@@ -168,6 +169,7 @@ function landing(lang) {
     .replaceAll('{{DEMO_GALLERY}}', galleryBlock(lang))
     .replaceAll('{{CHAT_URL}}', chatUrl(lang, 'weather-esp32'))
     .replaceAll('{{DISPLAY_URL}}', chatUrl(lang, 'display-patterns'))
+    .replaceAll('{{HOW_IT_WORKS}}', howItWorksPath(lang))
     .replaceAll('{{DEBUG_URL}}', debugUrl(lang))
     .replaceAll('{{PLANT_URL}}', chatUrl(lang, 'plant-pico'))
     .replaceAll('{{CODE_URL}}', `/demo/#demo=code&lang=${lang}`)
@@ -360,6 +362,14 @@ for (const [rel, lang] of [['esp32-pinout/index.html', 'en'], ['it/esp32-pinout/
   if (links && !html.includes('class="link-cloud"')) writeFileSync(file, html.replace('<div class="cta-box">', `<h2>${h}</h2><p class="link-cloud">${links}</p>\n        <div class="cta-box">`));
 }
 
+/* the technical "How BoardPilot works" page (scripts/site/howitworks.mjs) */
+const howPages = [];
+for (const [lang, html] of [['en', en], ['it', it]]) {
+  const out = buildHowItWorks({ lang, site: SITE, repo: REPO, head, ...chrome(html, lang, { en: howItWorksPath('en'), it: howItWorksPath('it') }) });
+  write(out.rel, out.html);
+  if (lang === 'en') howPages.push(out.sitemap);
+}
+
 /* learn pages: course hub, one page per lesson, glossary, interview questions */
 const learnPages = [];
 for (const [lang, html] of [['en', en], ['it', it]]) {
@@ -384,6 +394,7 @@ const pages = [
   { en: '/parts/', it: '/it/parts/', priority: '0.9' },
   { en: '/esp32-pinout/', it: '/it/esp32-pinout/', priority: '0.8' },
   { en: '/boards/', it: '/it/boards/', priority: '0.9' },
+  ...howPages,
   ...learnPages,
   ...toolPages,
   ...boards.filter((b) => b.id !== 'esp32-devkitc-30').map((b) => ({ en: `/boards/${b.id}/`, it: `/it/boards/${b.id}/`, priority: '0.8' })),

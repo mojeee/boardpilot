@@ -124,6 +124,7 @@ export const IT = {
   'fb.d': 'Di’ cosa vuoi costruire. L’assistente chiede solo quello che gli serve, confronta i componenti con te, poi propone i componenti, i fili, cosa comprare in più e il codice di partenza. Non cambia nulla finché non premi Applica.',
   'fb.1': 'Componenti dalla libreria aperta, pin scelti con le regole della scheda',
   'fb.2': 'Ogni proposta passa dallo stesso controllo dei collegamenti dei tuoi disegni',
+  'how.tech': 'I dettagli tecnici: file delle schede, scelta dei pin, ogni regola di cablaggio, gli strumenti dell’IA, il simulatore →',
   'fd.tag': 'Display Studio',
   'fd.t': 'Guarda cosa mostrerà il tuo schermo, prima di averlo.',
   'fd.d': 'Descrivi le schermate che vuoi, oppure chiedi dei pattern di prova. L’app le disegna pixel per pixel alla risoluzione e con i colori veri del tuo display, le fa girare con valori simulati, poi scrive il codice Arduino per i tuoi collegamenti.',
