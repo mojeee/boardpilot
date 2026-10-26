@@ -3,7 +3,7 @@
 // Part frame: x along the pin row, z away from it (the pins are on the -z edge), y up from the
 // bottom of the part, mm, (0, 0) the centre of the footprint.
 
-import type { PartComponent, PartDef, PartKind } from './types';
+import type { PartComponent, PartDef, PartDisplay, PartKind } from './types';
 
 export const PCB_T = 1.6;
 /** Standard 2.54 mm male header: plastic spacer height and mating pin length above it. */
@@ -146,4 +146,16 @@ export function silkName(def: PartDef): string {
 /** Every part component, data or default. */
 export function partComponents(def: PartDef): PartComponent[] {
   return def.model.components?.length ? def.model.components : defaultComponents(def);
+}
+
+/**
+ * Where the pixels are on a display part, in the part's own frame (mm; x along the pin row, z away
+ * from the pins, centre of the part at 0, 0), from its `display` field. Null for parts that are not
+ * pixel displays.
+ */
+export function displayArea(def: PartDef): (PartDisplay & { centerMm: [number, number] }) | null {
+  const d = def.display;
+  const lay = displayLayout(def);
+  if (!d || !lay) return null;
+  return { ...d, centerMm: [lay.active.x, lay.active.z] };
 }

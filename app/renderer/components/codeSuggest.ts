@@ -5,11 +5,12 @@
 
 import { PARTS, getBoard } from '@shared/board';
 import { generateSketch } from '@shared/sketch';
-import { checkCode } from '@shared/codeCheck';
+import type { CodeFinding } from '@shared/codeCheck';
+import { checkProject, fileText, projectFiles, withFile } from '@shared/codeProject';
 import type { AiSource } from '@shared/types';
 import { t } from '@shared/i18n';
 import { log, useApp, useScene } from '../state/store';
-import { currentSketch, useCodeUi } from '../state/code';
+import { activeFileName, currentSketch, useCodeUi } from '../state/code';
 import { aiContext } from './ai';
 
 /** The sources of starter code: the library entry of every part in the drawing. */
@@ -43,14 +44,34 @@ function starterSuggestion(replace: boolean) {
   });
 }
 
-export async function suggestCode(request?: string) {
+export interface SuggestOptions {
+  /** Change these 1-based lines of the open file instead of adding code ("Change…", "Fix with AI"). */
+  lines?: [number, number];
+}
+
+export async function suggestCode(request?: string, opts: SuggestOptions = {}) {
   const ui = useCodeUi.getState();
   const sk = currentSketch();
+  const file = activeFileName();
+  const text = fileText(sk, file) ?? '';
   const aiOn = useApp.getState().ai.enabled;
-  if (!aiOn || (!sk.text.trim() && !request)) return starterSuggestion(!!sk.text.trim());
+  if (opts.lines && !aiOn) {
+    log('info', t('Changing code from a description needs the AI. Turn it on in AI settings, or edit the lines yourself.'));
+    return;
+  }
+  if (!opts.lines && (!aiOn || (!sk.text.trim() && !request))) return starterSuggestion(!!sk.text.trim());
+  const lines = text.split('\n');
+  const sel = opts.lines ? { line: opts.lines[0], text: lines.slice(opts.lines[0] - 1, opts.lines[1]).join('\n') } : undefined;
+  const many = projectFiles(sk).length > 1;
   ui.set({ suggesting: true });
   try {
-    const r = await window.bp.ai.suggestCode(aiContext(), { code: sk.text, cursorLine: ui.cursorLine, request: request ?? '' });
+    const r = await window.bp.ai.suggestCode(aiContext(), {
+      code: text,
+      cursorLine: opts.lines?.[0] ?? ui.cursorLine,
+      request: request ?? '',
+      ...(many ? { file, otherFiles: projectFiles(sk).filter((f) => f.name !== file) } : {}),
+      ...(sel ? { selection: sel } : {}),
+    });
     if (!r.ok) {
       log('failed', `${t(r.error.humanMessage)} ${t(r.error.hint)}`);
       return;
@@ -58,14 +79,18 @@ export async function suggestCode(request?: string) {
     const s = r.value;
     // AI-written code goes through the same checks as the user's code before it is shown.
     const scene = useScene.getState().scene;
-    const merged = s.replace ? s.text : insertInto(sk.text, s.afterLine, s.text);
-    const before = new Set(checkCode(sk.text, scene, getBoard(scene.board), PARTS).map((f) => f.rule + f.message.replace(/\d+/g, '')));
-    const added = checkCode(merged, scene, getBoard(scene.board), PARTS).filter((f) => f.severity !== 'info' && !before.has(f.rule + f.message.replace(/\d+/g, '')));
+    const board = getBoard(scene.board);
+    const merged = s.replace ? s.text : opts.lines ? replaceIn(text, opts.lines, s.text) : insertInto(text, s.afterLine, s.text);
+    const key = (f: CodeFinding) => f.rule + f.message.replace(/\d+/g, '');
+    const before = new Set(checkProject(sk, scene, board, PARTS).map(key));
+    const added = checkProject(withFile(sk, file, merged), scene, board, PARTS).filter((f) => f.severity !== 'info' && !before.has(key(f)));
     useCodeUi.getState().set({
       suggestion: {
         title: s.title,
         afterLine: s.afterLine,
-        replace: s.replace,
+        replace: opts.lines ? false : s.replace,
+        ...(opts.lines ? { lines: opts.lines } : {}),
+        ...(file !== sk.name ? { file } : {}),
         text: s.text,
         explanation: added.length
           ? `${s.explanation}\n\n${t('Careful: the code checker finds a problem in this suggestion: {problem}', { problem: added[0].message })}`
@@ -79,8 +104,19 @@ export async function suggestCode(request?: string) {
   }
 }
 
+/** "Fix with AI" on a finding or a compiler error: a suggestion that rewrites that line. */
+export function fixWithAi(line: number, problem: string) {
+  return suggestCode(t('Fix this problem on line {line}: {problem}', { line, problem }), { lines: [line, line] });
+}
+
 function insertInto(text: string, afterLine: number, add: string) {
   const lines = text ? text.split('\n') : [];
   lines.splice(Math.max(0, Math.min(afterLine, lines.length)), 0, ...add.split('\n'));
+  return lines.join('\n');
+}
+
+function replaceIn(text: string, [a, b]: [number, number], add: string) {
+  const lines = text.split('\n');
+  lines.splice(a - 1, b - a + 1, ...add.split('\n'));
   return lines.join('\n');
 }

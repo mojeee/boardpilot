@@ -61,13 +61,24 @@ Building a project with the user (they describe what they want to make, or ask f
 - After they apply, check_project shows the project as drawn. Offer the next step: starter code, the shopping list, or testing it in the simulator.
 - A proposal is a suggestion with documented facts: set confidence "documented" and cite the library parts and board file you relied on, never "measured".
 
+Project memory (the user's own old projects, notes and datasheet text, attached to this project; the context says which):
+- Search it with search_memory before you write driver or init code, and whenever the user names a part, a chip or a register (MADCTL, 0x36) or asks how they did something before. Short queries with the exact names work best: "ST7789 init", "MADCTL 0x36".
+- read_memory reads more of a file when a result is cut or you need the lines around it.
+- A fact from memory is "documented" only with its source: kind "memory" and the citation label exactly as the tool returned it (e.g. "memory · acme-panels · st7789_init.c:40-58"). Name the file and lines in your message too.
+- Memory is old code for another board or wiring, not a datasheet: say what you reused; anything you changed or inferred for this project is a suggestion. If nothing is attached or nothing matches, say so; never invent what an old project did.
+Designing what a display shows (Display Studio): when the user wants a screen, a dashboard, an animation or test patterns on a display module:
+- If there is no display in the project, propose one first (propose_project with keepExisting true).
+- Call get_display for its real resolution, colours and controller, then design_display. Lay elements out in pixels for that exact size: measure text with the 6x8 cell rule, keep everything inside the screen, use colours only on colour panels.
+- Use simulated values for readings (with from = the part and quantity on the real board) so the preview animates; say plainly that they are simulated.
+- Read the result: fix every error before you answer. The user sees the animated preview, presses Apply, then "Write the code" for a sketch that draws the same pixels.
+
 Boards the app supports (id: name): ${Object.values(BOARDS)
   .map((b) => `${b.id}: ${b.name}`)
   .join('; ')}.
 
 Reply format: your final answer is JSON with message, confidence, sources, highlight and nextOptions (0-4 short follow-up choices the user can click).`;
 
-export function buildContextBlock(board: BoardDef, ctx: AiContext): string {
+export function buildContextBlock(board: BoardDef, ctx: AiContext, extra: string[] = []): string {
   const partIds = [...new Set(ctx.scene.parts.map((p) => p.partId))];
   const partFacts = partIds
     .map((id) => PARTS[id])
@@ -110,7 +121,7 @@ export function buildContextBlock(board: BoardDef, ctx: AiContext): string {
         Object.entries(ctx.live.pins).map(([g, s]) => [g, s.mv !== undefined ? `${s.mode} ${s.mv} mV (measured)` : `${s.mode} level ${s.level ?? '?'}`]),
       )
     : null;
-  const { sketch, ...drawing } = ctx.scene;
+  const { sketch, memories: _memories, ...drawing } = ctx.scene;
   return [
     '<context>',
     `Reply language: ${getLanguage() === 'it' ? 'Italian (keep pin names, code and units as they are)' : 'English'}`,
@@ -124,6 +135,7 @@ export function buildContextBlock(board: BoardDef, ctx: AiContext): string {
     `User answers so far: ${JSON.stringify(ctx.answers)}`,
     `Latest live pin readings: ${live ? JSON.stringify(live) : 'none (agent not streaming)'}`,
     `Last session log entries: ${JSON.stringify(ctx.log.slice(-50).map((e) => ({ type: e.type, text: e.text, source: e.source, target: e.target })))}`,
+    ...extra,
     '</context>',
   ].join('\n');
 }

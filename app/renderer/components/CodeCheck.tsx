@@ -4,25 +4,39 @@
 
 import { useEffect, useRef } from 'react';
 import { t } from '@shared/i18n';
-import { log, setSketch, useScene } from '../state/store';
-import { revealLine, useCodeFindings } from '../state/code';
+import { fileNameProblem, fileText, findingFile, isSourceFile } from '@shared/codeProject';
+import { log, useScene } from '../state/store';
+import { addFile, currentSketch, replaceProjectCode, revealLine, useCodeFindings } from '../state/code';
 import { useLayout } from '../state/layout';
 
-/** Put a sketch in the project (demos, the Open button) and show it in the Code panel. */
-export const loadSketch = (name: string, text: string) => {
-  setSketch(name, text);
+/** Put a sketch (and its other files) in the project, replacing the code, and show it in the Code panel. */
+export const loadSketch = (name: string, text: string, files: { name: string; text: string }[] = []) => {
+  replaceProjectCode(name, text, files);
   useLayout.getState().showBottom('code');
 };
 
-/** Open a sketch file from disk into the project's code. */
+/**
+ * Open a file from disk into the project's code. A .ino replaces the sketch; a header or another
+ * source file joins the project as a new tab when there is already code.
+ */
 export async function openSketchFile() {
   const r = await window.bp.session.openSketch();
   if (!r.ok) {
     if (r.error.code !== 'cancelled') log('failed', `${r.error.humanMessage} ${r.error.hint}`.trim());
     return;
   }
-  loadSketch(r.value.name, r.value.text);
-  log('info', t('Checking {file} against the drawing.', { file: r.value.name }));
+  const { name, text } = r.value;
+  const sk = useScene.getState().scene.sketch;
+  if (sk?.text.trim() && !/\.(ino|pde)$/i.test(name) && isSourceFile(name)) {
+    if (fileText(sk, name) !== undefined || !fileNameProblem(sk, name)) {
+      addFile(name, text);
+      useLayout.getState().showBottom('code');
+      log('info', t('Added {file} to the project’s code.', { file: name }));
+      return;
+    }
+  }
+  loadSketch(name, text);
+  log('info', t('Checking {file} against the drawing.', { file: name }));
 }
 
 /** Log each finding once per sketch, so it can be clicked in the session log too. Mounted once in the app. */
@@ -45,7 +59,7 @@ export function CodeCheck() {
   const sketch = useScene((s) => s.scene.sketch);
   const findings = useCodeFindings();
   const code = sketch?.text ?? '';
-  const lines = code.split('\n');
+  const lineOf = (f: (typeof findings)[number]) => (fileText(sketch, findingFile(f, sketch)) ?? '').split('\n')[f.line - 1];
   const errors = findings.filter((f) => f.severity === 'error').length;
 
   return (
@@ -80,15 +94,16 @@ export function CodeCheck() {
                     if (f.targets.length) useScene.getState().focusOn(f.targets);
                     if (f.line > 0) {
                       useLayout.getState().showBottom('code');
-                      revealLine(f.line);
+                      revealLine(f.line, f.file && f.file !== currentSketch().name ? f.file : undefined);
                     }
                   }}
                 >
                   <b>{f.message}</b>
                   <span>{f.hint}</span>
-                  {f.line > 0 && lines[f.line - 1] !== undefined && (
+                  {f.line > 0 && lineOf(f) !== undefined && (
                     <code className="code-line">
-                      {f.line}: {lines[f.line - 1].trim()}
+                      {f.file ? `${f.file}:` : ''}
+                      {f.line}: {lineOf(f).trim()}
                     </code>
                   )}
                 </button>

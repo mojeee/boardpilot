@@ -11,7 +11,9 @@ import { renderPinout } from './site/pinout.mjs';
 import { buildParts } from './site/parts.mjs';
 import { buildBoards, boardCards } from './site/boards.mjs';
 import { buildCompare, buildGuides, compareLinks, partBoardLinks } from './site/guides.mjs';
-import { chatDemo, tryLive } from './site/demo.mjs';
+import { chatUrl, debugUrl, demoGallery, tryLive } from './site/demo.mjs';
+import { buildHowItWorks, howItWorksPath } from './site/howitworks.mjs';
+import { compareTable } from './site/compare-tools.mjs';
 import { buildLearn, learnLinks, learnNavLabel, learnPath } from './site/learn.mjs';
 import { buildTools } from './site/tools.mjs';
 import { readdirSync } from 'node:fs';
@@ -81,7 +83,7 @@ function translate(html, dict) {
     }
     return open + esc(dict[key]) + close;
   });
-  html = html.replace(/data-i18n-(content|alt)="([^"]+)"(\s+[^>]*?)?\s(content|alt)="[^"]*"/g, (m, _a, key, mid = '', attr) => {
+  html = html.replace(/data-i18n-(content|alt|aria-label)="([^"]+)"(\s+[^>]*?)?\s(content|alt|aria-label)="[^"]*"/g, (m, _a, key, mid = '', attr) => {
     if (!(key in dict)) {
       missing.add(key);
       return m;
@@ -121,14 +123,28 @@ const recordings = existsSync(RECORDINGS_DIR)
       .map((f) => JSON.parse(readFileSync(join(RECORDINGS_DIR, f), 'utf8')))
   : [];
 
-/** The recorded-chat block of the landing page; none without the browser demo or recordings. */
-function chatBlock(lang) {
+/** A recording's screenshot for the demo gallery (`node scripts/screenshots.mjs chat chat-plant …`). */
+const RECORDING_POSTERS = { 'weather-esp32': 'chat', 'plant-pico': 'chat-plant', 'distance-uno': 'chat-distance', 'night-lamp-it': 'chat-lamp', 'display-patterns': 'display' };
+function recordingPoster(lang, r) {
+  const shot = `img/${RECORDING_POSTERS[r.id] ?? `chat-${r.id}`}.jpg`;
+  if (existsSync(join(root, 'site', shot))) return `/${shot}`;
+  // No screenshot yet: the board's "Try it live" poster (no -900 copy, so use the full image twice).
+  const p = [`img/demo/${lang}/${r.board}.jpg`, 'img/live.jpg'].find((x) => existsSync(join(root, 'site', x)));
+  return p ? `/${p}` : null;
+}
+
+/** The demo gallery of the landing page: the debugging demo, the recorded conversations, Display Studio. */
+function galleryBlock(lang) {
   if (!existsSync(join(root, 'site/demo/index.html'))) return '';
-  // Each language shows its own recordings first; Italian ones only on the Italian page.
-  // The weather station first: the poster image (node scripts/screenshots.mjs chat) shows that one.
-  const list = recordings.filter((r) => r.lang === 'en' || r.lang === lang).sort((a, b) => Number(b.id === 'weather-esp32') - Number(a.id === 'weather-esp32'));
-  const image = ['img/chat.jpg', 'img/live.jpg'].find((p) => existsSync(join(root, 'site', p)));
-  return chatDemo({ lang, recordings: list, boardName: (id) => boards.find((b) => b.id === id)?.name ?? id, image: `/${image}` });
+  // The weather station first: it is the conversation the "Build by chatting" row links to.
+  const list = [...recordings].sort((a, b) => Number(b.id === 'weather-esp32') - Number(a.id === 'weather-esp32'));
+  return demoGallery({
+    lang,
+    recordings: list,
+    boardName: (id) => boards.find((b) => b.id === id)?.name ?? id,
+    poster: (r) => recordingPoster(lang, r),
+    boardsHref: `${lang === 'it' ? '/it' : ''}/boards/`,
+  });
 }
 
 function landing(lang) {
@@ -150,7 +166,15 @@ function landing(lang) {
     .replaceAll('{{BOARD_CARDS}}', boardCards(lang, boards, BOARD_IT))
     .replaceAll('{{PARTS_CLOUD}}', partsCloud(lang))
     .replaceAll('{{TRY_LIVE}}', tryBlock(lang, board, false))
-    .replaceAll('{{CHAT_DEMO}}', chatBlock(lang))
+    .replaceAll('{{DEMO_GALLERY}}', galleryBlock(lang))
+    .replaceAll('{{CHAT_URL}}', chatUrl(lang, 'weather-esp32'))
+    .replaceAll('{{DISPLAY_URL}}', chatUrl(lang, 'display-patterns'))
+    .replaceAll('{{HOW_IT_WORKS}}', howItWorksPath(lang))
+    .replaceAll('{{DEBUG_URL}}', debugUrl(lang))
+    .replaceAll('{{PLANT_URL}}', chatUrl(lang, 'plant-pico'))
+    .replaceAll('{{CODE_URL}}', `/demo/#demo=code&lang=${lang}`)
+    .replaceAll('{{SIM_URL}}', `/demo/#demo=template&id=plant-watering&lang=${lang}`)
+    .replaceAll('{{COMPARE}}', compareTable(lang))
     .replaceAll('{{PATH_EN}}', '/')
     .replaceAll('{{PATH_IT}}', '/it/')
     .replaceAll('{{ON_EN}}', lang === 'en' ? 'on' : '')
@@ -159,7 +183,7 @@ function landing(lang) {
     .replaceAll('{{OG_LOCALE_ALT}}', lang === 'it' ? 'en_US' : 'it_IT');
   if (lang === 'it') html = translate(html, IT);
   // after translation too: the Italian texts carry the same placeholder
-  html = html.replaceAll('{{LESSONS_COUNT}}', LESSONS_COUNT);
+  html = html.replaceAll('{{LESSONS_COUNT}}', LESSONS_COUNT).replaceAll('{{BOARDS_COUNT}}', String(boards.length)).replaceAll('{{PARTS_COUNT}}', PARTS_COUNT);
   html = addLearnLinks(html, lang);
   const title = unesc(/<title[^>]*>([\s\S]*?)<\/title>/.exec(html)[1]);
   const description = unesc(/<meta name="description"[^>]*content="([^"]*)"/.exec(html)[1]);
@@ -195,8 +219,8 @@ function landing(lang) {
             : 'embedded systems, learn embedded from zero, microcontroller, ESP32, Raspberry Pi Pico, Arduino, STM32, I2C, SPI, UART, GPIO, ADC, PWM, RTOS, firmware debugging, schematic',
         featureList:
           lang === 'it'
-            ? 'Scheda 3D dal vivo per 13 schede, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, schema elettrico, pianificatore dei pin, lista della spesa, consumi e batteria, calcolatori di timer e UART, macchine a stati, codice di partenza Arduino e Pico SDK, lezioni di embedded con laboratori verificati sulla scheda, vista temporale, mappe dei registri, server MCP per agenti AI, simulatore'
-            : 'Live 3D board for 13 boards, guided I2C debugging, SDA/SCL swap test, decoded I2C bus, wiring checker, schematic, pin planner, shopping list, power budget and battery life, timer and UART calculators, state machine designer, Arduino and Pico SDK starter code, embedded lessons with labs checked on the board, timing view, register maps, MCP server for AI agents, simulator',
+            ? 'Progetti costruiti in chat con collegamenti verificati, scheda 3D dal vivo per 13 schede, backup della flash prima di ogni scrittura, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, schema elettrico, pianificatore dei pin, lista della spesa, consumi e batteria, calcolatori di timer e UART, macchine a stati, codice di partenza Arduino e Pico SDK, lezioni di embedded con laboratori verificati sulla scheda, vista temporale, mappe dei registri, server MCP per agenti AI, simulatore'
+            : 'Project builder by chat with checked wiring, live 3D board for 13 boards, flash backup before every write, guided I2C debugging, SDA/SCL swap test, decoded I2C bus, wiring checker, schematic, pin planner, shopping list, power budget and battery life, timer and UART calculators, state machine designer, Arduino and Pico SDK starter code, embedded lessons with labs checked on the board, timing view, register maps, MCP server for AI agents, simulator',
       },
       { '@type': 'WebPage', '@id': `${url}#page`, url, name: title, inLanguage: lang, isPartOf: { '@id': `${SITE}/#website` }, about: { '@id': `${SITE}/#app` } },
       { '@type': 'FAQPage', mainEntity: faqFrom(html) },
@@ -338,6 +362,14 @@ for (const [rel, lang] of [['esp32-pinout/index.html', 'en'], ['it/esp32-pinout/
   if (links && !html.includes('class="link-cloud"')) writeFileSync(file, html.replace('<div class="cta-box">', `<h2>${h}</h2><p class="link-cloud">${links}</p>\n        <div class="cta-box">`));
 }
 
+/* the technical "How BoardPilot works" page (scripts/site/howitworks.mjs) */
+const howPages = [];
+for (const [lang, html] of [['en', en], ['it', it]]) {
+  const out = buildHowItWorks({ lang, site: SITE, repo: REPO, head, ...chrome(html, lang, { en: howItWorksPath('en'), it: howItWorksPath('it') }) });
+  write(out.rel, out.html);
+  if (lang === 'en') howPages.push(out.sitemap);
+}
+
 /* learn pages: course hub, one page per lesson, glossary, interview questions */
 const learnPages = [];
 for (const [lang, html] of [['en', en], ['it', it]]) {
@@ -362,6 +394,7 @@ const pages = [
   { en: '/parts/', it: '/it/parts/', priority: '0.9' },
   { en: '/esp32-pinout/', it: '/it/esp32-pinout/', priority: '0.8' },
   { en: '/boards/', it: '/it/boards/', priority: '0.9' },
+  ...howPages,
   ...learnPages,
   ...toolPages,
   ...boards.filter((b) => b.id !== 'esp32-devkitc-30').map((b) => ({ en: `/boards/${b.id}/`, it: `/it/boards/${b.id}/`, priority: '0.8' })),

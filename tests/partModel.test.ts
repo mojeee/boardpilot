@@ -8,7 +8,7 @@ import { validatePartDef, validateDisplay } from '@shared/partSchema';
 import { PARTS } from '@shared/board';
 import type { PartDef } from '@shared/types';
 import { PCB_T, SPACER_H, displayLayout, hasHeader, partComponents, partKind, partPinPoint, pcbTop } from '@shared/partModel';
-import { displayArea } from '../app/renderer/three/displayTexture';
+import { displayArea } from '@shared/partModel';
 
 const DIR = join(__dirname, '..', 'parts');
 const RAW = readdirSync(DIR)

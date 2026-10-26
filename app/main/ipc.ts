@@ -5,6 +5,7 @@ import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve, sep } from 'node:path';
 import type { AgentRequest, AiContext, CodeSuggestionRequest, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
+import type { CompileReport } from '@shared/compileOutput';
 import { BUY_URL } from '@shared/brand';
 import { setLanguage, t } from '@shared/i18n';
 import type { UserParts } from './parts/userParts';
@@ -22,6 +23,10 @@ import { makeCoachApi } from './session/coachApi';
 import type { ArchiveStore } from './archive/archiveStore';
 import { makeArchiveApi } from './archive/archiveApi';
 import type { ArchiveEdit } from '@shared/archive/types';
+import { MemoryStore } from './memory/store';
+import { registerMemoryIpc } from './memory/ipc';
+import { compileProject } from './hardware/compile';
+import { getBoard } from '@shared/board';
 
 export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License, archiveStore: ArchiveStore) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
@@ -50,6 +55,14 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('sim:control', (a: 'fixWiring' | 'turnKnob' | 'pressButton') => hub.simControl(a));
 
   h('safety:grant', (kind: WriteRequest['kind'] | 'restore', uses?: number) => grant(kind, typeof uses === 'number' ? uses : 1));
+
+  h('code:compile', async (boardId: string, files: unknown, main: unknown): Promise<Result<CompileReport>> => {
+    try {
+      return { ok: true, value: await compileProject(getBoard(String(boardId)), files, main) };
+    } catch (e) {
+      return { ok: false, error: toAppError(e) };
+    }
+  });
 
   h('ai:status', () => ai.status());
   h('ai:getSettings', () => ai.getSettings());
@@ -269,6 +282,10 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('archive:update', (id: string, edit: ArchiveEdit) => archive.update(id, edit));
   h('archive:reveal', (id: string, file?: string) => archive.reveal(id, file));
   h('archive:readFile', (id: string, file: string) => archive.readFile(id, file));
+  // Project memory: old projects, notes and datasheets, kept only on this computer.
+  const memory = new MemoryStore(join(dataDir, 'memory'));
+  ai.setMemory(memory);
+  registerMemoryIpc(memory);
 
   h('license:status', () => license.status());
   h('license:activate', (key: string) => license.activate(key));

@@ -16,10 +16,11 @@ import { openAiSettings } from './AiSettings';
 import { ChoiceCards, ProposalCard, applyProposal } from './ProposalCard';
 import { SimilarProjects } from './SimilarProjects';
 import { ExampleChats, ReplayBar } from '../replay/ReplayBar';
+import { DisplayCard, applyDisplay } from './DisplayStudio';
 import { useReplay } from '../replay/player';
 
 const CONF_TEXT = { measured: 'Measured', documented: 'From documentation', suggestion: 'Suggestion' };
-const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said' };
+const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said', memory: 'project memory' };
 
 export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
   const scene = useScene((s) => s.scene);
@@ -44,7 +45,7 @@ export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
         <div className="ai-sources">
           {reply.sources.map((s, i) => (
             <div key={i} className={`src-line src-${s.kind}`}>
-              <span>{t(SRC_KIND[s.kind] ?? s.kind)}</span> {s.label}
+              <span>{t(SRC_KIND[s.kind] ?? s.kind)}</span> {s.kind === 'memory' ? s.label.replace(/^memory\s*·\s*/i, '') : s.label}
             </div>
           ))}
         </div>
@@ -77,6 +78,17 @@ export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
           onApply={() => {
             const where = applyProposal(reply.proposal!);
             if (id !== undefined) useAi.getState().mark(id, { applied: where });
+          }}
+        />
+      )}
+      {reply.display && id !== undefined && (
+        <DisplayCard
+          id={id}
+          display={reply.display}
+          applied={!!mark?.displayApplied}
+          onApply={() => {
+            applyDisplay(reply.display!.spec);
+            useAi.getState().mark(id, { displayApplied: true });
           }}
         />
       )}

@@ -30,9 +30,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="preload" as="image" href="/img/debug.jpg?v=da97087785" imagesrcset="/img/debug-900.jpg?v=c12ac28179 900w, /img/debug.jpg?v=da97087785 1800w" imagesizes="(max-width: 920px) 100vw, 640px" />
-    <link rel="stylesheet" href="/style.css?v=4cc92ca9b2" />
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://boardpilot.agentflowbind.com/#website","url":"https://boardpilot.agentflowbind.com/","name":"BoardPilot","inLanguage":["en","it"]},{"@type":"SoftwareApplication","@id":"https://boardpilot.agentflowbind.com/#app","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/it/","description":"Impara i sistemi embedded da zero e ripara schede vere: lezioni, glossario e calcolatori gratuiti, più un’app che mostra ogni pin e filo in 3D e trova gli errori di cablaggio su ESP32, Raspberry Pi Pico, Arduino e STM32.","applicationCategory":"DeveloperApplication","applicationSubCategory":"Embedded development, electronics learning, ESP32 debugging","operatingSystem":"macOS 12+, Windows 10, Windows 11","softwareVersion":"0.7.0","inLanguage":["en","it"],"image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=acb78f29be","screenshot":["https://boardpilot.agentflowbind.com/img/debug.jpg?v=da97087785","https://boardpilot.agentflowbind.com/img/test.jpg?v=a3f137f6f2","https://boardpilot.agentflowbind.com/img/monitor.jpg?v=487f45a0b1","https://boardpilot.agentflowbind.com/img/library.jpg?v=5e67901b99"],"downloadUrl":["https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-x64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-win-x64.exe"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","description":"Prova gratuita di 30 giorni"},"license":"https://github.com/mojeee/boardpilot/blob/main/LICENSE.md","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"sameAs":["https://github.com/mojeee/boardpilot"],"keywords":"sistemi embedded, imparare embedded da zero, microcontrollore, ESP32, Raspberry Pi Pico, Arduino, STM32, I2C, SPI, UART, GPIO, ADC, PWM, RTOS, debug firmware, schema elettrico","featureList":"Scheda 3D dal vivo per 13 schede, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, schema elettrico, pianificatore dei pin, lista della spesa, consumi e batteria, calcolatori di timer e UART, macchine a stati, codice di partenza Arduino e Pico SDK, lezioni di embedded con laboratori verificati sulla scheda, vista temporale, mappe dei registri, server MCP per agenti AI, simulatore"},{"@type":"WebPage","@id":"https://boardpilot.agentflowbind.com/it/#page","url":"https://boardpilot.agentflowbind.com/it/","name":"BoardPilot: impara i sistemi embedded da zero e fai il debug di ESP32, Pico, Arduino e STM32","inLanguage":"it","isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"},"about":{"@id":"https://boardpilot.agentflowbind.com/#app"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"BoardPilot è open source?","acceptedAnswer":{"@type":"Answer","text":"È source-available. Tutto il codice è pubblico su GitHub con la BoardPilot License: puoi leggerlo, studiarlo, modificarlo e compilarlo. Dopo i 30 giorni di prova serve una chiave di licenza. Il firmware (agente diagnostico e libreria BoardPilotProbe) è sotto licenza MIT."}},{"@type":"Question","name":"Sono un principiante assoluto. Da dove comincio?","acceptedAnswer":{"@type":"Answer","text":"Comincia dalle lezioni gratuite su questo sito: cos’è un microcontrollore, poi le basi di elettronica, GPIO, bus, ADC e timer. Non serve una scheda: il simulatore dell’app (e la demo nel browser su questa pagina) ti fa collegare componenti e vedere cosa succede. Quando prendi una scheda, una ESP32 DevKit o un Raspberry Pi Pico sono una buona prima scelta, e i laboratori pratici dell’app verificano i tuoi collegamenti con misure vere."}},{"@type":"Question","name":"Quali schede supporta?","acceptedAnswer":{"@type":"Answer","text":"ESP32 DevKit, DevKit ESP32-S3 ed ESP32-C3, Raspberry Pi Pico, Pico W e Pico 2, Arduino Uno, Nano e Mega, STM32 Nucleo-F401RE e Black Pill, Nordic nRF52840 DK e Teensy 4.1. Le schede sono file di dati, quindi aggiungerne altre è facile."}},{"@type":"Question","name":"Il computer avvisa che l’app è di uno sviluppatore sconosciuto.","acceptedAnswer":{"@type":"Answer","text":"Le prime versioni non sono ancora firmate. Su Mac fai clic destro su BoardPilot in Applicazioni e scegli Apri (oppure Impostazioni di Sistema → Privacy e sicurezza → Apri comunque). Su Windows fai clic su Ulteriori informazioni → Esegui comunque nella finestra di SmartScreen."}},{"@type":"Question","name":"Mi serve una scheda per provarlo?","acceptedAnswer":{"@type":"Answer","text":"No. La modalità simulatore fa girare tutta l’app con una scheda virtuale e guasti realistici: fili invertiti, un finto BME280, cali di tensione, baud rate sbagliato."}},{"@type":"Question","name":"Serve internet o un account AI?","acceptedAnswer":{"@type":"Answer","text":"No. Controlli, misure e simulatore funzionano offline. L’assistente AI è facoltativo: provalo con la demo gratuita (un modello Gemini più vecchio e limitato, solo per test) oppure usa la tua chiave per Claude, GPT o Gemini."}},{"@type":"Question","name":"Cosa installa sulla mia scheda?","acceptedAnswer":{"@type":"Answer","text":"Solo se confermi: un piccolo agente diagnostico che permette all’app di leggere i pin e fare test sul bus. Prima salva il tuo programma, che torna con un clic."}},{"@type":"Question","name":"Il mio agente AI può usarlo?","acceptedAnswer":{"@type":"Answer","text":"Sì, dalla versione 0.6. BoardPilot avvia un server MCP locale (spento di default, solo localhost). Claude Code, Cursor e Claude Desktop possono identificare la scheda, scansionare l’I2C, leggere i pin e controllare collegamenti e codice. Ogni risultato dice se è stato misurato o letto da un datasheet, e niente viene scritto sulla scheda senza il tuo clic nell’app."}},{"@type":"Question","name":"Posso imparare l’embedded con BoardPilot?","acceptedAnswer":{"@type":"Answer","text":"Sì. L’app ha 11 lezioni visive, da cos’è un microcontrollore fino all’RTOS e a un percorso verso il livello senior, con demo interattive. I laboratori sono verificati sulla tua scheda (o nel simulatore), tre progetti per il portfolio si costruiscono tappa per tappa e un allenatore ti aiuta a prepararti ai colloqui."}}]}]}</script>
+    <link rel="preload" as="image" href="/img/debug.jpg?v=da97087785" imagesrcset="/img/debug-900.jpg?v=c12ac28179 900w, /img/debug.jpg?v=da97087785 1800w" imagesizes="(max-width: 1180px) 100vw, 1130px" />
+    <link rel="stylesheet" href="/style.css?v=43e1179008" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://boardpilot.agentflowbind.com/#website","url":"https://boardpilot.agentflowbind.com/","name":"BoardPilot","inLanguage":["en","it"]},{"@type":"SoftwareApplication","@id":"https://boardpilot.agentflowbind.com/#app","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com/it/","description":"Impara i sistemi embedded da zero e ripara schede vere: lezioni, glossario e calcolatori gratuiti, più un’app che mostra ogni pin e filo in 3D e trova gli errori di cablaggio su ESP32, Raspberry Pi Pico, Arduino e STM32.","applicationCategory":"DeveloperApplication","applicationSubCategory":"Embedded development, electronics learning, ESP32 debugging","operatingSystem":"macOS 12+, Windows 10, Windows 11","softwareVersion":"0.7.0","inLanguage":["en","it"],"image":"https://boardpilot.agentflowbind.com/img/og.jpg?v=acb78f29be","screenshot":["https://boardpilot.agentflowbind.com/img/debug.jpg?v=da97087785","https://boardpilot.agentflowbind.com/img/test.jpg?v=a3f137f6f2","https://boardpilot.agentflowbind.com/img/monitor.jpg?v=487f45a0b1","https://boardpilot.agentflowbind.com/img/library.jpg?v=5e67901b99"],"downloadUrl":["https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-x64.dmg","https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-win-x64.exe"],"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","description":"Prova gratuita di 30 giorni"},"license":"https://github.com/mojeee/boardpilot/blob/main/LICENSE.md","author":{"@type":"Person","name":"Mojtaba Amini","url":"https://github.com/mojeee"},"sameAs":["https://github.com/mojeee/boardpilot"],"keywords":"sistemi embedded, imparare embedded da zero, microcontrollore, ESP32, Raspberry Pi Pico, Arduino, STM32, I2C, SPI, UART, GPIO, ADC, PWM, RTOS, debug firmware, schema elettrico","featureList":"Progetti costruiti in chat con collegamenti verificati, scheda 3D dal vivo per 13 schede, backup della flash prima di ogni scrittura, debug guidato I2C, test di scambio SDA/SCL, bus I2C decodificato, controllo del cablaggio, schema elettrico, pianificatore dei pin, lista della spesa, consumi e batteria, calcolatori di timer e UART, macchine a stati, codice di partenza Arduino e Pico SDK, lezioni di embedded con laboratori verificati sulla scheda, vista temporale, mappe dei registri, server MCP per agenti AI, simulatore"},{"@type":"WebPage","@id":"https://boardpilot.agentflowbind.com/it/#page","url":"https://boardpilot.agentflowbind.com/it/","name":"BoardPilot: impara i sistemi embedded da zero e fai il debug di ESP32, Pico, Arduino e STM32","inLanguage":"it","isPartOf":{"@id":"https://boardpilot.agentflowbind.com/#website"},"about":{"@id":"https://boardpilot.agentflowbind.com/#app"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"BoardPilot è open source?","acceptedAnswer":{"@type":"Answer","text":"È source-available. Tutto il codice è pubblico su GitHub con la BoardPilot License: puoi leggerlo, studiarlo, modificarlo e compilarlo. Dopo i 30 giorni di prova serve una chiave di licenza. Il firmware (agente diagnostico e libreria BoardPilotProbe) è sotto licenza MIT."}},{"@type":"Question","name":"Sono un principiante assoluto. Da dove comincio?","acceptedAnswer":{"@type":"Answer","text":"Comincia dalle lezioni gratuite su questo sito: cos’è un microcontrollore, poi le basi di elettronica, GPIO, bus, ADC e timer. Non serve una scheda: il simulatore dell’app (e la demo nel browser su questa pagina) ti fa collegare componenti e vedere cosa succede. Quando prendi una scheda, una ESP32 DevKit o un Raspberry Pi Pico sono una buona prima scelta, e i laboratori pratici dell’app verificano i tuoi collegamenti con misure vere."}},{"@type":"Question","name":"In cosa è diverso BoardPilot da Arduino IDE, PlatformIO o Wokwi?","acceptedAnswer":{"@type":"Answer","text":"Quelli sono strumenti per scrivere il codice (Arduino IDE, PlatformIO) o per simularlo nel browser (Wokwi), e lo fanno molto bene. BoardPilot si affianca a loro e guarda la scheda: controlla i collegamenti con le regole dei pin, misura pin e bus sulla scheda vera, salva la flash prima di ogni scrittura e spiega ogni risultato con la sua fonte. Molti scrivono il codice nel loro editor di sempre e usano BoardPilot per collegare, controllare e fare il debug."}},{"@type":"Question","name":"Le demo di questa pagina chiamano un’IA?","acceptedAnswer":{"@type":"Answer","text":"Le conversazioni registrate no: sono vere conversazioni con Claude, registrate una volta e riprodotte nel tuo browser. Nella demo dal vivo l’assistente risponde con l’IA demo gratuita solo quando gli chiedi qualcosa. Tutto il resto delle demo, compresi i controlli e la scheda simulata, gira nel tuo browser."}},{"@type":"Question","name":"Quali schede supporta?","acceptedAnswer":{"@type":"Answer","text":"ESP32 DevKit, DevKit ESP32-S3 ed ESP32-C3, Raspberry Pi Pico, Pico W e Pico 2, Arduino Uno, Nano e Mega, STM32 Nucleo-F401RE e Black Pill, Nordic nRF52840 DK e Teensy 4.1. Le schede sono file di dati, quindi aggiungerne altre è facile."}},{"@type":"Question","name":"Il computer avvisa che l’app è di uno sviluppatore sconosciuto.","acceptedAnswer":{"@type":"Answer","text":"Le prime versioni non sono ancora firmate. Su Mac fai clic destro su BoardPilot in Applicazioni e scegli Apri (oppure Impostazioni di Sistema → Privacy e sicurezza → Apri comunque). Su Windows fai clic su Ulteriori informazioni → Esegui comunque nella finestra di SmartScreen."}},{"@type":"Question","name":"Mi serve una scheda per provarlo?","acceptedAnswer":{"@type":"Answer","text":"No. La modalità simulatore fa girare tutta l’app con una scheda virtuale e guasti realistici: fili invertiti, un finto BME280, cali di tensione, baud rate sbagliato."}},{"@type":"Question","name":"Serve internet o un account AI?","acceptedAnswer":{"@type":"Answer","text":"No. Controlli, misure e simulatore funzionano offline. L’assistente AI è facoltativo: provalo con la demo gratuita (un modello Gemini più vecchio e limitato, solo per test) oppure usa la tua chiave per Claude, GPT o Gemini."}},{"@type":"Question","name":"Cosa installa sulla mia scheda?","acceptedAnswer":{"@type":"Answer","text":"Solo se confermi: un piccolo agente diagnostico che permette all’app di leggere i pin e fare test sul bus. Prima salva il tuo programma, che torna con un clic."}},{"@type":"Question","name":"Il mio agente AI può usarlo?","acceptedAnswer":{"@type":"Answer","text":"Sì, dalla versione 0.6. BoardPilot avvia un server MCP locale (spento di default, solo localhost). Claude Code, Cursor e Claude Desktop possono identificare la scheda, scansionare l’I2C, leggere i pin e controllare collegamenti e codice. Ogni risultato dice se è stato misurato o letto da un datasheet, e niente viene scritto sulla scheda senza il tuo clic nell’app."}},{"@type":"Question","name":"Posso imparare l’embedded con BoardPilot?","acceptedAnswer":{"@type":"Answer","text":"Sì. L’app ha 11 lezioni visive, da cos’è un microcontrollore fino all’RTOS e a un percorso verso il livello senior, con demo interattive. I laboratori sono verificati sulla tua scheda (o nel simulatore), tre progetti per il portfolio si costruiscono tappa per tappa e un allenatore ti aiuta a prepararti ai colloqui."}}]}]}</script>
   </head>
   <body>
     <header class="nav">
@@ -40,6 +40,8 @@
         <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
         <nav class="links">
           <a href="#features" data-i18n="nav.features">Funzioni</a>
+          <a href="#demos" data-i18n="nav.demos">Demo</a>
+          <a href="#compare" data-i18n="nav.compare">Confronto</a>
           <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
           <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
           <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
@@ -66,7 +68,7 @@
           <div class="hero-copy">
             <span class="eyebrow" data-i18n="hero.eyebrow">Per principianti, maker, studenti e sviluppatori firmware</span>
             <h1 data-i18n="hero.title">Guarda dentro la tua scheda.</h1>
-            <p class="lead" data-i18n="hero.lead">Impara i sistemi embedded da zero, pianifica il progetto e fai il debug di una scheda vera. BoardPilot mostra ogni pin, filo e transazione sul bus in 3D, e ogni risposta mostra da dove viene.</p>
+            <p class="lead" data-i18n="hero.lead">Descrivi un progetto e ottieni collegamenti che passano i controlli. Trova un filo sbagliato con misure vere. Programma la scheda con un backup prima. BoardPilot mostra ogni pin, filo e transazione sul bus in 3D, e ogni risposta dice da dove viene.</p>
             <div class="cta" id="download">
               <a class="btn primary" href="https://github.com/mojeee/boardpilot/releases/latest/download/BoardPilot-mac-arm64.dmg">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.5 0 2 .8 3.3.8 1.4 0 2.3-1.2 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.2zM14 5.3c.7-.9 1.2-2 1-3.3-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1.1 3.1 1.1.1 2.3-.6 3-1.3z"/></svg>
@@ -78,13 +80,25 @@
                 <span data-i18n="cta.win">Windows</span>
               </a>
             </div>
-            <p class="try-link"><a href="#try" data-i18n="cta.try">Oppure provala prima nel browser, senza installare niente →</a></p>
+            <p class="try-link"><a href="#demos" data-i18n="cta.try">Oppure provala prima nel browser, senza installare niente →</a></p>
             <p class="fine" data-i18n="cta.fine">Gratis per 30 giorni · macOS 12+ e Windows 10/11 · Funziona anche senza scheda, in modalità simulatore</p>
+            <nav class="jump" data-i18n-aria-label="jump.label" aria-label="Cosa fa BoardPilot">
+              <a href="#f-build"><i class="d-ai"></i><span data-i18n="jump.build">Progetti in chat</span></a>
+              <a href="#f-display"><i class="d-sda"></i><span data-i18n="jump.display">Display Studio</span></a>
+              <a href="#f-3d"><i class="d-sda"></i><span data-i18n="jump.3d">Scheda 3D</span></a>
+              <a href="#f-debug"><i class="d-err"></i><span data-i18n="jump.debug">Debug con misure vere</span></a>
+              <a href="#f-flash"><i class="d-ok"></i><span data-i18n="jump.flash">Scrittura sicura</span></a>
+              <a href="#f-monitor"><i class="d-adc"></i><span data-i18n="jump.monitor">Monitor e test</span></a>
+              <a href="#f-learn"><i class="d-ok"></i><span data-i18n="jump.learn">Impara l’embedded</span></a>
+              <a href="#f-mcp"><i class="d-ai"></i><span data-i18n="jump.mcp">Agenti AI (MCP)</span></a>
+              <a href="#how"><i class="d-ok"></i><span data-i18n="jump.how">Come esserne sicuri</span></a>
+              <a href="#boards"><i class="d-sda"></i><span data-i18n="jump.boards">13 schede, 383 componenti</span></a>
+            </nav>
           </div>
           <div class="hero-shot">
             <div class="window">
               <div class="window-bar"><i></i><i></i><i></i></div>
-              <img src="/img/debug.jpg?v=da97087785" srcset="/img/debug-900.jpg?v=c12ac28179 900w, /img/debug.jpg?v=da97087785 1800w" sizes="(max-width: 920px) 100vw, 640px" width="1800" height="1125" data-i18n-alt="img.hero" alt="BoardPilot trova i fili SDA e SCL invertiti su un sensore BME280 collegato a un ESP32" fetchpriority="high" />
+              <img src="/img/debug.jpg?v=da97087785" srcset="/img/debug-900.jpg?v=c12ac28179 900w, /img/debug.jpg?v=da97087785 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1125" data-i18n-alt="img.hero" alt="BoardPilot trova i fili SDA e SCL invertiti su un sensore BME280 collegato a un ESP32" fetchpriority="high" />
             </div>
             <div class="float-chip c1"><span class="tag measured" data-i18n="chip.measured">Misurato</span> <span data-i18n="chip.crossed">SDA e SCL sono invertiti</span></div>
             <div class="float-chip c2 mono">0x76 W ACK · 0xD0 ACK · 0x60</div>
@@ -95,197 +109,190 @@
       <section class="strip">
         <div class="wrap strip-in">
           <div><b>13</b><span data-i18n="strip.pins">schede: ESP32, Pico, Arduino, STM32, nRF52, Teensy</span></div>
-          <div><b>0</b><span data-i18n="strip.writes">scritture sulla scheda senza il tuo OK</span></div>
+          <div><b>383</b><span data-i18n="strip.parts">componenti con collegamenti sicuri e fonti</span></div>
           <div><b>11</b><span data-i18n="strip.lessons">lezioni, da zero a senior</span></div>
+          <div><b>0</b><span data-i18n="strip.writes">scritture sulla scheda senza il tuo OK</span></div>
           <div><b>EN · IT</b><span data-i18n="strip.lang">Italiano e inglese</span></div>
         </div>
       </section>
 
-      <section id="try" class="section try-section">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="try.eyebrow">Senza installare</span>
-          <h2 data-i18n="try.title">Provala nel tuo browser.</h2>
-          <p class="lead try-lead" data-i18n="try.lead">Questa è la vera app con un ESP32 simulato e una stazione meteo con un errore di cablaggio. Clicca un pin, trascina un componente, disegna un filo, oppure apri “Risolvi un problema” e guarda come trova il guasto.</p>
-          <div class="wrap try-wrap"><div class="try-live" data-src="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=it" data-title="Demo dal vivo di BoardPilot" data-full="Apri a schermo intero">
-          <img src="/img/demo/it/esp32-devkitc-30.jpg?v=397b2a98e0" width="1200" height="750" alt="BoardPilot mostra la scheda ESP32 DevKit (30 pins) in 3D" loading="lazy" decoding="async" />
-          <div class="try-live-over">
-            <a class="btn primary try-live-btn" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=it" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Provala dal vivo</a>
-            <p>La vera app con una scheda ESP32 DevKit (30 pins) simulata, nel tuo browser. Niente da installare, niente da collegare.</p>
-          </div>
-        </div></div>
-        </div>
-      </section>
-
-      <section id="chat" class="section chat-section">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="chat.eyebrow">Novità · Progetti con l’IA</span>
-          <h2 data-i18n="chat.title">Descrivilo. Ottieni componenti e collegamenti.</h2>
-          <p class="lead try-lead" data-i18n="chat.lead">Di’ all’assistente cosa vuoi costruire. Chiede solo quello che gli serve, confronta i componenti con te a parole semplici, poi mette l’intero progetto sulla scheda 3D: i componenti, i fili su pin sicuri, cosa comprare in più e il codice di partenza. Le regole di cablaggio dell’app verificano ogni proposta, e non cambia nulla finché non premi Applica.</p>
-          <div class="wrap try-wrap"><div class="try-live" data-src="/demo/#demo=chat&amp;chat=night-lamp-it&amp;lang=it" data-title="Demo dal vivo di BoardPilot" data-full="Apri a schermo intero">
-          <img src="/img/chat.jpg?v=361bfc8a9a" width="1800" height="1125" alt="L’assistente di BoardPilot propone componenti e collegamenti per “Lampada notturna”, con il risultato sulla scheda 3D" loading="lazy" decoding="async" />
-          <div class="try-live-over">
-            <a class="btn primary try-live-btn" href="/demo/#demo=chat&amp;chat=night-lamp-it&amp;lang=it" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Guarda la conversazione</a>
-            <p>Una vera conversazione con Claude, registrata e riprodotta nel tuo browser: “Lampada notturna” sulla ESP32 DevKit (30 pins).</p>
-          </div>
-        </div></div>
-          <p class="chat-more">Altre conversazioni registrate:</p>
-          <ul class="chat-list">
-            <li><a href="/demo/#demo=chat&amp;chat=weather-esp32&amp;lang=it" target="_blank" rel="noopener"><b>Weather station</b> <span>Temperature, humidity and pressure on a small screen, on an ESP32.</span></a></li>
-            <li><a href="/demo/#demo=chat&amp;chat=distance-uno&amp;lang=it" target="_blank" rel="noopener"><b>Distance alarm</b> <span>Beep when something comes closer than 30 cm, on an Arduino Uno.</span></a></li>
-            <li><a href="/demo/#demo=chat&amp;chat=plant-pico&amp;lang=it" target="_blank" rel="noopener"><b>Plant watering</b> <span>Water a plant when the soil is dry, on a Raspberry Pi Pico.</span></a></li>
-          </ul>
-          <p class="chat-honest">Sono vere conversazioni con Claude (claude-sonnet-5), registrate una volta e riprodotte qui: mentre guardi non viene chiamata nessuna IA. Nell’app la conversazione la fai tu, con la tua chiave Claude, GPT o Gemini o con l’IA demo gratuita. Ogni proposta è verificata dalle stesse regole di cablaggio di un disegno fatto a mano.</p>
-        </div>
-      </section>
-
-      <section id="archive" class="section archive-section">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="arch.eyebrow">Novità · Progetti passati</span>
-          <h2 data-i18n="arch.title">I tuoi progetti passati, trovati mentre progetti il prossimo.</h2>
-          <p class="lead try-lead" data-i18n="arch.lead">Indica a BoardPilot le cartelle dove il tuo team conserva i progetti passati. Legge progetti Arduino, PlatformIO, ESP-IDF, STM32CubeMX e KiCad, distinte base e documenti, e per ognuno mette in una tabella scheda, componenti, bus e protocolli. Mentre descrivi un nuovo progetto, ti dice quale progetto passato è simile, e perché.</p>
-          <div class="archive-demo">
-            <div class="archive-preview">
-              <div class="ap-row ap-head"><span data-i18n="arch.h1">Progetto</span><span data-i18n="arch.h2">Scheda o chip</span><span data-i18n="arch.h3">Componenti</span><span data-i18n="arch.h4">Protocolli</span></div>
-              <div class="ap-row"><b>termostato-wifi-2022</b><span class="mono">ESP32 DevKit</span><span><i>SHT31</i><i>OLED</i><i>RELAY</i></span><span><i class="p">Wi-Fi</i><i class="p">MQTT</i></span></div>
-              <div class="ap-row on"><b>nodo-modbus-caldaia</b><span class="mono">STM32G071RB</span><span><i>NTC</i><i>MAX485</i><i>RELAY</i></span><span><i class="p">Modbus</i><i class="b">RS-485</i></span></div>
-              <div class="ap-row"><b>gateway-opentherm</b><span class="mono">—</span><span><i>OPENTHERM</i></span><span><i class="p">OpenTherm</i><i class="p">MQTT</i></span></div>
-              <div class="ap-row"><b>controllo-pompa-ventola</b><span class="mono">ESP32-C3</span><span><i>DS18B20</i><i>SSR</i></span><span><i class="b">1-Wire</i></span></div>
-              <div class="ap-src mono" data-i18n="arch.src">STM32G071RB · letto da nodo-modbus-caldaia.ioc:5</div>
-              <div class="ap-card">
-                <span class="ap-card-t" data-i18n="arch.card.t">Progetto passato simile</span>
-                <b>termostato-wifi-2022</b>
-                <span data-i18n="arch.card.d">In comune: SHT31 · relè · Wi-Fi · stessa scheda · parole: termostato, caldaia</span>
-              </div>
-            </div>
-            <div class="archive-points">
-              <ul>
-                <li data-i18n="arch.p1">Ogni valore indica il file e la riga da cui è stato letto. Le tue schede restano con il nome del chip che riportano i file.</li>
-                <li data-i18n="arch.p2">Aggiungi note e correggi i valori: restano dopo una nuova lettura, e anche l’assistente le legge.</li>
-                <li data-i18n="arch.p3">“Usa come base” apre un progetto passato come nuovo: componenti sulla scheda 3D, collegati su pin sicuri, con il suo vecchio codice.</li>
-                <li data-i18n="arch.p4">Solo lettura e in locale: non viene modificato nulla e nulla esce dal tuo computer.</li>
-              </ul>
-              <div class="archive-ctas">
-                <a class="btn primary small" href="/demo/#demo=archive&amp;lang=it" target="_blank" rel="noopener" data-i18n="arch.cta">Apri l’archivio di esempio</a>
-                <a class="btn small" href="/demo/#demo=template&amp;id=hvac-room-thermostat&amp;lang=it" target="_blank" rel="noopener" data-i18n="arch.cta2">Avvia il termostato ambiente</a>
-              </div>
-              <p class="fine" data-i18n="arch.note">L’archivio di esempio sono sei piccoli progetti inventati di riscaldamento e clima. Il termostato ambiente è un nuovo modello: isteresi, tempo minimo tra due commutazioni della caldaia e pulsante della temperatura impostata, simulato su qualsiasi scheda.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="start" class="section alt">
-        <div class="wrap">
-          <span class="eyebrow" data-i18n="start.eyebrow">Nuovo nell’embedded?</span>
-          <h2 data-i18n="start.title">Parti da zero. Non serve una scheda.</h2>
-          <p class="lead" data-i18n="start.lead">Microcontrollori, GPIO, I2C, UART, SPI, ADC, PWM, interrupt e RTOS spiegati con parole semplici e immagini. Leggi qui le lezioni gratis, poi esercitati sulla scheda simulata o sulla tua.</p>
-          <div class="grid3 start-grid">
-            <a class="card link-card" href="/it/learn/">
-              <h3 data-i18n="start.learn.t">Lezioni di embedded</h3>
-              <p data-i18n="start.learn.d">11 lezioni brevi, da “cos’è un microcontrollore” fino all’RTOS e a un percorso verso il livello senior, con le domande dei colloqui per ogni argomento.</p>
-              <span class="more" data-i18n="start.learn.cta">Inizia a imparare →</span>
-            </a>
-            <a class="card link-card" href="/it/tools/">
-              <h3 data-i18n="start.tools.t">Calcolatori gratuiti</h3>
-              <p data-i18n="start.tools.d">Resistenza per LED, partitore di tensione, pull-up I2C, errore del baud rate UART e valori di timer/PWM per la tua scheda, con la formula e la sua fonte.</p>
-              <span class="more" data-i18n="start.tools.cta">Apri i calcolatori →</span>
-            </a>
-            <a class="card link-card" href="/it/learn/glossary/">
-              <h3 data-i18n="start.glossary.t">Glossario embedded</h3>
-              <p data-i18n="start.glossary.d">Pull-up, open-drain, ISR, DMA, watchdog, bootloader, pin di strapping: le parole che incontrerai, ognuna spiegata in due o tre frasi.</p>
-              <span class="more" data-i18n="start.glossary.cta">Leggi il glossario →</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section id="features" class="section">
+      <section id="features" class="section features">
         <div class="wrap">
           <span class="eyebrow" data-i18n="feat.eyebrow">Cosa fa</span>
-          <h2 data-i18n="feat.title">Da “non funziona” al filo esatto.</h2>
-          <div class="grid3">
-            <article class="card">
-              <div class="icon i-green"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div>
-              <h3 data-i18n="f1.t">Una scheda 3D dal vivo</h3>
-              <p data-i18n="f1.d">Generata dal datasheet: ogni pin è cliccabile e mostra funzioni, avvisi e livello in tempo reale. I fili si illuminano quando il bus comunica.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-violet"><svg viewBox="0 0 24 24"><path d="M8 9a4 4 0 0 1 8 0v5a4 4 0 0 1-8 0zM12 9v9M4 12h4M16 12h4"/></svg></div>
-              <h3 data-i18n="f2.t">Un debug guidato che misura</h3>
-              <p data-i18n="f2.d">Pull-up, scansione del bus, test di scambio SDA/SCL, ID del chip: l’app controlla passo passo e ti dice la causa, con le prove.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-blue"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-8 4 5M3 21h18"/></svg></div>
-              <h3 data-i18n="f3.t">I2C decodificato, grafici dal vivo</h3>
-              <p data-i18n="f3.d">Vedi start, indirizzo, ACK e bit dei dati sotto la forma d’onda. Traccia i valori dei sensori e la memoria mentre gira il tuo firmware.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-yellow"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16.5 13v7M13 16.5h7"/></svg></div>
-              <h3 data-i18n="f4.t">Libreria componenti, da qualsiasi link</h3>
-              <p data-i18n="f4.d">Aggiungi sensori, display e pulsanti, spostali e ruotali in 3D. Incolla il link di un prodotto e BoardPilot prepara il componente e il suo modello 3D, che controlli tu.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-red"><svg viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.5"/></svg></div>
-              <h3 data-i18n="f5.t">Cablaggio controllato mentre costruisci</h3>
-              <p data-i18n="f5.d">Pin della flash, pin di sola lettura, pin di strapping, 5 V su un componente a 3,3 V, bus invertiti, massa mancante: segnalati sul pin, prima di dare tensione.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-ai"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/></svg></div>
-              <h3 data-i18n="f6.t">Un assistente onesto</h3>
-              <p data-i18n="f6.d">AI facoltativa (demo gratuita, o la tua chiave Claude, GPT o Gemini) che dichiara solo ciò che ha misurato, etichetta le ipotesi come suggerimenti e cita la sezione del datasheet per tutto il resto.</p>
-            </article>
-            <article class="card">
-              <div class="icon i-blue"><svg viewBox="0 0 24 24"><path d="M4 5h6v6H4zM14 13h6v6h-6zM10 8h4v8M4 16h6"/></svg></div>
-              <h3 data-i18n="f7.t">Pianifica tutto il progetto</h3>
-              <p data-i18n="f7.d">Modelli che si costruiscono su ogni scheda, pianificatore dei pin, schema dei collegamenti e schema elettrico, lista della spesa, consumi, calcolatori di timer e UART, macchine a stati e codice di partenza per Arduino e Pico SDK.</p>
-              <span class="new-tag" data-i18n="new.tag">Novità della 0.6</span>
-            </article>
-            <article class="card">
-              <div class="icon i-green"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4zM7 10v5c3 2 7 2 10 0v-5"/></svg></div>
-              <h3 data-i18n="f8.t">Impara l’embedded, verificato sulla tua scheda</h3>
-              <p data-i18n="f8.d">11 lezioni visive da zero a senior, laboratori pratici che l’app verifica con misure dal vivo, tre progetti per il portfolio costruiti tappa per tappa e un allenatore per i colloqui.</p>
-              <span class="new-tag" data-i18n="new.tag">Novità della 0.6</span>
-            </article>
-            <article class="card">
-              <div class="icon i-violet"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13 5l-2 14"/></svg></div>
-              <h3 data-i18n="f9.t">Il tuo agente AI vede la scheda</h3>
-              <p data-i18n="f9.d">BoardPilot è un server MCP: Claude Code, Cursor o Claude Desktop possono scansionare il bus, leggere i pin e controllare i collegamenti sulla tua scheda vera. Le scritture avvengono solo dopo il tuo clic.</p>
-              <span class="new-tag" data-i18n="new.tag">Novità della 0.6</span>
-            </article>
-          </div>
+          <h2 data-i18n="feat.title">Dall’idea a una scheda che funziona.</h2>
+          <p class="lead wide" data-i18n="feat.lead">Un’unica app per tutto il lavoro: pianifica il progetto, collegalo, programmalo, trova cosa non va e capisci perché. Ogni funzione va anche in modalità simulatore, quindi puoi provarle tutte senza una scheda.</p>
+
+          <article class="feat" id="f-build">
+            <div class="feat-copy">
+              <span class="feat-tag t-ai"><b>1</b><span data-i18n="fb.tag">Progetti in chat</span></span>
+              <h3 data-i18n="fb.t">Descrivilo. Ottieni componenti e collegamenti che passano i controlli.</h3>
+              <p data-i18n="fb.d">Di’ cosa vuoi costruire. L’assistente chiede solo quello che gli serve, confronta i componenti con te, poi propone i componenti, i fili, cosa comprare in più e il codice di partenza. Non cambia nulla finché non premi Applica.</p>
+              <ul class="ticks">
+                <li data-i18n="fb.1">Componenti dalla libreria aperta, pin scelti con le regole della scheda</li>
+                <li data-i18n="fb.2">Ogni proposta passa dallo stesso controllo dei collegamenti dei tuoi disegni</li>
+                <li data-i18n="fb.3">Provato su 26 richieste vere, compresi i progetti di display: superate 26 su 26 con Claude Sonnet 5.5 (23 su 23 con Sonnet 5)</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="/demo/#demo=chat&chat=weather-esp32&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&chat=weather-esp32&lang=it" data-i18n="fb.cta">Guarda una conversazione registrata →</a>
+                <a class="more quiet" href="https://github.com/mojeee/boardpilot/tree/main/docs/ai-evals" data-i18n="fb.eval">Leggi i resoconti dei test</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/chat.jpg?v=361bfc8a9a" srcset="/img/chat-900.jpg?v=82a54bba5a 900w, /img/chat.jpg?v=361bfc8a9a 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fb.alt" alt="La proposta dell’assistente per una stazione meteo: componenti, otto fili su pin sicuri e “Controlli superati”, con il risultato sulla scheda 3D" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat flip" id="f-display">
+            <div class="feat-copy">
+              <span class="feat-tag t-sda"><b>2</b><span data-i18n="fd.tag">Debug con misure vere</span></span>
+              <h3 data-i18n="fd.t">Da “non funziona” al filo esatto.</h3>
+              <p data-i18n="fd.d">Dicci cosa non va. BoardPilot controlla i pull-up, scansiona il bus così com’è collegato e con SDA e SCL scambiati, legge l’ID del chip e ti dice la causa, con le prove.</p>
+              <ul class="ticks">
+                <li data-i18n="fd.1">Ogni risposta ha un’etichetta: misurato, dal datasheet o suggerimento</li>
+                <li data-i18n="fd.2">Guide per una scheda che non viene trovata, che si riavvia o che stampa caratteri strani</li>
+                <li data-i18n="fd.3">Con un clic crei un report da condividere</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="/demo/#demo=chat&chat=display-patterns&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&chat=display-patterns&lang=it" data-i18n="fd.cta">Guarda la demo di debug →</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/display.jpg?v=d5514e9d44" srcset="/img/display-900.jpg?v=aa7ba989b7 900w, /img/display.jpg?v=d5514e9d44 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fd.alt" alt="Display Studio: uno schermo ST7789 collegato a un ESP32 in 3D, il pattern a scacchiera simulato e il codice generato nel pannello Codice" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-3d">
+            <div class="feat-copy">
+              <span class="feat-tag t-sda"><b>3</b><span data-i18n="f3d.tag">Guarda dentro la scheda</span></span>
+              <h3 data-i18n="f3d.t">Ogni pin, filo e componente, dal vivo in 3D.</h3>
+              <p data-i18n="f3d.d">La scheda è costruita dal suo datasheet, quindi ogni pin è reale: cliccalo per vedere cosa sa fare, cosa evitare e il suo livello in tempo reale. I fili si illuminano quando il bus comunica.</p>
+              <ul class="ticks">
+                <li data-i18n="f3d.1">Collegamenti controllati mentre disegni: pin della flash, 5 V su un componente a 3,3 V, bus invertiti, massa mancante</li>
+                <li data-i18n="f3d.2">Lo stesso progetto come piedinatura 2D, schema dei collegamenti e schema elettrico</li>
+                <li data-i18n="f3d.3">Clicca una riga del registro o una risposta dell’AI per puntare la telecamera sul suo pin</li>
+              </ul>
+              <div class="feat-links"><a class="more" href="#try" data-i18n="f3d.cta">Provala dal vivo nel browser →</a></div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/live.jpg?v=0246067817" srcset="/img/live-900.jpg?v=46e731e711 900w, /img/live.jpg?v=0246067817 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="f3d.alt" alt="Un ESP32 in 3D con sensore, LED, pulsante e potenziometro collegati, i dati del chip misurati e un avviso su un pin di strapping" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat flip" id="f-debug">
+            <div class="feat-copy">
+              <span class="feat-tag t-err"><b>4</b><span data-i18n="fd.tag">Debug con misure vere</span></span>
+              <h3 data-i18n="fd.t">Da “non funziona” al filo esatto.</h3>
+              <p data-i18n="fd.d">Dicci cosa non va. BoardPilot controlla i pull-up, scansiona il bus così com’è collegato e con SDA e SCL scambiati, legge l’ID del chip e ti dice la causa, con le prove.</p>
+              <ul class="ticks">
+                <li data-i18n="fd.1">Ogni risposta ha un’etichetta: misurato, dal datasheet o suggerimento</li>
+                <li data-i18n="fd.2">Guide per una scheda che non viene trovata, che si riavvia o che stampa caratteri strani</li>
+                <li data-i18n="fd.3">Con un clic crei un report da condividere</li>
+              </ul>
+              <div class="feat-links"><a class="more" href="/demo/#demo=debug&scenario=weather-station-swapped&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=debug&scenario=weather-station-swapped&lang=it" data-i18n="fd.cta">Guarda la demo di debug →</a></div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/debug.jpg?v=da97087785" srcset="/img/debug-900.jpg?v=c12ac28179 900w, /img/debug.jpg?v=da97087785 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="img.hero" alt="BoardPilot trova i fili SDA e SCL invertiti su un sensore BME280 collegato a un ESP32" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-flash">
+            <span id="safety" class="anchor"></span>
+            <div class="feat-copy">
+              <span class="feat-tag t-ok"><b>5</b><span data-i18n="ff.tag">Scrittura sicura</span></span>
+              <h3 data-i18n="ff.t">Prima viene salvato il tuo vecchio programma.</h3>
+              <p data-i18n="ff.d">Di base BoardPilot legge soltanto. Prima della prima scrittura salva tutta la flash, e qualsiasi scrittura sulla scheda aspetta il tuo clic.</p>
+              <ul class="ticks">
+                <li data-i18n="safe.1">Backup completo della flash prima della prima scrittura, ripristino con un clic</li>
+                <li data-i18n="safe.2">L’AI può chiedere di scrivere, ma solo tu puoi confermare</li>
+                <li data-i18n="safe.3">Rifiuta i pin della flash e le uscite sui pin di sola lettura, anche nel firmware</li>
+                <li data-i18n="safe.4">Non mostra mai una tensione che non ha misurato</li>
+              </ul>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/backup.jpg?v=2642698475" srcset="/img/backup-900.jpg?v=0aab7a7639 900w, /img/backup.jpg?v=2642698475 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="ff.alt" alt="L’assistente salva la flash della scheda passo per passo prima di scrivere qualsiasi cosa" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat flip" id="f-monitor">
+            <div class="feat-copy">
+              <span class="feat-tag t-adc"><b>6</b><span data-i18n="fm.tag">Monitor e test dell’hardware</span></span>
+              <h3 data-i18n="fm.t">Guarda il tuo firmware e il tuo bus, dal vivo.</h3>
+              <p data-i18n="fm.d">Traccia i valori dei sensori e la memoria mentre gira il tuo programma, leggi l’uscita seriale e guarda ogni transazione I2C decodificata bit per bit.</p>
+              <ul class="ticks">
+                <li data-i18n="fm.1">Grafici colorati come il pin da cui arrivano i dati</li>
+                <li data-i18n="fm.2">Scansione del bus, verifica dell’ID del chip e vista temporale con i cursori</li>
+                <li data-i18n="fm.3">Registri dei sensori letti dal chip e spiegati bit per bit</li>
+              </ul>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/test.jpg?v=a3f137f6f2" srcset="/img/test-900.jpg?v=a0c3ad0c55 900w, /img/test.jpg?v=a3f137f6f2 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fm.alt" alt="Test hardware: scansione degli indirizzi I2C, schema del bus e transazione decodificata bit per bit" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat" id="f-learn">
+            <span id="start" class="anchor"></span>
+            <div class="feat-copy">
+              <span class="feat-tag t-ok"><b>7</b><span data-i18n="fl.tag">Impara l’embedded</span></span>
+              <h3 data-i18n="fl.t">Parti da zero. Verifica quello che impari su una scheda.</h3>
+              <p data-i18n="fl.d">11 lezioni visive, da cos’è un microcontrollore fino all’RTOS. I laboratori finali verificano i tuoi collegamenti con misure dal vivo, nel simulatore o sulla tua scheda.</p>
+              <ul class="ticks">
+                <li data-i18n="fl.1">Gratis su questo sito: le lezioni, un glossario e i calcolatori</li>
+                <li data-i18n="fl.2">Tre progetti per il portfolio, costruiti tappa per tappa</li>
+                <li data-i18n="fl.3">Un allenatore per i colloqui su ogni argomento</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="/it/learn/" data-i18n="start.learn.cta">Inizia a imparare →</a>
+                <a class="more quiet" href="/it/tools/" data-i18n="start.tools.cta">Apri i calcolatori →</a>
+                <a class="more quiet" href="/it/learn/glossary/" data-i18n="start.glossary.cta">Leggi il glossario →</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <img src="/img/learn.jpg?v=b599340da7" srcset="/img/learn-900.jpg?v=890a6281a6 900w, /img/learn.jpg?v=b599340da7 1800w" sizes="(max-width: 920px) 100vw, 660px" width="1800" height="1125" data-i18n-alt="fl.alt" alt="Una lezione sui GPIO con il suo esempio mostrato sulla scheda 3D" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="feat flip" id="f-mcp">
+            <div class="feat-copy">
+              <span class="feat-tag t-ai"><b>8</b><span data-i18n="fmcp.tag">Agenti AI con MCP</span></span>
+              <h3 data-i18n="fmcp.t">Il tuo agente AI vede la scheda.</h3>
+              <p data-i18n="fmcp.d">BoardPilot è un server MCP. Claude Code, Cursor o Claude Desktop possono scansionare il bus, leggere i pin e controllare collegamenti e codice sulla scheda vera, invece di tirare a indovinare.</p>
+              <ul class="ticks">
+                <li data-i18n="fmcp.1">Spento di default, solo sul tuo computer, con un token</li>
+                <li data-i18n="fmcp.2">Ogni risultato dice se è stato misurato o letto da un datasheet</li>
+                <li data-i18n="fmcp.3">Le scritture aprono la finestra di conferma dell’app: senza il tuo clic non succede nulla</li>
+              </ul>
+              <div class="feat-links"><a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/mcp.md" data-i18n="fmcp.cta">Come configurarlo →</a></div>
+            </div>
+            <figure class="feat-shot term" aria-label="Example">
+              <div class="window-bar"><i></i><i></i><i></i><span>Terminal</span></div>
+              <pre><code><span class="p">$</span> claude mcp add boardpilot -- \
+    /Applications/BoardPilot.app/Contents/MacOS/BoardPilot --mcp-stdio
+
+<span class="c"># i2c_scan, through BoardPilot</span>
+{
+  <span class="k">"value"</span>: { <span class="k">"found"</span>: [<span class="s">"0x76"</span>], <span class="k">"trace"</span>: [ … ] },
+  <span class="k">"confidence"</span>: <span class="s">"measured"</span>,
+  <span class="k">"source"</span>: <span class="s">"diagnostic agent: i2c_scan"</span>,
+  <span class="k">"boardId"</span>: <span class="s">"esp32-devkitc-30"</span>
+}</code></pre>
+              <div class="tool-chips"><code>identify_board</code><code>check_wiring</code><code>check_code</code><code>i2c_scan</code><code>i2c_read</code><code>read_pins</code><code>pullup_check</code><code>adc_read</code><code>read_serial</code><code>search_parts</code><code>get_part</code><code class="w">request_flash</code><code class="w">request_gpio_write</code></div>
+            </figure>
+          </article>
         </div>
       </section>
 
-      <section class="section showcase">
-        <div class="wrap">
-          <div class="tabs" role="tablist">
-            <button class="on" data-shot="workspace" data-src="/img/workspace.jpg?v=11caa623b1" data-srcset="/img/workspace-900.jpg?v=62009cda1d 900w, /img/workspace.jpg?v=11caa623b1 1800w" data-i18n="tab.workspace">Spazio di lavoro</button>
-            <button data-shot="newproject" data-src="/img/newproject.jpg?v=2d62a74509" data-srcset="/img/newproject-900.jpg?v=659501ff90 900w, /img/newproject.jpg?v=2d62a74509 1800w" data-i18n="tab.newproject">Leggi dalla porta</button>
-            <button data-shot="export" data-src="/img/export.jpg?v=734ab74187" data-srcset="/img/export-900.jpg?v=654afaf2f9 900w, /img/export.jpg?v=734ab74187 1800w" data-i18n="tab.export">Esporta PDF</button>
-            <button data-shot="test" data-src="/img/test.jpg?v=a3f137f6f2" data-srcset="/img/test-900.jpg?v=a0c3ad0c55 900w, /img/test.jpg?v=a3f137f6f2 1800w" data-i18n="tab.test">Test hardware</button>
-            <button data-shot="debug" data-src="/img/debug.jpg?v=da97087785" data-srcset="/img/debug-900.jpg?v=c12ac28179 900w, /img/debug.jpg?v=da97087785 1800w" data-i18n="tab.debug">Debug</button>
-            <button data-shot="monitor" data-src="/img/monitor.jpg?v=487f45a0b1" data-srcset="/img/monitor-900.jpg?v=e251f7c097 900w, /img/monitor.jpg?v=487f45a0b1 1800w" data-i18n="tab.monitor">Monitor</button>
-            <button data-shot="library" data-src="/img/library.jpg?v=5e67901b99" data-srcset="/img/library-900.jpg?v=6f61072667 900w, /img/library.jpg?v=5e67901b99 1800w" data-i18n="tab.library">Libreria componenti</button>
-            <button data-shot="schematic" data-src="/img/schematic.jpg?v=adb30842d9" data-srcset="/img/schematic-900.jpg?v=489c996b16 900w, /img/schematic.jpg?v=adb30842d9 1800w" data-i18n="tab.schematic">Schema elettrico</button>
-            <button data-shot="timing" data-src="/img/timing.jpg?v=8c2343ea25" data-srcset="/img/timing-900.jpg?v=c1686f3902 900w, /img/timing.jpg?v=8c2343ea25 1800w" data-i18n="tab.timing">Vista temporale</button>
-            <button data-shot="learn" data-src="/img/learn.jpg?v=b599340da7" data-srcset="/img/learn-900.jpg?v=890a6281a6 900w, /img/learn.jpg?v=b599340da7 1800w" data-i18n="tab.learn">Lezioni</button>
-            <button data-shot="code" data-src="/img/code.jpg?v=e1cda201f4" data-srcset="/img/code-900.jpg?v=9397731bb0 900w, /img/code.jpg?v=e1cda201f4 1800w" data-i18n="tab.code">Controllo del codice</button>
-            <button data-shot="import" data-src="/img/import.jpg?v=17c76e9391" data-srcset="/img/import-900.jpg?v=f0216c3b45 900w, /img/import.jpg?v=17c76e9391 1800w" data-i18n="tab.import">Importa da link</button>
-            <button data-shot="home" data-src="/img/home.jpg?v=d30b2e8bce" data-srcset="/img/home-900.jpg?v=7c438ffc78 900w, /img/home.jpg?v=d30b2e8bce 1800w" data-i18n="tab.home">Home</button>
-          </div>
-          <div class="window big">
-            <div class="window-bar"><i></i><i></i><i></i></div>
-            <img id="shot" src="/img/workspace.jpg?v=11caa623b1" srcset="/img/workspace-900.jpg?v=62009cda1d 900w, /img/workspace.jpg?v=11caa623b1 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1125" data-i18n-alt="img.shot" alt="Schermata di BoardPilot: lo spazio di lavoro del progetto con scheda 3D, codice, registro e assistente" loading="lazy" />
-          </div>
-          <p class="caption" id="shot-caption" data-i18n="cap.workspace">La pagina del progetto: scheda 3D, codice con le correzioni del controllo, il registro, l’assistente che fa il lavoro e una barra degli avvisi.</p>
-        </div>
-      </section>
-
-      <section class="section parts-promo">
+      <section class="section parts-promo" id="parts">
         <div class="wrap two">
           <div>
             <span class="eyebrow" data-i18n="lib.eyebrow">Libreria componenti aperta</span>
-            <h2><span class="big-num">385</span> <span data-i18n="lib.title">componenti, pronti da collegare alla tua scheda.</span></h2>
+            <h2><span class="big-num">383</span> <span data-i18n="lib.title">componenti, pronti da collegare alla tua scheda.</span></h2>
             <p class="lead" data-i18n="lib.lead">Sensori, display, driver per motori, radio e altro: pin, tensione, indirizzi I2C, verifica dell’ID del chip, un modello 3D e un collegamento sicuro per ognuno. Riutilizzabili liberamente con licenza CC BY 4.0.</p>
             <div class="cta">
               <a class="btn primary" href="/it/parts/" data-i18n="lib.browse">Sfoglia la libreria</a>
@@ -318,32 +325,339 @@
         </div>
       </section>
 
-      <section id="how" class="section">
+      <section id="how" class="section how">
         <div class="wrap">
           <span class="eyebrow" data-i18n="how.eyebrow">Come funziona</span>
-          <h2 data-i18n="how.title">Prima guarda. Chiede solo ciò che non vede.</h2>
-          <ol class="steps">
-            <li><span class="num">1</span><h3 data-i18n="s1.t">Collega</h3><p data-i18n="s1.d">BoardPilot trova la porta, legge chip, dimensione della flash e MAC. Nessuna porta? Ti guida tra cavo, driver e pulsante BOOT.</p></li>
-            <li><span class="num">2</span><h3 data-i18n="s2.t">Scegli un’attività</h3><p data-i18n="s2.d">Collega, nuovo progetto, flash, debug, monitor, test, report. Oppure descrivi il problema con parole tue.</p></li>
-            <li><span class="num">3</span><h3 data-i18n="s3.t">Ottieni la causa, con le prove</h3><p data-i18n="s3.d">Ogni risultato elenca cosa è stato misurato, cosa dice il datasheet e cosa fare dopo. Con un clic crei un report da condividere.</p></li>
+          <h2 data-i18n="how.title">Come funziona, e come puoi esserne sicuro.</h2>
+          <p class="lead wide" data-i18n="how.lead">Cinque passi da un’idea a una scheda che funziona. Per ognuno: cosa fa BoardPilot e come puoi verificarlo da solo, senza fidarti sulla parola.</p>
+          <p><a class="more" href="/it/how-it-works/" data-i18n="how.tech">I dettagli tecnici: file delle schede, scelta dei pin, ogni regola di cablaggio, gli strumenti dell’IA, il simulatore →</a></p>
+          <ol class="how-steps">
+            <li class="how-step" id="how-parts">
+              <div class="how-text">
+                <h3><span class="how-num">1</span><span data-i18n="hp.t">Scegliere i componenti</span></h3>
+                <p data-i18n="hp.d">Di’ all’assistente cosa vuoi costruire. Chiede solo quello che cambia il progetto, come l’alimentazione o se va dentro o fuori casa, una domanda alla volta. Quando c’è una vera scelta, mostra le opzioni come schede che dicono cosa cambia: cosa misurano, la tensione, i collegamenti e le trappole note.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">Come puoi esserne sicuro</span>
+                  <ul class="ticks">
+                    <li data-i18n="hp.1">Può usare solo componenti della libreria aperta: 383 componenti, ognuno con pin, tensione, indirizzi I2C e trappole note, con le loro fonti.</li>
+                    <li data-i18n="hp.2">Un componente che non è nella libreria viene rifiutato, mai inventato. Se la libreria non può fare quello che chiedi, lo dice.</li>
+                    <li data-i18n="hp.3">La scelta la fai tu, e non viene aggiunto nulla finché non premi Applica.</li>
+                  </ul>
+                </div>
+                <a class="more" href="/demo/#demo=chat&chat=plant-pico&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&chat=plant-pico&lang=it" data-i18n="hp.cta">Guarda come sceglie i componenti per irrigare una pianta →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/chat-plant.jpg?v=dc3f539733" srcset="/img/chat-plant-900.jpg?v=5ab5613999 900w, /img/chat-plant.jpg?v=dc3f539733 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hp.alt" alt="Il progetto di irrigazione proposto dall’assistente: sensore del terreno, modulo MOSFET e pompa, perché ognuno è stato scelto, e un diodo di ricircolo nella lista della spesa" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-wiring">
+              <div class="how-text">
+                <h3><span class="how-num">2</span><span data-i18n="hw.t">Collegamenti</span></h3>
+                <p data-i18n="hw.d">I pin vengono scelti con le regole della scheda, scritte dal suo datasheet. L’assistente disegna i fili, aggiunge i collegamenti tra componenti per i carichi, come una pompa su un modulo MOSFET, ed elenca cosa comprare in più.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">Come puoi esserne sicuro</span>
+                  <ul class="ticks">
+                    <li data-i18n="hw.1">Ogni proposta passa dal controllo dei collegamenti prima che tu la veda: pin della flash, pin di sola lettura, pin di strapping, ADC2 con il Wi-Fi, componenti a 5 V su pin a 3,3 V, I2C invertito, due componenti con lo stesso indirizzo I2C, alimentazione o massa mancanti. Gli errori vanno corretti prima.</li>
+                    <li data-i18n="hw.2">Pull-up, partitori di tensione, traslatori di livello e diodi di ricircolo finiscono nella lista della spesa dalle note dei componenti nella libreria.</li>
+                    <li data-i18n="hw.3">Non cambia nulla finché non premi Applica, e Annulla torna indietro. I fili che disegni tu sono controllati dalle stesse regole.</li>
+                  </ul>
+                </div>
+                <a class="more" href="#try" data-i18n="hw.cta">Provalo: disegna un filo nella demo dal vivo →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/chat-distance.jpg?v=55820e3963" srcset="/img/chat-distance-900.jpg?v=5bb06229fa 900w, /img/chat-distance.jpg?v=55820e3963 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hw.alt" alt="Un allarme di distanza su Arduino Uno: sei fili, ogni segnale su un pin sicuro, e “Controlli superati”" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-debug">
+              <div class="how-text">
+                <h3><span class="how-num">3</span><span data-i18n="hd.t">Debug</span></h3>
+                <p data-i18n="hd.d">Con il tuo OK, BoardPilot installa sulla scheda un piccolo agente diagnostico, dopo aver salvato il tuo programma. Poi misura: i pull-up sui pin I2C, una scansione del bus così com’è collegato e con SDA e SCL scambiati, e il registro di identificazione del chip.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">Come puoi esserne sicuro</span>
+                  <ul class="ticks">
+                    <li data-i18n="hd.1">Ogni dato ha un’etichetta: Misurato (in questa sessione, con lo strumento che l’ha misurato), Dalla documentazione (con la sezione del datasheet) o Suggerimento (lo confermi tu prima che qualcosa ci si basi).</li>
+                    <li data-i18n="hd.2">I fili invertiti si vedono da una misura, non da un’ipotesi: il sensore risponde solo quando SDA e SCL sono scambiati.</li>
+                    <li data-i18n="hd.3">Non mostra mai una tensione che non ha misurato. Sui pin senza ADC indica solo ALTO o BASSO.</li>
+                  </ul>
+                </div>
+                <a class="more" href="/demo/#demo=debug&scenario=weather-station-swapped&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=debug&scenario=weather-station-swapped&lang=it" data-i18n="fd.cta">Guarda la demo di debug →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/newproject.jpg?v=2d62a74509" srcset="/img/newproject-900.jpg?v=659501ff90 900w, /img/newproject.jpg?v=2d62a74509 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hd.alt" alt="Lettura della scheda: ogni risultato con “measured” e lo strumento che l’ha misurato, come il test di scambio e la lettura dell’ID del chip" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-code">
+              <div class="how-text">
+                <h3><span class="how-num">4</span><span data-i18n="hc.t">Codice e programmazione</span></h3>
+                <p data-i18n="hc.d">BoardPilot scrive il codice di partenza dal tuo disegno, usando solo i pin che hai collegato, per Arduino, Pico SDK, ESP-IDF o STM32 HAL. Puoi anche aprire il tuo sketch nel pannello del codice.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">Come puoi esserne sicuro</span>
+                  <ul class="ticks">
+                    <li data-i18n="hc.1">Il controllo del codice confronta il codice con i collegamenti mentre scrivi: pin I2C nell’ordine sbagliato, una velocità seriale diversa da quella del monitor, un LED su un altro pin. Ogni problema segna la sua riga, e quelli semplici hanno una correzione con un clic.</li>
+                    <li data-i18n="hc.2">Il codice dell’AI passa dallo stesso controllo prima di essere mostrato, e aspetta che tu lo accetti.</li>
+                    <li data-i18n="hc.3">Programmare la scheda richiede la tua conferma. Prima della prima scrittura viene salvata tutta la flash, e con un clic torna il tuo vecchio programma.</li>
+                  </ul>
+                </div>
+                <a class="more" href="/demo/#demo=code&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=code&lang=it" data-i18n="hc.cta">Guarda il controllo del codice nella demo dal vivo →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/code.jpg?v=e1cda201f4" srcset="/img/code-900.jpg?v=9397731bb0 900w, /img/code.jpg?v=e1cda201f4 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hc.alt" alt="Uno sketch controllato con il disegno: pin I2C scambiati e un LED sul pin sbagliato segnati sulle loro righe" loading="lazy" />
+              </figure>
+            </li>
+            <li class="how-step" id="how-sim">
+              <div class="how-text">
+                <h3><span class="how-num">5</span><span data-i18n="hs.t">Simulazione</span></h3>
+                <p data-i18n="hs.d">La modalità simulatore fa girare tutta l’app senza una scheda: le stesse schermate e gli stessi controlli, su una scheda virtuale con guasti realistici come fili invertiti, un finto sensore, cali di tensione o il baud rate sbagliato. I progetti modello girano passo per passo, con la riga in esecuzione evidenziata e il valore di ogni componente e pin accanto al codice.</p>
+                <div class="how-sure">
+                  <span class="how-sure-h" data-i18n="how.sure">Come puoi esserne sicuro</span>
+                  <ul class="ticks">
+                    <li data-i18n="hs.1">I valori simulati hanno sempre l’etichetta “simulato”, così non li scambi mai per misure.</li>
+                    <li data-i18n="hs.2">La scheda simulata funziona con la stessa interfaccia di una vera, quindi i passi che impari sono quelli che userai.</li>
+                    <li data-i18n="hs.3">Display Studio mostra cosa disegnerà il tuo modulo display, pixel per pixel, prima ancora di averlo, e un test verifica che il codice generato disegni esattamente gli stessi pixel con la vera libreria Adafruit GFX.</li>
+                  </ul>
+                </div>
+                <a class="more" href="/demo/#demo=template&id=plant-watering&lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=template&id=plant-watering&lang=it" data-i18n="hs.cta">Fai girare un progetto modello nel simulatore →</a>
+              </div>
+              <figure class="how-shot window">
+                <div class="window-bar"><i></i><i></i><i></i></div>
+                <img src="/img/simrun.jpg?v=068e5dca78" srcset="/img/simrun-900.jpg?v=e283893f0f 900w, /img/simrun.jpg?v=068e5dca78 1800w" sizes="(max-width: 920px) 100vw, 560px" width="1800" height="1125" data-i18n-alt="hs.alt" alt="Il modello di irrigazione nel simulatore: la riga corrente evidenziata, lo stato e l’umidità del terreno con l’etichetta simulato" loading="lazy" />
+              </figure>
+            </li>
           </ol>
+
+          <div class="trust" id="trust">
+            <h3 data-i18n="tr.t">Come puoi essere sicuro di tutto questo</h3>
+            <p data-i18n="tr.d">Non dovresti fidarti sulla parola di un’app per quello che hai sul tavolo. Ecco cosa fa BoardPilot perché tu possa verificare.</p>
+            <div class="trust-grid">
+              <div class="trust-tile">
+                <div class="trust-labels"><span class="tag measured" data-i18n="chip.measured">Misurato</span><span class="tag documented" data-i18n="tr.doc">Dalla documentazione</span><span class="tag suggestion" data-i18n="tr.sug">Suggerimento</span></div>
+                <p data-i18n="tr.1">Tre etichette su ogni risposta, anche quelle dell’assistente, ognuna con la sua fonte: lo strumento che ha misurato, la sezione del datasheet o la voce della libreria.</p>
+              </div>
+              <div class="trust-tile">
+                <b class="trust-num">0</b>
+                <p data-i18n="tr.2">scritture senza il tuo clic. Programmazione, agente diagnostico e comando di un pin aspettano la tua conferma, dopo un backup completo. L’AI e gli agenti AI possono solo chiedere.</p>
+              </div>
+              <div class="trust-tile">
+                <b class="trust-num">26/26</b>
+                <p data-i18n="tr.3">vere conversazioni con Claude Sonnet 5.5 superate (23 su 23 con Sonnet 5), valutate con le regole di cablaggio dell’app e rilette per la sicurezza da un secondo modello.</p>
+                <a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/ai-evals/README.md" data-i18n="tr.3cta">Leggi la valutazione →</a>
+              </div>
+              <div class="trust-tile">
+                <b class="trust-num" data-i18n="tr.4n">3.200+</b>
+                <p data-i18n="tr.4">test automatici delle regole di cablaggio, del controllo del codice, dei flussi, dei parser e di ogni file scheda, più test end-to-end che guidano l’app compilata in ogni attività.</p>
+                <a class="more" href="https://github.com/mojeee/boardpilot/blob/main/docs/testing.md" data-i18n="tr.4cta">Come viene testata →</a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section id="safety" class="section alt">
-        <div class="wrap two">
-          <div>
-            <span class="eyebrow" data-i18n="safe.eyebrow">Sicurezza</span>
-            <h2 data-i18n="safe.title">La tua scheda, il tuo programma, la tua scelta.</h2>
-            <p class="lead" data-i18n="safe.lead">BoardPilot di base legge soltanto. Qualsiasi scrittura sulla scheda richiede la tua conferma esplicita, e prima salva una copia del tuo firmware.</p>
-          </div>
-          <ul class="checks">
-            <li data-i18n="safe.1">Backup completo della flash prima della prima scrittura, ripristino con un clic</li>
-            <li data-i18n="safe.2">L’AI può chiedere di scrivere, ma solo tu puoi confermare</li>
-            <li data-i18n="safe.3">Rifiuta i pin della flash e le uscite sui pin di sola lettura, anche nel firmware</li>
-            <li data-i18n="safe.4">Non mostra mai una tensione che non ha misurato</li>
-            <li data-i18n="safe.5">Modalità simulatore: impara e fai demo senza alcun hardware</li>
+      <section id="demos" class="section alt demos">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="demos.eyebrow">Demo · senza installare</span>
+          <h2 data-i18n="demos.title">Guardala al lavoro prima di installare qualsiasi cosa.</h2>
+          <p class="lead wide" data-i18n="demos.lead">Ogni demo gira nel tuo browser. Nessuna richiede una scheda, un account o una chiave AI. Ce ne sono di tre tipi:</p>
+          <ul class="demo-kinds">
+            <li><span class="kind k-live" data-i18n="kind.live">App dal vivo</span><span data-i18n="kind.live.d">La vera app con una scheda simulata. Clicca, trascina e collega quello che vuoi.</span></li>
+            <li><span class="kind k-rec" data-i18n="kind.rec">Registrazione</span><span data-i18n="kind.rec.d">Una vera conversazione con Claude, registrata una volta e riprodotta. Mentre guardi non viene chiamata nessuna IA.</span></li>
+            <li><span class="kind k-script" data-i18n="kind.script">Automatica</span><span data-i18n="kind.script.d">L’app svolge un’attività da sola su una scheda simulata, passo per passo.</span></li>
           </ul>
+          <div id="try" class="demo-stage">
+            <div class="demo-stage-head">
+              <span class="kind k-live" data-i18n="kind.live">App dal vivo</span>
+              <h3 data-i18n="try.title">Provala nel tuo browser.</h3>
+            </div>
+            <p class="demo-stage-lead" data-i18n="try.lead">Questa è la vera app con un ESP32 simulato e una stazione meteo con un errore di cablaggio. Clicca un pin, trascina un componente, disegna un filo, oppure apri “Risolvi un problema” e guarda come trova il guasto.</p>
+            <div class="wrap try-wrap"><div class="try-live" data-src="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=it" data-title="Demo dal vivo di BoardPilot" data-full="Apri a schermo intero">
+          <img src="/img/demo/it/esp32-devkitc-30.jpg?v=397b2a98e0" width="1200" height="750" alt="BoardPilot mostra la scheda ESP32 DevKit (30 pins) in 3D" loading="lazy" decoding="async" />
+          <div class="try-live-over">
+            <a class="btn primary try-live-btn" href="/demo/#demo=board&amp;board=esp32-devkitc-30&amp;lang=it" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>Provala dal vivo</a>
+            <p>La vera app con una scheda ESP32 DevKit (30 pins) simulata, nel tuo browser. Niente da installare, niente da collegare.</p>
+          </div>
+        </div></div>
+          </div>
+          <div class="demo-grid" data-now="In riproduzione nel riquadro qui sopra">
+            <article class="demo-card" data-kind="script">
+              <a class="demo-poster" href="/demo/#demo=debug&amp;scenario=weather-station-swapped&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=debug&amp;scenario=weather-station-swapped&amp;lang=it" tabindex="-1" aria-hidden="true"><img src="/img/debug.jpg?v=da97087785" srcset="/img/debug-900.jpg?v=c12ac28179 900w, /img/debug.jpg?v=da97087785 1800w" sizes="(max-width: 640px) 100vw, 380px" width="1800" height="1125" alt="Il debug guidato mostra SDA e SCL invertiti sul sensore BME280" loading="lazy" decoding="async" /><span class="play"></span></a>
+              <div class="demo-body">
+                <span class="kind k-script">Automatica</span>
+                <h3>Trova un filo invertito</h3>
+                <p>Il debug guidato controlla una stazione meteo il cui sensore “non viene trovato”: pull-up, scansione del bus, test di scambio. Trova SDA e SCL invertiti e mostra quali fili scambiare.</p>
+                <p class="demo-meta">ESP32 DevKit (30 pins) · scheda simulata</p>
+                <a class="more" href="/demo/#demo=debug&amp;scenario=weather-station-swapped&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=debug&amp;scenario=weather-station-swapped&amp;lang=it">Apri la demo →</a>
+              </div>
+            </article>
+            <article class="demo-card" data-kind="rec">
+              <a class="demo-poster" href="/demo/#demo=chat&amp;chat=night-lamp-it&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=night-lamp-it&amp;lang=it" tabindex="-1" aria-hidden="true"><img src="/img/chat-lamp.jpg?v=908b812158" srcset="/img/chat-lamp-900.jpg?v=5b0d860d4b 900w, /img/chat-lamp.jpg?v=908b812158 1800w" sizes="(max-width: 640px) 100vw, 380px" width="1800" height="1125" alt="La proposta verificata dell’assistente per “Lampada notturna” applicata alla scheda 3D" loading="lazy" decoding="async" /><span class="play"></span></a>
+              <div class="demo-body">
+                <span class="kind k-rec">Registrazione</span>
+                <h3>Lampada notturna</h3>
+                <p>Un LED che si accende quando è buio, su ESP32 (in italiano).</p>
+                <p class="demo-meta">Claude Sonnet 5 · ESP32 DevKit (30 pins) · in italiano</p>
+                <a class="more" href="/demo/#demo=chat&amp;chat=night-lamp-it&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=night-lamp-it&amp;lang=it">Guarda la conversazione →</a>
+              </div>
+            </article>
+            <article class="demo-card" data-kind="rec">
+              <a class="demo-poster" href="/demo/#demo=chat&amp;chat=weather-esp32&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=weather-esp32&amp;lang=it" tabindex="-1" aria-hidden="true"><img src="/img/chat.jpg?v=361bfc8a9a" srcset="/img/chat-900.jpg?v=82a54bba5a 900w, /img/chat.jpg?v=361bfc8a9a 1800w" sizes="(max-width: 640px) 100vw, 380px" width="1800" height="1125" alt="La proposta verificata dell’assistente per “Stazione meteo” applicata alla scheda 3D" loading="lazy" decoding="async" /><span class="play"></span></a>
+              <div class="demo-body">
+                <span class="kind k-rec">Registrazione</span>
+                <h3>Stazione meteo</h3>
+                <p>Temperatura, umidità e pressione su un piccolo schermo, con un ESP32.</p>
+                <p class="demo-meta">Claude Sonnet 5 · ESP32 DevKit (30 pins) · in inglese</p>
+                <a class="more" href="/demo/#demo=chat&amp;chat=weather-esp32&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=weather-esp32&amp;lang=it">Guarda la conversazione →</a>
+              </div>
+            </article>
+            <article class="demo-card" data-kind="rec">
+              <a class="demo-poster" href="/demo/#demo=chat&amp;chat=distance-uno&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=distance-uno&amp;lang=it" tabindex="-1" aria-hidden="true"><img src="/img/chat-distance.jpg?v=55820e3963" srcset="/img/chat-distance-900.jpg?v=5bb06229fa 900w, /img/chat-distance.jpg?v=55820e3963 1800w" sizes="(max-width: 640px) 100vw, 380px" width="1800" height="1125" alt="La proposta verificata dell’assistente per “Allarme di distanza” applicata alla scheda 3D" loading="lazy" decoding="async" /><span class="play"></span></a>
+              <div class="demo-body">
+                <span class="kind k-rec">Registrazione</span>
+                <h3>Allarme di distanza</h3>
+                <p>Suona quando qualcosa si avvicina a meno di 30 cm, con un Arduino Uno.</p>
+                <p class="demo-meta">Claude Sonnet 5 · Arduino Uno R3 · in inglese</p>
+                <a class="more" href="/demo/#demo=chat&amp;chat=distance-uno&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=distance-uno&amp;lang=it">Guarda la conversazione →</a>
+              </div>
+            </article>
+            <article class="demo-card" data-kind="rec">
+              <a class="demo-poster" href="/demo/#demo=chat&amp;chat=plant-pico&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=plant-pico&amp;lang=it" tabindex="-1" aria-hidden="true"><img src="/img/chat-plant.jpg?v=dc3f539733" srcset="/img/chat-plant-900.jpg?v=5ab5613999 900w, /img/chat-plant.jpg?v=dc3f539733 1800w" sizes="(max-width: 640px) 100vw, 380px" width="1800" height="1125" alt="La proposta verificata dell’assistente per “Irrigazione della pianta” applicata alla scheda 3D" loading="lazy" decoding="async" /><span class="play"></span></a>
+              <div class="demo-body">
+                <span class="kind k-rec">Registrazione</span>
+                <h3>Irrigazione della pianta</h3>
+                <p>Annaffia una pianta quando il terreno è secco, con un Raspberry Pi Pico.</p>
+                <p class="demo-meta">Claude Sonnet 5 · Raspberry Pi Pico · in inglese</p>
+                <a class="more" href="/demo/#demo=chat&amp;chat=plant-pico&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=plant-pico&amp;lang=it">Guarda la conversazione →</a>
+              </div>
+            </article>
+            <article class="demo-card" data-kind="rec">
+              <a class="demo-poster" href="/demo/#demo=chat&amp;chat=display-patterns&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=display-patterns&amp;lang=it" tabindex="-1" aria-hidden="true"><img src="/img/display.jpg?v=d5514e9d44" srcset="/img/display-900.jpg?v=aa7ba989b7 900w, /img/display.jpg?v=d5514e9d44 1800w" sizes="(max-width: 640px) 100vw, 380px" width="1800" height="1125" alt="La proposta verificata dell’assistente per “Display test patterns” applicata alla scheda 3D" loading="lazy" decoding="async" /><span class="play"></span></a>
+              <div class="demo-body">
+                <span class="kind k-rec">Registrazione</span> <span class="new-tag">Novità</span>
+                <h3>Display test patterns</h3>
+                <p>Test patterns on an ST7789 screen, simulated pixel by pixel, then the code.</p>
+                <p class="demo-meta">Claude Sonnet 5.5 · ESP32 DevKit (30 pins) · in inglese</p>
+                <a class="more" href="/demo/#demo=chat&amp;chat=display-patterns&amp;lang=it" target="_blank" rel="noopener" data-demo="/demo/#demo=chat&amp;chat=display-patterns&amp;lang=it">Guarda la conversazione →</a>
+              </div>
+            </article>
+          </div>
+          <p class="demo-boards"><span class="kind k-live">App dal vivo</span> Ogni pagina delle schede ha la sua demo dal vivo con quella scheda già scelta: Pico, Arduino, STM32, nRF52, Teensy e altre. <a class="more" href="/it/boards/">Scegli una scheda →</a></p>
+          <p class="chat-honest">Le registrazioni sono vere conversazioni con Claude Sonnet 5, registrate una volta e riprodotte qui: mentre guardi non viene chiamata nessuna IA. Nell’app la conversazione la fai tu, con la tua chiave Claude, GPT o Gemini o con l’IA demo gratuita. Ogni proposta è verificata dalle stesse regole di cablaggio di un disegno fatto a mano.</p>
+        </div>
+      </section>
+
+      <section id="compare" class="section compare">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="cmp.eyebrow">Confronto</span>
+          <h2 data-i18n="cmp.title">Come si affianca BoardPilot agli strumenti che usi già.</h2>
+          <p class="lead wide" data-i18n="cmp.lead">BoardPilot non sostituisce il tuo editor di codice o il tuo programma per i PCB. È la parte che guarda la scheda: collegamenti, misure, scrittura sicura e spiegazioni semplici. Ecco cosa offre ogni strumento, preso dal suo sito ufficiale.</p>
+          <ul class="cmp-legend">
+            <li><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span></li>
+            <li><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte, vedi la nota</span></li>
+            <li><span class="cmp-v v-no"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No</span></li>
+            <li><span class="cmp-empty"></span>Vuoto: non indicato sul sito ufficiale del prodotto (non vuol dire “no”)</li>
+          </ul>
+          <p class="cmp-swipe">Scorri di lato per vedere tutti gli strumenti →</p>
+          <!-- Comparison sources (official pages only, checked 2026-10-24); an empty cell means the fact was not found there:
+  arduino:
+    https://www.arduino.cc/en/software (open source, autocompletion, debugger)
+    https://github.com/arduino/arduino-ide (upload through arduino-cli, AGPL-3.0)
+    https://github.com/arduino/arduino-ide/releases (Windows, macOS, Linux builds)
+    https://raw.githubusercontent.com/arduino/docs-content/main/content/software/ide-v2/tutorials/ide-v2-serial-plotter/ide-v2-serial-plotter.md (Serial Plotter)
+    https://raw.githubusercontent.com/arduino/docs-content/main/content/software/ide-v2/tutorials/ide-v2-serial-monitor/ide-v2-serial-monitor.md (Serial Monitor)
+    https://raw.githubusercontent.com/arduino/docs-content/main/content/software/ide-v2/tutorials/ide-v2-debugger/ide-v2-debugger.md (debugger: SAMD boards, usually an external probe)
+    https://raw.githubusercontent.com/arduino/docs-content/main/content/software/ide-v2/tutorials/ide-v2-installing-a-library/ide-v2-installing-a-library.md (Library Manager)
+    https://blog.arduino.cc/2025/04/17/code-faster-with-the-new-arduino-ai-assistant/ (AI Assistant in the Cloud Editor)
+    https://docs.arduino.cc/built-in-examples/ (tutorials)
+  platformio:
+    https://docs.platformio.org/en/latest/what-is-platformio.html (no license fees; macOS, Windows, Linux, FreeBSD)
+    https://docs.platformio.org/en/latest/integration/ide/vscode.html (VS Code, upload, serial port monitor)
+    https://docs.platformio.org/en/latest/plus/debugging.html (debugging with a probe or on-board debugger)
+    https://docs.platformio.org/en/latest/librarymanager/index.html (Library Manager)
+    https://github.com/platformio/platformio-core (Apache 2.0)
+  wokwi:
+    https://wokwi.com/ (simulator in the browser; VS Code and JetBrains)
+    https://wokwi.com/pricing (free Community plan, paid plans)
+    https://docs.wokwi.com/ (Arduino, ESP32, STM32 and other boards simulated)
+    https://docs.wokwi.com/diagram-format (2D diagram of parts and wires)
+    https://docs.wokwi.com/guides/serial-monitor (serial monitor and plotter in the simulation)
+    https://docs.wokwi.com/gdb-debugging (GDB debugging of the simulated chip)
+    https://docs.wokwi.com/guides/libraries (Library Manager)
+    https://docs.wokwi.com/wokwi-ci/mcp-support (experimental MCP server in wokwi-cli)
+    https://github.com/wokwi/wokwi-cli (lint of diagram.json, MIT)
+  fritzing:
+    https://github.com/fritzing/fritzing-app (breadboard view, PCB layouts, GPL v3)
+    https://github.com/fritzing/fritzing-app/wiki/2.1-Part-file-format (breadboard, schematic and PCB views)
+    https://github.com/fritzing/fritzing-app/wiki/2.3-Adding-a-platform-to-Code-view (Code view: compile and upload, serial monitor)
+    https://blog.fritzing.org/2023/06/15/fritzing-1-0-0 (Windows, macOS, Linux; circuit simulator)
+    https://blog.fritzing.org/2012/10/16/new-design-rules-check-drc (design rules check for the PCB)
+  chatbot:
+    https://learn.chatgpt.com/docs/pricing (free and paid plans; web, desktop and mobile apps)
+    https://developers.openai.com/api/docs/mcp (connects to custom MCP servers as a client)
+          -->
+          <div class="cmp-wrap" tabindex="0" role="region" aria-label="BoardPilot a confronto con altri strumenti per principianti e piccoli team embedded">
+            <table class="cmp">
+              <caption class="sr">BoardPilot a confronto con altri strumenti per principianti e piccoli team embedded</caption>
+              <thead><tr><th scope="col" class="cmp-feat">Cosa ti serve</th><th scope="col" class="bp">BoardPilot</th><th scope="col">Arduino IDE 2</th><th scope="col">PlatformIO</th><th scope="col">Wokwi</th><th scope="col">Fritzing</th><th scope="col">Chatbot AI (ChatGPT)</th></tr></thead>
+              <tbody><tr class="cmp-group"><th scope="rowgroup" colspan="7">Per iniziare</th></tr>
+<tr><th scope="row" class="cmp-feat">Prezzo</th><td class="bp"><span class="cmp-note">Prova gratuita di 30 giorni, poi una licenza</span></td><td><span class="cmp-note">Gratis</span></td><td><span class="cmp-note">Gratis</span></td><td><span class="cmp-note">Piano gratuito e piani a pagamento</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-note">Piano gratuito e piani a pagamento</span></td></tr>
+<tr><th scope="row" class="cmp-feat">Dove funziona</th><td class="bp"><span class="cmp-note">App per Mac e Windows; demo nel browser</span></td><td><span class="cmp-note">Windows, macOS, Linux</span></td><td><span class="cmp-note">VS Code su macOS, Windows, Linux, FreeBSD</span></td><td><span class="cmp-note">Browser, più plugin per VS Code e JetBrains</span></td><td><span class="cmp-note">Windows, macOS, Linux</span></td><td><span class="cmp-note">Web, app desktop e mobile</span></td></tr>
+<tr><th scope="row" class="cmp-feat">Lezioni per principianti</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">11 lezioni, laboratori verificati sulla scheda</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Tutorial nella documentazione</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Codice sorgente</th><td class="bp"><span class="cmp-note">Pubblico, licenza source-available</span></td><td><span class="cmp-note">Open source (AGPL-3.0)</span></td><td><span class="cmp-note">Open source (Apache 2.0)</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Lo strumento a riga di comando è MIT</span></td><td><span class="cmp-note">Open source (GPL v3)</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr></tbody>
+<tbody><tr class="cmp-group"><th scope="rowgroup" colspan="7">Progetto e collegamenti</th></tr>
+<tr><th scope="row" class="cmp-feat">Simula scheda e componenti senza hardware</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">13 schede, con guasti realistici</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Arduino, ESP32, STM32, Pico e altre</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Simulatore di circuiti; microcontrollori non citati</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Vista dei collegamenti</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Scheda 3D, piedinatura 2D, schema dei collegamenti</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Schema 2D</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Vista breadboard 2D</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Schema elettrico</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Disegnato dal progetto</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Vista schema elettrico</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Progettazione PCB</th><td class="bp"><span class="cmp-v v-no"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No</span><span class="cmp-note">Non è uno strumento per PCB</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Layout PCB per la produzione</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Controlla gli errori di collegamento</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Regole dei pin, tensione, bus invertiti, massa mancante</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Un controllo a riga di comando del file dello schema</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Controllo delle regole di progetto per il PCB</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Propone componenti e collegamenti verificati con le regole dei pin della scheda</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Verificati dalle regole di cablaggio prima di Applica</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr></tbody>
+<tbody><tr class="cmp-group"><th scope="rowgroup" colspan="7">Codice e programmazione</th></tr>
+<tr><th scope="row" class="cmp-feat">Editor di codice con completamento e gestore librerie</th><td class="bp"><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Pannello del codice verificato con i collegamenti; nessun gestore librerie</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Completamento, Library Manager</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Library Manager, indice del codice</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Library Manager; completamento per #include</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Vista codice con colori della sintassi</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Carica il firmware su una scheda vera</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Dopo un backup completo della flash e il tuo OK</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Tramite arduino-cli</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Caricamento da VS Code</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Dalla vista codice</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Salva la scheda prima di scrivere</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Tutta la flash, ripristino con un clic</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Debugger passo passo sul chip</th><td class="bp"><span class="cmp-v v-no"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 8h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>No</span><span class="cmp-note">Passo passo solo sui modelli nel simulatore</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Schede SAMD, di solito con una sonda</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Con una sonda o un debugger sulla scheda</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">GDB sul chip simulato</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr></tbody>
+<tbody><tr class="cmp-group"><th scope="rowgroup" colspan="7">Debug della scheda</th></tr>
+<tr><th scope="row" class="cmp-feat">Monitor seriale e grafici</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Console seriale, grafici dal vivo, memoria</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Serial Monitor e Serial Plotter</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Monitor; grafici con un’estensione</span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Nella simulazione</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Monitor seriale nella vista codice</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Misura la scheda vera (pin, scansione del bus, test di scambio)</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Tramite un piccolo agente diagnostico</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr>
+<tr><th scope="row" class="cmp-feat">Transazioni I2C decodificate</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Start, indirizzo, ACK e dati, dalla scheda</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td></tr></tbody>
+<tbody><tr class="cmp-group"><th scope="rowgroup" colspan="7">AI</th></tr>
+<tr><th scope="row" class="cmp-feat">Assistente AI integrato</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Facoltativo: Claude, GPT, Gemini o una demo gratuita; dice cosa ha misurato</span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">AI Assistant nel Cloud Editor</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">È l’assistente</span></td></tr>
+<tr><th scope="row" class="cmp-feat">MCP per agenti AI</th><td class="bp"><span class="cmp-v v-yes"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sì</span><span class="cmp-note">Server MCP per la scheda vera</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Server MCP sperimentale in wokwi-cli</span></td><td><span class="cmp-empty" title="Non indicato sul suo sito"><span class="sr">Non indicato sul suo sito</span></span></td><td><span class="cmp-v v-part"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>In parte</span><span class="cmp-note">Si collega a server MCP (come client)</span></td></tr></tbody>
+            </table>
+          </div>
+          <h3 class="cmp-better-h">Dove gli altri sono la scelta migliore</h3>
+          <ul class="cmp-better">
+            <li><b>Scrivere codice</b><span>Arduino IDE e PlatformIO sono editor di codice completi, con completamento automatico, gestore delle librerie e, sui chip supportati, un debugger passo passo. Il pannello del codice di BoardPilot verifica il tuo sketch con i collegamenti, ma non è un IDE completo: tieni il tuo editor e usali insieme.</span></li>
+            <li><b>Simulare nel browser</b><span>Wokwi fa girare il tuo codice su schede simulate direttamente nel browser, senza installare niente, e ha plugin per VS Code e JetBrains.</span></li>
+            <li><b>Progettare un PCB</b><span>Fritzing va dalla vista breadboard allo schema elettrico fino al layout del PCB per la produzione. BoardPilot non progetta PCB.</span></li>
+            <li><b>Qualsiasi domanda</b><span>Un chatbot generico può parlare di quasi tutto. L’assistente di BoardPilot è più mirato: lavora sul tuo progetto, con le misure della tua scheda e le sezioni dei datasheet, e dice quale è quale.</span></li>
+          </ul>
+          <p class="fine cmp-fine">I dati sugli altri prodotti vengono solo dai loro siti ufficiali, dalla documentazione e dalle pagine GitHub, controllati il 24 ottobre 2026. I nomi dei prodotti sono marchi dei rispettivi proprietari. Qualcosa è sbagliato o non aggiornato? <a href="https://github.com/mojeee/boardpilot/issues/new?title=Comparison%20table">Diccelo su GitHub</a>.</p>
+        </div>
+      </section>
+
+      <section class="section alt showcase">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="show.eyebrow">Schermate</span>
+          <h2 data-i18n="show.title">Altro dall’app.</h2>
+          <div class="tabs" role="tablist">
+            <button class="on" data-shot="workspace" data-src="/img/workspace.jpg?v=11caa623b1" data-srcset="/img/workspace-900.jpg?v=62009cda1d 900w, /img/workspace.jpg?v=11caa623b1 1800w" data-i18n="tab.workspace">Spazio di lavoro</button>
+            <button data-shot="newproject" data-src="/img/newproject.jpg?v=2d62a74509" data-srcset="/img/newproject-900.jpg?v=659501ff90 900w, /img/newproject.jpg?v=2d62a74509 1800w" data-i18n="tab.newproject">Leggi dalla porta</button>
+            <button data-shot="schematic" data-src="/img/schematic.jpg?v=adb30842d9" data-srcset="/img/schematic-900.jpg?v=489c996b16 900w, /img/schematic.jpg?v=adb30842d9 1800w" data-i18n="tab.schematic">Schema elettrico</button>
+            <button data-shot="export" data-src="/img/export.jpg?v=734ab74187" data-srcset="/img/export-900.jpg?v=654afaf2f9 900w, /img/export.jpg?v=734ab74187 1800w" data-i18n="tab.export">Esporta PDF</button>
+            <button data-shot="monitor" data-src="/img/monitor.jpg?v=487f45a0b1" data-srcset="/img/monitor-900.jpg?v=e251f7c097 900w, /img/monitor.jpg?v=487f45a0b1 1800w" data-i18n="tab.monitor">Monitor</button>
+            <button data-shot="timing" data-src="/img/timing.jpg?v=8c2343ea25" data-srcset="/img/timing-900.jpg?v=c1686f3902 900w, /img/timing.jpg?v=8c2343ea25 1800w" data-i18n="tab.timing">Vista temporale</button>
+            <button data-shot="code" data-src="/img/code.jpg?v=e1cda201f4" data-srcset="/img/code-900.jpg?v=9397731bb0 900w, /img/code.jpg?v=e1cda201f4 1800w" data-i18n="tab.code">Controllo del codice</button>
+            <button data-shot="library" data-src="/img/library.jpg?v=5e67901b99" data-srcset="/img/library-900.jpg?v=6f61072667 900w, /img/library.jpg?v=5e67901b99 1800w" data-i18n="tab.library">Libreria componenti</button>
+            <button data-shot="import" data-src="/img/import.jpg?v=17c76e9391" data-srcset="/img/import-900.jpg?v=f0216c3b45 900w, /img/import.jpg?v=17c76e9391 1800w" data-i18n="tab.import">Importa da link</button>
+            <button data-shot="home" data-src="/img/home.jpg?v=d30b2e8bce" data-srcset="/img/home-900.jpg?v=7c438ffc78 900w, /img/home.jpg?v=d30b2e8bce 1800w" data-i18n="tab.home">Home</button>
+          </div>
+          <div class="window big">
+            <div class="window-bar"><i></i><i></i><i></i></div>
+            <img id="shot" src="/img/workspace.jpg?v=11caa623b1" srcset="/img/workspace-900.jpg?v=62009cda1d 900w, /img/workspace.jpg?v=11caa623b1 1800w" sizes="(max-width: 1180px) 100vw, 1130px" width="1800" height="1125" data-i18n-alt="img.shot" alt="Schermata di BoardPilot: lo spazio di lavoro del progetto con scheda 3D, codice, registro e assistente" loading="lazy" />
+          </div>
+          <p class="caption" id="shot-caption" data-i18n="cap.workspace">La pagina del progetto: scheda 3D, codice con le correzioni del controllo, il registro, l’assistente che fa il lavoro e una barra degli avvisi.</p>
         </div>
       </section>
 
@@ -393,6 +707,8 @@
           <h2 data-i18n="faq.title">Domande</h2>
           <details><summary data-i18n="q1">BoardPilot è open source?</summary><p data-i18n="a1">È source-available. Tutto il codice è pubblico su GitHub con la BoardPilot License: puoi leggerlo, studiarlo, modificarlo e compilarlo. Dopo i 30 giorni di prova serve una chiave di licenza. Il firmware (agente diagnostico e libreria BoardPilotProbe) è sotto licenza MIT.</p></details>
           <details><summary data-i18n="q0">Sono un principiante assoluto. Da dove comincio?</summary><p data-i18n="a0">Comincia dalle lezioni gratuite su questo sito: cos’è un microcontrollore, poi le basi di elettronica, GPIO, bus, ADC e timer. Non serve una scheda: il simulatore dell’app (e la demo nel browser su questa pagina) ti fa collegare componenti e vedere cosa succede. Quando prendi una scheda, una ESP32 DevKit o un Raspberry Pi Pico sono una buona prima scelta, e i laboratori pratici dell’app verificano i tuoi collegamenti con misure vere.</p></details>
+          <details><summary data-i18n="q9">In cosa è diverso BoardPilot da Arduino IDE, PlatformIO o Wokwi?</summary><p data-i18n="a9">Quelli sono strumenti per scrivere il codice (Arduino IDE, PlatformIO) o per simularlo nel browser (Wokwi), e lo fanno molto bene. BoardPilot si affianca a loro e guarda la scheda: controlla i collegamenti con le regole dei pin, misura pin e bus sulla scheda vera, salva la flash prima di ogni scrittura e spiega ogni risultato con la sua fonte. Molti scrivono il codice nel loro editor di sempre e usano BoardPilot per collegare, controllare e fare il debug.</p></details>
+          <details><summary data-i18n="q10">Le demo di questa pagina chiamano un’IA?</summary><p data-i18n="a10">Le conversazioni registrate no: sono vere conversazioni con Claude, registrate una volta e riprodotte nel tuo browser. Nella demo dal vivo l’assistente risponde con l’IA demo gratuita solo quando gli chiedi qualcosa. Tutto il resto delle demo, compresi i controlli e la scheda simulata, gira nel tuo browser.</p></details>
           <details><summary data-i18n="q2">Quali schede supporta?</summary><p data-i18n="a2">ESP32 DevKit, DevKit ESP32-S3 ed ESP32-C3, Raspberry Pi Pico, Pico W e Pico 2, Arduino Uno, Nano e Mega, STM32 Nucleo-F401RE e Black Pill, Nordic nRF52840 DK e Teensy 4.1. Le schede sono file di dati, quindi aggiungerne altre è facile.</p></details>
           <details><summary data-i18n="q3">Il computer avvisa che l’app è di uno sviluppatore sconosciuto.</summary><p data-i18n="a3">Le prime versioni non sono ancora firmate. Su Mac fai clic destro su BoardPilot in Applicazioni e scegli Apri (oppure Impostazioni di Sistema → Privacy e sicurezza → Apri comunque). Su Windows fai clic su Ulteriori informazioni → Esegui comunque nella finestra di SmartScreen.</p></details>
           <details><summary data-i18n="q4">Mi serve una scheda per provarlo?</summary><p data-i18n="a4">No. La modalità simulatore fa girare tutta l’app con una scheda virtuale e guasti realistici: fili invertiti, un finto BME280, cali di tensione, baud rate sbagliato.</p></details>
@@ -420,6 +736,6 @@
       </div>
     </footer>
     <script src="/app.js?v=ab50ad5a0b" defer></script>
-    <script src="/try-live.js?v=adb7dbf53e" defer></script>
+    <script src="/try-live.js?v=1348001697" defer></script>
   </body>
 </html>

@@ -34,6 +34,7 @@ Target UI: the screenshots in `/design` (Home, Debug wizard, 3D workspace, Test 
 - **Desktop shell:** Electron. Build tooling: Vite (electron-vite or equivalent). Language: TypeScript, strict mode.
 - **UI:** React. State: Zustand. Styling: plain CSS with CSS variables from the design tokens below. No component library.
 - **3D:** three.js through `@react-three/fiber` and `@react-three/drei`.
+- **Code editor:** CodeMirror 6 (`@codemirror/*` with `lang-cpp`) in the Code panel; BoardPilot's pin, finding, completion and AI pieces live in `app/renderer/components/code/`, their logic in `shared/codeProject.ts`, `codeRefs.ts`, `codeComplete.ts`, `compileOutput.ts`.
 - **Charts:** a lightweight canvas-based library (uPlot) or custom canvas; must handle 20+ updates per second smoothly.
 - **Serial:** `serialport` npm package, used only in the Electron main process.
 - **Chip tools:** `esptool` (Python, installed with pip) spawned as a child process for chip identification, flash backup, restore and flashing.

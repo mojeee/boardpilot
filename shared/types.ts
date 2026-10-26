@@ -3,6 +3,7 @@
 
 import type { StateMachine } from './statemachine';
 import type { ProjectProposal } from './projectBuilder';
+import type { DisplaySpec, SpecProblem } from './displaySpec';
 
 /* ---------- errors ---------- */
 
@@ -659,10 +660,22 @@ export interface Scene {
   stateMachine?: StateMachine;
   /** The project's sketch, edited in the Code panel and saved with the project. */
   sketch?: ProjectSketch;
+  /** Ids of the project memories (old projects, notes, datasheets) the assistant searches for this project. */
+  memories?: string[];
+  /** Display Studio: what each display module in the drawing shows (one spec per display part). */
+  displays?: DisplaySpec[];
 }
 
 export interface ProjectSketch {
   /** file name, e.g. weather_station.ino */
+  name: string;
+  text: string;
+  /** The project's other files (pins.h, display.cpp, CMakeLists.txt…), shown as tabs in the Code panel. */
+  files?: ProjectFile[];
+}
+
+export interface ProjectFile {
+  /** Path inside the project folder: a plain name, or up to three joined by "/" (isSafeProjectPath). */
   name: string;
   text: string;
 }
@@ -698,7 +711,8 @@ export interface WiringFinding {
 export type Confidence = 'measured' | 'documented' | 'suggestion';
 
 export interface AiSource {
-  kind: 'measurement' | 'datasheet' | 'library' | 'user';
+  /** memory: the user's project memory, label "memory · <name> · <file>:<lines>" (shared/memory.ts) */
+  kind: 'measurement' | 'datasheet' | 'library' | 'user' | 'memory';
   label: string;
 }
 
@@ -720,6 +734,8 @@ export interface AiReply {
   choices?: AiChoice[];
   /** a whole project (parts, wiring, checks) the user can apply with one click */
   proposal?: ProjectProposal;
+  /** what a display should show (Display Studio), checked, for the user to apply */
+  display?: { spec: DisplaySpec; problems: SpecProblem[] };
 }
 
 export interface AiChoice {
@@ -755,6 +771,11 @@ export interface CodeSuggestionRequest {
   cursorLine: number;
   /** what the user asked for, in their words (may be empty: "what comes next") */
   request: string;
+  /** The file `code` is (when the project has several files), and the project's other files for context. */
+  file?: string;
+  otherFiles?: ProjectFile[];
+  /** Text the user selected, for "Explain this" / "Change this" (with its 1-based first line). */
+  selection?: { text: string; line: number };
 }
 
 /** A code suggestion from the assistant; always a suggestion the user accepts or dismisses. */

@@ -67,6 +67,8 @@ const WHY = {
   link: () => t('Importing a part from a web link needs the BoardPilot app: a web page cannot read other websites.'),
   folder: () => t('Reading your own project folders needs the BoardPilot app. Here you can try the sample archive.'),
   license: () => t('License keys are entered in the BoardPilot app.'),
+  memory: () => t('Project memory reads your old projects from your computer, so it needs the BoardPilot app.'),
+  compile: () => t('Compiling needs the BoardPilot app with arduino-cli: a web page cannot run the compiler. The check against the drawing works here too.'),
 };
 
 /* ---------- IPC-like copying: the renderer never shares objects with the "main" side ---------- */
@@ -277,6 +279,20 @@ const api: BoardPilotApi = {
     reveal: async () => showNeedsApp(t('Opening a project folder needs the BoardPilot app.')),
     readFile: wrap((id: string, file: string) => archive.readFile(id, file)),
   },
+  // Project memory reads folders and keeps them on the computer: the app only.
+  memory: {
+    list: async () => [],
+    create: async () => needsApp(WHY.memory()),
+    rename: async () => needsApp(WHY.memory()),
+    remove: async () => needsApp(WHY.memory()),
+    importFolder: async () => needsApp(WHY.memory()),
+    importPdf: async () => needsApp(WHY.memory()),
+    addNote: async () => needsApp(WHY.memory()),
+    removeSource: async () => needsApp(WHY.memory()),
+    exportFile: async () => needsApp(WHY.memory()),
+    importFile: async () => needsApp(WHY.memory()),
+    search: async () => [],
+  },
   mcp: {
     status: async () => mcpOff,
     setEnabled: async (on: boolean) => {
@@ -298,6 +314,9 @@ const api: BoardPilotApi = {
     openBuyPage: async () => {
       window.open(BUY_URL, '_blank', 'noopener,noreferrer');
     },
+  },
+  code: {
+    compile: async () => needsApp(WHY.compile()),
   },
   app: {
     setLanguage: async (lang: 'en' | 'it') => setLanguage(lang),

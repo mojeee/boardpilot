@@ -25,6 +25,8 @@ import { MEASUREMENT_TOOLS, TOOLS, runTool, type ToolTurnState } from './tools';
 import type { ArchiveEntry } from '@shared/archive/types';
 import { buildContextBlock, SYSTEM_PROMPT } from './prompt';
 import { buildCoachPrompt, COACH_REPLY_SCHEMA, parseCoachReply } from './coach';
+import type { MemoryAccess } from '../memory/store';
+import { citationBacked, type MemoryHit } from '@shared/memory';
 import {
   createProvider,
   ProviderError,
@@ -53,7 +55,7 @@ const REPLY_SCHEMA = {
       items: {
         type: 'object',
         properties: {
-          kind: { type: 'string', enum: ['measurement', 'datasheet', 'library', 'user'] },
+          kind: { type: 'string', enum: ['measurement', 'datasheet', 'library', 'user', 'memory'] },
           label: { type: 'string' },
         },
         required: ['kind', 'label'],
@@ -149,15 +151,18 @@ function withQuestion(message: string, question?: string): string {
   return message.trim() ? `${message}\n\n${question}` : question;
 }
 
-/** A claim is "measured" only if a measurement happened this turn or is in the session log. */
-export function enforceHonesty(reply: AiReply, measuredThisTurn: boolean, logHasMeasurements: boolean): AiReply {
+/**
+ * A claim is "measured" only if a measurement happened this turn or is in the session log. A
+ * project-memory source counts only if search_memory / read_memory returned it in this conversation.
+ */
+export function enforceHonesty(reply: AiReply, measuredThisTurn: boolean, logHasMeasurements: boolean, memoryCited: readonly string[] = []): AiReply {
   let confidence: Confidence = reply.confidence;
-  let sources: AiSource[] = reply.sources;
+  let sources: AiSource[] = reply.sources.filter((s) => s.kind !== 'memory' || citationBacked(s.label, memoryCited));
   if (!measuredThisTurn && !logHasMeasurements) {
     if (confidence === 'measured') confidence = 'suggestion';
     sources = sources.filter((s) => s.kind !== 'measurement');
   }
-  if (confidence === 'documented' && !sources.some((s) => s.kind === 'datasheet' || s.kind === 'library')) {
+  if (confidence === 'documented' && !sources.some((s) => s.kind === 'datasheet' || s.kind === 'library' || s.kind === 'memory')) {
     confidence = 'suggestion';
   }
   return { ...reply, confidence, sources };
@@ -219,6 +224,16 @@ const EXTRACT_SCHEMA = {
   additionalProperties: false,
 };
 
+/** For a project with several files: which file the code is, and the others (short) for context. */
+function codeFilesNote(req: CodeSuggestionRequest): string {
+  const others = (req.otherFiles ?? []).slice(0, 8);
+  if (!req.file && !others.length) return '';
+  return (
+    (req.file ? `The code shown as the sketch is the file ${req.file} of the project. Write code for this file.\n` : '') +
+    others.map((f) => `Other project file ${f.name}:\n${f.text.slice(0, 3000)}\n`).join('')
+  );
+}
+
 const CODE_SCHEMA = {
   type: 'object',
   properties: {
@@ -231,7 +246,7 @@ const CODE_SCHEMA = {
       type: 'array',
       items: {
         type: 'object',
-        properties: { kind: { type: 'string', enum: ['datasheet', 'library', 'user'] }, label: { type: 'string' } },
+        properties: { kind: { type: 'string', enum: ['datasheet', 'library', 'user', 'memory'] }, label: { type: 'string' } },
         required: ['kind', 'label'],
         additionalProperties: false,
       },
@@ -258,6 +273,10 @@ export class Assistant {
   private readonly env: Record<string, string | undefined>;
   /** The user's past projects, for find_similar_projects (set by the app, absent in tests). */
   private archive: (() => Promise<ArchiveEntry[]>) | null = null;
+  /** Project memory (app/main/memory); none in tests and tools that do not set it. */
+  private memory: MemoryAccess | null = null;
+  /** Memory citations the tools returned in this conversation: the only ones a reply may cite. */
+  private memoryCited: string[] = [];
 
   constructor(
     private readonly hub: HardwareHub,
@@ -290,6 +309,20 @@ export class Assistant {
     return this.settings.usable;
   }
 
+  setMemory(memory: MemoryAccess | null) {
+    this.memory = memory;
+  }
+
+  /** The context lines on project memory: what is attached, so the model knows when to search. */
+  private async memoryContext(ids: string[]): Promise<string[]> {
+    if (!this.memory) return [];
+    const d = await this.memory.describe(ids);
+    if (!d.attached.length) {
+      return d.others ? [`Project memory: none attached to this project (${d.others} saved on this computer; the user attaches them in Project tools → Project memory)`] : [];
+    }
+    return [`Project memory attached (search it with search_memory): ${d.attached.map((m) => `${m.name} (${m.sources} sources, ${m.chunks} chunks)`).join('; ')}`];
+  }
+
   status(): AiStatus {
     const id = this.settings.active();
     return { enabled: this.enabled, provider: id, model: this.settings.model(id) };
@@ -297,6 +330,7 @@ export class Assistant {
 
   reset() {
     this.history = [];
+    this.memoryCited = [];
   }
 
   async ask(question: string, ctx: AiContext): Promise<Result<AiReply>> {
@@ -304,6 +338,9 @@ export class Assistant {
     if (!a) return aiOff();
     const turn: ToolTurnState = { highlight: [], calls: [] };
     const board = getBoard(ctx.scene.board);
+    const memoryIds = ctx.scene.memories ?? [];
+    const memory = this.memory ? { access: this.memory, ids: memoryIds } : undefined;
+    const memoryLines = await this.memoryContext(memoryIds).catch(() => []);
     // Provider-specific records (reasoning items, thought signatures) only go back to the model
     // that made them; after a provider or model change the neutral text and tool calls are used.
     const history = this.history.map((m): ChatMessage =>
@@ -311,7 +348,7 @@ export class Assistant {
     );
     const messages: ChatMessage[] = [
       ...history,
-      { role: 'user', content: [{ type: 'text', text: buildContextBlock(board, ctx) }, { type: 'text', text: question }] },
+      { role: 'user', content: [{ type: 'text', text: buildContextBlock(board, ctx, memoryLines) }, { type: 'text', text: question }] },
     ];
 
     try {
@@ -340,7 +377,7 @@ export class Assistant {
         const results: ToolResult[] = [];
         for (const call of response.toolCalls) {
           const archive = call.name === 'find_similar_projects' && this.archive ? await this.archive().catch(() => []) : undefined;
-          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn, { scene: ctx.scene, archive });
+          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn, { scene: ctx.scene, memory, archive });
           turn.calls.push({ name: call.name, input: call.input, ok: !r.isError, ...(r.isError ? { error: r.content.slice(0, 600) } : {}) });
           results.push({ callId: call.id, name: call.name, content: r.content, isError: r.isError });
         }
@@ -357,6 +394,7 @@ export class Assistant {
       const text = final.text;
       const parsed = parseJson<AiReply>(text);
       this.history = messages;
+      this.memoryCited.push(...(turn.memoryCited ?? []));
       if (!parsed || typeof parsed.message !== 'string') {
         return {
           ok: true,
@@ -371,6 +409,7 @@ export class Assistant {
             codeRequest: turn.codeRequest,
             ...(turn.choices ? { choices: turn.choices.choices } : {}),
             ...(turn.proposal ? { proposal: turn.proposal } : {}),
+            ...(turn.display ? { display: turn.display } : {}),
           },
         };
       }
@@ -399,6 +438,7 @@ export class Assistant {
           message: withQuestion(parsed.message, turn.choices?.question ?? turn.ask?.question),
           ...(turn.choices ? { choices: turn.choices.choices } : {}),
           ...(turn.proposal ? { proposal: turn.proposal } : {}),
+          ...(turn.display ? { display: turn.display } : {}),
           toolCalls: turn.calls,
           pendingWrite: turn.pendingWrite,
           actions: turn.actions,
@@ -406,6 +446,7 @@ export class Assistant {
         },
         measuredThisTurn,
         logHasMeasurements,
+        this.memoryCited,
       );
       return { ok: true, value: reply };
     } catch (e) {
@@ -423,6 +464,15 @@ export class Assistant {
     if (!a) return aiOff();
     const board = getBoard(ctx.scene.board);
     const lines = req.code.split('\n').length;
+    // The user's own old code for these parts (an init sequence they already got working) comes first.
+    const memoryIds = ctx.scene.memories ?? [];
+    const partNames = [...new Set(ctx.scene.parts.map((p) => PARTS[p.partId]?.name ?? p.partId))].join(' ');
+    const hits: MemoryHit[] = this.memory && memoryIds.length ? await this.memory.search(`${req.request} ${partNames}`, memoryIds, 3).catch(() => []) : [];
+    const memoryText = hits.length
+      ? '\nFrom the user\'s project memory (their own old code and notes; reuse what fits this wiring and cite it as kind "memory" with the label given):\n' +
+        hits.map((h) => `--- ${h.citation}\n${h.text.slice(0, 2500)}`).join('\n') +
+        '\n'
+      : '';
     try {
       const response = await a.provider.complete({
         model: a.model,
@@ -435,10 +485,14 @@ export class Assistant {
             text:
               'Write the next piece of Arduino code for this project in the Code panel.\n' +
               (req.request.trim() ? `The user asks: "${req.request.trim()}"\n` : 'Nothing specific was asked: add the most useful next step for the parts in the drawing (for example reading a sensor that is wired but never read).\n') +
-              `The cursor is on line ${req.cursorLine}. Prefer inserting near it, inside the right function; use afterLine for the place. Keep what is there; do not repeat existing lines.\n` +
+              (req.selection?.text.trim()
+                ? `The user selected lines ${req.selection.line} to ${req.selection.line + req.selection.text.split('\n').length - 1}:\n${req.selection.text.slice(0, 4000)}\nReturn the new version of exactly those lines in text (replace false, afterLine ${req.selection.line - 1}); the app puts it in place of the selected lines. Keep the indentation.\n`
+                : `The cursor is on line ${req.cursorLine}. Prefer inserting near it, inside the right function; use afterLine for the place. Keep what is there; do not repeat existing lines.\n`) +
+              codeFilesNote(req) +
               'Rules: use only the pins the drawing wires to each part (by their Arduino pin numbers from the board file), the I2C address from the parts library, and libraries a beginner can install from the Library Manager. ' +
               'Non-blocking code (millis) is better than long delay() calls. Short comments in plain words. ' +
-              'Sources: name the parts library entry (kind "library", label "parts library · <part id>") or datasheet section each pin or address comes from.',
+              'Sources: name the parts library entry (kind "library", label "parts library · <part id>") or datasheet section each pin or address comes from.' +
+              memoryText,
           },
         ],
         jsonSchema: { name: 'code_suggestion', schema: CODE_SCHEMA },
@@ -448,8 +502,14 @@ export class Assistant {
       if (!p || typeof p.text !== 'string' || !p.text.trim()) {
         return { ok: false, error: { code: 'ai_parse', humanMessage: t('The assistant answer could not be read.'), hint: t('Try again, or use the starter code from the drawing.') } };
       }
+      const cited = hits.map((h) => h.citation);
       const sources: AiSource[] = (Array.isArray(p.sources) ? p.sources : []).filter(
-        (x): x is AiSource => typeof x === 'object' && x !== null && ['datasheet', 'library', 'user'].includes(x.kind) && typeof x.label === 'string',
+        (x): x is AiSource =>
+          typeof x === 'object' &&
+          x !== null &&
+          ['datasheet', 'library', 'user', 'memory'].includes(x.kind) &&
+          typeof x.label === 'string' &&
+          (x.kind !== 'memory' || citationBacked(x.label, cited)),
       );
       return {
         ok: true,

@@ -19,6 +19,7 @@ import type {
   PhotoRecognition,
   PortInfo,
   ProbeFrame,
+  ProjectFile,
   Result,
   Scene,
   ScenarioInfo,
@@ -29,6 +30,8 @@ import type { PreflightReport } from './preflight';
 import type { CoachAttempt } from './coach';
 import type { StarterFile } from './starter/common';
 import type { ArchiveEdit, ArchiveEntry } from './archive/types';
+import type { MemoryFolderImport, MemoryHit, MemoryInfo } from './memory';
+import type { CompileReport } from './compileOutput';
 
 export type Unsubscribe = () => void;
 
@@ -140,6 +143,24 @@ export interface BoardPilotApi {
     /** Text of a file in a project (1 MB max), e.g. its main source. */
     readFile(id: string, file: string): Promise<Result<{ name: string; text: string }>>;
   };
+  /** Project memory: knowledge from old projects, kept in the app data folder on this computer. */
+  memory: {
+    list(): Promise<MemoryInfo[]>;
+    create(name: string): Promise<Result<MemoryInfo>>;
+    rename(id: string, name: string): Promise<Result<MemoryInfo>>;
+    remove(id: string): Promise<Result<true>>;
+    /** Asks for a folder and reads its source files (build output, .git and node_modules are skipped). */
+    importFolder(id: string): Promise<Result<MemoryFolderImport>>;
+    /** Asks for a datasheet or app note PDF and adds its text. */
+    importPdf(id: string): Promise<Result<MemoryInfo>>;
+    addNote(id: string, text: string): Promise<Result<MemoryInfo>>;
+    removeSource(id: string, sourceId: string): Promise<Result<MemoryInfo>>;
+    /** Asks where to save and writes the memory as one file to share. */
+    exportFile(id: string): Promise<Result<string>>;
+    /** Asks for a memory file from a colleague and adds it. */
+    importFile(): Promise<Result<MemoryInfo>>;
+    search(query: string, memoryIds: string[], limit: number): Promise<MemoryHit[]>;
+  };
   mcp: {
     status(): Promise<McpStatus>;
     setEnabled(on: boolean): Promise<McpStatus>;
@@ -161,6 +182,10 @@ export interface BoardPilotApi {
     status(): Promise<LicenseStatus>;
     activate(key: string): Promise<Result<LicenseStatus>>;
     openBuyPage(): Promise<void>;
+  };
+  code: {
+    /** Compile the project with arduino-cli for the board (nothing is uploaded). Desktop app only. */
+    compile(boardId: string, files: ProjectFile[], main: string): Promise<Result<CompileReport>>;
   };
   app: {
     setLanguage(lang: 'en' | 'it'): Promise<void>;

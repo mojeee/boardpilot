@@ -90,6 +90,15 @@
     "serialport": "^13.0.0"
   },
   "devDependencies": {
+    "@codemirror/autocomplete": "6.20.3",
+    "@codemirror/commands": "6.11.1",
+    "@codemirror/lang-cpp": "6.0.3",
+    "@codemirror/language": "6.13.1",
+    "@codemirror/lint": "6.9.7",
+    "@codemirror/search": "6.7.2",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.14",
+    "@lezer/highlight": "1.2.5",
     "@playwright/test": "^1.56.1",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",

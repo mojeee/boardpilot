@@ -4,14 +4,16 @@ import { useState } from 'react';
 import { PARTS, getBoard } from '@shared/board';
 import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
-import { generateStarter, starterToolchains, TOOLCHAIN_NAME, type StarterProject, type StarterToolchain } from '@shared/starter';
+import { ARDUINO_SKETCH, generateStarter, starterToolchains, TOOLCHAIN_NAME, type StarterProject, type StarterToolchain } from '@shared/starter';
 import { useScene, log } from '../state/store';
+import { DisplayStudioPanel } from '../components/DisplayStudio';
+import { panelOf } from '@shared/displaySpec';
 import { openTask } from '../components/TaskRail';
 import { PhotoInput } from '../components/PhotoInput';
 import { PartsLibrary } from '../components/PartsLibrary';
 import { addPart } from '../state/sceneActions';
 import { AssistantPanel } from '../components/AssistantPanel';
-import { CodeCheck } from '../components/CodeCheck';
+import { CodeCheck, loadSketch } from '../components/CodeCheck';
 import { BomTable } from '../components/BomTable';
 import { PowerBudget } from '../components/PowerBudget';
 import { Calculators } from '../components/Calculators';
@@ -23,6 +25,7 @@ import { useTemplate } from '../state/templateRun';
 import { TEMPLATES } from '@shared/templates';
 import { t } from '@shared/i18n';
 import '../styles/starter.css';
+import { MemoryPanel } from '../components/MemoryPanel';
 
 export function NewProjectPanel() {
   const scene = useScene((s) => s.scene);
@@ -35,6 +38,7 @@ export function NewProjectPanel() {
   const tplOpen = useTemplate((s) => !!s.tpl);
   const hasMachine = useScene((s) => s.scene.stateMachine !== undefined);
   const board = getBoard(scene.board);
+  const hasDisplay = scene.parts.some((p) => PARTS[p.partId] && panelOf(PARTS[p.partId]));
   const toolchains = starterToolchains(board);
   // A board without the picked toolchain falls back to Arduino.
   const toolchain = toolchains.includes(toolchainPick) ? toolchainPick : 'arduino';
@@ -62,6 +66,15 @@ export function NewProjectPanel() {
     const r = await window.bp.session.saveProject(p.folder, files);
     if (r.ok) log('action', t('Saved the project in {path}.', { path: r.value }));
     else if (r.error.code !== 'cancelled') log('failed', [r.error.humanMessage, r.error.hint].filter(Boolean).join(' '));
+  };
+
+  /** The generated files become the project's code (replacing it), the main source in the first tab. */
+  const editInCodePanel = () => {
+    const files = toolchain === 'arduino' && sketch ? [{ name: `${ARDUINO_SKETCH}.ino`, text: sketch }] : (shownProject?.files ?? []);
+    const main = files.find((f) => /\.ino$/.test(f.name)) ?? files.find((f) => /(^|\/)main\.c$/.test(f.name)) ?? files[0];
+    if (!main) return;
+    loadSketch(main.name, main.text, files.filter((f) => f !== main));
+    log('action', t('The {toolchain} files are in the Code panel.', { toolchain: TOOLCHAIN_NAME[toolchain] }), { source: 'starter generator' });
   };
 
   const assign = () => {
@@ -109,6 +122,10 @@ export function NewProjectPanel() {
             </button>
           </div>
           {showTemplates && <TemplatePicker />}
+          <details className="bom-details" open={hasDisplay || undefined}>
+            <summary className="label">{t('Display Studio: what your screen shows, simulated pixel by pixel')}</summary>
+            <DisplayStudioPanel />
+          </details>
           <details className="bom-details">
             <summary className="label">{t('Plan my pins')}</summary>
             <PinPlanner />
@@ -159,6 +176,10 @@ export function NewProjectPanel() {
               <PowerBudget />
             </details>
           )}
+          <details className="bom-details" data-where="right:memory">
+            <summary className="label">{t('Project memory: your old projects')}</summary>
+            <MemoryPanel />
+          </details>
           <details className="bom-details">
             <summary className="label">{t('Portfolio project, stage by stage')}</summary>
             <PortfolioPanel />
@@ -199,6 +220,11 @@ export function NewProjectPanel() {
             {((toolchain === 'arduino' && sketch) || shownProject) && (
               <button className="btn small ghost" onClick={saveFolder}>
                 {t('Save project folder…')}
+              </button>
+            )}
+            {((toolchain === 'arduino' && sketch) || shownProject) && (
+              <button className="btn small ghost" onClick={editInCodePanel} title={t('Put these files in the Code panel to edit them, checked against the drawing')}>
+                {t('Edit in the Code panel')}
               </button>
             )}
           </div>

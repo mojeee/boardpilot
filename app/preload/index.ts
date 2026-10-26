@@ -91,6 +91,19 @@ const api: BoardPilotApi = {
     reveal: call('archive:reveal'),
     readFile: call('archive:readFile'),
   } as BoardPilotApi['archive'],
+  memory: {
+    list: call('memory:list'),
+    create: call('memory:create'),
+    rename: call('memory:rename'),
+    remove: call('memory:remove'),
+    importFolder: call('memory:importFolder'),
+    importPdf: call('memory:importPdf'),
+    addNote: call('memory:addNote'),
+    removeSource: call('memory:removeSource'),
+    exportFile: call('memory:exportFile'),
+    importFile: call('memory:importFile'),
+    search: call('memory:search'),
+  } as BoardPilotApi['memory'],
   mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult') } as BoardPilotApi['mcp'],
   coach: {
     ask: call('coach:ask'),
@@ -103,6 +116,7 @@ const api: BoardPilotApi = {
     activate: call('license:activate'),
     openBuyPage: call('license:buy'),
   } as BoardPilotApi['license'],
+  code: { compile: call('code:compile') } as BoardPilotApi['code'],
   app: {
     setLanguage: call('app:setLanguage'),
     openExternal: call('app:openExternal'),

@@ -22,12 +22,14 @@ interface BannerItem {
   source: string;
   targets: TargetRef[];
   line?: number;
+  /** the code file of `line` (default: the main sketch) */
+  file?: string;
   fix?: { label: string; tip: string; run(): void };
 }
 
 /** "Line 6: the code sets…" → title "Code and drawing disagree", text without the line prefix. */
 const stripLine = (m: string) => {
-  const s = m.replace(/^[^:]{0,12}\d+:\s*/, '');
+  const s = m.replace(/^[^:]{0,12}\d+(?: \([^)]+\))?:\s*/, '');
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
@@ -49,12 +51,13 @@ function useBannerItems(): BannerItem[] {
         source: f.line ? t('code check · line {line}', { line: f.line }) : t('code check'),
         targets: f.targets,
         line: f.line || undefined,
+        file: f.file,
         fix: f.fix
           ? {
               label: t('Fix the code'),
               tip: f.fix.text.trim(),
               run: () => {
-                replaceLine(f.line, f.fix!.text);
+                replaceLine(f.line, f.fix!.text, f.file);
                 useLayout.getState().showBottom('code');
                 log('action', t('Fixed line {line}: {code}', { line: f.line, code: f.fix!.text.trim() }), { source: 'code check (one-click fix)' });
               },
@@ -125,7 +128,7 @@ export function WarningBanner() {
             if (it.targets.length) useScene.getState().focusOn(it.targets);
             if (it.line) {
               useLayout.getState().showBottom('code');
-              revealLine(it.line);
+              revealLine(it.line, it.file);
             }
           }}
         >

@@ -39,6 +39,8 @@ import { DownloadAppPrompt, isWebDemo } from './components/WebDemo';
 import { usePartsLib } from './state/partsLib';
 import { useScene } from './state/store';
 import { t } from '@shared/i18n';
+import { startDisplayLoop } from './state/displays';
+import { DisplayPip } from './components/DisplayStudio';
 
 let booted = false;
 /** One-time start-up: events, license, user parts, project autosave. */
@@ -47,6 +49,7 @@ async function boot() {
   booted = true;
   await wireEvents();
   startEventFeed();
+  startDisplayLoop();
   await Promise.all([useLicense.getState().refresh(), usePartsLib.getState().load()]);
   if (useApp.getState().conn.mode === 'real') {
     const last = await window.bp.project.last();
@@ -198,6 +201,7 @@ function Work() {
     <div className={cls}>
       <main className="center">
         <Center />
+        <DisplayPip />
       </main>
       <Right />
       {!noBottom && (

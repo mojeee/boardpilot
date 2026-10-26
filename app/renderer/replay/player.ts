@@ -9,6 +9,7 @@ import { isRecording, type ChatRecording } from '@shared/chatReplay';
 import { getLanguage } from '@shared/i18n';
 import { useAi, useScene } from '../state/store';
 import { applyProposal, openCode } from '../components/ProposalCard';
+import { applyDisplay, writeDisplayCode } from '../components/DisplayStudio';
 import { useLayout } from '../state/layout';
 import { useProjects } from '../state/projects';
 import { openTask } from '../components/TaskRail';
@@ -68,10 +69,12 @@ async function wait(ms: number, run: number): Promise<boolean> {
 
 const lastAssistantId = () => [...useAi.getState().items].reverse().find((i) => i.role === 'assistant')?.id;
 
-function lastProposal(): AiReply['proposal'] {
-  for (const i of [...useAi.getState().items].reverse()) if (i.role === 'assistant' && i.reply.proposal) return i.reply.proposal;
+/** The latest assistant reply that carries a proposal or a display design. */
+function lastBuild(): { id: number; reply: AiReply } | undefined {
+  for (const i of [...useAi.getState().items].reverse()) if (i.role === 'assistant' && (i.reply.proposal || i.reply.display)) return { id: i.id, reply: i.reply };
   return undefined;
 }
+
 
 export async function playRecording(rec: ChatRecording) {
   const run = useReplay.getState().run + 1;
@@ -115,16 +118,20 @@ export async function playRecording(rec: ChatRecording) {
       if (id !== undefined) useAi.getState().mark(id, { picked: s.label });
     } else if (s.kind === 'apply') {
       if (!(await wait(3200, run))) return;
-      const p = lastProposal();
-      const id = [...useAi.getState().items].reverse().find((x) => x.role === 'assistant' && x.reply.proposal)?.id;
-      const where = p ? applyProposal(p) : 'here';
-      if (id !== undefined) useAi.getState().mark(id, { applied: where });
+      const b = lastBuild();
+      if (b?.reply.proposal) useAi.getState().mark(b.id, { applied: applyProposal(b.reply.proposal) });
+      if (b?.reply.display) {
+        applyDisplay(b.reply.display.spec);
+        useAi.getState().mark(b.id, { displayApplied: true });
+      }
       useScene.getState().select(null);
       useScene.getState().setHighlight([]);
       useScene.getState().preset('home');
     } else if (s.kind === 'code') {
       if (!(await wait(2200, run))) return;
-      openCode();
+      const b = lastBuild();
+      if (b?.reply.display) writeDisplayCode(b.reply.display.spec);
+      else openCode();
     }
   }
   useReplay.setState({ playing: false, done: true });
