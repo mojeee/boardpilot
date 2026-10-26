@@ -13,9 +13,9 @@ const clips = data.clips as unknown as MotionClip[];
 const board = (id: string) => JSON.parse(readFileSync(join(root, 'boards', `${id}.json`), 'utf8')) as { name: string };
 
 describe('motion clips', () => {
-  it('has the 8 clips from the issue, with unique ids', () => {
-    expect(clips).toHaveLength(8);
-    expect(new Set(clips.map((c) => c.id)).size).toBe(8);
+  it('has the 8 clips from the issue and the 3 archive and thermostat clips, with unique ids', () => {
+    expect(clips).toHaveLength(11);
+    expect(new Set(clips.map((c) => c.id)).size).toBe(11);
   });
 
   it('every clip passes the checks', () => {
@@ -23,7 +23,8 @@ describe('motion clips', () => {
   });
 
   it('labels anything from the simulator', () => {
-    for (const c of clips) expect(c.tag === 'Lesson' ? c.hash.includes('screen=learn') : c.tag === 'Simulator').toBe(true);
+    // Sample: the fictional sample archive (Past projects); everything else from the app is the simulator
+    for (const c of clips) expect(c.tag === 'Lesson' ? c.hash.includes('screen=learn') : c.tag === 'Sample' ? /demo=(archive|similar)/.test(c.hash) : c.tag === 'Simulator').toBe(true);
   });
 
   it('uses boards and parts that exist, and board names fit on screen', () => {

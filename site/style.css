@@ -476,3 +476,15 @@ section[id], article[id] { scroll-margin-top: 76px; }
 .hiw-table th, .hiw-table td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid #2c3540; }
 .hiw-table th { font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 .hiw-table td:first-child { white-space: nowrap; }
+
+/* Past projects row video and the short-videos gallery */
+.feat-shot .feat-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--bg2); }
+.videos h2 { margin-bottom: 14px; }
+.video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+.video-card { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.video-card video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 12px; border: 1px solid #334050; background: var(--bg2); }
+.video-card figcaption { display: flex; flex-direction: column; gap: 2px; }
+.video-card figcaption b { font-weight: 600; }
+.video-card figcaption span { color: var(--muted); font-size: 14.5px; }
+@media (max-width: 920px) { .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .video-grid { grid-template-columns: 1fr; } }

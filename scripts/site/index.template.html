@@ -285,6 +285,28 @@
               <div class="tool-chips"><code>identify_board</code><code>check_wiring</code><code>check_code</code><code>i2c_scan</code><code>i2c_read</code><code>read_pins</code><code>pullup_check</code><code>adc_read</code><code>read_serial</code><code>search_parts</code><code>get_part</code><code class="w">request_flash</code><code class="w">request_gpio_write</code></div>
             </figure>
           </article>
+
+          <article class="feat" id="f-archive">
+            <div class="feat-copy">
+              <span class="feat-tag t-sda"><b>9</b><span data-i18n="fa.tag">Past projects</span></span>
+              <h3 data-i18n="fa.t">Your old projects, found while you plan the next one.</h3>
+              <p data-i18n="fa.d">Point BoardPilot at the folders where your team keeps old projects. It reads them into one table: board or chip, parts, buses and protocols. While you describe a new project, it shows which old one is similar, and why.</p>
+              <ul class="ticks">
+                <li data-i18n="fa.1">Reads Arduino, PlatformIO, ESP-IDF, STM32CubeMX and KiCad projects, parts lists and documents</li>
+                <li data-i18n="fa.2">Every value shows the file and line it came from; your notes and corrections survive a rescan</li>
+                <li data-i18n="fa.3">“Use as start” opens an old project as a new one, wired on safe pins, with its old code</li>
+                <li data-i18n="fa.4">Read-only and local: nothing is changed and nothing leaves your computer</li>
+              </ul>
+              <div class="feat-links">
+                <a class="more" href="/demo/#demo=archive&amp;lang={{LANG}}" target="_blank" rel="noopener" data-demo="/demo/#demo=archive&amp;lang={{LANG}}" data-i18n="fa.cta">Open the sample archive →</a>
+                <a class="more quiet" href="/demo/#demo=template&amp;id=hvac-room-thermostat&amp;lang={{LANG}}" target="_blank" rel="noopener" data-demo="/demo/#demo=template&amp;id=hvac-room-thermostat&amp;lang={{LANG}}" data-i18n="fa.cta2">Run the new room thermostat</a>
+              </div>
+            </div>
+            <figure class="feat-shot window">
+              <div class="window-bar"><i></i><i></i><i></i></div>
+              <video class="feat-video" src="/video/past-projects-{{LANG}}.mp4" poster="/video/past-projects-{{LANG}}.jpg" width="1280" height="720" autoplay muted loop playsinline preload="metadata"></video>
+            </figure>
+          </article>
         </div>
       </section>
 
@@ -463,6 +485,40 @@
             {{TRY_LIVE}}
           </div>
           {{DEMO_GALLERY}}
+        </div>
+      </section>
+
+      <section id="videos" class="section videos">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="vid.eyebrow">Short videos</span>
+          <h2 data-i18n="vid.title">See it in 15 seconds.</h2>
+          <p class="lead wide" data-i18n="vid.lead">Recorded from the real app in simulator mode. No voice, just captions, so they work with the sound off. The sample projects are made up.</p>
+          <div class="video-grid">
+            <figure class="video-card">
+              <video src="/video/similar-project-{{LANG}}.mp4" poster="/video/similar-project-{{LANG}}.jpg" width="1280" height="720" controls muted loop playsinline preload="none"></video>
+              <figcaption><b data-i18n="vs.t">Similar past project</b><span data-i18n="vs.d">Describe a new project; an old one like it shows up, with what the two have in common.</span></figcaption>
+            </figure>
+            <figure class="video-card">
+              <video src="/video/room-thermostat-{{LANG}}.mp4" poster="/video/room-thermostat-{{LANG}}.jpg" width="1280" height="720" controls muted loop playsinline preload="none"></video>
+              <figcaption><b data-i18n="vt.t">Room thermostat</b><span data-i18n="vt.d">The new template in the simulator: heat below the setpoint, at most one boiler switch a minute.</span></figcaption>
+            </figure>
+            <figure class="video-card">
+              <video src="/video/found-it-{{LANG}}.mp4" poster="/video/found-it-{{LANG}}.jpg" width="1280" height="720" controls muted loop playsinline preload="none"></video>
+              <figcaption><b data-i18n="vf.t">Found it</b><span data-i18n="vf.d">The swap test finds crossed SDA and SCL wires, with the evidence.</span></figcaption>
+            </figure>
+            <figure class="video-card">
+              <video src="/video/i2c-decode-{{LANG}}.mp4" poster="/video/i2c-decode-{{LANG}}.jpg" width="1280" height="720" controls muted loop playsinline preload="none"></video>
+              <figcaption><b data-i18n="vi.t">I2C, bit by bit</b><span data-i18n="vi.d">One register read decoded: start, address, ACK, data, stop.</span></figcaption>
+            </figure>
+            <figure class="video-card">
+              <video src="/video/no-hardware-{{LANG}}.mp4" poster="/video/no-hardware-{{LANG}}.jpg" width="1280" height="720" controls muted loop playsinline preload="none"></video>
+              <figcaption><b data-i18n="vn.t">No board needed</b><span data-i18n="vn.d">Every task runs on a simulated board first.</span></figcaption>
+            </figure>
+            <figure class="video-card">
+              <video src="/video/parts-library-{{LANG}}.mp4" poster="/video/parts-library-{{LANG}}.jpg" width="1280" height="720" controls muted loop playsinline preload="none"></video>
+              <figcaption><b data-i18n="vp.t">Parts library</b><span data-i18n="vp.d">Library parts drop onto the board, ready to wire.</span></figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 

@@ -174,6 +174,21 @@ async function runNamedDemo(name: string, scenario: string | null) {
     const want = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('open') ?? 'nodo-modbus-caldaia';
     const p = useArchive.getState().projects.find((x) => x.name === want);
     if (p) useArchive.getState().select(p.id);
+  } else if (name === 'similar') {
+    // #demo=similar: the sample archive, a new project described in the chat, and the
+    // "Similar past project" card (no AI is called: the card comes from the archive alone).
+    const { useArchive } = await import('./state/archive');
+    const { useProjects } = await import('./state/projects');
+    const { useLayout } = await import('./state/layout');
+    const { useAi } = await import('./state/store');
+    const { t } = await import('@shared/i18n');
+    await useArchive.getState().load();
+    if (!useArchive.getState().projects.length) await useArchive.getState().addSample();
+    openTask('newProject');
+    useProjects.getState().add({ board: useApp.getState().conn.board, parts: [], wires: [] }, t('New project'));
+    useLayout.getState().toggleRight(true);
+    useLayout.getState().setRightTab('assistant');
+    useAi.getState().push({ role: 'user', text: t('A Wi-Fi room thermostat with an NTC probe and a relay for the boiler') });
   } else if (name === 'template') {
     // #demo=template&id=plant-watering[&speed=4]: build a template and run it in the simulator.
     openTask('newProject');

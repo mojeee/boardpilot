@@ -90,4 +90,5 @@ export default {
   'OpenTherm bus to the boiler (2 wires, no polarity). Never to a board pin': 'Bus OpenTherm verso la caldaia (2 fili, senza polarità). Mai a un pin della scheda',
   'The OpenTherm bus works at boiler voltages (well above 3.3 V): connect it only to the adapter\'s bus terminals, never to a board pin.':
     'Il bus OpenTherm lavora a tensioni da caldaia (ben sopra 3,3 V): collegalo solo ai morsetti bus dell’adattatore, mai a un pin della scheda.',
+  'A Wi-Fi room thermostat with an NTC probe and a relay for the boiler': 'Termostato Wi-Fi con sonda NTC e relè per la caldaia',
 } as Record<string, string>;

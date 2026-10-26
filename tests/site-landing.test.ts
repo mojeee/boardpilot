@@ -109,7 +109,7 @@ describe.skipIf(!existsSync(join(root, 'site/index.html')))('built landing pages
   ]) {
     const html = readFileSync(join(root, file), 'utf8');
     it(`${lang}: has every section, no placeholder and FAQ structured data`, () => {
-      for (const id of ['features', 'f-build', 'f-3d', 'f-debug', 'f-flash', 'f-monitor', 'f-learn', 'f-mcp', 'boards', 'how', 'how-parts', 'how-wiring', 'how-debug', 'how-code', 'how-sim', 'trust', 'demos', 'try', 'compare', 'pricing', 'faq', 'download']) {
+      for (const id of ['features', 'f-build', 'f-3d', 'f-debug', 'f-flash', 'f-monitor', 'f-learn', 'f-mcp', 'f-archive', 'boards', 'how', 'how-parts', 'how-wiring', 'how-debug', 'how-code', 'how-sim', 'trust', 'demos', 'try', 'videos', 'compare', 'pricing', 'faq', 'download']) {
         expect(html, id).toContain(`id="${id}"`);
       }
       expect(html).not.toContain('{{');
@@ -121,10 +121,18 @@ describe.skipIf(!existsSync(join(root, 'site/index.html')))('built landing pages
       const ids = new Set(RECORDINGS.map((r) => r.id));
       for (const m of html.matchAll(/data-demo="([^"]+)"/g)) {
         const url = m[1].replace(/&amp;/g, '&');
-        expect(url).toMatch(/^\/demo\/#demo=(chat|debug|code|template)&/);
+        expect(url).toMatch(/^\/demo\/#demo=(chat|debug|code|template|archive)&/);
         const chat = /chat=([\w-]+)/.exec(url)?.[1];
         if (chat) expect(ids.has(chat), chat).toBe(true);
         expect(url).toContain(`lang=${lang}`);
+      }
+    });
+    it(`${lang}: every video and poster exists, in the page language`, () => {
+      const files = [...html.matchAll(/(?:src|poster)="(\/video\/[^"]+)"/g)].map((m) => m[1]);
+      expect(files.length).toBeGreaterThanOrEqual(14);
+      for (const f of files) {
+        expect(f).toMatch(new RegExp(`-${lang}\\.(mp4|jpg)$`));
+        expect(existsSync(join(root, 'site', f)), f).toBe(true);
       }
     });
   }

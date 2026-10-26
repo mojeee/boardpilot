@@ -119,7 +119,7 @@ class Motion {
     brand.innerHTML = `${markSvg}<span class="mo-name">Board<b>Pilot</b></span>`;
     this.caption = el('div', 'mo-caption', band);
     const tag = el('div', `mo-tag ${job.clip.tag === 'Simulator' ? 'sim' : 'lesson'}`, brand);
-    tag.textContent = job.clip.tag;
+    tag.textContent = job.lang === 'it' ? { Simulator: 'Simulatore', Lesson: 'Lezione', Sample: 'Esempio' }[job.clip.tag] : job.clip.tag;
   }
 
   // ---------- camera ----------
@@ -229,7 +229,7 @@ class Motion {
   private async run(s: MotionStep, instant: boolean) {
     switch (s.do) {
       case 'caption':
-        return this.setCaption(s.en);
+        return this.setCaption(this.job?.lang === 'it' ? s.it : s.en);
       case 'uncaption':
         return this.setCaption('');
       case 'ring':

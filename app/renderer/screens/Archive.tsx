@@ -228,7 +228,9 @@ function Detail({ e }: { e: ArchiveEntry }) {
           <Icon name="x" size={14} />
         </button>
       </div>
-      <div className="mono small dim archive-path">{e.root}</div>
+      <div className="mono small dim archive-path" title={e.root}>
+        …/{e.root.split(/[\\/]/).slice(-2).join('/')}
+      </div>
       {e.summary && (
         <p className="small">
           {e.summary.value} <Src f={e.summary} />
