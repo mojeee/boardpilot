@@ -81,6 +81,8 @@ async function ensureBoard(run: Run) {
 
 const SCREEN: Record<string, Parameters<ReturnType<typeof useApp.getState>['setScreen']>[0]> = {
   project: 'newProject',
+  archive: 'archive',
+  pastprojects: 'archive',
   newproject: 'newProject',
   connect: 'connect',
   flash: 'flash',

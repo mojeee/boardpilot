@@ -22,6 +22,7 @@ import type { HardwareHub } from '../hardware/hub';
 import { isProviderId, PROVIDER_INFO, type AiModelInfo, type AiProviderId, type AiSettingsInput, type AiStatus } from '@shared/ai';
 import type { AiSettingsStore } from '../settings/settings';
 import { MEASUREMENT_TOOLS, TOOLS, runTool, type ToolTurnState } from './tools';
+import type { ArchiveEntry } from '@shared/archive/types';
 import { buildContextBlock, SYSTEM_PROMPT } from './prompt';
 import { buildCoachPrompt, COACH_REPLY_SCHEMA, parseCoachReply } from './coach';
 import {
@@ -255,6 +256,8 @@ export class Assistant {
   private history: ChatMessage[] = [];
   private cached: { id: AiProviderId; key: string; provider: AiProvider } | null = null;
   private readonly env: Record<string, string | undefined>;
+  /** The user's past projects, for find_similar_projects (set by the app, absent in tests). */
+  private archive: (() => Promise<ArchiveEntry[]>) | null = null;
 
   constructor(
     private readonly hub: HardwareHub,
@@ -262,6 +265,10 @@ export class Assistant {
     env: Record<string, string | undefined> = process.env,
   ) {
     this.env = env;
+  }
+
+  useArchive(fn: () => Promise<ArchiveEntry[]>) {
+    this.archive = fn;
   }
 
   /** A provider instance for `id` with `key`; reused while the key stays the same. */
@@ -332,7 +339,8 @@ export class Assistant {
         }
         const results: ToolResult[] = [];
         for (const call of response.toolCalls) {
-          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn, { scene: ctx.scene });
+          const archive = call.name === 'find_similar_projects' && this.archive ? await this.archive().catch(() => []) : undefined;
+          const r = await runTool(call.name, call.input, this.hub, ctx.log, turn, { scene: ctx.scene, archive });
           turn.calls.push({ name: call.name, input: call.input, ok: !r.isError, ...(r.isError ? { error: r.content.slice(0, 600) } : {}) });
           results.push({ callId: call.id, name: call.name, content: r.content, isError: r.isError });
         }

@@ -47,7 +47,7 @@ export interface AppActionDef {
 }
 
 export const APP_ACTIONS: AppActionDef[] = [
-  { id: 'open_screen', label: 'Open a screen', hint: 'Open Project, Connect, Flash, Debug, Monitor, Test, Report, Learn or Home.', keywords: ['go to', 'open', 'apri', 'vai'], arg: 'screen: project, connect, flash, debug, monitor, test, report, learn, home', where: 'menu' },
+  { id: 'open_screen', label: 'Open a screen', hint: 'Open Project, Connect, Flash, Debug, Monitor, Test, Report, Learn, Past projects or Home.', keywords: ['go to', 'open', 'apri', 'vai'], arg: 'screen: project, connect, flash, debug, monitor, test, report, learn, archive, home', where: 'menu' },
   { id: 'connect_board', label: 'Connect and identify the board', hint: 'Find the board on USB and read its chip. Only reads.', keywords: ['connect', 'identify', 'detect', 'usb', 'port', 'collega', 'identifica', 'porta'], readsBoard: true, where: 'menu:connect' },
   { id: 'backup_flash', label: 'Back up my board', hint: 'Save a copy of the program on the board to this computer. Only reads.', keywords: ['backup', 'back up', 'save firmware', 'copy', 'copia', 'salva'], readsBoard: true, where: 'menu:flash' },
   { id: 'restore_firmware', label: 'Restore my firmware', hint: 'Write the last backup back to the board (asks first).', keywords: ['restore', 'undo flash', 'ripristina'], writes: true, where: 'top:restore' },

@@ -25,6 +25,9 @@ import { grant } from '../main/session/safety';
 import { UserParts } from '../main/parts/userParts';
 import { CoachStore } from '../main/session/coachStore';
 import { makeCoachApi } from '../main/session/coachApi';
+import { ArchiveStore } from '../main/archive/archiveStore';
+import { makeArchiveApi } from '../main/archive/archiveApi';
+import type { ArchiveEdit } from '@shared/archive/types';
 import type { StarterFile } from '@shared/starter/common';
 import { memfs } from './shims/memfs';
 import { needsApp, showNeedsApp } from './needsApp';
@@ -53,6 +56,8 @@ const settings = new AiSettingsStore(`${DATA}/settings.json`, noSecrets, env);
 const assistant = new Assistant(hub, settings, env);
 const userParts = new UserParts(`${DATA}/parts`);
 const coach = makeCoachApi(assistant, new CoachStore(`${DATA}/coach-answers.json`));
+const archiveStore = new ArchiveStore(`${DATA}/archive/index.json`, () => PARTS);
+assistant.useArchive(() => archiveStore.entries());
 const sessionLog: LogEntry[] = [];
 
 const WHY = {
@@ -60,6 +65,7 @@ const WHY = {
   key: () => t('Your own AI key needs the BoardPilot app: a web page cannot keep a key safe.'),
   mcp: () => t('Letting AI coding agents use your board (MCP) needs the BoardPilot app on your computer.'),
   link: () => t('Importing a part from a web link needs the BoardPilot app: a web page cannot read other websites.'),
+  folder: () => t('Reading your own project folders needs the BoardPilot app. Here you can try the sample archive.'),
   license: () => t('License keys are entered in the BoardPilot app.'),
 };
 
@@ -124,6 +130,9 @@ for (const ch of EVENT_CHANNELS) {
 }
 
 /* ---------- the API ---------- */
+
+// The browser demo has only the sample archive (in memory): it cannot read folders on the computer.
+const archive = makeArchiveApi(archiveStore, { sampleDir: '/sample-archive', reveal: () => undefined, pickFolder: async () => null });
 
 const mcpOff: McpStatus = { enabled: false, running: false, command: '', claudeCode: '' };
 
@@ -257,6 +266,16 @@ const api: BoardPilotApi = {
         return { ok: false, error: { code: 'bad_project', humanMessage: t('That file is not a BoardPilot project.'), hint: t('Pick a .boardpilot.json file saved from the app.') } };
       }
     },
+  },
+  archive: {
+    list: wrap(() => archive.list()),
+    addFolder: wrap(() => needsApp(WHY.folder())),
+    addSample: wrap(() => archive.addSample()),
+    removeFolder: wrap((root: string) => archive.removeFolder(root)),
+    rescan: wrap(() => archive.rescan()),
+    update: wrap((id: string, edit: ArchiveEdit) => archive.update(id, edit)),
+    reveal: async () => showNeedsApp(t('Opening a project folder needs the BoardPilot app.')),
+    readFile: wrap((id: string, file: string) => archive.readFile(id, file)),
   },
   mcp: {
     status: async () => mcpOff,

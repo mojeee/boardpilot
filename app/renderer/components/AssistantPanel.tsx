@@ -14,6 +14,7 @@ import { Icon } from './Icon';
 import { t } from '@shared/i18n';
 import { openAiSettings } from './AiSettings';
 import { ChoiceCards, ProposalCard, applyProposal } from './ProposalCard';
+import { SimilarProjects } from './SimilarProjects';
 import { ExampleChats, ReplayBar } from '../replay/ReplayBar';
 import { useReplay } from '../replay/player';
 
@@ -304,6 +305,7 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
         )}
         {busy && <div className="ai-thinking">{t('Checking…')}</div>}
       </div>
+      {!hideInput && !replaying && <SimilarProjects />}
       {!hideInput && !replaying && <AskBox />}
     </section>
   );

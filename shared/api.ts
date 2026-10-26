@@ -28,6 +28,7 @@ import type { AiModelInfo, AiProviderId, AiSettingsInput, AiSettingsView, AiStat
 import type { PreflightReport } from './preflight';
 import type { CoachAttempt } from './coach';
 import type { StarterFile } from './starter/common';
+import type { ArchiveEdit, ArchiveEntry } from './archive/types';
 
 export type Unsubscribe = () => void;
 
@@ -121,6 +122,23 @@ export interface BoardPilotApi {
     last(): Promise<Scene | null>;
     save(scene: Scene): Promise<Result<string>>;
     open(): Promise<Result<Scene>>;
+  };
+  /** Past projects: folders of old projects, read (never changed) and described in a table. */
+  archive: {
+    list(): Promise<{ roots: string[]; projects: ArchiveEntry[] }>;
+    /** Folder dialog, then a scan of the chosen folder. */
+    addFolder(): Promise<Result<{ found: number; truncated: boolean }>>;
+    /** Copies the fictional sample archive to the app data folder and scans it. */
+    addSample(): Promise<Result<{ found: number; truncated: boolean }>>;
+    /** Forgets a folder and its projects (the files stay where they are). */
+    removeFolder(root: string): Promise<Result<true>>;
+    rescan(): Promise<Result<{ found: number; truncated: boolean }>>;
+    /** The user's notes, tags and corrections; kept across rescans. */
+    update(id: string, edit: ArchiveEdit): Promise<Result<ArchiveEntry>>;
+    /** Shows the project folder, or a file in it, in Finder / Explorer. */
+    reveal(id: string, file?: string): Promise<void>;
+    /** Text of a file in a project (1 MB max), e.g. its main source. */
+    readFile(id: string, file: string): Promise<Result<{ name: string; text: string }>>;
   };
   mcp: {
     status(): Promise<McpStatus>;

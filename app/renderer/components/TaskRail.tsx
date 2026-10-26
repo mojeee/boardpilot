@@ -14,6 +14,7 @@ export const TASKS: { screen: Screen; label: string; icon: string; flow?: string
   { screen: 'monitor', label: 'Monitor', icon: 'monitor', hint: 'Live values, serial output and memory' },
   { screen: 'test', label: 'Test hardware', icon: 'test', hint: 'Check pins, buses and decoded signals' },
   { screen: 'report', label: 'Report', icon: 'report', hint: 'Summary of this session to share' },
+  { screen: 'archive', label: 'Past projects', icon: 'folder', hint: 'Your old projects in a table, and similar ones while you plan' },
 ];
 
 export function openTask(screen: Screen) {
@@ -33,6 +34,7 @@ export const MENU: { screen: Screen; label: string; icon: string; hint: string }
   { screen: 'monitor', label: 'Monitor', icon: 'monitor', hint: 'Live values, serial output and memory' },
   { screen: 'test', label: 'Test', icon: 'test', hint: 'Check pins, buses and decoded signals' },
   { screen: 'report', label: 'Report', icon: 'report', hint: 'Summary of this session to share' },
+  { screen: 'archive', label: 'Archive', icon: 'folder', hint: 'Your old projects in a table, and similar ones while you plan' },
   { screen: 'learn', label: 'Learn', icon: 'learn', hint: 'Visual lessons, from zero to senior' },
 ];
 

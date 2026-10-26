@@ -16,6 +16,7 @@ import { useProjects } from '../state/projects';
 import { useTemplate } from '../state/templateRun';
 import { useLayout } from '../state/layout';
 import { projectFromParts, sketchFileName } from '../state/buildProject';
+import { SimilarProjects } from './SimilarProjects';
 
 interface Proposal {
   name: string;
@@ -99,6 +100,7 @@ export function DescribeProject({ boardId, onDone }: { boardId: string; onDone()
           ? t('The assistant continues in the chat: it asks what it needs, compares parts with you and proposes the wiring, checked by the wiring rules. Nothing changes until you press Apply.')
           : t('The assistant is off: the parts are matched from the words you use. Everything is shown for you to confirm.')}
       </p>
+      {text.trim().length > 8 && <SimilarProjects text={text} onPick={onDone} />}
       {proposal && (
         <div className="np-proposal">
           <div className="row between">

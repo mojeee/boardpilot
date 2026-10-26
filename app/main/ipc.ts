@@ -19,8 +19,11 @@ import { toAppError } from './hardware/errors';
 import { CoachStore } from './session/coachStore';
 import { isSafeProjectName, isSafeProjectPath, type StarterFile } from '@shared/starter/common';
 import { makeCoachApi } from './session/coachApi';
+import type { ArchiveStore } from './archive/archiveStore';
+import { makeArchiveApi } from './archive/archiveApi';
+import type { ArchiveEdit } from '@shared/archive/types';
 
-export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
+export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License, archiveStore: ArchiveStore) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
 
   h('hw:state', () => hub.state);
@@ -246,6 +249,26 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('coach:history', (lessonId: string, question: string) => coach.history(lessonId, question));
   h('coach:remove', (lessonId: string, question: string) => coach.remove(lessonId, question));
   h('coach:removeAll', () => coach.removeAll());
+
+  // Past projects: folders are only read; the index lives in the app data folder.
+  const archive = makeArchiveApi(archiveStore, {
+    sampleDir: join(dataDir, 'sample-archive'),
+    reveal: (path) => shell.showItemInFolder(path),
+    pickFolder: async () => {
+      const win = BrowserWindow.getFocusedWindow();
+      const opts: Electron.OpenDialogOptions = { title: t('Choose a folder of old projects'), buttonLabel: t('Add to the archive'), properties: ['openDirectory'] };
+      const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
+      return r.canceled ? null : r.filePaths[0] ?? null;
+    },
+  });
+  h('archive:list', () => archive.list());
+  h('archive:addFolder', () => archive.addFolder());
+  h('archive:addSample', () => archive.addSample());
+  h('archive:removeFolder', (root: string) => archive.removeFolder(root));
+  h('archive:rescan', () => archive.rescan());
+  h('archive:update', (id: string, edit: ArchiveEdit) => archive.update(id, edit));
+  h('archive:reveal', (id: string, file?: string) => archive.reveal(id, file));
+  h('archive:readFile', (id: string, file: string) => archive.readFile(id, file));
 
   h('license:status', () => license.status());
   h('license:activate', (key: string) => license.activate(key));

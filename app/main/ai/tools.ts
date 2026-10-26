@@ -6,6 +6,8 @@ import type { AiChoice, LogEntry, PartDef, Scene, TargetRef, WriteRequest } from
 import { ACTION_IDS, APP_ACTIONS, type AppActionId } from '@shared/actions';
 import { BOARDS, PARTS } from '@shared/board';
 import { buildProposal, checkScene, partDetails, proposalForModel, searchParts, type ProjectProposal, type ProposalInput } from '@shared/projectBuilder';
+import { similarProjects, reasonsText } from '@shared/archive/similarity';
+import type { ArchiveEntry } from '@shared/archive/types';
 import type { HardwareHub } from '../hardware/hub';
 import type { JsonSchema, ToolSpec } from './providers/types';
 
@@ -113,6 +115,12 @@ export const TOOLS: ToolSpec[] = [
     ),
   },
   {
+    name: 'find_similar_projects',
+    description:
+      'Search the user\'s archive of past projects (folders they added under Past projects) for projects like the one being planned: same parts, buses, protocols, chip family or words. Returns at most 3 matches with the facts that overlap and where they were read. Call it once early when the user describes a new project; mention a match as a suggestion to look at, never as a fact about the new design.',
+    parameters: obj({ description: { type: 'string', description: 'what the user wants to build, in their words plus the parts chosen so far' } }, ['description']),
+  },
+  {
     name: 'get_part',
     description: 'Full library entry of one part by id: every pin with its role and notes, chip-ID check, sourced gotchas, current and datasheet sources.',
     parameters: obj({ partId: { type: 'string' } }, ['partId']),
@@ -201,6 +209,24 @@ export interface ToolTurnState {
 export interface BuilderContext {
   scene: Scene;
   parts?: Record<string, PartDef>;
+  /** the user's past projects (Past projects screen), when any */
+  archive?: ArchiveEntry[];
+}
+
+/** A short, sourced view of a past project for the model (stays small: the demo relay trims requests). */
+function archiveFacts(e: ArchiveEntry) {
+  const ev = (f: { evidence?: { file: string; line?: number } }) => (f.evidence ? `${f.evidence.file}${f.evidence.line ? `:${f.evidence.line}` : ''}` : 'user');
+  return {
+    name: e.name,
+    folder: e.root,
+    board: e.board ? `${e.board.value.mcu}${e.board.value.boardId ? ` (${e.board.value.boardId})` : ''} [${ev(e.board)}]` : 'unknown',
+    framework: e.framework.value,
+    parts: e.parts.slice(0, 8).map((p) => `${p.value.name} [${ev(p)}]`),
+    protocols: e.protocols.map((p) => p.value),
+    buses: e.buses.map((b) => b.value),
+    summary: e.summary?.value.slice(0, 200) ?? '',
+    notes: e.notes.slice(0, 200),
+  };
 }
 
 const num = (v: unknown, name: string): number => {
@@ -306,6 +332,18 @@ export async function runTool(
         const limit = typeof input.limit === 'number' ? input.limit : 6;
         const found = searchParts(str(input.query, 'query'), parts, board, { category, limit });
         return done(found.length ? { board: board.id, parts: found } : { board: board.id, parts: [], note: 'No match. Try other words, e.g. what it measures or the chip name.' });
+      }
+      case 'find_similar_projects': {
+        const archive = builder?.archive ?? [];
+        if (!archive.length) return done({ matches: [], note: 'The user has no past projects in the archive. Do not mention it unless they ask; they can add folders under Past projects.' });
+        const matches = similarProjects({ text: str(input.description, 'description'), scene: builder?.scene }, archive, builder?.parts ?? PARTS);
+        const byId = new Map(archive.map((e) => [e.id, e]));
+        return done({
+          matches: matches.map((m) => ({ score: m.score, overlap: reasonsText(m), project: archiveFacts(byId.get(m.id)!) })),
+          note: matches.length
+            ? 'Facts in [brackets] were read from that file of the past project. Suggest opening it (the app shows a card); say what overlaps. Cite it as a source of kind "user" labelled "archive · <project name>".'
+            : 'No similar past project. Do not mention the archive.',
+        });
       }
       case 'get_part': {
         const parts = builder?.parts ?? PARTS;

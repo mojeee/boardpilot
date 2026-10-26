@@ -15,6 +15,8 @@ import { baseDeps, setupMcp } from './mcp';
 import { runStdio } from './mcp/server';
 import { motionHash, motionJob, motionWindowOptions, runMotion } from './motion';
 import type { PartDef } from '@shared/types';
+import { PARTS } from '@shared/board';
+import { ArchiveStore } from './archive/archiveStore';
 
 /** Minimal .env.local reader (KEY=value lines). Keys stay in this process only; they are the
  *  fallback when no key is saved in AI settings (ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY). */
@@ -63,6 +65,9 @@ const aiSettings = new AiSettingsStore(join(dataDir, 'settings.json'), safeStora
 const assistant = new Assistant(hub, aiSettings);
 const userParts = new UserParts(join(dataDir, 'parts'));
 const license = new License(dataDir);
+// Past projects: read-only index of the user's project folders, also seen by the assistant
+const archive = new ArchiveStore(join(dataDir, 'archive', 'index.json'), () => PARTS);
+assistant.useArchive(() => archive.entries());
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -151,7 +156,7 @@ app.whenReady().then(() => {
       return userPartList;
     },
   });
-  registerIpc(hub, assistant, sessionLog, dataDir, userParts, license);
+  registerIpc(hub, assistant, sessionLog, dataDir, userParts, license, archive);
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

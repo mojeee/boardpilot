@@ -22,6 +22,7 @@ import { Viewport } from './three/Viewport';
 import { WizardWithAssistant } from './wizard/WizardPanel';
 import { useWizard } from './wizard/session';
 import { Home } from './screens/Home';
+import { Archive } from './screens/Archive';
 import './styles/workspace.css';
 import { DebugPicker } from './screens/DebugPicker';
 import { TestHardware } from './screens/TestHardware';
@@ -146,6 +147,8 @@ function Center() {
       return <Report />;
     case 'learn':
       return <Learn />;
+    case 'archive':
+      return <Archive />;
     default:
       return <Viewport />;
   }
@@ -181,8 +184,8 @@ function Work() {
   const rightOpen = useLayout((s) => s.rightOpen);
   const bottomOpen = useLayout((s) => s.bottomOpen);
   const bottomMax = useLayout((s) => s.bottomMax);
-  // Home and Learn are whole pages of their own: no Code/Log panel under them.
-  const noBottom = useApp((s) => s.screen === 'home' || s.screen === 'learn');
+  // Home, Learn and Past projects are whole pages of their own: no Code/Log panel under them.
+  const noBottom = useApp((s) => s.screen === 'home' || s.screen === 'learn' || s.screen === 'archive');
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (handleLayoutKey(e)) e.preventDefault();

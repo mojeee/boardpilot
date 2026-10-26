@@ -81,6 +81,16 @@ const api: BoardPilotApi = {
     save: call('project:save'),
     open: call('project:open'),
   } as BoardPilotApi['project'],
+  archive: {
+    list: call('archive:list'),
+    addFolder: call('archive:addFolder'),
+    addSample: call('archive:addSample'),
+    removeFolder: call('archive:removeFolder'),
+    rescan: call('archive:rescan'),
+    update: call('archive:update'),
+    reveal: call('archive:reveal'),
+    readFile: call('archive:readFile'),
+  } as BoardPilotApi['archive'],
   mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult') } as BoardPilotApi['mcp'],
   coach: {
     ask: call('coach:ask'),
