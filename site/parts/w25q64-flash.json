@@ -51,7 +51,8 @@
       5.3,
       1.8
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "soic"
   },
   "keywords": [
     "w25q64",

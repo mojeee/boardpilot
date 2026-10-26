@@ -47,7 +47,48 @@
       30,
       5
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "SD Card",
+    "components": [
+      {
+        "type": "socket",
+        "at": [
+          4,
+          3
+        ],
+        "size": [
+          26,
+          22,
+          2.6
+        ]
+      },
+      {
+        "type": "chip",
+        "at": [
+          -16,
+          2
+        ],
+        "size": [
+          5,
+          4
+        ],
+        "package": "soic",
+        "label": "LVC125A"
+      },
+      {
+        "type": "chip",
+        "at": [
+          -16,
+          9
+        ],
+        "size": [
+          2.9,
+          1.6
+        ],
+        "package": "sot223",
+        "label": "AMS1117"
+      }
+    ]
   },
   "keywords": [
     "sd card",

@@ -1,0 +1,73 @@
+{
+  "id": "opentherm-adapter",
+  "name": "OpenTherm adapter (boiler bus to 3.3 V logic)",
+  "category": "sensor",
+  "pins": [
+    {
+      "name": "IN",
+      "role": "digital_out",
+      "notes": "What the boiler sends, as a 3.3 V logic signal. To a GPIO with an interrupt"
+    },
+    {
+      "name": "OUT",
+      "role": "digital_in",
+      "needsOutput": true,
+      "notes": "What the board sends to the boiler. From an output GPIO"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "3V3"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    },
+    {
+      "name": "OT1",
+      "role": "passive",
+      "notes": "OpenTherm bus to the boiler (2 wires, no polarity). Never to a board pin"
+    },
+    {
+      "name": "OT2",
+      "role": "passive",
+      "notes": "OpenTherm bus to the boiler (2 wires, no polarity). Never to a board pin"
+    }
+  ],
+  "bus": "gpio",
+  "voltage": "3.3",
+  "model": {
+    "shape": "module",
+    "size": [
+      34,
+      22,
+      8
+    ],
+    "color": "#1F6F3F",
+    "silk": "OPENTHERM"
+  },
+  "keywords": [
+    "opentherm",
+    "open therm",
+    "boiler",
+    "caldaia",
+    "thermostat bus",
+    "ot adapter",
+    "termostato"
+  ],
+  "gotchas": [
+    {
+      "text": "The OpenTherm bus works at boiler voltages (well above 3.3 V): connect it only to the adapter's bus terminals, never to a board pin.",
+      "source": {
+        "title": "OpenTherm Protocol Specification v2.2",
+        "section": "Physical layer: voltage levels from the master, current levels from the slave"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "title": "OpenTherm Protocol Specification v2.2",
+      "section": "Physical layer: two-wire, polarity-free point-to-point link; Manchester-coded frames of 32 bits"
+    }
+  ]
+}

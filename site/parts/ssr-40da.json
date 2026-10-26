@@ -34,7 +34,8 @@
       45,
       23
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "ssr"
   },
   "keywords": [
     "ssr",

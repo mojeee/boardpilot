@@ -33,7 +33,8 @@
       42.3,
       40
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "stepper"
   },
   "keywords": [
     "nema17",

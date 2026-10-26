@@ -55,6 +55,24 @@
     ],
     "color": "#EDEDED"
   },
+  "display": {
+    "widthPx": 200,
+    "heightPx": 200,
+    "activeMm": [
+      27.6,
+      27.6
+    ],
+    "glassMm": [
+      37.32,
+      31.8
+    ],
+    "color": "epaper",
+    "tint": "#111111",
+    "source": {
+      "title": "Waveshare 1.54inch e-Paper Module Manual + product page",
+      "section": "Parameters: display dimensions 27.6 x 27.6 mm, outline (screen only) 37.32 x 31.8 x 1.05 mm; product page outline 48 x 33 mm"
+    }
+  },
   "keywords": [
     "e-paper",
     "e-ink",

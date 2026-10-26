@@ -50,6 +50,20 @@
     ],
     "color": "#1A1A1A"
   },
+  "display": {
+    "widthPx": 128,
+    "heightPx": 128,
+    "activeMm": [
+      26.86,
+      26.86
+    ],
+    "color": "gray4",
+    "tint": "#FFFFFF",
+    "source": {
+      "title": "Waveshare 1.5inch OLED Module product page (SSD1327)",
+      "section": "Specifications: display size 26.86 x 26.86 mm, outline 44.5 x 37.0 mm, 16 grey levels"
+    }
+  },
   "keywords": [
     "ssd1327",
     "oled",

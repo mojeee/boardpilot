@@ -36,7 +36,58 @@
       24,
       8
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "GY-NEO6MV2",
+    "components": [
+      {
+        "type": "shield",
+        "at": [
+          -8,
+          2
+        ],
+        "size": [
+          12.2,
+          16,
+          2.4
+        ],
+        "label": "u-blox NEO-6M"
+      },
+      {
+        "type": "patch",
+        "at": [
+          8,
+          2
+        ],
+        "size": [
+          12,
+          12,
+          4
+        ]
+      },
+      {
+        "type": "battery",
+        "at": [
+          -14,
+          -2
+        ],
+        "size": [
+          6,
+          6
+        ]
+      },
+      {
+        "type": "led",
+        "at": [
+          14,
+          -6
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "color": "#2f9bff"
+      }
+    ]
   },
   "keywords": [
     "neo-6m",

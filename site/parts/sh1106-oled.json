@@ -37,6 +37,24 @@
     ],
     "color": "#1A1A1A"
   },
+  "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+      29.42,
+      14.7
+    ],
+    "glassMm": [
+      34.5,
+      23
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+      "title": "Pololu Graphical OLED Display 128x64 1.3in (SH1106), item 3760",
+      "section": "Specifications: active area 29.4 x 14.7 mm, module 35.4 x 33.5 mm"
+    }
+  },
   "keywords": [
     "oled",
     "sh1106",

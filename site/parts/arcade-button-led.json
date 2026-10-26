@@ -38,7 +38,8 @@
       33,
       35
     ],
-    "color": "#D0312D"
+    "color": "#D0312D",
+    "kind": "arcade"
   },
   "keywords": [
     "arcade button",

@@ -1,0 +1,63 @@
+{
+  "id": "ntc-10k-probe",
+  "name": "NTC 10 kΩ temperature probe (with divider)",
+  "category": "sensor",
+  "measures": [
+    "temperature"
+  ],
+  "pins": [
+    {
+      "name": "OUT",
+      "role": "analog_out",
+      "notes": "Middle of the divider: NTC to 3.3 V, 10 kΩ to GND. To an ADC pin (ADC1 on ESP32). The voltage rises as it gets warmer"
+    },
+    {
+      "name": "VCC",
+      "role": "power",
+      "notes": "Use 3V3 so the output stays in the ADC range"
+    },
+    {
+      "name": "GND",
+      "role": "ground"
+    }
+  ],
+  "bus": "analog",
+  "voltage": "3.3-5",
+  "model": {
+    "shape": "module",
+    "size": [
+      20,
+      12,
+      6
+    ],
+    "color": "#1A1A1A",
+    "silk": "NTC 10K"
+  },
+  "keywords": [
+    "ntc",
+    "ntc 10k",
+    "thermistor",
+    "probe",
+    "boiler probe",
+    "sonda ntc",
+    "sonda",
+    "termistore",
+    "caldaia",
+    "temperatura"
+  ],
+  "gotchas": [
+    {
+      "text": "An NTC is not linear: convert with the Beta formula (B25/85 = 3977 K for this type) or a table, not a straight line.",
+      "source": {
+        "title": "Vishay NTCLE100E3 datasheet",
+        "section": "R25 = 10 kΩ, B25/85 = 3977 K, resistance/temperature table"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "title": "Vishay NTCLE100E3 datasheet",
+      "section": "R25 = 10 kΩ ± 5 %, B25/85 = 3977 K, operating range -40 to +125 °C"
+    }
+  ]
+}

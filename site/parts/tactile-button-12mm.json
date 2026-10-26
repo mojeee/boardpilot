@@ -33,7 +33,8 @@
       12,
       11
     ],
-    "color": "#2B2B2B"
+    "color": "#2B2B2B",
+    "kind": "tactile-cap"
   },
   "keywords": [
     "tactile switch",

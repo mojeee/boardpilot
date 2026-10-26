@@ -35,7 +35,22 @@
       22,
       27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-3",
+    "components": [
+      {
+        "type": "can",
+        "at": [
+          0,
+          1.5
+        ],
+        "size": [
+          19,
+          19,
+          16
+        ]
+      }
+    ]
   },
   "keywords": [
     "mq-3",

@@ -119,6 +119,42 @@
         </div>
       </section>
 
+      <section id="archive" class="section archive-section">
+        <div class="wrap">
+          <span class="eyebrow" data-i18n="arch.eyebrow">New · Past projects</span>
+          <h2 data-i18n="arch.title">Your old projects, found while you plan the next one.</h2>
+          <p class="lead try-lead" data-i18n="arch.lead">Point BoardPilot at the folders where your team keeps old projects. It reads Arduino, PlatformIO, ESP-IDF, STM32CubeMX and KiCad projects, parts lists and documents, and puts the board, parts, buses and protocols of each one in a table. While you describe a new project, it tells you which old one is similar, and why.</p>
+          <div class="archive-demo">
+            <div class="archive-preview">
+              <div class="ap-row ap-head"><span data-i18n="arch.h1">Project</span><span data-i18n="arch.h2">Board or chip</span><span data-i18n="arch.h3">Parts</span><span data-i18n="arch.h4">Protocols</span></div>
+              <div class="ap-row"><b>termostato-wifi-2022</b><span class="mono">ESP32 DevKit</span><span><i>SHT31</i><i>OLED</i><i>RELAY</i></span><span><i class="p">Wi-Fi</i><i class="p">MQTT</i></span></div>
+              <div class="ap-row on"><b>nodo-modbus-caldaia</b><span class="mono">STM32G071RB</span><span><i>NTC</i><i>MAX485</i><i>RELAY</i></span><span><i class="p">Modbus</i><i class="b">RS-485</i></span></div>
+              <div class="ap-row"><b>gateway-opentherm</b><span class="mono">—</span><span><i>OPENTHERM</i></span><span><i class="p">OpenTherm</i><i class="p">MQTT</i></span></div>
+              <div class="ap-row"><b>controllo-pompa-ventola</b><span class="mono">ESP32-C3</span><span><i>DS18B20</i><i>SSR</i></span><span><i class="b">1-Wire</i></span></div>
+              <div class="ap-src mono" data-i18n="arch.src">STM32G071RB · read from nodo-modbus-caldaia.ioc:5</div>
+              <div class="ap-card">
+                <span class="ap-card-t" data-i18n="arch.card.t">Similar past project</span>
+                <b>termostato-wifi-2022</b>
+                <span data-i18n="arch.card.d">In common: SHT31 · relay · Wi-Fi · same board · words: thermostat, boiler</span>
+              </div>
+            </div>
+            <div class="archive-points">
+              <ul>
+                <li data-i18n="arch.p1">Every value shows the file and line it was read from. Your own boards stay as the chip name the files give.</li>
+                <li data-i18n="arch.p2">Add notes and correct values; they survive a rescan, and the assistant reads them too.</li>
+                <li data-i18n="arch.p3">“Use as start” opens an old project as a new one: parts on the 3D board, wired on safe pins, with its old code.</li>
+                <li data-i18n="arch.p4">Read-only and local: nothing is changed and nothing leaves your computer.</li>
+              </ul>
+              <div class="archive-ctas">
+                <a class="btn primary small" href="/demo/#demo=archive&amp;lang={{LANG}}" target="_blank" rel="noopener" data-i18n="arch.cta">Open the sample archive</a>
+                <a class="btn small" href="/demo/#demo=template&amp;id=hvac-room-thermostat&amp;lang={{LANG}}" target="_blank" rel="noopener" data-i18n="arch.cta2">Run the room thermostat</a>
+              </div>
+              <p class="fine" data-i18n="arch.note">The sample archive is six small made-up heating and climate projects. The room thermostat is a new template: hysteresis, a minimum time between boiler switches and a setpoint button, simulated on any board.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="start" class="section alt">
         <div class="wrap">
           <span class="eyebrow" data-i18n="start.eyebrow">New to embedded?</span>

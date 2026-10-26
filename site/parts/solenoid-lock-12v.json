@@ -23,7 +23,8 @@
       41,
       28
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "solenoid"
   },
   "keywords": [
     "solenoid",

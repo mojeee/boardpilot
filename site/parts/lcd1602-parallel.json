@@ -94,7 +94,31 @@
       36,
       13
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "pcb": "#2b6b3c"
+  },
+  "display": {
+    "widthPx": 80,
+    "heightPx": 16,
+    "activeMm": [
+      56.2,
+      11.5
+    ],
+    "glassMm": [
+      64.5,
+      15.5
+    ],
+    "color": "lcd",
+    "tint": "#F2F6FF",
+    "glassColor": "#2E6FD8",
+    "chars": [
+      16,
+      2
+    ],
+    "source": {
+      "title": "Orient Display OD-AMC1602A Series LCD module specification",
+      "section": "3. General Specification"
+    }
   },
   "keywords": [
     "lcd1602",

@@ -42,7 +42,49 @@
       13.9,
       1.6
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "GY-302",
+    "components": [
+      {
+        "type": "chip",
+        "at": [
+          0,
+          0.5
+        ],
+        "size": [
+          3,
+          1.6,
+          0.7
+        ],
+        "package": "qfn",
+        "label": "BH1750",
+        "color": "#2a2b2d"
+      },
+      {
+        "type": "chip",
+        "at": [
+          -5.5,
+          3
+        ],
+        "size": [
+          2.9,
+          1.6
+        ],
+        "package": "sot23"
+      },
+      {
+        "type": "smd",
+        "at": [
+          5,
+          3
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "count": 3
+      }
+    ]
   },
   "keywords": [
     "bh1750",

@@ -30,7 +30,22 @@
       24,
       25
     ],
-    "color": "#1E7A3C"
+    "color": "#1E7A3C",
+    "silk": "HC-SR501",
+    "components": [
+      {
+        "type": "dome",
+        "at": [
+          0,
+          1.5
+        ],
+        "size": [
+          23,
+          23,
+          23
+        ]
+      }
+    ]
   },
   "keywords": [
     "hc-sr501",

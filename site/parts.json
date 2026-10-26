@@ -3,8 +3,8 @@
  "license": "CC-BY-4.0",
  "attribution": "BoardPilot (https://boardpilot.agentflowbind.com)",
  "source": "https://github.com/mojeee/boardpilot/tree/main/parts",
- "generated": "2026-10-24",
- "count": 383,
+ "generated": "2026-10-26",
+ "count": 385,
  "parts": [
   {
    "id": "potentiometer",
@@ -201,7 +201,8 @@
      32,
      19
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "stepper-28byj"
    },
    "keywords": [
     "28byj-48",
@@ -579,7 +580,234 @@
      77,
      1
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "silk": "4x4",
+    "components": [
+     {
+      "type": "block",
+      "at": [
+       -24,
+       -17
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "1"
+     },
+     {
+      "type": "block",
+      "at": [
+       -8,
+       -17
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "2"
+     },
+     {
+      "type": "block",
+      "at": [
+       8,
+       -17
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "3"
+     },
+     {
+      "type": "block",
+      "at": [
+       24,
+       -17
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "A"
+     },
+     {
+      "type": "block",
+      "at": [
+       -24,
+       -2
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "4"
+     },
+     {
+      "type": "block",
+      "at": [
+       -8,
+       -2
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "5"
+     },
+     {
+      "type": "block",
+      "at": [
+       8,
+       -2
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "6"
+     },
+     {
+      "type": "block",
+      "at": [
+       24,
+       -2
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "B"
+     },
+     {
+      "type": "block",
+      "at": [
+       -24,
+       13
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "7"
+     },
+     {
+      "type": "block",
+      "at": [
+       -8,
+       13
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "8"
+     },
+     {
+      "type": "block",
+      "at": [
+       8,
+       13
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "9"
+     },
+     {
+      "type": "block",
+      "at": [
+       24,
+       13
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "C"
+     },
+     {
+      "type": "block",
+      "at": [
+       -24,
+       28
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "*"
+     },
+     {
+      "type": "block",
+      "at": [
+       -8,
+       28
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "0"
+     },
+     {
+      "type": "block",
+      "at": [
+       8,
+       28
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "#"
+     },
+     {
+      "type": "block",
+      "at": [
+       24,
+       28
+      ],
+      "size": [
+       13,
+       11,
+       0.5
+      ],
+      "color": "#e9e7e0",
+      "label": "D"
+     }
+    ]
    },
    "keywords": [
     "keypad",
@@ -753,7 +981,8 @@
      19,
      8
     ],
-    "color": "#EDEDED"
+    "color": "#EDEDED",
+    "kind": "seg7"
    },
    "keywords": [
     "7 segment",
@@ -837,7 +1066,8 @@
      19,
      8
     ],
-    "color": "#EDEDED"
+    "color": "#EDEDED",
+    "kind": "seg7"
    },
    "keywords": [
     "7 segment",
@@ -921,7 +1151,8 @@
      19,
      8
     ],
-    "color": "#EDEDED"
+    "color": "#EDEDED",
+    "kind": "seg7"
    },
    "keywords": [
     "7 segment",
@@ -1189,7 +1420,8 @@
      40,
      30
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "box"
    },
    "keywords": [
     "a02yyuw",
@@ -1357,7 +1589,61 @@
      15.2,
      10
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "A4988",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       0,
+       0
+      ],
+      "size": [
+       5,
+       5,
+       0.9
+      ],
+      "package": "qfn",
+      "label": "A4988"
+     },
+     {
+      "type": "heatsink",
+      "at": [
+       0,
+       0
+      ],
+      "size": [
+       9,
+       9,
+       5
+      ]
+     },
+     {
+      "type": "trimpot",
+      "at": [
+       -10,
+       3
+      ],
+      "size": [
+       3,
+       3,
+       1.5
+      ],
+      "color": "#e8e8e2"
+     },
+     {
+      "type": "smd",
+      "at": [
+       10,
+       3
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "a4988",
@@ -1585,7 +1871,8 @@
      12,
      9.5
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "buzzer"
    },
    "keywords": [
     "active buzzer",
@@ -2616,7 +2903,36 @@
      26,
      32
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "silk": "KY-023",
+    "components": [
+     {
+      "type": "block",
+      "at": [
+       0,
+       2
+      ],
+      "size": [
+       16,
+       16,
+       9
+      ],
+      "color": "#1d1e21"
+     },
+     {
+      "type": "knob",
+      "at": [
+       0,
+       2
+      ],
+      "size": [
+       14,
+       14,
+       30
+      ],
+      "color": "#1d1e21"
+     }
+    ]
    },
    "keywords": [
     "joystick",
@@ -2803,7 +3119,8 @@
      33,
      35
     ],
-    "color": "#D0312D"
+    "color": "#D0312D",
+    "kind": "arcade"
    },
    "keywords": [
     "arcade button",
@@ -4685,7 +5002,50 @@
      80,
      3
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "outline": "probe",
+    "silk": "v1.2",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       3,
+       -30
+      ],
+      "size": [
+       5,
+       4,
+       1.5
+      ],
+      "package": "soic",
+      "label": "TLC555"
+     },
+     {
+      "type": "chip",
+      "at": [
+       -6,
+       -31
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23",
+      "label": "662K"
+     },
+     {
+      "type": "smd",
+      "at": [
+       -6,
+       -26
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "soil moisture",
@@ -5163,7 +5523,8 @@
      15,
      25
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "dc-motor"
    },
    "keywords": [
     "dc motor",
@@ -5752,7 +6113,49 @@
      15.2,
      10
     ],
-    "color": "#5B2A86"
+    "color": "#5B2A86",
+    "silk": "DRV8825",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       0,
+       0
+      ],
+      "size": [
+       6.4,
+       9.7,
+       1.1
+      ],
+      "package": "tssop",
+      "label": "DRV8825"
+     },
+     {
+      "type": "heatsink",
+      "at": [
+       0,
+       0
+      ],
+      "size": [
+       9,
+       9,
+       5
+      ]
+     },
+     {
+      "type": "trimpot",
+      "at": [
+       -10,
+       3
+      ],
+      "size": [
+       3,
+       3,
+       1.5
+      ],
+      "color": "#e8e8e2"
+     }
+    ]
    },
    "keywords": [
     "drv8825",
@@ -6207,7 +6610,8 @@
      50,
      6
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "probe"
    },
    "keywords": [
     "ds18b20",
@@ -6287,7 +6691,8 @@
      20,
      40
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "servo"
    },
    "keywords": [
     "ds3218",
@@ -6354,7 +6759,71 @@
      22,
      14
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "ZS-042",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       -7,
+       -2
+      ],
+      "size": [
+       10.3,
+       7.5
+      ],
+      "package": "soic",
+      "label": "DS3231SN"
+     },
+     {
+      "type": "chip",
+      "at": [
+       5,
+       -4.5
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "24C32"
+     },
+     {
+      "type": "battery",
+      "at": [
+       8,
+       4
+      ],
+      "size": [
+       16,
+       16
+      ]
+     },
+     {
+      "type": "led",
+      "at": [
+       -15,
+       6
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     },
+     {
+      "type": "smd",
+      "at": [
+       -7,
+       6
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 4
+     }
+    ]
    },
    "keywords": [
     "ds3231",
@@ -6433,6 +6902,24 @@
     ],
     "color": "#EDEDED"
    },
+   "display": {
+    "widthPx": 200,
+    "heightPx": 200,
+    "activeMm": [
+     27.6,
+     27.6
+    ],
+    "glassMm": [
+     37.32,
+     31.8
+    ],
+    "color": "epaper",
+    "tint": "#111111",
+    "source": {
+     "title": "Waveshare 1.54inch e-Paper Module Manual + product page",
+     "section": "Parameters: display dimensions 27.6 x 27.6 mm, outline (screen only) 37.32 x 31.8 x 1.05 mm; product page outline 48 x 33 mm"
+    }
+   },
    "keywords": [
     "e-paper",
     "e-ink",
@@ -6506,6 +6993,24 @@
     ],
     "color": "#EDEDED"
    },
+   "display": {
+    "widthPx": 250,
+    "heightPx": 122,
+    "activeMm": [
+     48.55,
+     23.71
+    ],
+    "glassMm": [
+     59.2,
+     29.2
+    ],
+    "color": "epaper",
+    "tint": "#111111",
+    "source": {
+     "title": "Waveshare 2.13inch e-Paper HAT Manual",
+     "section": "Parameters: display dimensions 48.55 x 23.71 mm, outline (screen only) 59.2 x 29.2 x 1.05 mm, driver board 65 x 30.2 mm"
+    }
+   },
    "keywords": [
     "e-paper",
     "e-ink",
@@ -6572,11 +7077,29 @@
    "model": {
     "shape": "oled",
     "size": [
-     80,
+     89.5,
      38,
      4
     ],
     "color": "#EDEDED"
+   },
+   "display": {
+    "widthPx": 296,
+    "heightPx": 128,
+    "activeMm": [
+     66.89,
+     29.05
+    ],
+    "glassMm": [
+     79,
+     36.7
+    ],
+    "color": "epaper",
+    "tint": "#111111",
+    "source": {
+     "title": "Waveshare 2.9inch e-Paper Module Manual + product page (SKU 12956)",
+     "section": "Parameters: display dimensions 66.89 x 29.05 mm, outline (screen only) 79.0 x 36.7 x 1.05 mm; product page outline 89.50 x 38.00 mm"
+    }
    },
    "keywords": [
     "e-paper",
@@ -6645,11 +7168,29 @@
    "model": {
     "shape": "oled",
     "size": [
-     80,
-     80,
+     103,
+     78.5,
      4
     ],
     "color": "#EDEDED"
+   },
+   "display": {
+    "widthPx": 400,
+    "heightPx": 300,
+    "activeMm": [
+     84.8,
+     63.6
+    ],
+    "glassMm": [
+     90.1,
+     77
+    ],
+    "color": "epaper",
+    "tint": "#111111",
+    "source": {
+     "title": "Waveshare 4.2inch e-Paper Module Manual + product page",
+     "section": "Parameters: display dimensions 84.8 x 63.6 mm, outline (screen only) 90.1 x 77.0 x 1.18 mm; product page outline 103.0 x 78.5 mm"
+    }
    },
    "keywords": [
     "e-paper",
@@ -7057,7 +7598,8 @@
      30,
      10
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "fan"
    },
    "keywords": [
     "fan",
@@ -7157,7 +7699,8 @@
      73,
      0.5
     ],
-    "color": "#C8A04A"
+    "color": "#C8A04A",
+    "kind": "flex"
    },
    "keywords": [
     "flex sensor",
@@ -7249,7 +7792,8 @@
      12.5,
      22
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "servo"
    },
    "keywords": [
     "fs90r",
@@ -7295,7 +7839,8 @@
      56,
      0.5
     ],
-    "color": "#C8A04A"
+    "color": "#C8A04A",
+    "kind": "fsr"
    },
    "keywords": [
     "fsr402",
@@ -7367,7 +7912,22 @@
      40,
      4
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "outline": "round"
+   },
+   "display": {
+    "widthPx": 240,
+    "heightPx": 240,
+    "activeMm": [
+     32.4,
+     32.4
+    ],
+    "color": "rgb565",
+    "round": true,
+    "source": {
+     "title": "Waveshare 1.28inch Round LCD Module product page (GC9A01)",
+     "section": "Specifications: display size diameter 32.4 mm, outline 40.4 x 37.5 mm (round body diameter 37.5), 65K RGB"
+    }
    },
    "keywords": [
     "gc9a01",
@@ -7806,7 +8366,49 @@
      13.9,
      1.6
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "GY-302",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       0,
+       0.5
+      ],
+      "size": [
+       3,
+       1.6,
+       0.7
+      ],
+      "package": "qfn",
+      "label": "BH1750",
+      "color": "#2a2b2d"
+     },
+     {
+      "type": "chip",
+      "at": [
+       -5.5,
+       3
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23"
+     },
+     {
+      "type": "smd",
+      "at": [
+       5,
+       3
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "bh1750",
@@ -8304,7 +8906,63 @@
      13,
      1.6
     ],
-    "color": "#5B2A86"
+    "color": "#5B2A86",
+    "silk": "GY-BME280",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       0,
+       2
+      ],
+      "size": [
+       2.5,
+       2.5,
+       0.93
+      ],
+      "package": "lga",
+      "metal": true
+     },
+     {
+      "type": "chip",
+      "at": [
+       -3.2,
+       -3.4
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23",
+      "label": "662K"
+     },
+     {
+      "type": "smd",
+      "at": [
+       3.4,
+       -3.2
+      ],
+      "size": [
+       1,
+       0.5
+      ],
+      "count": 2,
+      "rot": true
+     },
+     {
+      "type": "smd",
+      "at": [
+       -3,
+       4.3
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 1,
+      "rot": true
+     }
+    ]
    },
    "keywords": [
     "bme280",
@@ -8694,7 +9352,62 @@
      15,
      1.6
     ],
-    "color": "#5B2A86"
+    "color": "#5B2A86",
+    "silk": "GY-BMP280",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       0,
+       2
+      ],
+      "size": [
+       2,
+       2.5,
+       0.95
+      ],
+      "package": "lga",
+      "metal": true
+     },
+     {
+      "type": "chip",
+      "at": [
+       -4.5,
+       -2.5
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23",
+      "label": "662K"
+     },
+     {
+      "type": "smd",
+      "at": [
+       4.2,
+       -2.5
+      ],
+      "size": [
+       1,
+       0.5
+      ],
+      "count": 2,
+      "rot": true
+     },
+     {
+      "type": "smd",
+      "at": [
+       -4.5,
+       4.5
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "bmp280",
@@ -8838,7 +9551,61 @@
      16,
      5
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "ZS-040",
+    "components": [
+     {
+      "type": "block",
+      "at": [
+       -3,
+       2
+      ],
+      "size": [
+       27,
+       13,
+       0.8
+      ],
+      "color": "#1f6b3a",
+      "label": "HC-05"
+     },
+     {
+      "type": "antenna",
+      "at": [
+       8,
+       2
+      ],
+      "size": [
+       7,
+       10
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -8,
+       2
+      ],
+      "size": [
+       6,
+       6,
+       0.9
+      ],
+      "package": "qfn",
+      "label": "BC417"
+     },
+     {
+      "type": "led",
+      "at": [
+       14,
+       -4
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     }
+    ]
    },
    "keywords": [
     "hc-05",
@@ -8890,7 +9657,61 @@
      16,
      5
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "ZS-040",
+    "components": [
+     {
+      "type": "block",
+      "at": [
+       -3,
+       2
+      ],
+      "size": [
+       27,
+       13,
+       0.8
+      ],
+      "color": "#1f6b3a",
+      "label": "HC-06"
+     },
+     {
+      "type": "antenna",
+      "at": [
+       8,
+       2
+      ],
+      "size": [
+       7,
+       10
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -8,
+       2
+      ],
+      "size": [
+       6,
+       6,
+       0.9
+      ],
+      "package": "qfn",
+      "label": "BC417"
+     },
+     {
+      "type": "led",
+      "at": [
+       14,
+       -4
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     }
+    ]
    },
    "keywords": [
     "hc-06",
@@ -9010,7 +9831,47 @@
      20,
      15
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "HC-SR04",
+    "components": [
+     {
+      "type": "transducer",
+      "at": [
+       -13,
+       1.5
+      ],
+      "size": [
+       16,
+       16,
+       12
+      ]
+     },
+     {
+      "type": "transducer",
+      "at": [
+       13,
+       1.5
+      ],
+      "size": [
+       16,
+       16,
+       12
+      ]
+     },
+     {
+      "type": "crystal",
+      "at": [
+       0,
+       3
+      ],
+      "size": [
+       4.6,
+       11,
+       3.5
+      ],
+      "label": "4.000"
+     }
+    ]
    },
    "keywords": [
     "hc-sr04",
@@ -9099,7 +9960,47 @@
      20,
      15
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "HC-SR04P",
+    "components": [
+     {
+      "type": "transducer",
+      "at": [
+       -13,
+       1.5
+      ],
+      "size": [
+       16,
+       16,
+       12
+      ]
+     },
+     {
+      "type": "transducer",
+      "at": [
+       13,
+       1.5
+      ],
+      "size": [
+       16,
+       16,
+       12
+      ]
+     },
+     {
+      "type": "crystal",
+      "at": [
+       0,
+       3
+      ],
+      "size": [
+       4.6,
+       11,
+       3.5
+      ],
+      "label": "4.000"
+     }
+    ]
    },
    "keywords": [
     "hc-sr04p",
@@ -9149,7 +10050,22 @@
      24,
      25
     ],
-    "color": "#1E7A3C"
+    "color": "#1E7A3C",
+    "silk": "HC-SR501",
+    "components": [
+     {
+      "type": "dome",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       23,
+       23,
+       23
+      ]
+     }
+    ]
    },
    "keywords": [
     "hc-sr501",
@@ -9596,7 +10512,23 @@
      19,
      10
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "silk": "HT16K33",
+    "components": [
+     {
+      "type": "digits",
+      "at": [
+       0,
+       2.5
+      ],
+      "size": [
+       42,
+       13,
+       8
+      ],
+      "count": 4
+     }
+    ]
    },
    "keywords": [
     "ht16k33",
@@ -9799,7 +10731,60 @@
      21,
      3
     ],
-    "color": "#1E7A3C"
+    "color": "#1E7A3C",
+    "silk": "HX711",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       10.3,
+       7.5
+      ],
+      "package": "soic",
+      "label": "HX711"
+     },
+     {
+      "type": "chip",
+      "at": [
+       -12,
+       3
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23"
+     },
+     {
+      "type": "smd",
+      "at": [
+       10.5,
+       -1
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 4
+     },
+     {
+      "type": "smd",
+      "at": [
+       -11,
+       -4
+      ],
+      "size": [
+       1,
+       0.5
+      ],
+      "count": 3,
+      "rot": true
+     }
+    ]
    },
    "keywords": [
     "hx711",
@@ -10073,10 +11058,23 @@
     "shape": "oled",
     "size": [
      50,
-     80,
+     86,
      5
     ],
     "color": "#B22222"
+   },
+   "display": {
+    "widthPx": 240,
+    "heightPx": 320,
+    "activeMm": [
+     43.2,
+     57.6
+    ],
+    "color": "rgb565",
+    "source": {
+     "title": "MSP2807/MSP2806 2.8inch SPI module spec sheet (LCDwiki/Akizuki copy)",
+     "section": "Product Parameters: Active Area (AA area) 43.2x57.6 mm, Module PCB Size 50.0x86.0 mm, RGB 65K"
+    }
    },
    "keywords": [
     "ili9341",
@@ -10178,11 +11176,24 @@
    "model": {
     "shape": "oled",
     "size": [
-     56,
-     80,
+     56.3,
+     98,
      6
     ],
     "color": "#B22222"
+   },
+   "display": {
+    "widthPx": 320,
+    "heightPx": 480,
+    "activeMm": [
+     48.96,
+     73.44
+    ],
+    "color": "rgb666",
+    "source": {
+     "title": "Elecrow wiki: 3.5 Inch 480x320 SPI TFT LCD Module with ILI9488 Driver (same board as LCDwiki MSP3520)",
+     "section": "Specification: active area 48.96 x 73.44 mm, module PCB 56.34 x 98 mm"
+    }
    },
    "keywords": [
     "ili9488",
@@ -10258,7 +11269,64 @@
      20,
      1.6
     ],
-    "color": "#5B2A86"
+    "color": "#5B2A86",
+    "silk": "INA219",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       -6,
+       1
+      ],
+      "size": [
+       3,
+       3,
+       1
+      ],
+      "package": "msop",
+      "label": "INA219"
+     },
+     {
+      "type": "block",
+      "at": [
+       3,
+       0
+      ],
+      "size": [
+       6.4,
+       3.2,
+       0.6
+      ],
+      "label": "R100",
+      "color": "#1d1e21"
+     },
+     {
+      "type": "terminal",
+      "at": [
+       7,
+       6
+      ],
+      "size": [
+       10,
+       6,
+       8
+      ],
+      "count": 2,
+      "color": "#2667c9"
+     },
+     {
+      "type": "smd",
+      "at": [
+       -6,
+       6
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "ina219",
@@ -10883,7 +11951,73 @@
      14,
      7
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "FC-51",
+    "components": [
+     {
+      "type": "lens",
+      "at": [
+       -3,
+       5
+      ],
+      "size": [
+       5,
+       5,
+       5
+      ],
+      "color": "#202226"
+     },
+     {
+      "type": "lens",
+      "at": [
+       3,
+       5
+      ],
+      "size": [
+       5,
+       5,
+       5
+      ],
+      "color": "#cfe3ff"
+     },
+     {
+      "type": "trimpot",
+      "at": [
+       0,
+       -2
+      ],
+      "size": [
+       6,
+       6,
+       4
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -10,
+       1
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "LM393"
+     },
+     {
+      "type": "led",
+      "at": [
+       10,
+       1
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#5cff5c"
+     }
+    ]
    },
    "keywords": [
     "fc-51",
@@ -11227,7 +12361,59 @@
      15,
      10
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "KY-037",
+    "components": [
+     {
+      "type": "mic",
+      "at": [
+       16,
+       1.5
+      ],
+      "size": [
+       9.7,
+       9.7,
+       6.5
+      ]
+     },
+     {
+      "type": "trimpot",
+      "at": [
+       3,
+       2
+      ],
+      "size": [
+       9.5,
+       4.8,
+       10
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -9,
+       2
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "LM393"
+     },
+     {
+      "type": "led",
+      "at": [
+       -17,
+       3
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     }
+    ]
    },
    "keywords": [
     "ky-037",
@@ -11281,7 +12467,59 @@
      15,
      8
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "KY-038",
+    "components": [
+     {
+      "type": "mic",
+      "at": [
+       16,
+       1.5
+      ],
+      "size": [
+       9.7,
+       9.7,
+       6.5
+      ]
+     },
+     {
+      "type": "trimpot",
+      "at": [
+       3,
+       2
+      ],
+      "size": [
+       9.5,
+       4.8,
+       10
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -9,
+       2
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "LM393"
+     },
+     {
+      "type": "led",
+      "at": [
+       -17,
+       3
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     }
+    ]
    },
    "keywords": [
     "ky-038",
@@ -11551,7 +12789,101 @@
      43,
      27
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "L298N",
+    "components": [
+     {
+      "type": "heatsink",
+      "at": [
+       0,
+       -4
+      ],
+      "size": [
+       23,
+       16,
+       25
+      ]
+     },
+     {
+      "type": "terminal",
+      "at": [
+       -15,
+       6
+      ],
+      "size": [
+       7.6,
+       10,
+       10
+      ],
+      "count": 2,
+      "color": "#2667c9"
+     },
+     {
+      "type": "terminal",
+      "at": [
+       15,
+       6
+      ],
+      "size": [
+       7.6,
+       10,
+       10
+      ],
+      "count": 2,
+      "color": "#2667c9"
+     },
+     {
+      "type": "terminal",
+      "at": [
+       0,
+       16
+      ],
+      "size": [
+       15.2,
+       7.6,
+       10
+      ],
+      "count": 3,
+      "color": "#2667c9"
+     },
+     {
+      "type": "capacitor",
+      "at": [
+       -12,
+       15
+      ],
+      "size": [
+       8,
+       8,
+       11
+      ]
+     },
+     {
+      "type": "capacitor",
+      "at": [
+       12,
+       15
+      ],
+      "size": [
+       8,
+       8,
+       11
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -16,
+       -12
+      ],
+      "size": [
+       6.5,
+       3.5
+      ],
+      "package": "sot223",
+      "label": "78M05"
+     }
+    ]
    },
    "keywords": [
     "l298n",
@@ -11799,11 +13131,31 @@
    "model": {
     "shape": "oled",
     "size": [
-     80,
+     93,
      70,
      12
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "pcb": "#2b6b3c"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+     66.52,
+     33.24
+    ],
+    "glassMm": [
+     72,
+     40
+    ],
+    "color": "lcd",
+    "tint": "#F2F6FF",
+    "glassColor": "#2E6FD8",
+    "source": {
+     "title": "Raystar RG12864A2 datasheet (ST7920)",
+     "section": "General Specification: module 93.0 x 70.0 x 13.6 (max) mm, view area 72.0 x 40.0 mm, active area 66.52 x 33.24 mm, dot 0.48 x 0.48, pitch 0.52 x 0.52"
+    }
    },
    "keywords": [
     "st7920",
@@ -11917,7 +13269,31 @@
      36,
      13
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "pcb": "#2b6b3c"
+   },
+   "display": {
+    "widthPx": 80,
+    "heightPx": 16,
+    "activeMm": [
+     56.2,
+     11.5
+    ],
+    "glassMm": [
+     64.5,
+     15.5
+    ],
+    "color": "lcd",
+    "tint": "#F2F6FF",
+    "glassColor": "#2E6FD8",
+    "chars": [
+     16,
+     2
+    ],
+    "source": {
+     "title": "Orient Display OD-AMC1602A Series LCD module specification",
+     "section": "3. General Specification"
+    }
    },
    "keywords": [
     "lcd1602",
@@ -11992,7 +13368,31 @@
      36,
      20
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "pcb": "#2b6b3c"
+   },
+   "display": {
+    "widthPx": 80,
+    "heightPx": 16,
+    "activeMm": [
+     56.2,
+     11.5
+    ],
+    "glassMm": [
+     64.5,
+     15.5
+    ],
+    "color": "lcd",
+    "tint": "#F2F6FF",
+    "glassColor": "#2E6FD8",
+    "chars": [
+     16,
+     2
+    ],
+    "source": {
+     "title": "Orient Display OD-AMC1602A Series LCD module specification",
+     "section": "3. General Specification: module 80.0 x 36.0 x 14.0 (LED backlight), view area 64.5 x 15.5, active area 56.20 x 11.50, character 2.95 x 5.55, dot 0.55 x 0.65, pitch 0.60 x 0.70 mm"
+    }
    },
    "keywords": [
     "lcd1602",
@@ -12080,11 +13480,35 @@
    "model": {
     "shape": "module",
     "size": [
-     80,
+     98,
      60,
      20
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "pcb": "#2b6b3c"
+   },
+   "display": {
+    "widthPx": 100,
+    "heightPx": 32,
+    "activeMm": [
+     70.4,
+     20.8
+    ],
+    "glassMm": [
+     76,
+     25.2
+    ],
+    "color": "lcd",
+    "tint": "#F2F6FF",
+    "glassColor": "#2E6FD8",
+    "chars": [
+     20,
+     4
+    ],
+    "source": {
+     "title": "AZ Displays ACM2004D Series (outline, viewing area) and Crystalfontz CFAH2004K-YYH-JP data sheet (active area)",
+     "section": "ACM2004D: overall module 98.0 x 60.0 x 9.5/14.0 mm, viewing area 76.0 x 25.2 mm; CFAH2004K Physical Characteristics: active area 70.4 x 20.8 mm, character 2.95 x 4.75, dot 0.55 x 0.55, pitch 0.60 x 0."
+    }
    },
    "keywords": [
     "lcd2004",
@@ -12214,7 +13638,8 @@
      10,
      8
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "kind": "led-bar"
    },
    "keywords": [
     "led bar",
@@ -12370,7 +13795,8 @@
      10,
      6.4
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "limit"
    },
    "keywords": [
     "limit switch",
@@ -13220,7 +14646,8 @@
      38,
      36
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "encoder"
    },
    "keywords": [
     "lpd3806",
@@ -14304,11 +15731,27 @@
    "model": {
     "shape": "module",
     "size": [
-     80,
-     15,
+     83,
+     21,
      12
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "MAX7219"
+   },
+   "display": {
+    "widthPx": 8,
+    "heightPx": 1,
+    "activeMm": [
+     60.5,
+     14
+    ],
+    "color": "led",
+    "tint": "#FF2A1A",
+    "digits": 8,
+    "source": {
+     "title": "ProtoSupplies MAX7219 8-Digit 7-Segment Socketed Red Display Module",
+     "section": "estimate: Specifications: 83 x 15 mm with mounting ears, 0.36 in (9.14 mm) digits, input header left end, output right end"
+    }
    },
    "keywords": [
     "max7219",
@@ -14361,10 +15804,25 @@
     "shape": "module",
     "size": [
      32,
-     32,
+     38,
      12
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "FC-16"
+   },
+   "display": {
+    "widthPx": 8,
+    "heightPx": 8,
+    "activeMm": [
+     32,
+     32
+    ],
+    "color": "led",
+    "tint": "#FF2A1A",
+    "source": {
+     "title": "AZ-Delivery MAX7219 8x8 1 Dot Matrix LED Display Module product page",
+     "section": "Specifications: 32 x 32 x 7 mm (11 mm with pins), 3 mm red LEDs, 1 mm gap"
+    }
    },
    "keywords": [
     "max7219",
@@ -15225,7 +16683,8 @@
      12,
      35
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "servo"
    },
    "keywords": [
     "mg90s",
@@ -15272,7 +16731,8 @@
      19.7,
      40
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "servo"
    },
    "keywords": [
     "mg996r",
@@ -15341,7 +16801,8 @@
      20,
      9
     ],
-    "color": "#1E7A3C"
+    "color": "#1E7A3C",
+    "kind": "box"
    },
    "keywords": [
     "mh-z19b",
@@ -15398,7 +16859,47 @@
      24,
      4
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MicroSD",
+    "components": [
+     {
+      "type": "socket",
+      "at": [
+       4,
+       3
+      ],
+      "size": [
+       14.5,
+       15,
+       1.8
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -12,
+       2
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "LVC125A"
+     },
+     {
+      "type": "chip",
+      "at": [
+       -12,
+       8
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23"
+     }
+    ]
    },
    "keywords": [
     "micro sd",
@@ -15441,7 +16942,8 @@
      24,
      33
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "pump"
    },
    "keywords": [
     "water pump",
@@ -16066,7 +17568,73 @@
      21,
      1.6
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "GY-521",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       0,
+       1
+      ],
+      "size": [
+       4,
+       4,
+       0.9
+      ],
+      "package": "qfn",
+      "label": "MPU 6050"
+     },
+     {
+      "type": "chip",
+      "at": [
+       -4.5,
+       -4
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23",
+      "label": "662K"
+     },
+     {
+      "type": "led",
+      "at": [
+       5,
+       -5
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     },
+     {
+      "type": "smd",
+      "at": [
+       5,
+       5
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 3
+     },
+     {
+      "type": "smd",
+      "at": [
+       -5,
+       5
+      ],
+      "size": [
+       1,
+       0.5
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "mpu6050",
@@ -17105,7 +18673,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-135",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-135",
@@ -17281,7 +18864,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-2",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-2",
@@ -17340,7 +18938,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-3",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-3",
@@ -17398,7 +19011,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-4",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-4",
@@ -17456,7 +19084,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-5",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-5",
@@ -17515,7 +19158,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-6",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-6",
@@ -17574,7 +19232,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-7",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-7",
@@ -17632,7 +19305,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-8",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-8",
@@ -17691,7 +19379,22 @@
      22,
      27
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "MQ-9",
+    "components": [
+     {
+      "type": "can",
+      "at": [
+       0,
+       1.5
+      ],
+      "size": [
+       19,
+       19,
+       16
+      ]
+     }
+    ]
    },
    "keywords": [
     "mq-9",
@@ -17895,7 +19598,8 @@
      10,
      34
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "gear-motor"
    },
    "keywords": [
     "n20",
@@ -18040,7 +19744,8 @@
      42.3,
      40
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "stepper"
    },
    "keywords": [
     "nema17",
@@ -18095,7 +19800,58 @@
      24,
      8
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "GY-NEO6MV2",
+    "components": [
+     {
+      "type": "shield",
+      "at": [
+       -8,
+       2
+      ],
+      "size": [
+       12.2,
+       16,
+       2.4
+      ],
+      "label": "u-blox NEO-6M"
+     },
+     {
+      "type": "patch",
+      "at": [
+       8,
+       2
+      ],
+      "size": [
+       12,
+       12,
+       4
+      ]
+     },
+     {
+      "type": "battery",
+      "at": [
+       -14,
+       -2
+      ],
+      "size": [
+       6,
+       6
+      ]
+     },
+     {
+      "type": "led",
+      "at": [
+       14,
+       -6
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#2f9bff"
+     }
+    ]
    },
    "keywords": [
     "neo-6m",
@@ -18300,6 +20056,25 @@
     ],
     "color": "#B22222"
    },
+   "display": {
+    "widthPx": 84,
+    "heightPx": 48,
+    "activeMm": [
+     30,
+     20
+    ],
+    "glassMm": [
+     36,
+     26
+    ],
+    "color": "lcd",
+    "tint": "#1E2A22",
+    "glassColor": "#B9C3AE",
+    "source": {
+     "title": "SparkFun Graphic LCD 84x48 - Nokia 5110 (LCD-10168) product page; AZ-Delivery/Botland listings for display size",
+     "section": "estimate: Dimensions 45 x 45 mm; display size ca. 36 x 26 mm (vendor listings)"
+    }
+   },
    "keywords": [
     "nokia 5110",
     "pcd8544",
@@ -18369,7 +20144,8 @@
      70,
      23
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "box"
    },
    "keywords": [
     "sds011",
@@ -18516,7 +20292,72 @@
      15,
      3
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "silk": "NRF24L01",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       -4,
+       0.5
+      ],
+      "size": [
+       4,
+       4,
+       0.9
+      ],
+      "package": "qfn",
+      "label": "NRF24L01+"
+     },
+     {
+      "type": "crystal",
+      "at": [
+       2.5,
+       0.5
+      ],
+      "size": [
+       3.2,
+       2.5,
+       0.8
+      ],
+      "label": "16.000"
+     },
+     {
+      "type": "antenna",
+      "at": [
+       10,
+       0.5
+      ],
+      "size": [
+       7,
+       9
+      ]
+     },
+     {
+      "type": "smd",
+      "at": [
+       -4,
+       5
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 4
+     },
+     {
+      "type": "smd",
+      "at": [
+       2.5,
+       5
+      ],
+      "size": [
+       1,
+       0.5
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "nrf24l01",
@@ -18610,6 +20451,69 @@
    ]
   },
   {
+   "id": "ntc-10k-probe",
+   "name": "NTC 10 kΩ temperature probe (with divider)",
+   "category": "sensor",
+   "measures": [
+    "temperature"
+   ],
+   "pins": [
+    {
+     "name": "OUT",
+     "role": "analog_out",
+     "notes": "Middle of the divider: NTC to 3.3 V, 10 kΩ to GND. To an ADC pin (ADC1 on ESP32). The voltage rises as it gets warmer"
+    },
+    {
+     "name": "VCC",
+     "role": "power",
+     "notes": "Use 3V3 so the output stays in the ADC range"
+    },
+    {
+     "name": "GND",
+     "role": "ground"
+    }
+   ],
+   "bus": "analog",
+   "voltage": "3.3-5",
+   "model": {
+    "shape": "module",
+    "size": [
+     20,
+     12,
+     6
+    ],
+    "color": "#1A1A1A",
+    "silk": "NTC 10K"
+   },
+   "keywords": [
+    "ntc",
+    "ntc 10k",
+    "thermistor",
+    "probe",
+    "boiler probe",
+    "sonda ntc",
+    "sonda",
+    "termistore",
+    "caldaia",
+    "temperatura"
+   ],
+   "gotchas": [
+    {
+     "text": "An NTC is not linear: convert with the Beta formula (B25/85 = 3977 K for this type) or a table, not a straight line.",
+     "source": {
+      "title": "Vishay NTCLE100E3 datasheet",
+      "section": "R25 = 10 kΩ, B25/85 = 3977 K, resistance/temperature table"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "Vishay NTCLE100E3 datasheet",
+     "section": "R25 = 10 kΩ ± 5 %, B25/85 = 3977 K, operating range -40 to +125 °C"
+    }
+   ]
+  },
+  {
    "id": "encoder-omron-e6b2",
    "name": "Omron E6B2-CWZ6C incremental encoder (A/B/Z)",
    "category": "input",
@@ -18659,7 +20563,8 @@
      40,
      35
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "encoder"
    },
    "keywords": [
     "e6b2",
@@ -18678,6 +20583,79 @@
     {
      "title": "Omron E6B2-C datasheet",
      "section": "Wire colours: brown +, blue 0 V, black A, white B, orange Z, shield"
+    }
+   ]
+  },
+  {
+   "id": "opentherm-adapter",
+   "name": "OpenTherm adapter (boiler bus to 3.3 V logic)",
+   "category": "sensor",
+   "pins": [
+    {
+     "name": "IN",
+     "role": "digital_out",
+     "notes": "What the boiler sends, as a 3.3 V logic signal. To a GPIO with an interrupt"
+    },
+    {
+     "name": "OUT",
+     "role": "digital_in",
+     "needsOutput": true,
+     "notes": "What the board sends to the boiler. From an output GPIO"
+    },
+    {
+     "name": "VCC",
+     "role": "power",
+     "notes": "3V3"
+    },
+    {
+     "name": "GND",
+     "role": "ground"
+    },
+    {
+     "name": "OT1",
+     "role": "passive",
+     "notes": "OpenTherm bus to the boiler (2 wires, no polarity). Never to a board pin"
+    },
+    {
+     "name": "OT2",
+     "role": "passive",
+     "notes": "OpenTherm bus to the boiler (2 wires, no polarity). Never to a board pin"
+    }
+   ],
+   "bus": "gpio",
+   "voltage": "3.3",
+   "model": {
+    "shape": "module",
+    "size": [
+     34,
+     22,
+     8
+    ],
+    "color": "#1F6F3F",
+    "silk": "OPENTHERM"
+   },
+   "keywords": [
+    "opentherm",
+    "open therm",
+    "boiler",
+    "caldaia",
+    "thermostat bus",
+    "ot adapter",
+    "termostato"
+   ],
+   "gotchas": [
+    {
+     "text": "The OpenTherm bus works at boiler voltages (well above 3.3 V): connect it only to the adapter's bus terminals, never to a board pin.",
+     "source": {
+      "title": "OpenTherm Protocol Specification v2.2",
+      "section": "Physical layer: voltage levels from the master, current levels from the slave"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "title": "OpenTherm Protocol Specification v2.2",
+     "section": "Physical layer: two-wire, polarity-free point-to-point link; Manchester-coded frames of 32 bits"
     }
    ]
   },
@@ -19050,7 +21028,8 @@
      12,
      8.5
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "buzzer"
    },
    "keywords": [
     "passive buzzer",
@@ -19246,7 +21225,62 @@
      25,
      3
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "PCA9685",
+    "components": [
+     {
+      "type": "chip",
+      "at": [
+       -6,
+       2
+      ],
+      "size": [
+       9.7,
+       6.4,
+       1.1
+      ],
+      "package": "tssop",
+      "label": "PCA9685"
+     },
+     {
+      "type": "terminal",
+      "at": [
+       -24,
+       6
+      ],
+      "size": [
+       7.6,
+       10,
+       10
+      ],
+      "count": 2,
+      "color": "#2667c9"
+     },
+     {
+      "type": "capacitor",
+      "at": [
+       24,
+       6
+      ],
+      "size": [
+       6.3,
+       6.3,
+       8
+      ]
+     },
+     {
+      "type": "led",
+      "at": [
+       8,
+       6
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     }
+    ]
    },
    "keywords": [
     "pca9685",
@@ -19681,7 +21715,8 @@
      5,
      4
     ],
-    "color": "#C8A04A"
+    "color": "#C8A04A",
+    "kind": "ldr"
    },
    "keywords": [
     "ldr",
@@ -19724,7 +21759,8 @@
      27,
      0.5
     ],
-    "color": "#D9B45A"
+    "color": "#D9B45A",
+    "kind": "piezo"
    },
    "keywords": [
     "piezo",
@@ -19806,7 +21842,8 @@
      38,
      21
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "box"
    },
    "keywords": [
     "pms5003",
@@ -19869,7 +21906,8 @@
      38,
      21
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "box"
    },
    "keywords": [
     "pmsa003i",
@@ -20440,7 +22478,61 @@
      39,
      3
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "RFID-RC522",
+    "components": [
+     {
+      "type": "coil",
+      "at": [
+       6,
+       3
+      ],
+      "size": [
+       42,
+       30
+      ],
+      "count": 4
+     },
+     {
+      "type": "chip",
+      "at": [
+       -22,
+       0
+      ],
+      "size": [
+       5,
+       5,
+       0.9
+      ],
+      "package": "qfn",
+      "label": "MFRC522"
+     },
+     {
+      "type": "crystal",
+      "at": [
+       -22,
+       9
+      ],
+      "size": [
+       11,
+       4.6,
+       3.5
+      ],
+      "label": "27.12"
+     },
+     {
+      "type": "smd",
+      "at": [
+       -22,
+       -8
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 4
+     }
+    ]
    },
    "keywords": [
     "rc522",
@@ -20633,7 +22725,8 @@
      3,
      3
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "reed"
    },
    "keywords": [
     "reed switch",
@@ -20695,7 +22788,85 @@
      26,
      19
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "kind": "relay-module",
+    "silk": "1 Relay Module",
+    "components": [
+     {
+      "type": "relay",
+      "at": [
+       -2,
+       3
+      ],
+      "size": [
+       19,
+       15.5,
+       15.3
+      ]
+     },
+     {
+      "type": "terminal",
+      "at": [
+       18,
+       3
+      ],
+      "size": [
+       7.6,
+       15.2,
+       10
+      ],
+      "count": 3
+     },
+     {
+      "type": "led",
+      "at": [
+       -19,
+       8
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     },
+     {
+      "type": "chip",
+      "at": [
+       -18,
+       0
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot23",
+      "label": "J3Y"
+     },
+     {
+      "type": "diode",
+      "at": [
+       -15,
+       9
+      ],
+      "size": [
+       3.6,
+       1.6
+      ],
+      "color": "#1d1e21"
+     },
+     {
+      "type": "smd",
+      "at": [
+       -21,
+       3
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 2
+     }
+    ]
    },
    "keywords": [
     "relay",
@@ -20795,7 +22966,86 @@
      39,
      19
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "kind": "relay-module",
+    "silk": "2 Relay Module",
+    "components": [
+     {
+      "type": "relay",
+      "at": [
+       -11,
+       4
+      ],
+      "size": [
+       19,
+       15.5,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       11,
+       4
+      ],
+      "size": [
+       19,
+       15.5,
+       15.3
+      ]
+     },
+     {
+      "type": "terminal",
+      "at": [
+       -11,
+       15.5
+      ],
+      "size": [
+       15.2,
+       7.6,
+       10
+      ],
+      "count": 3
+     },
+     {
+      "type": "terminal",
+      "at": [
+       11,
+       15.5
+      ],
+      "size": [
+       15.2,
+       7.6,
+       10
+      ],
+      "count": 3
+     },
+     {
+      "type": "chip",
+      "at": [
+       -22,
+       -8
+      ],
+      "size": [
+       4.6,
+       6.5
+      ],
+      "package": "dip",
+      "label": "PC817"
+     },
+     {
+      "type": "led",
+      "at": [
+       22,
+       -9
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     }
+    ]
    },
    "keywords": [
     "relay",
@@ -20862,7 +23112,111 @@
      55,
      19
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "kind": "relay-module",
+    "silk": "4 Relay Module",
+    "components": [
+     {
+      "type": "relay",
+      "at": [
+       -27,
+       -1
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       -9,
+       -1
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       9,
+       -1
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       27,
+       -1
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "terminal",
+      "at": [
+       -27,
+       18
+      ],
+      "size": [
+       15.2,
+       7.6,
+       10
+      ],
+      "count": 3
+     },
+     {
+      "type": "terminal",
+      "at": [
+       -9,
+       18
+      ],
+      "size": [
+       15.2,
+       7.6,
+       10
+      ],
+      "count": 3
+     },
+     {
+      "type": "terminal",
+      "at": [
+       9,
+       18
+      ],
+      "size": [
+       15.2,
+       7.6,
+       10
+      ],
+      "count": 3
+     },
+     {
+      "type": "terminal",
+      "at": [
+       27,
+       18
+      ],
+      "size": [
+       15.2,
+       7.6,
+       10
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "relay",
@@ -20949,7 +23303,107 @@
      56,
      19
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "kind": "relay-module",
+    "silk": "8 Relay Module",
+    "components": [
+     {
+      "type": "relay",
+      "at": [
+       -27,
+       -4
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       -9,
+       -4
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       9,
+       -4
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       27,
+       -4
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       -27,
+       17
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       -9,
+       17
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       9,
+       17
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     },
+     {
+      "type": "relay",
+      "at": [
+       27,
+       17
+      ],
+      "size": [
+       15.5,
+       19,
+       15.3
+      ]
+     }
+    ]
    },
    "keywords": [
     "relay",
@@ -21003,7 +23457,59 @@
      16,
      8
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "FC-28",
+    "components": [
+     {
+      "type": "trimpot",
+      "at": [
+       -8,
+       3
+      ],
+      "size": [
+       9.5,
+       4.8,
+       10
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       5,
+       2
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "LM393"
+     },
+     {
+      "type": "led",
+      "at": [
+       11,
+       6
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#ff3b30"
+     },
+     {
+      "type": "led",
+      "at": [
+       11,
+       -1
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "color": "#5cff5c"
+     }
+    ]
    },
    "keywords": [
     "yl-69",
@@ -21170,7 +23676,8 @@
      5,
      8.6
     ],
-    "color": "#F2F2F2"
+    "color": "#F2F2F2",
+    "kind": "rgb-led"
    },
    "keywords": [
     "rgb led",
@@ -21225,7 +23732,8 @@
      5,
      8.6
     ],
-    "color": "#F2F2F2"
+    "color": "#F2F2F2",
+    "kind": "rgb-led"
    },
    "keywords": [
     "rgb led",
@@ -21281,7 +23789,48 @@
      19,
      30
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "KY-040",
+    "components": [
+     {
+      "type": "block",
+      "at": [
+       0,
+       2
+      ],
+      "size": [
+       12,
+       13,
+       6.5
+      ],
+      "color": "#b9bec5"
+     },
+     {
+      "type": "knob",
+      "at": [
+       0,
+       2
+      ],
+      "size": [
+       10,
+       10,
+       28
+      ],
+      "color": "#1d1e21"
+     },
+     {
+      "type": "smd",
+      "at": [
+       -10,
+       4
+      ],
+      "size": [
+       1.6,
+       0.8
+      ],
+      "count": 3
+     }
+    ]
    },
    "keywords": [
     "rotary encoder",
@@ -21530,7 +24079,48 @@
      30,
      5
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "SD Card",
+    "components": [
+     {
+      "type": "socket",
+      "at": [
+       4,
+       3
+      ],
+      "size": [
+       26,
+       22,
+       2.6
+      ]
+     },
+     {
+      "type": "chip",
+      "at": [
+       -16,
+       2
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "LVC125A"
+     },
+     {
+      "type": "chip",
+      "at": [
+       -16,
+       9
+      ],
+      "size": [
+       2.9,
+       1.6
+      ],
+      "package": "sot223",
+      "label": "AMS1117"
+     }
+    ]
    },
    "keywords": [
     "sd card",
@@ -21696,7 +24286,8 @@
      40.6,
      12
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "box"
    },
    "keywords": [
     "sen55",
@@ -21765,7 +24356,8 @@
      41,
      12
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "box"
    },
    "keywords": [
     "sps30",
@@ -21819,7 +24411,8 @@
      12.2,
      29
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "kind": "servo"
    },
    "keywords": [
     "sg90",
@@ -22064,6 +24657,24 @@
      3
     ],
     "color": "#1A1A1A"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+     29.42,
+     14.7
+    ],
+    "glassMm": [
+     34.5,
+     23
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+     "title": "Pololu Graphical OLED Display 128x64 1.3in (SH1106), item 3760",
+     "section": "Specifications: active area 29.4 x 14.7 mm, module 35.4 x 33.5 mm"
+    }
    },
    "keywords": [
     "oled",
@@ -22825,7 +25436,8 @@
      3.5,
      4
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "slide"
    },
    "keywords": [
     "slide switch",
@@ -22933,7 +25545,8 @@
      41,
      28
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "solenoid"
    },
    "keywords": [
     "solenoid",
@@ -22975,7 +25588,8 @@
      45,
      40
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "valve"
    },
    "keywords": [
     "solenoid valve",
@@ -23027,7 +25641,38 @@
      34,
      25
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "kind": "relay-module",
+    "silk": "SSR",
+    "components": [
+     {
+      "type": "block",
+      "at": [
+       -3,
+       4
+      ],
+      "size": [
+       20,
+       8,
+       12
+      ],
+      "color": "#1d1e21",
+      "label": "G3MB-202P"
+     },
+     {
+      "type": "terminal",
+      "at": [
+       9,
+       8
+      ],
+      "size": [
+       7.6,
+       10,
+       10
+      ],
+      "count": 2
+     }
+    ]
    },
    "keywords": [
     "ssr",
@@ -23080,7 +25725,8 @@
      45,
      23
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "ssr"
    },
    "keywords": [
     "ssr",
@@ -23122,7 +25768,8 @@
      40,
      12
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "speaker"
    },
    "keywords": [
     "speaker",
@@ -23175,6 +25822,24 @@
      3
     ],
     "color": "#1A1A1A"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 32,
+    "activeMm": [
+     22.38,
+     5.58
+    ],
+    "glassMm": [
+     30,
+     11.5
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+     "title": "Waveshare 0.91inch OLED Module product page (SSD1306)",
+     "section": "Specifications: display size 22.38 x 5.58 mm, outline 36.0 x 12.5 mm"
+    }
    },
    "keywords": [
     "oled",
@@ -23244,6 +25909,24 @@
     ],
     "color": "#1A1A1A"
    },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+     21.744,
+     10.864
+    ],
+    "glassMm": [
+     26.7,
+     19.26
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+     "title": "Univision UG-2864HSWEG01 datasheet (SAS1-9046-B)",
+     "section": "1.2 Mechanical Specifications"
+    }
+   },
    "keywords": [
     "oled",
     "ssd1306",
@@ -23297,6 +25980,24 @@
      3
     ],
     "color": "#1A1A1A"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+     21.744,
+     10.864
+    ],
+    "glassMm": [
+     26.7,
+     19.26
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+     "title": "Univision UG-2864HSWEG01 datasheet (SAS1-9046-B)",
+     "section": "1.2 Mechanical Specifications (panel size, active area, pixel pitch 0.17 mm); 1.1 Display Specifications (Monochrome White); 1.4 drawing gives viewing area 23.744 x 12.864"
+    }
    },
    "keywords": [
     "oled",
@@ -23628,11 +26329,25 @@
    "model": {
     "shape": "oled",
     "size": [
-     70,
-     41,
+     61.5,
+     39.5,
      5
     ],
     "color": "#1A1A1A"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+     55.01,
+     27.49
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+     "title": "Waveshare 2.42inch OLED Module product page (SSD1309)",
+     "section": "Specifications: display size 55.01 x 27.49 mm, outline 61.50 x 39.50 mm, pixel 0.4 x 0.4 mm"
+    }
    },
    "keywords": [
     "ssd1309",
@@ -23701,6 +26416,20 @@
      5
     ],
     "color": "#1A1A1A"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 128,
+    "activeMm": [
+     26.86,
+     26.86
+    ],
+    "color": "gray4",
+    "tint": "#FFFFFF",
+    "source": {
+     "title": "Waveshare 1.5inch OLED Module product page (SSD1327)",
+     "section": "Specifications: display size 26.86 x 26.86 mm, outline 44.5 x 37.0 mm, 16 grey levels"
+    }
    },
    "keywords": [
     "ssd1327",
@@ -23774,6 +26503,19 @@
      5
     ],
     "color": "#1A1A1A"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 128,
+    "activeMm": [
+     26.86,
+     26.86
+    ],
+    "color": "rgb565",
+    "source": {
+     "title": "Waveshare 1.5inch RGB OLED Module product page (SSD1351)",
+     "section": "Specifications: display size 26.86 x 26.86 mm, outline 44.5 x 37.0 mm, 65K RGB"
+    }
    },
    "keywords": [
     "ssd1351",
@@ -23852,6 +26594,19 @@
     ],
     "color": "#1F4FA8"
    },
+   "display": {
+    "widthPx": 160,
+    "heightPx": 80,
+    "activeMm": [
+     21.7,
+     10.8
+    ],
+    "color": "rgb565",
+    "source": {
+     "title": "Waveshare 0.96inch LCD Module product page (ST7735S, 160x80 IPS)",
+     "section": "Specifications: display size 21.70 x 10.80 mm, outline 32.5 x 26.0 mm, 65K colour"
+    }
+   },
    "keywords": [
     "st7735",
     "st7735s",
@@ -23917,11 +26672,24 @@
    "model": {
     "shape": "oled",
     "size": [
-     34,
-     56,
+     34.5,
+     58,
      4
     ],
     "color": "#B22222"
+   },
+   "display": {
+    "widthPx": 128,
+    "heightPx": 160,
+    "activeMm": [
+     28.03,
+     35.04
+    ],
+    "color": "rgb565",
+    "source": {
+     "title": "LCDwiki 1.8inch SPI Module ST7735S (SKU MSP1803)",
+     "section": "Product parameters: active area 28.03 x 35.04 mm, module PCB 34.5 x 58.0 mm"
+    }
    },
    "keywords": [
     "st7735",
@@ -23991,6 +26759,19 @@
      4
     ],
     "color": "#1F4FA8"
+   },
+   "display": {
+    "widthPx": 240,
+    "heightPx": 240,
+    "activeMm": [
+     23.4,
+     23.4
+    ],
+    "color": "rgb565",
+    "source": {
+     "title": "Waveshare 1.3inch LCD Module product page (ST7789, 240x240 IPS)",
+     "section": "Specifications: display size 23.40 x 23.40 mm, 65K"
+    }
    },
    "keywords": [
     "st7789",
@@ -24067,6 +26848,19 @@
     ],
     "color": "#1F4FA8"
    },
+   "display": {
+    "widthPx": 240,
+    "heightPx": 280,
+    "activeMm": [
+     27.97,
+     32.63
+    ],
+    "color": "rgb666",
+    "source": {
+     "title": "Waveshare 1.69inch LCD Module product page (ST7789V2, 240x280 IPS)",
+     "section": "Specifications: display size 27.97 x 32.63 mm, outline 31.50 x 39.00 mm, 262K colour"
+    }
+   },
    "keywords": [
     "st7789",
     "ips",
@@ -24140,6 +26934,19 @@
      4
     ],
     "color": "#1F4FA8"
+   },
+   "display": {
+    "widthPx": 240,
+    "heightPx": 320,
+    "activeMm": [
+     30.6,
+     40.8
+    ],
+    "color": "rgb666",
+    "source": {
+     "title": "Waveshare 2inch LCD Module product page (ST7789VW, 240x320 IPS)",
+     "section": "Specifications: display size 30.60 x 40.80 mm, outline 58.0 x 35.0 mm, 262K colour"
+    }
    },
    "keywords": [
     "st7789",
@@ -24237,11 +27044,24 @@
    "model": {
     "shape": "oled",
     "size": [
-     56,
-     80,
+     56.3,
+     98,
      6
     ],
     "color": "#B22222"
+   },
+   "display": {
+    "widthPx": 320,
+    "heightPx": 480,
+    "activeMm": [
+     48.96,
+     73.44
+    ],
+    "color": "rgb565",
+    "source": {
+     "title": "Waveshare 3.5inch Capacitive Touch LCD product page (ST7796S)",
+     "section": "Specifications: display size 48.96 x 73.44 mm"
+    }
    },
    "keywords": [
     "st7796",
@@ -24350,7 +27170,8 @@
      12,
      11
     ],
-    "color": "#2B2B2B"
+    "color": "#2B2B2B",
+    "kind": "tactile-cap"
    },
    "keywords": [
     "tactile switch",
@@ -24979,7 +27800,8 @@
      6,
      12
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "tilt"
    },
    "keywords": [
     "tilt switch",
@@ -25160,7 +27982,36 @@
      24,
      12
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "TM1637",
+    "components": [
+     {
+      "type": "digits",
+      "at": [
+       0,
+       2.5
+      ],
+      "size": [
+       30,
+       14,
+       8
+      ],
+      "count": 4
+     },
+     {
+      "type": "chip",
+      "at": [
+       -15,
+       6
+      ],
+      "size": [
+       5,
+       4
+      ],
+      "package": "soic",
+      "label": "TM1637"
+     }
+    ]
    },
    "keywords": [
     "tm1637",
@@ -25222,7 +28073,23 @@
      20,
      12
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "TM1637",
+    "components": [
+     {
+      "type": "digits",
+      "at": [
+       0,
+       2.5
+      ],
+      "size": [
+       57,
+       14,
+       8
+      ],
+      "count": 6
+     }
+    ]
    },
    "keywords": [
     "tm1637",
@@ -25977,7 +28844,8 @@
      11,
      2
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "kind": "touch"
    },
    "keywords": [
     "ttp223",
@@ -26572,7 +29440,47 @@
      20,
      17
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "US-100",
+    "components": [
+     {
+      "type": "transducer",
+      "at": [
+       -13,
+       1.5
+      ],
+      "size": [
+       16,
+       16,
+       12
+      ]
+     },
+     {
+      "type": "transducer",
+      "at": [
+       13,
+       1.5
+      ],
+      "size": [
+       16,
+       16,
+       12
+      ]
+     },
+     {
+      "type": "crystal",
+      "at": [
+       0,
+       3
+      ],
+      "size": [
+       4.6,
+       11,
+       3.5
+      ],
+      "label": "8.000"
+     }
+    ]
    },
    "keywords": [
     "us-100",
@@ -27375,7 +30283,8 @@
      5.3,
      1.8
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "soic"
    },
    "keywords": [
     "w25q64",
@@ -27865,7 +30774,8 @@
      10,
      3
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "pixel"
    },
    "keywords": [
     "ws2812b",

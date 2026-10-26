@@ -1,0 +1,160 @@
+{
+  "id": "hvac-room-thermostat",
+  "name": "Room thermostat",
+  "summary": "Reads the room temperature, closes a relay to ask the boiler for heat below the setpoint and opens it above, never more than once a minute. A button raises the setpoint; the display shows both.",
+  "difficulty": "medium",
+  "minutes": 60,
+  "learn": [
+    "Switch with hysteresis, so the relay does not chatter around the setpoint",
+    "Protect the boiler with a minimum time between switches",
+    "Keep the program responsive with millis() instead of delay()"
+  ],
+  "parts": [
+    { "id": "sht1", "partId": "sht31", "label": "Room sensor" },
+    { "id": "oled1", "partId": "ssd1306-i2c", "label": "Display" },
+    { "id": "relay1", "partId": "relay-1ch", "label": "Heat demand" },
+    { "id": "btn1", "partId": "push-button", "label": "Setpoint +" }
+  ],
+  "pins": {
+    "SDA": { "part": "sht1", "pin": "SDA" },
+    "SCL": { "part": "sht1", "pin": "SCL" },
+    "HEAT": { "part": "relay1", "pin": "IN" },
+    "BUTTON": { "part": "btn1", "pin": "1" }
+  },
+  "libraries": ["Adafruit SHT31 Library", "Adafruit SSD1306", "Adafruit GFX Library"],
+  "notes": [
+    "The relay's COM and NO contacts replace the room thermostat on the boiler's thermostat terminals: a dry contact, nothing from the board reaches the boiler.",
+    "Check the boiler manual first: on some boilers these terminals carry mains voltage. Then the relay must be rated for it and the wiring done by a qualified person.",
+    "A boiler with an OpenTherm input needs an OpenTherm adapter instead of a relay, to set the water temperature rather than only on and off."
+  ],
+  "code": {
+    "includes": ["#include <Wire.h>", "#include <Adafruit_SHT31.h>", "#include <Adafruit_SSD1306.h>"],
+    "globals": [
+      "const int HEAT_PIN = {HEAT};",
+      "const int BUTTON_PIN = {BUTTON};",
+      "const int RELAY_ON = HIGH;                 // many relay modules switch on with LOW: set LOW if yours does",
+      "const float HYSTERESIS = 0.3;              // °C below and above the setpoint before switching",
+      "const unsigned long MIN_SWITCH_MS = 60000; // never switch the boiler more than once a minute",
+      "Adafruit_SHT31 sht = Adafruit_SHT31();",
+      "Adafruit_SSD1306 oled(128, 64, &Wire, -1);",
+      "float setpoint = 20.5;",
+      "bool heating = false, wasPressed = false;",
+      "unsigned long lastRead = 0, lastSwitch = 0;"
+    ],
+    "setup": [
+      "  Serial.begin(115200);",
+      "  probe.begin(200);",
+      "  pinMode(HEAT_PIN, OUTPUT);",
+      "  digitalWrite(HEAT_PIN, !RELAY_ON);  // no heat demand at start",
+      "  pinMode(BUTTON_PIN, INPUT_PULLUP);  // pressed = LOW",
+      "{I2C_BEGIN}",
+      "  if (!sht.begin(0x44)) probe.event(\"SHT31 not found: check the wiring\");",
+      "  if (!oled.begin(SSD1306_SWITCHCAPVCC, 0x3C)) probe.event(\"Display not found at 0x3C\");",
+      "  oled.setTextColor(SSD1306_WHITE);",
+      "  probe.state(\"IDLE\");"
+    ],
+    "loop": [
+      "  probe.step(\"Read the button\");",
+      "  bool pressed = digitalRead(BUTTON_PIN) == LOW;",
+      "  if (pressed && !wasPressed) {  // only on the press, not while held",
+      "    setpoint = setpoint >= 24 ? 18 : setpoint + 0.5;",
+      "    probe.event(\"Button: setpoint up 0.5 °C\");",
+      "  }",
+      "  wasPressed = pressed;",
+      "  if (millis() - lastRead < 2000) {",
+      "    probe.loop();",
+      "    return;",
+      "  }",
+      "  lastRead = millis();",
+      "  probe.step(\"Read the room temperature\");",
+      "  float temperature = sht.readTemperature();",
+      "  probe.value(\"temperature\", temperature);",
+      "  probe.value(\"setpoint\", setpoint);",
+      "  probe.step(\"Decide: heat or not\");",
+      "  bool canSwitch = lastSwitch == 0 || millis() - lastSwitch >= MIN_SWITCH_MS;",
+      "  if (!heating && temperature < setpoint - HYSTERESIS && canSwitch) {",
+      "    heating = true;",
+      "    lastSwitch = millis();",
+      "    digitalWrite(HEAT_PIN, RELAY_ON);",
+      "    probe.state(\"HEATING\");",
+      "    probe.event(\"Below the setpoint: heat demand on (relay closes)\");",
+      "  } else if (heating && temperature > setpoint + HYSTERESIS && canSwitch) {",
+      "    heating = false;",
+      "    lastSwitch = millis();",
+      "    digitalWrite(HEAT_PIN, !RELAY_ON);",
+      "    probe.state(\"IDLE\");",
+      "    probe.event(\"Above the setpoint: heat demand off (relay opens)\");",
+      "  }",
+      "  probe.step(\"Show it on the display\");",
+      "  oled.clearDisplay();",
+      "  oled.setCursor(0, 0);",
+      "  oled.setTextSize(2);",
+      "  oled.print(temperature, 1);",
+      "  oled.println(\" C\");",
+      "  oled.setTextSize(1);",
+      "  oled.print(\"set \");",
+      "  oled.print(setpoint, 1);",
+      "  oled.println(heating ? \"  HEAT\" : \"\");",
+      "  oled.display();",
+      "  Serial.print(\"T=\"); Serial.print(temperature, 1); Serial.print(\" set=\"); Serial.print(setpoint, 1);",
+      "  Serial.println(heating ? \" HEAT\" : \"\");",
+      "  probe.loop();"
+    ]
+  },
+  "sim": {
+    "loopMs": 2000,
+    "vars": { "heating": 0, "setpoint": 20.5, "low": 20.2, "high": 20.8, "canSwitch": 1 },
+    "inputs": {
+      "temperature": { "level": { "start": 20.4, "perSecond": -0.01, "min": 14, "max": 26 } },
+      "BUTTON": { "pulses": { "everyS": 600, "highS": 1.5, "offsetS": 50 } }
+    },
+    "loop": [
+      { "step": "Read the button" },
+      { "read": "BUTTON", "as": "pressed", "digits": 0 },
+      { "if": "pressed", "then": [
+        { "if": "setpoint < 21", "then": [
+          { "set": "setpoint", "value": 21 },
+          { "set": "low", "value": 20.7 },
+          { "set": "high", "value": 21.3 },
+          { "event": "Button: setpoint up 0.5 °C" }
+        ] }
+      ] },
+      { "if": "hold_done", "then": [{ "set": "canSwitch", "value": 1 }] },
+      { "step": "Read the room temperature" },
+      { "read": "temperature", "as": "temperature", "unit": "°C", "digits": 1 },
+      { "step": "Decide: heat or not" },
+      { "if": "heating == 0", "then": [
+        { "if": "temperature < low", "then": [
+          { "if": "canSwitch", "then": [
+            { "write": "HEAT", "level": 1 },
+            { "set": "heating", "value": 1 },
+            { "set": "canSwitch", "value": 0 },
+            { "timer": "hold", "ms": 60000 },
+            { "state": "HEATING" },
+            { "event": "Below the setpoint: heat demand on (relay closes)" }
+          ] }
+        ] }
+      ], "else": [
+        { "if": "temperature > high", "then": [
+          { "if": "canSwitch", "then": [
+            { "write": "HEAT", "level": 0 },
+            { "set": "heating", "value": 0 },
+            { "set": "canSwitch", "value": 0 },
+            { "timer": "hold", "ms": 60000 },
+            { "state": "IDLE" },
+            { "event": "Above the setpoint: heat demand off (relay opens)" }
+          ] }
+        ] }
+      ] },
+      { "if": "heating == 1", "then": [{ "bump": "temperature", "by": 0.06 }] },
+      { "step": "Show it on the display" },
+      { "show": "oled1", "text": "{temperature} C  set {setpoint}" }
+    ]
+  },
+  "sources": [
+    { "title": "Sensirion SHT3x-DIS datasheet", "section": "I2C address 0x44 (ADDR low); temperature accuracy" },
+    { "title": "Adafruit SSD1306 library", "section": "begin(SSD1306_SWITCHCAPVCC, 0x3C)" },
+    { "title": "Songle SRD-05VDC-SL-C datasheet", "section": "Coil voltage 5 V; contacts COM/NO/NC" },
+    { "title": "Arduino reference", "section": "millis(); pinMode() INPUT_PULLUP" }
+  ]
+}

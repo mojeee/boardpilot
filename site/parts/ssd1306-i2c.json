@@ -36,6 +36,24 @@
     ],
     "color": "#1A1A1A"
   },
+  "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+      21.744,
+      10.864
+    ],
+    "glassMm": [
+      26.7,
+      19.26
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+      "title": "Univision UG-2864HSWEG01 datasheet (SAS1-9046-B)",
+      "section": "1.2 Mechanical Specifications (panel size, active area, pixel pitch 0.17 mm); 1.1 Display Specifications (Monochrome White); 1.4 drawing gives viewing area 23.744 x 12.864"
+    }
+  },
   "keywords": [
     "oled",
     "ssd1306",

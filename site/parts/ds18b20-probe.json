@@ -31,7 +31,8 @@
       50,
       6
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "probe"
   },
   "keywords": [
     "ds18b20",

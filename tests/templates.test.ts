@@ -23,7 +23,7 @@ function run(id: string, boardId: string, loops: number): StoryItem[] {
 
 describe('template projects', () => {
   it('has the first templates', () => {
-    expect(TEMPLATES.map((x) => x.id).sort()).toEqual(['blink-button', 'distance-meter', 'industrial-node', 'motion-alarm', 'plant-watering', 'smart-room-monitor', 'vibration-monitor', 'weather-station']);
+    expect(TEMPLATES.map((x) => x.id).sort()).toEqual(['blink-button', 'distance-meter', 'hvac-room-thermostat', 'industrial-node', 'motion-alarm', 'plant-watering', 'smart-room-monitor', 'vibration-monitor', 'weather-station']);
   });
 
   describe.each(TEMPLATES)('$id', (tpl) => {
@@ -103,6 +103,19 @@ describe('template projects', () => {
     // Only one watering within the 30 s rest.
     const ons = story.filter((s) => s.kind === 'pin' && s.level === 1).map((s) => s.t);
     for (let i = 1; i < ons.length; i++) expect(ons[i] - ons[i - 1]).toBeGreaterThanOrEqual(33000);
+  });
+
+  it('room thermostat: heats below the setpoint, stops above it, never switches within a minute', () => {
+    const story = run('hvac-room-thermostat', 'esp32-devkitc-30', 120);
+    const pins = story.filter((s) => s.kind === 'pin').map((s) => ({ t: s.t, level: s.level }));
+    expect(pins[0]?.level).toBe(1);
+    expect(pins.some((p) => p.level === 0)).toBe(true);
+    for (let i = 1; i < pins.length; i++) expect(pins[i].t - pins[i - 1].t).toBeGreaterThanOrEqual(60000);
+    expect(story.some((s) => s.kind === 'event' && /setpoint up/.test(s.text))).toBe(true);
+    // it warms while heating: the last reading before "off" is above the raised setpoint's band
+    const off = story.find((s) => s.kind === 'pin' && s.level === 0)!;
+    const before = story.filter((s) => s.kind === 'value' && s.name === 'temperature' && s.t <= off.t).pop();
+    expect(before!.value!).toBeGreaterThan(21.3);
   });
 
   it('weather station and distance meter show values on their displays', () => {

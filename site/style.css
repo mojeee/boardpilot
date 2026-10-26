@@ -295,3 +295,23 @@ ul.checks li { margin: 6px 0; color: var(--muted); }
 .chat-list a:hover { border-color: var(--sda); }
 .chat-list span { color: var(--muted); font-size: 14px; }
 .chat-honest { margin-top: 14px; max-width: 760px; color: var(--muted); font-size: 14px; }
+
+/* Past projects section */
+.archive-section { padding-top: 40px; }
+.archive-demo { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.archive-preview { background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 2px; font-size: 13.5px; position: relative; overflow-x: auto; }
+.ap-row { display: grid; grid-template-columns: 1.3fr 1fr 1.3fr 1.2fr; gap: 10px; padding: 9px 10px; border-radius: 8px; align-items: center; min-width: 520px; }
+.ap-row b { font-weight: 600; font-size: 13px; }
+.ap-row span { display: flex; flex-wrap: wrap; gap: 4px; color: var(--muted); }
+.ap-row i { font: 500 11px var(--mono); font-style: normal; padding: 1px 7px; border-radius: 20px; background: var(--raised); color: var(--muted); }
+.ap-row i.p { color: var(--ai); background: var(--ai-bg); border: 1px solid var(--ai-line); }
+.ap-row i.b { color: var(--warn); border: 1px solid var(--warn); background: transparent; }
+.ap-head { color: var(--dim); font: 500 11px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--line); border-radius: 0; }
+.ap-row.on { background: var(--ai-bg); }
+.ap-src { color: var(--dim); font-size: 12px; padding: 6px 10px 2px; }
+.ap-card { margin: 10px 10px 4px auto; max-width: 340px; display: flex; flex-direction: column; gap: 3px; background: var(--panel); border: 1px solid var(--ai-line); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--muted); }
+.ap-card b { color: var(--text); }
+.ap-card-t { color: var(--ai); font-weight: 600; font-size: 12px; }
+.archive-points ul { margin: 0 0 20px; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; color: var(--muted); }
+.archive-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+@media (max-width: 920px) { .archive-demo { grid-template-columns: 1fr; } }

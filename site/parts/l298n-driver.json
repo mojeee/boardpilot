@@ -84,7 +84,101 @@
       43,
       27
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "L298N",
+    "components": [
+      {
+        "type": "heatsink",
+        "at": [
+          0,
+          -4
+        ],
+        "size": [
+          23,
+          16,
+          25
+        ]
+      },
+      {
+        "type": "terminal",
+        "at": [
+          -15,
+          6
+        ],
+        "size": [
+          7.6,
+          10,
+          10
+        ],
+        "count": 2,
+        "color": "#2667c9"
+      },
+      {
+        "type": "terminal",
+        "at": [
+          15,
+          6
+        ],
+        "size": [
+          7.6,
+          10,
+          10
+        ],
+        "count": 2,
+        "color": "#2667c9"
+      },
+      {
+        "type": "terminal",
+        "at": [
+          0,
+          16
+        ],
+        "size": [
+          15.2,
+          7.6,
+          10
+        ],
+        "count": 3,
+        "color": "#2667c9"
+      },
+      {
+        "type": "capacitor",
+        "at": [
+          -12,
+          15
+        ],
+        "size": [
+          8,
+          8,
+          11
+        ]
+      },
+      {
+        "type": "capacitor",
+        "at": [
+          12,
+          15
+        ],
+        "size": [
+          8,
+          8,
+          11
+        ]
+      },
+      {
+        "type": "chip",
+        "at": [
+          -16,
+          -12
+        ],
+        "size": [
+          6.5,
+          3.5
+        ],
+        "package": "sot223",
+        "label": "78M05"
+      }
+    ]
   },
   "keywords": [
     "l298n",

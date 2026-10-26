@@ -47,11 +47,35 @@
   "model": {
     "shape": "module",
     "size": [
-      80,
+      98,
       60,
       20
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "pcb": "#2b6b3c"
+  },
+  "display": {
+    "widthPx": 100,
+    "heightPx": 32,
+    "activeMm": [
+      70.4,
+      20.8
+    ],
+    "glassMm": [
+      76,
+      25.2
+    ],
+    "color": "lcd",
+    "tint": "#F2F6FF",
+    "glassColor": "#2E6FD8",
+    "chars": [
+      20,
+      4
+    ],
+    "source": {
+      "title": "AZ Displays ACM2004D Series (outline, viewing area) and Crystalfontz CFAH2004K-YYH-JP data sheet (active area)",
+      "section": "ACM2004D: overall module 98.0 x 60.0 x 9.5/14.0 mm, viewing area 76.0 x 25.2 mm; CFAH2004K Physical Characteristics: active area 70.4 x 20.8 mm, character 2.95 x 4.75, dot 0.55 x 0.55, pitch 0.60 x 0."
+    }
   },
   "keywords": [
     "lcd2004",

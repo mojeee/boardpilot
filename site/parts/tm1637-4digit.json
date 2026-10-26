@@ -34,7 +34,36 @@
       24,
       12
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "TM1637",
+    "components": [
+      {
+        "type": "digits",
+        "at": [
+          0,
+          2.5
+        ],
+        "size": [
+          30,
+          14,
+          8
+        ],
+        "count": 4
+      },
+      {
+        "type": "chip",
+        "at": [
+          -15,
+          6
+        ],
+        "size": [
+          5,
+          4
+        ],
+        "package": "soic",
+        "label": "TM1637"
+      }
+    ]
   },
   "keywords": [
     "tm1637",

@@ -45,11 +45,25 @@
   "model": {
     "shape": "oled",
     "size": [
-      70,
-      41,
+      61.5,
+      39.5,
       5
     ],
     "color": "#1A1A1A"
+  },
+  "display": {
+    "widthPx": 128,
+    "heightPx": 64,
+    "activeMm": [
+      55.01,
+      27.49
+    ],
+    "color": "mono",
+    "tint": "#FFFFFF",
+    "source": {
+      "title": "Waveshare 2.42inch OLED Module product page (SSD1309)",
+      "section": "Specifications: display size 55.01 x 27.49 mm, outline 61.50 x 39.50 mm, pixel 0.4 x 0.4 mm"
+    }
   },
   "keywords": [
     "ssd1309",

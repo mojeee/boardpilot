@@ -37,7 +37,36 @@
       26,
       32
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "silk": "KY-023",
+    "components": [
+      {
+        "type": "block",
+        "at": [
+          0,
+          2
+        ],
+        "size": [
+          16,
+          16,
+          9
+        ],
+        "color": "#1d1e21"
+      },
+      {
+        "type": "knob",
+        "at": [
+          0,
+          2
+        ],
+        "size": [
+          14,
+          14,
+          30
+        ],
+        "color": "#1d1e21"
+      }
+    ]
   },
   "keywords": [
     "joystick",

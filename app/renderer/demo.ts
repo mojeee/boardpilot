@@ -165,6 +165,15 @@ async function runNamedDemo(name: string, scenario: string | null) {
   } else if (name === 'boards') {
     const { openBoardPicker } = await import('./components/BoardPicker');
     openBoardPicker();
+  } else if (name === 'archive') {
+    // #demo=archive[&open=<project name>]: Past projects with the sample archive scanned, one project open.
+    const { useArchive } = await import('./state/archive');
+    useApp.getState().setScreen('archive');
+    await useArchive.getState().load();
+    if (!useArchive.getState().projects.length) await useArchive.getState().addSample();
+    const want = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('open') ?? 'nodo-modbus-caldaia';
+    const p = useArchive.getState().projects.find((x) => x.name === want);
+    if (p) useArchive.getState().select(p.id);
   } else if (name === 'template') {
     // #demo=template&id=plant-watering[&speed=4]: build a template and run it in the simulator.
     openTask('newProject');

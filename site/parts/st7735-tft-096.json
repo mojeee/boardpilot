@@ -55,6 +55,19 @@
     ],
     "color": "#1F4FA8"
   },
+  "display": {
+    "widthPx": 160,
+    "heightPx": 80,
+    "activeMm": [
+      21.7,
+      10.8
+    ],
+    "color": "rgb565",
+    "source": {
+      "title": "Waveshare 0.96inch LCD Module product page (ST7735S, 160x80 IPS)",
+      "section": "Specifications: display size 21.70 x 10.80 mm, outline 32.5 x 26.0 mm, 65K colour"
+    }
+  },
   "keywords": [
     "st7735",
     "st7735s",
