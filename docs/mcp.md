@@ -16,7 +16,7 @@ Copy the line from the settings panel, for example on macOS:
 claude mcp add boardpilot -- /Applications/BoardPilot.app/Contents/MacOS/BoardPilot --mcp-stdio
 ```
 
-On Windows the path is usually `"C:\Program Files\BoardPilot\BoardPilot.exe"`.
+On Windows the path is usually `%LOCALAPPDATA%\Programs\BoardPilot\BoardPilot.exe` (for example `C:\Users\<you>\AppData\Local\Programs\BoardPilot\BoardPilot.exe`).
 
 ### Cursor and Claude Desktop
 
@@ -52,6 +52,8 @@ Add a stdio server to the client's MCP configuration (`~/.cursor/mcp.json`, or C
 | `read_pins`, `pullup_check`, `i2c_scan`, `i2c_read`, `adc_read` | Live measurements through the diagnostic agent, with decoded I2C traces | no |
 | `read_serial` | A few seconds of the user's own firmware output | no |
 | `get_log` | The session log | no |
+| `edit_project` | Changes the project: add, remove or rename parts, add or remove wires, assign safe pins, write the code (`set_code`). Checked against the board and part files first; the wiring check runs on the result | the project only, after the user clicks **Apply** in the assistant panel (⌘Z undoes it) |
+| `run_app_action` | Runs one of the app's own actions, the same list as the in-app assistant: connect and identify, back up, open the monitor, stream pins, debug a problem, test hardware, run the simulation, suggest code, export PDF… The app shows each step and the agent gets them back | only the ones that write, and only after the user's click in their confirmation dialog |
 | `request_flash` | Asks the user to install the diagnostic agent (flash backed up first) | only after the user's click |
 | `request_gpio_write` | Asks the user to drive a pin HIGH or LOW | only after the user's click |
 
@@ -63,10 +65,11 @@ Every result has the same shape:
 { "value": …, "confidence": "measured" | "documented", "source": "diagnostic agent: i2c_scan", "timestamp": "…", "boardId": "esp32-devkitc-30" }
 ```
 
-`measured` comes from the board; `documented` from board and part files or the rules. Nothing is estimated in the MCP layer, and a voltage is only ever reported when the ADC measured it. Errors use `{ code, humanMessage, hint }`.
+`measured` comes from the board; `documented` from board and part files or the rules. In simulator mode every result also has `"simulated": true`: the ports, chips and readings come from the simulated bench, not real hardware. Nothing is estimated in the MCP layer, and a voltage is only ever reported when the ADC measured it. Errors use `{ code, humanMessage, hint }`.
 
 ## Safety
 
 - Localhost only, with a session token; requests from web pages (with an `Origin` header) are refused.
 - No access to your files beyond the board and part data, and no API keys are exposed.
 - Nothing is written to the board without a click in BoardPilot. Headless, nothing is written at all.
+- The project changes only when the user clicks Apply on the agent's change list. App actions that change the project (assign pins, change the board) are refused over MCP: the agent uses `edit_project` instead.

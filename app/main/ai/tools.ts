@@ -5,6 +5,7 @@
 import type { AiChoice, LogEntry, PartDef, Scene, TargetRef, WriteRequest } from '@shared/types';
 import { ACTION_IDS, APP_ACTIONS, type AppActionId } from '@shared/actions';
 import { BOARDS, PARTS } from '@shared/board';
+import { SCENE_EDIT_DESCRIPTION, SCENE_EDIT_SCHEMA, applySceneOps, describeChange, parseSceneOps, type SceneOp } from '@shared/sceneEdit';
 import { checkSpec, normalizeSpec, panelOf, rotatedSize, ICONS, type DisplaySpec, type SpecProblem } from '@shared/displaySpec';
 import { buildProposal, checkScene, partDetails, proposalForModel, searchParts, type ProjectProposal, type ProposalInput } from '@shared/projectBuilder';
 import { similarProjects, reasonsText } from '@shared/archive/similarity';
@@ -86,6 +87,11 @@ export const TOOLS: ToolSpec[] = [
       },
       ['action', 'arg'],
     ),
+  },
+  {
+    name: 'edit_project',
+    description: `${SCENE_EDIT_DESCRIPTION} Use it when the user asks to add, remove, rename or rewire something in the drawing; use the part and wire ids from the context.`,
+    parameters: SCENE_EDIT_SCHEMA,
   },
   {
     name: 'write_code',
@@ -231,6 +237,8 @@ export interface ToolTurnState {
   actions?: { action: AppActionId; arg: string }[];
   /** a code suggestion to write in the Code panel */
   codeRequest?: string;
+  /** changes to the drawing, shown with an Apply button */
+  sceneEdit?: { ops: SceneOp[]; reason: string };
   choices?: { question: string; choices: AiChoice[] };
   proposal?: ProjectProposal;
   /** citation labels search_memory / read_memory returned (the reply may cite only these) */
@@ -345,6 +353,19 @@ export async function runTool(
           note: def?.writes
             ? 'The app opens its confirmation dialog for this; nothing is written unless the user confirms. Tell the user what will happen.'
             : 'The app runs this right after your reply and shows each step to the user.',
+        });
+      }
+      case 'edit_project': {
+        if (!builder?.scene) return { content: 'No project is open.', isError: true };
+        const ops = parseSceneOps(input.changes);
+        const r = applySceneOps(builder.scene, ops, builder.parts ?? PARTS);
+        if (!r.ok) return { content: `${r.error.humanMessage} ${r.error.hint}`, isError: true };
+        turn.sceneEdit = { ops, reason: str(input.reason, 'reason') };
+        return done({
+          shown: true,
+          changes: r.value.changes.map((c) => describeChange(c)),
+          newWiringFindings: r.value.newFindings.map((f) => ({ severity: f.severity, message: f.message, targets: f.targets })),
+          note: 'The user sees these changes with an Apply button. Nothing changes until they click; mention any new wiring finding.',
         });
       }
       case 'write_code': {

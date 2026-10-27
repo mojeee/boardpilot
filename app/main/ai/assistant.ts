@@ -383,7 +383,7 @@ export class Assistant {
         }
         messages.push({ role: 'tool', results });
         // A proposal does not end the turn: the model may still fix what the checker found.
-        if (turn.ask || turn.pendingWrite || turn.choices || turn.actions?.length) {
+        if (turn.ask || turn.pendingWrite || turn.choices || turn.actions?.length || turn.sceneEdit) {
           // The UI takes over; ask for the final structured reply without more tool calls.
           answerNow = true;
         }
@@ -407,6 +407,7 @@ export class Assistant {
             toolCalls: turn.calls,
             actions: turn.actions,
             codeRequest: turn.codeRequest,
+            sceneEdit: turn.sceneEdit,
             ...(turn.choices ? { choices: turn.choices.choices } : {}),
             ...(turn.proposal ? { proposal: turn.proposal } : {}),
             ...(turn.display ? { display: turn.display } : {}),
@@ -443,6 +444,7 @@ export class Assistant {
           pendingWrite: turn.pendingWrite,
           actions: turn.actions,
           codeRequest: turn.codeRequest,
+          sceneEdit: turn.sceneEdit,
         },
         measuredThisTurn,
         logHasMeasurements,

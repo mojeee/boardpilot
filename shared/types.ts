@@ -2,6 +2,7 @@
 // No runtime code here except tiny helpers; keep it free of Node and DOM imports.
 
 import type { StateMachine } from './statemachine';
+import type { SceneOp } from './sceneEdit';
 import type { ProjectProposal } from './projectBuilder';
 import type { DisplaySpec, SpecProblem } from './displaySpec';
 
@@ -730,6 +731,8 @@ export interface AiReply {
   actions?: { action: string; arg: string }[];
   /** a code suggestion the app writes in the Code panel */
   codeRequest?: string;
+  /** changes to the drawing (shared/sceneEdit.ts), applied when the user clicks Apply */
+  sceneEdit?: { ops: SceneOp[]; reason: string };
   /** options to pick from, each with what makes it different (shown as cards) */
   choices?: AiChoice[];
   /** a whole project (parts, wiring, checks) the user can apply with one click */

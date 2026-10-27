@@ -1,18 +1,28 @@
 // Editing actions on the project scene. All of them are undoable (Cmd+Z).
 
-import type { ScenePart, TargetRef } from '@shared/types';
+import type { Result, ScenePart, TargetRef } from '@shared/types';
 import { BOARDS, PARTS, canOutput, getBoard, gotchasFor, groundPins, pinById, powerPinFor } from '@shared/board';
 import { t } from '@shared/i18n';
+import { applySceneOps, freeSpot, type SceneEditResult, type SceneOp } from '@shared/sceneEdit';
 import { log, useScene } from './store';
 
-const SLOTS: [number, number][] = [
-  [12, 44], [-18, 44], [40, 44], [-2, -42], [24, -44], [-26, -42], [50, -44], [-48, 44],
-  [70, 20], [-70, 20], [70, -30], [-70, -30], [12, 76], [-30, 76], [40, -76], [-10, -76],
-];
+// Where new parts go on the desk: shared with the AI's project edits (shared/sceneEdit.ts).
+export { freeSpot };
 
-export function freeSpot(parts: ScenePart[]): [number, number] {
-  const free = SLOTS.find(([x, z]) => !parts.some((p) => Math.abs(p.position[0] - x) < 14 && Math.abs(p.position[2] - z) < 14));
-  return free ?? [90 + (parts.length % 4) * 22, -60 + Math.floor(parts.length / 4) * 24];
+/** What an AI's project changes would do to the open project (nothing is changed yet). */
+export function previewProjectEdit(ops: SceneOp[]): Result<SceneEditResult> {
+  const st = useScene.getState();
+  if (st.preview) return { ok: false, error: { code: 'preview', humanMessage: t('A lesson preview is open.'), hint: t('Close the preview, then apply the changes.') } };
+  return applySceneOps(st.scene, ops, PARTS);
+}
+
+/** Apply a previewed change after the user clicked Apply: one undo step, every change in the log. */
+export function commitProjectEdit(r: SceneEditResult, source: string) {
+  useScene.getState().setScene(r.scene, true);
+  for (const c of r.changes) log('action', t(c.text, c.vars), { target: c.target, source });
+  log('info', t('{n} changes applied to the project. ⌘Z undoes them.', { n: String(r.changes.length) }), { source });
+  const targets = r.changes.flatMap((c) => (c.target ? [c.target] : []));
+  if (targets.length) useScene.getState().focusOn(targets);
 }
 
 export function addPart(partId: string, opts: { confirmed?: boolean; at?: [number, number] } = {}): string | null {
