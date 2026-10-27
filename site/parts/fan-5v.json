@@ -23,7 +23,8 @@
       30,
       10
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "fan"
   },
   "keywords": [
     "fan",

@@ -2,3 +2,21 @@
 .starter-files { display: flex; flex-wrap: wrap; max-width: 100%; }
 .starter-files button { font-size: 11px; padding: 4px 8px; border-bottom: 1px solid var(--line); }
 .starter-files button + button { border-left: 1px solid var(--line); }
+.replay-bar { display: flex; flex-direction: column; gap: 6px; padding: 8px 12px; background: var(--ai-bg); border-bottom: 1px solid var(--ai-line); font-size: 12px; color: var(--muted); }
+.replay-bar b { color: var(--ai); }
+.example-chats { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 6px; }
+.example-chat { text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; background: var(--chrome); border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--text); cursor: pointer; }
+.example-chat:hover { border-color: var(--ai-line); }
+/* Display Studio */
+.display-studio { display: flex; flex-direction: column; gap: 12px; }
+.display-part, .display-spec { display: flex; flex-direction: column; gap: 6px; }
+.display-canvas { background: #000; border: 6px solid #0B0E12; border-radius: 4px; box-shadow: 0 0 0 1px var(--line); align-self: flex-start; }
+.display-canvas canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+.display-canvas.round { border-radius: 50%; overflow: hidden; }
+.display-canvas.panel-epaper { border-color: #2A2F35; background: #ECECE4; }
+.display-screens { display: flex; flex-wrap: wrap; gap: 4px; }
+.display-screens .chip.on { border-color: var(--ai); color: var(--text); }
+.display-flow { margin: 0; padding-left: 16px; }
+.display-var { display: grid; grid-template-columns: 70px 1fr 70px auto; align-items: center; gap: 6px; }
+.display-var input[type='range'] { width: 100%; }
+.display-pip { position: absolute; right: 14px; bottom: 44px; z-index: 5; display: flex; flex-direction: column; gap: 4px; padding: 6px 8px 8px; background: color-mix(in srgb, var(--chrome) 88%, transparent); border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--muted); backdrop-filter: blur(4px); }

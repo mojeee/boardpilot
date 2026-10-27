@@ -56,6 +56,25 @@
     ],
     "color": "#B22222"
   },
+  "display": {
+    "widthPx": 84,
+    "heightPx": 48,
+    "activeMm": [
+      30,
+      20
+    ],
+    "glassMm": [
+      36,
+      26
+    ],
+    "color": "lcd",
+    "tint": "#1E2A22",
+    "glassColor": "#B9C3AE",
+    "source": {
+      "title": "SparkFun Graphic LCD 84x48 - Nokia 5110 (LCD-10168) product page; AZ-Delivery/Botland listings for display size",
+      "section": "estimate: Dimensions 45 x 45 mm; display size ca. 36 x 26 mm (vendor listings)"
+    }
+  },
   "keywords": [
     "nokia 5110",
     "pcd8544",

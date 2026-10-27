@@ -12,7 +12,15 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "module", "size": [37, 16, 5], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [37, 16, 5], "color": "#1F4FA8", "silk": "ZS-040",
+    "components": [
+      { "type": "block", "at": [-3, 2], "size": [27, 13, 0.8], "color": "#1f6b3a", "label": "HC-05" },
+      { "type": "antenna", "at": [8, 2], "size": [7, 10] },
+      { "type": "chip", "at": [-8, 2], "size": [6, 6, 0.9], "package": "qfn", "label": "BC417" },
+      { "type": "led", "at": [14, -4], "size": [1.6, 0.8], "color": "#ff3b30" }
+    ]
+  },
   "keywords": ["hc-05", "bluetooth", "serial", "spp", "wireless", "seriale"],
   "sources": [
     { "title": "HC-05 Bluetooth module datasheet", "section": "Pins EN/KEY, VCC, GND, TXD, RXD, STATE; UART at 3.3 V levels" }

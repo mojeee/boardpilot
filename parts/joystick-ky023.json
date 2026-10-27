@@ -11,7 +11,13 @@
   ],
   "bus": "analog",
   "voltage": "3.3",
-  "model": { "shape": "module", "size": [34, 26, 32], "color": "#1A1A1A" },
+  "model": {
+    "shape": "module", "size": [34, 26, 32], "color": "#1A1A1A", "silk": "KY-023",
+    "components": [
+      { "type": "block", "at": [0, 2], "size": [16, 16, 9], "color": "#1d1e21" },
+      { "type": "knob", "at": [0, 2], "size": [14, 14, 30], "color": "#1d1e21" }
+    ]
+  },
   "keywords": ["joystick", "ky-023", "thumbstick", "analog", "levetta", "controller"],
   "sources": [
     { "title": "Joy-IT KY-023 datasheet", "section": "Pins GND, +5V, VRx, VRy, SW; two 10 kΩ potentiometers" }

@@ -13,6 +13,7 @@
   "voltage": "3.3-5",
   "pullupsOnBoard": true,
   "model": { "shape": "oled", "size": [38, 12, 3], "color": "#1A1A1A" },
+  "display": { "widthPx": 128, "heightPx": 32, "activeMm": [22.38, 5.58], "glassMm": [30.0, 11.5], "color": "mono", "tint": "#FFFFFF", "source": { "title": "Waveshare 0.91inch OLED Module product page (SSD1306)", "section": "Specifications: display size 22.38 x 5.58 mm, outline 36.0 x 12.5 mm" } },
   "keywords": ["oled", "ssd1306", "0.91", "128x32", "display", "schermo"],
   "sources": [
     { "title": "Solomon Systech SSD1306 datasheet", "section": "I2C-bus interface: slave address 0111 10 SA0 (0x3C with SA0 = 0)" }

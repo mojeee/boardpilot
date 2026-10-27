@@ -29,7 +29,8 @@
       12.5,
       22
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "servo"
   },
   "keywords": [
     "fs90r",

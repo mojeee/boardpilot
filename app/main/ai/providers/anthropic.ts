@@ -100,7 +100,10 @@ export class AnthropicProvider implements AiProvider {
       messages: toAnthropicMessages(req.messages),
     };
     if (req.system) params.system = [{ type: 'text', text: req.system, ...(req.cacheSystem ? { cache_control: { type: 'ephemeral' as const } } : {}) }];
+    // Automatic caching also covers the conversation, which every tool round sends again.
+    if (req.cacheSystem) params.cache_control = { type: 'ephemeral' };
     if (req.tools?.length) params.tools = toAnthropicTools(req.tools);
+    if (req.tools?.length && req.toolChoice === 'none') params.tool_choice = { type: 'none' };
     if (req.jsonSchema) params.output_config = { format: { type: 'json_schema', schema: req.jsonSchema.schema } };
     try {
       const msg = await this.client.messages.create(params, { timeout: req.timeoutMs ?? DEFAULT_TIMEOUT_MS });

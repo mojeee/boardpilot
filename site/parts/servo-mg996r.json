@@ -29,7 +29,8 @@
       19.7,
       40
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "servo"
   },
   "keywords": [
     "mg996r",

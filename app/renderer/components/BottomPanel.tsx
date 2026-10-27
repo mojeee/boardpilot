@@ -7,7 +7,7 @@ import { generateSketch } from '@shared/sketch';
 import { t } from '@shared/i18n';
 import { log, useLog, useScene } from '../state/store';
 import { useLayout } from '../state/layout';
-import { currentSketch, useCodeFindings, useCodeUi } from '../state/code';
+import { currentFiles, currentSketch, useCodeFindings, useCodeUi } from '../state/code';
 import { useRunLine, useTemplate } from '../state/templateRun';
 import { CodeEditor } from './CodeEditor';
 import { openSketchFile } from './CodeCheck';
@@ -16,6 +16,8 @@ import { RunControls, RunStory, useRunView } from './TemplatePanel';
 import { openTask } from './TaskRail';
 import { Icon } from './Icon';
 import { suggestCode } from './codeSuggest';
+import { compileNow } from './code/compile';
+import { slug } from '@shared/starter/common';
 
 const mmss = (ms: number) => {
   const s = Math.floor(ms / 1000);
@@ -25,6 +27,7 @@ const mmss = (ms: number) => {
 function CodeTools() {
   const tplOpen = useTemplate((s) => !!s.tpl);
   const suggesting = useCodeUi((s) => s.suggesting);
+  const compiling = useCodeUi((s) => s.compile.running);
   const hasCode = useScene((s) => !!s.scene.sketch?.text.trim());
   return (
     <div className="tools">
@@ -50,13 +53,22 @@ function CodeTools() {
           ▶ {t('Run in simulator')}
         </button>
       )}
+      <button
+        className="btn small"
+        disabled={!hasCode || compiling}
+        onClick={() => void compileNow()}
+        title={t('Compile the code with arduino-cli to find errors before flashing. Nothing is written to the board.')}
+        data-where="code:compile"
+      >
+        {compiling ? t('Compiling…') : `✓ ${t('Compile')}`}
+      </button>
       <button className="btn small" onClick={() => void openSketchFile()} title={t('Open my sketch…')}>
         <Icon name="folder" size={13} />
       </button>
       <button
         className="btn small"
         disabled={!hasCode}
-        onClick={() => window.bp.session.saveFile(currentSketch().name, currentSketch().text)}
+        onClick={() => void saveCode()}
         title={t('Save the code as a file…')}
       >
         <Icon name="save" size={13} />
@@ -66,6 +78,15 @@ function CodeTools() {
       </button>
     </div>
   );
+}
+
+/** Save the code: one file with a save dialog, or every file of the project into a new folder. */
+async function saveCode() {
+  const sk = currentSketch();
+  const files = currentFiles();
+  const r = files.length > 1 ? await window.bp.session.saveProject(slug(sk.name.replace(/\.\w+$/, '')), files) : await window.bp.session.saveFile(sk.name, sk.text);
+  if (r.ok) log('action', t('Saved the code in {path}.', { path: r.value }));
+  else if (r.error.code !== 'cancelled') log('failed', [r.error.humanMessage, r.error.hint].filter(Boolean).join(' '));
 }
 
 /** Beside the code while a template runs: where the program is and what it sees (all simulated). */

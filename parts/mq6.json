@@ -11,7 +11,12 @@
   ],
   "bus": "analog",
   "voltage": "5",
-  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8", "silk": "MQ-6",
+    "components": [
+      { "type": "can", "at": [0, 1.5], "size": [19, 19, 16] }
+    ]
+  },
   "keywords": ["mq-6", "mq6", "lpg", "propane", "butane", "gpl", "gas"],
   "sources": [
     { "title": "Hanwei MQ-6 datasheet", "section": "Most sensitive to LPG, isobutane and propane" },

@@ -24,7 +24,8 @@
       27,
       0.5
     ],
-    "color": "#D9B45A"
+    "color": "#D9B45A",
+    "kind": "piezo"
   },
   "keywords": [
     "piezo",

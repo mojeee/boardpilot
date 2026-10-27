@@ -1,0 +1,7 @@
+Reference,Qty,Value,Footprint
+U1,1,ESP32-C3-MINI-1,RF_Module:ESP32-C3-MINI-1
+U2,1,DS18B20,Package_TO_SOT_THT:TO-92
+K1,1,Relay G5LE-1,Relay_THT:Relay_SPDT_Omron-G5LE-1
+K2,1,SSR G3MB-202P,Relay_THT:G3MB-202P
+R1,1,4k7,Resistor_SMD:R_0603
+C1,2,100nF,Capacitor_SMD:C_0603

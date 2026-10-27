@@ -1,0 +1,4 @@
+serial,assorbimento_ma,ntc_c,modbus,rele,esito
+24118-001,11.2,25.1,ok,ok,PASS
+24118-002,11.4,24.9,ok,ok,PASS
+24118-003,11.1,25.0,ok,ko,FAIL

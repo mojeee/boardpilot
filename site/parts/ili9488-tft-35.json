@@ -77,11 +77,24 @@
   "model": {
     "shape": "oled",
     "size": [
-      56,
-      80,
+      56.3,
+      98,
       6
     ],
     "color": "#B22222"
+  },
+  "display": {
+    "widthPx": 320,
+    "heightPx": 480,
+    "activeMm": [
+      48.96,
+      73.44
+    ],
+    "color": "rgb666",
+    "source": {
+      "title": "Elecrow wiki: 3.5 Inch 480x320 SPI TFT LCD Module with ILI9488 Driver (same board as LCDwiki MSP3520)",
+      "section": "Specification: active area 48.96 x 73.44 mm, module PCB 56.34 x 98 mm"
+    }
   },
   "keywords": [
     "ili9488",

@@ -13,7 +13,19 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "relay", "size": [75, 55, 19], "color": "#1F4FA8" },
+  "model": {
+    "shape": "relay", "size": [75, 55, 19], "color": "#1F4FA8", "kind": "relay-module", "silk": "4 Relay Module",
+    "components": [
+      { "type": "relay", "at": [-27, -1], "size": [15.5, 19, 15.3] },
+      { "type": "relay", "at": [-9, -1], "size": [15.5, 19, 15.3] },
+      { "type": "relay", "at": [9, -1], "size": [15.5, 19, 15.3] },
+      { "type": "relay", "at": [27, -1], "size": [15.5, 19, 15.3] },
+      { "type": "terminal", "at": [-27, 18], "size": [15.2, 7.6, 10], "count": 3 },
+      { "type": "terminal", "at": [-9, 18], "size": [15.2, 7.6, 10], "count": 3 },
+      { "type": "terminal", "at": [9, 18], "size": [15.2, 7.6, 10], "count": 3 },
+      { "type": "terminal", "at": [27, 18], "size": [15.2, 7.6, 10], "count": 3 }
+    ]
+  },
   "keywords": ["relay", "4 channel", "relay board", "optocoupler", "relè", "scheda relè"],
   "sources": [
     { "title": "Songle SRD-05VDC-SL-C datasheet", "section": "Coil 5 V, about 70 mA per channel" }

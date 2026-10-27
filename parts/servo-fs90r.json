@@ -9,7 +9,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "motor", "size": [23.2, 12.5, 22], "color": "#1A1A1A" },
+  "model": { "shape": "motor", "size": [23.2, 12.5, 22], "color": "#1A1A1A", "kind": "servo" },
   "keywords": ["fs90r", "servo", "continuous rotation", "360", "wheel", "servomotore", "rotazione continua"],
   "sources": [
     { "title": "Feetech FS90R datasheet", "section": "Supply 4.8 to 6 V; 1500 µs neutral (stop)" }

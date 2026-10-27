@@ -10,7 +10,13 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "relay", "size": [25, 34, 25], "color": "#1F4FA8" },
+  "model": {
+    "shape": "relay", "size": [25, 34, 25], "color": "#1F4FA8", "kind": "relay-module", "silk": "SSR",
+    "components": [
+      { "type": "block", "at": [-3, 4], "size": [20, 8, 12], "color": "#1d1e21", "label": "G3MB-202P" },
+      { "type": "terminal", "at": [9, 8], "size": [7.6, 10, 10], "count": 2 }
+    ]
+  },
   "keywords": ["ssr", "solid state relay", "g3mb-202p", "omron", "relè statico", "relè"],
   "sources": [
     { "title": "Omron G3MB datasheet", "section": "AC load only (zero cross), 2 A max, input 5 V" }

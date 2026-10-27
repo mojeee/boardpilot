@@ -3,8 +3,9 @@
 import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve, sep } from 'node:path';
-import type { AgentRequest, AiContext, CodeSuggestionRequest, DescribeRequest, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
+import type { AgentRequest, AiContext, CodeSuggestionRequest, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
+import type { CompileReport } from '@shared/compileOutput';
 import { BUY_URL } from '@shared/brand';
 import { setLanguage, t } from '@shared/i18n';
 import type { UserParts } from './parts/userParts';
@@ -19,8 +20,15 @@ import { toAppError } from './hardware/errors';
 import { CoachStore } from './session/coachStore';
 import { isSafeProjectName, isSafeProjectPath, type StarterFile } from '@shared/starter/common';
 import { makeCoachApi } from './session/coachApi';
+import type { ArchiveStore } from './archive/archiveStore';
+import { makeArchiveApi } from './archive/archiveApi';
+import type { ArchiveEdit } from '@shared/archive/types';
+import { MemoryStore } from './memory/store';
+import { registerMemoryIpc } from './memory/ipc';
+import { compileProject } from './hardware/compile';
+import { getBoard } from '@shared/board';
 
-export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License) {
+export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License, archiveStore: ArchiveStore) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
 
   h('hw:state', () => hub.state);
@@ -48,6 +56,14 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
 
   h('safety:grant', (kind: WriteRequest['kind'] | 'restore', uses?: number) => grant(kind, typeof uses === 'number' ? uses : 1));
 
+  h('code:compile', async (boardId: string, files: unknown, main: unknown): Promise<Result<CompileReport>> => {
+    try {
+      return { ok: true, value: await compileProject(getBoard(String(boardId)), files, main) };
+    } catch (e) {
+      return { ok: false, error: toAppError(e) };
+    }
+  });
+
   h('ai:status', () => ai.status());
   h('ai:getSettings', () => ai.getSettings());
   h('ai:saveSettings', (input: AiSettingsInput) => ai.saveSettings(input));
@@ -58,7 +74,6 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('ai:recognize', (b64: string, mt: 'image/jpeg' | 'image/png' | 'image/webp') => ai.recognizePart(b64, mt));
   h('ai:classify', (text: string, options: { id: string; label: string }[]) => ai.classify(text, options));
   h('ai:suggestCode', (ctx: AiContext, req: CodeSuggestionRequest) => ai.suggestCode({ ...ctx, log: ctx.log.length ? ctx.log : log.recent(50) }, req));
-  h('ai:describeProject', (req: DescribeRequest) => ai.describeProject(req));
   h('ai:reset', () => ai.reset());
 
   ipcMain.on('session:append', (_e, entry: LogEntry) => log.append(entry));
@@ -247,6 +262,30 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('coach:history', (lessonId: string, question: string) => coach.history(lessonId, question));
   h('coach:remove', (lessonId: string, question: string) => coach.remove(lessonId, question));
   h('coach:removeAll', () => coach.removeAll());
+
+  // Past projects: folders are only read; the index lives in the app data folder.
+  const archive = makeArchiveApi(archiveStore, {
+    sampleDir: join(dataDir, 'sample-archive'),
+    reveal: (path) => shell.showItemInFolder(path),
+    pickFolder: async () => {
+      const win = BrowserWindow.getFocusedWindow();
+      const opts: Electron.OpenDialogOptions = { title: t('Choose a folder of old projects'), buttonLabel: t('Add to the archive'), properties: ['openDirectory'] };
+      const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
+      return r.canceled ? null : r.filePaths[0] ?? null;
+    },
+  });
+  h('archive:list', () => archive.list());
+  h('archive:addFolder', () => archive.addFolder());
+  h('archive:addSample', () => archive.addSample());
+  h('archive:removeFolder', (root: string) => archive.removeFolder(root));
+  h('archive:rescan', () => archive.rescan());
+  h('archive:update', (id: string, edit: ArchiveEdit) => archive.update(id, edit));
+  h('archive:reveal', (id: string, file?: string) => archive.reveal(id, file));
+  h('archive:readFile', (id: string, file: string) => archive.readFile(id, file));
+  // Project memory: old projects, notes and datasheets, kept only on this computer.
+  const memory = new MemoryStore(join(dataDir, 'memory'));
+  ai.setMemory(memory);
+  registerMemoryIpc(memory);
 
   h('license:status', () => license.status());
   h('license:activate', (key: string) => license.activate(key));

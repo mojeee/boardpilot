@@ -25,7 +25,8 @@ export type AppActionId =
   | 'set_board'
   | 'export_pdf'
   | 'create_report'
-  | 'ai_settings';
+  | 'ai_settings'
+  | 'change_setting';
 
 export interface AppActionDef {
   id: AppActionId;
@@ -48,7 +49,7 @@ export interface AppActionDef {
 }
 
 export const APP_ACTIONS: AppActionDef[] = [
-  { id: 'open_screen', label: 'Open a screen', hint: 'Open Project, Connect, Flash, Debug, Monitor, Test, Report, Learn or Home.', keywords: ['go to', 'open', 'apri', 'vai'], arg: 'screen: project, connect, flash, debug, monitor, test, report, learn, home', where: 'menu' },
+  { id: 'open_screen', label: 'Open a screen', hint: 'Open Project, Connect, Flash, Debug, Monitor, Test, Report, Learn, Past projects or Home.', keywords: ['go to', 'open', 'apri', 'vai'], arg: 'screen: project, connect, flash, debug, monitor, test, report, learn, archive, home', where: 'menu' },
   { id: 'connect_board', label: 'Connect and identify the board', hint: 'Find the board on USB and read its chip. Only reads.', keywords: ['connect', 'identify', 'detect', 'usb', 'port', 'collega', 'identifica', 'porta'], readsBoard: true, where: 'menu:connect' },
   { id: 'backup_flash', label: 'Back up my board', hint: 'Save a copy of the program on the board to this computer. Only reads.', keywords: ['backup', 'back up', 'save firmware', 'copy', 'copia', 'salva'], readsBoard: true, where: 'menu:flash' },
   { id: 'restore_firmware', label: 'Restore my firmware', hint: 'Write the last backup back to the board (asks first).', keywords: ['restore', 'undo flash', 'ripristina'], writes: true, where: 'top:restore' },
@@ -70,7 +71,44 @@ export const APP_ACTIONS: AppActionDef[] = [
   { id: 'export_pdf', label: 'Export PDF', hint: 'The electrical design as a drawing set: schematic, wiring, parts list, checks.', keywords: ['pdf', 'export', 'drawing', 'schematic', 'print', 'esporta', 'stampa'], where: 'top:export' },
   { id: 'create_report', label: 'Create a report', hint: 'A summary of this session to share.', keywords: ['report', 'summary', 'share', 'rapporto'], where: 'menu:report' },
   { id: 'ai_settings', label: 'AI settings', hint: 'Pick the AI provider and add your key.', keywords: ['ai', 'key', 'claude', 'gpt', 'gemini', 'chiave'], where: 'top:ai' },
+  {
+    id: 'change_setting',
+    label: 'Change a setting',
+    hint: 'Language, how the 3D view looks (light, detail, desk, pin labels), simulator or real board, simulator scenario.',
+    keywords: ['setting', 'settings', 'language', 'italian', 'english', 'light', 'dark', 'contrast', 'detail', 'labels', 'desk', 'simulator', 'real board', 'impostazioni', 'lingua', 'italiano'],
+    arg: 'name=value, one of: language=en|it; light=studio|bench|contrast; detail=simple|full|labels; floor=desk|plain; labels=on|off; hardware=simulator|real; scenario=<simulator scenario id>',
+    where: 'view:toolbar',
+  },
 ];
+
+/** The settings change_setting can change, and their values. API keys and the MCP server are not here: they stay the user's. */
+export const SETTINGS = {
+  language: ['en', 'it'],
+  light: ['studio', 'bench', 'contrast'],
+  detail: ['simple', 'full', 'labels'],
+  floor: ['desk', 'plain'],
+  labels: ['on', 'off'],
+  hardware: ['simulator', 'real'],
+  scenario: null,
+} as const satisfies Record<string, readonly string[] | null>;
+
+export type SettingName = keyof typeof SETTINGS;
+
+/** "light=bench", "language: Italian", "detail labels" → a setting and value, or the reason it is not one. */
+export function parseSetting(arg: string): { name: SettingName; value: string } | { error: string } {
+  const m = /^\s*([a-z ]+?)\s*[=:\s]\s*(.+?)\s*$/i.exec(arg);
+  if (!m) return { error: `Write the setting as name=value. Settings: ${Object.keys(SETTINGS).join(', ')}.` };
+  const alias: Record<string, SettingName> = { lang: 'language', lingua: 'language', lighting: 'light', look: 'light', stage: 'floor', mode: 'hardware', board: 'hardware', bench: 'scenario' };
+  const key = m[1].toLowerCase().replace(/\s+/g, '');
+  const name = (key in SETTINGS ? key : alias[key]) as SettingName | undefined;
+  if (!name) return { error: `There is no setting "${m[1]}". Settings: ${Object.keys(SETTINGS).join(', ')}.` };
+  let value = m[2].toLowerCase();
+  const values: Record<string, string> = { english: 'en', inglese: 'en', italian: 'it', italiano: 'it', sim: 'simulator', simulated: 'simulator', hardware: 'real', usb: 'real', 'high contrast': 'contrast', true: 'on', false: 'off' };
+  value = values[value] ?? value;
+  const allowed = SETTINGS[name];
+  if (allowed && !(allowed as readonly string[]).includes(value)) return { error: `${name} can be ${allowed.join(', ')}.` };
+  return { name, value: allowed ? value : m[2].trim() };
+}
 
 export const ACTION_IDS = APP_ACTIONS.map((a) => a.id);
 

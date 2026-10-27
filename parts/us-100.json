@@ -12,7 +12,14 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [45, 20, 17], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [45, 20, 17], "color": "#1F4FA8", "silk": "US-100",
+    "components": [
+      { "type": "transducer", "at": [-13, 1.5], "size": [16, 16, 12] },
+      { "type": "transducer", "at": [13, 1.5], "size": [16, 16, 12] },
+      { "type": "crystal", "at": [0, 3], "size": [4.6, 11, 3.5], "label": "8.000" }
+    ]
+  },
   "keywords": ["us-100", "ultrasonic", "distance", "uart", "ultrasuoni", "distanza"],
   "sources": [
     { "title": "US-100 ultrasonic module manual", "section": "Jumper selects UART (9600 baud) or trigger/echo mode; supply 2.4 to 5.5 V" }

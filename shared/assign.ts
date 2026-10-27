@@ -28,6 +28,12 @@ export function assignPins(scene: Scene, board: BoardDef, parts: Record<string, 
     used.add(board.rules.i2c.sda);
     used.add(board.rules.i2c.scl);
   }
+  // SPI parts share the board's hardware SPI bus (MOSI, MISO, SCK); the first chip select is the
+  // bus's own CS pin, the next ones get free safe pins. Keep those pins for them.
+  const spi = board.rules.spi;
+  const hasSpi = scene.parts.some((p) => parts[p.partId]?.pins.some((x) => x.role.startsWith('spi_')));
+  if (spi && hasSpi) for (const id of [spi.mosi, spi.miso, spi.sck, spi.cs]) used.add(id);
+  let spiCsTaken = scene.wires.some((w) => (w.from.part === 'board' && w.from.pin === spi?.cs) || (w.to.part === 'board' && w.to.pin === spi?.cs));
   const wired = (partId: string, pin: string) =>
     scene.wires.some((w) => (w.from.part === partId && w.from.pin === pin) || (w.to.part === partId && w.to.pin === pin));
   const exists = (id: string) => board.pins.some((p) => p.id === id);
@@ -60,6 +66,17 @@ export function assignPins(scene: Scene, board: BoardDef, parts: Record<string, 
         case 'i2c_scl':
           boardPin = board.rules.i2c.scl;
           used.add(boardPin);
+          break;
+        case 'spi_mosi':
+        case 'spi_miso':
+        case 'spi_sck':
+          boardPin = spi ? spi[pp.role === 'spi_mosi' ? 'mosi' : pp.role === 'spi_miso' ? 'miso' : 'sck'] : take(SAFE_IO);
+          break;
+        case 'spi_cs':
+          if (spi && !spiCsTaken) {
+            boardPin = spi.cs;
+            spiCsTaken = true;
+          } else boardPin = take(SAFE_IO);
           break;
         case 'analog_out':
           boardPin = take(ADC_PINS);

@@ -11,7 +11,14 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [45,20,15], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [45, 20, 15], "color": "#1F4FA8", "silk": "HC-SR04P",
+    "components": [
+      { "type": "transducer", "at": [-13, 1.5], "size": [16, 16, 12] },
+      { "type": "transducer", "at": [13, 1.5], "size": [16, 16, 12] },
+      { "type": "crystal", "at": [0, 3], "size": [4.6, 11, 3.5], "label": "4.000" }
+    ]
+  },
   "keywords": ["hc-sr04p", "hc-sr04", "ultrasonic", "3.3v", "sonar", "ultrasuoni", "distanza"],
   "sources": [
     { "title": "HC-SR04P seller datasheet", "section": "Supply 3 to 5.5 V; echo output at supply level; same timing as HC-SR04" }

@@ -28,7 +28,8 @@
       3.5,
       4
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "slide"
   },
   "keywords": [
     "slide switch",

@@ -26,7 +26,73 @@
       14,
       7
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "FC-51",
+    "components": [
+      {
+        "type": "lens",
+        "at": [
+          -3,
+          5
+        ],
+        "size": [
+          5,
+          5,
+          5
+        ],
+        "color": "#202226"
+      },
+      {
+        "type": "lens",
+        "at": [
+          3,
+          5
+        ],
+        "size": [
+          5,
+          5,
+          5
+        ],
+        "color": "#cfe3ff"
+      },
+      {
+        "type": "trimpot",
+        "at": [
+          0,
+          -2
+        ],
+        "size": [
+          6,
+          6,
+          4
+        ]
+      },
+      {
+        "type": "chip",
+        "at": [
+          -10,
+          1
+        ],
+        "size": [
+          5,
+          4
+        ],
+        "package": "soic",
+        "label": "LM393"
+      },
+      {
+        "type": "led",
+        "at": [
+          10,
+          1
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "color": "#5cff5c"
+      }
+    ]
   },
   "keywords": [
     "fc-51",

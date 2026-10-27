@@ -12,15 +12,19 @@ import { t } from '@shared/i18n';
 import { log, useLive, useScene } from '../state/store';
 import { useTemplate } from '../state/templateRun';
 import { PART_BASE_Y, partPinLocal, partRotationDeg } from './geometry';
-import { markingTexture } from './textures';
+import { ledMaskTexture, offTexture } from './textures';
+import { displayLayout, hasHeader, partKind } from '@shared/partModel';
+import { finishMaterial } from './kit';
+import { glassColor, partModel } from './partModels';
+import { useDisplayTexture } from './displayTexture';
 import { useDetailed } from '../state/view3d';
 
 const Std = ({ color, ...rest }: { color: string; transparent?: boolean; opacity?: number; emissive?: string; emissiveIntensity?: number; metalness?: number; roughness?: number }) => (
   <meshStandardMaterial color={color} roughness={rest.roughness ?? 0.6} metalness={rest.metalness ?? 0.05} {...rest} />
 );
 
-/** The body of a part in its own frame (pin edge along -z). Also used by the part editor preview. */
-export function PartBody({ def }: { def: PartDef }) {
+/** Detail "Simple": a few plain shapes per part, as cheap as it gets. */
+function SimpleBody({ def }: { def: PartDef }) {
   const [w, d, h] = def.model.size;
   const c = def.model.color;
   switch (def.model.shape) {
@@ -82,19 +86,23 @@ export function PartBody({ def }: { def: PartDef }) {
           ))}
         </group>
       );
-    case 'oled':
+    case 'oled': {
+      const lay = displayLayout(def);
+      const g = lay?.glass ?? { x: 0, z: 2, w: w - 1, d: d - 6 };
+      const top = lay?.top ?? 3;
       return (
         <group>
           <mesh position={[0, 0.8, 0]}>
             <boxGeometry args={[w, 1.6, d]} />
-            <Std color="#1c2a4a" />
+            <Std color={def.model.pcb ?? (lay ? c : '#1c2a4a')} />
           </mesh>
-          <mesh position={[0, 2.2, 1]}>
-            <boxGeometry args={[w - 1, 1.4, d - 8]} />
-            <Std color={c} roughness={0.15} metalness={0.3} />
+          <mesh position={[g.x, (1.6 + top) / 2, g.z]}>
+            <boxGeometry args={[g.w, top - 1.6, g.d]} />
+            <Std color={glassColor(def)} roughness={0.15} metalness={0.3} />
           </mesh>
         </group>
       );
+    }
     case 'chip': {
       const legs = Math.max(2, Math.round(w / 2.54));
       return (
@@ -114,19 +122,32 @@ export function PartBody({ def }: { def: PartDef }) {
         </group>
       );
     }
-    case 'module':
-      return (
-        <group>
+    case 'module': {
+      if (!hasHeader(def)) {
+        return (
           <mesh position={[0, h / 2, 0]}>
             <boxGeometry args={[w, h, d]} />
             <Std color={c} />
           </mesh>
-          <mesh position={[0, h + 1.2, d * 0.1]}>
-            <boxGeometry args={[w * 0.6, 2.4, d * 0.5]} />
-            <Std color="#c9ced4" metalness={0.35} roughness={0.35} />
+        );
+      }
+      // the board, and what is on it as one block, clear of the pin header
+      const lay = displayLayout(def);
+      const bh = lay ? lay.top - 1.6 : Math.max(0.8, h - 1.6);
+      const bd = lay ? lay.glass.d : Math.max(2, d - 5.5);
+      return (
+        <group>
+          <mesh position={[0, 0.8, 0]}>
+            <boxGeometry args={[w, 1.6, d]} />
+            <Std color={lay ? def.model.pcb ?? '#2b6b3c' : c} />
+          </mesh>
+          <mesh position={[0, 1.6 + bh / 2, lay ? lay.glass.z : 2.4]}>
+            <boxGeometry args={[lay ? lay.glass.w : w * 0.8, bh, bd]} />
+            <Std color={lay ? glassColor(def) : '#c9ced4'} metalness={lay ? 0.1 : 0.35} roughness={0.35} />
           </mesh>
         </group>
       );
+    }
     case 'motor':
       return (
         <group>
@@ -141,14 +162,22 @@ export function PartBody({ def }: { def: PartDef }) {
         </group>
       );
     case 'relay':
+      if (!hasHeader(def)) {
+        return (
+          <mesh position={[0, h / 2, 0]}>
+            <boxGeometry args={[w, h, d]} />
+            <Std color={c} />
+          </mesh>
+        );
+      }
       return (
         <group>
           <mesh position={[0, 0.8, 0]}>
             <boxGeometry args={[w, 1.6, d]} />
             <Std color="#1f4fa8" />
           </mesh>
-          <mesh position={[0, 1.6 + 7.5, 1]}>
-            <boxGeometry args={[w * 0.6, 15, d * 0.6]} />
+          <mesh position={[0, 1.6 + 7.5, 3]}>
+            <boxGeometry args={[w * 0.6, 15, d * 0.55]} />
             <Std color={c} />
           </mesh>
         </group>
@@ -169,19 +198,98 @@ export function PartBody({ def }: { def: PartDef }) {
   }
 }
 
-/** Pins in the part frame (unrotated): gold header pin plus a role-colored tip. */
+/** Detail "Full": the generated model (partModels.ts), a few merged meshes and printed decals. */
+function DetailedBody({ def }: { def: PartDef }) {
+  const model = partModel(def);
+  return (
+    <group>
+      {model.meshes.map((m) => (
+        <mesh key={m.finish} geometry={m.geometry} material={finishMaterial(m.finish)} />
+      ))}
+      {model.decals.map((dc, i) => (
+        <mesh key={i} position={dc.pos} rotation={[-Math.PI / 2, 0, dc.rotY ?? 0]} material={decalMaterial(dc.texture)} renderOrder={dc.order ?? 1}>
+          <planeGeometry args={dc.size} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+const decalMaterials = new WeakMap<THREE.Texture, THREE.Material>();
+function decalMaterial(tex: THREE.Texture): THREE.Material {
+  let m = decalMaterials.get(tex);
+  if (!m) {
+    m = new THREE.MeshStandardMaterial({ map: tex, transparent: true, depthWrite: false, roughness: 0.75, polygonOffset: true, polygonOffsetFactor: -2 });
+    decalMaterials.set(tex, m);
+  }
+  return m;
+}
+
+/**
+ * The screen of a display part: the live picture from the display texture hook
+ * (displayTexture.ts), or the panel switched off. Shown at every Detail setting.
+ */
+function DisplayScreen({ def, partId }: { def: PartDef; partId?: string }) {
+  const tex = useDisplayTexture(partId);
+  const lay = displayLayout(def);
+  const off = useMemo(() => (def.display ? offTexture(def.display) : null), [def.display]);
+  if (!lay || !def.display) return null;
+  const { active, top } = lay;
+  const map = tex ?? off;
+  if (!map) return null;
+  const lit = !!tex && def.display.color !== 'epaper';
+  const mask = tex && def.display.color === 'led' && !def.display.digits && def.display.widthPx * def.display.heightPx <= 4096;
+  return (
+    <>
+      {mask && (
+        <mesh position={[active.x, top + 0.05, active.z]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={3}>
+          <planeGeometry args={[active.w, active.d]} />
+          <meshStandardMaterial map={ledMaskTexture(def.display)} transparent depthWrite={false} roughness={0.6} />
+        </mesh>
+      )}
+      <mesh position={[active.x, top + 0.03, active.z]} rotation={[-Math.PI / 2, 0, 0]} renderOrder={2}>
+        {def.display.round ? <circleGeometry args={[active.w / 2, 48]} /> : <planeGeometry args={[active.w, active.d]} />}
+        {lit ? (
+          <meshBasicMaterial map={map} toneMapped={false} polygonOffset polygonOffsetFactor={-3} />
+        ) : (
+          <meshStandardMaterial map={map} transparent={!tex} roughness={0.35} polygonOffset polygonOffsetFactor={-3} />
+        )}
+      </mesh>
+    </>
+  );
+}
+
+/** The body of a part in its own frame (pin edge along -z). Also used by the part editor preview. */
+export function PartBody({ def, partId, detail }: { def: PartDef; partId?: string; detail?: boolean }) {
+  const detailedSetting = useDetailed();
+  const detailed = detail ?? detailedSetting;
+  return (
+    <>
+      {detailed ? <DetailedBody def={def} /> : <SimpleBody def={def} />}
+      {def.display && <DisplayScreen def={def} partId={partId} />}
+    </>
+  );
+}
+
+/**
+ * Pins in the part frame (unrotated). Simple: a gold pin and a role-coloured tip. Full: the pins
+ * are part of the model (header or legs), so only a small role-coloured collar marks them.
+ */
 export function PartPins({
   def,
   onPinClick,
   labels,
   tagged,
+  detailed = false,
 }: {
   def: PartDef;
   onPinClick?: (name: string, e: ThreeEvent<MouseEvent>) => void;
   labels: boolean;
   /** Pins that get a tag even when labels are off (the wired ones). */
   tagged?: Set<string>;
+  detailed?: boolean;
 }) {
+  const header = hasHeader(def);
   return (
     <>
       {def.pins.map((p) => {
@@ -190,26 +298,37 @@ export function PartPins({
         const color = ROLE_HEX[partRoleColor(p.role)];
         return (
           <group key={p.name} position={pos}>
-            <mesh position={[0, -1, 0]}>
-              <boxGeometry args={[0.64, 4, 0.64]} />
-              <meshStandardMaterial color="#D9B45A" metalness={0.9} roughness={0.28} />
-            </mesh>
-            <mesh position={[0, 1.1, 0]}>
-              <sphereGeometry args={[0.55, 12, 8]} />
-              <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.4} />
-            </mesh>
+            {!detailed && (
+              <mesh position={[0, -1, 0]}>
+                <boxGeometry args={[0.64, 4, 0.64]} />
+                <meshStandardMaterial color="#D9B45A" metalness={0.9} roughness={0.28} />
+              </mesh>
+            )}
+            {detailed ? (
+              <mesh position={[0, header ? 0.06 : 0, header ? 0 : 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <torusGeometry args={[header ? 0.62 : 0.5, 0.16, 6, 16]} />
+                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.45} roughness={0.4} />
+              </mesh>
+            ) : (
+              <mesh position={[0, 1.1, 0]}>
+                <sphereGeometry args={[0.55, 12, 8]} />
+                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.4} />
+              </mesh>
+            )}
             {onPinClick && (
               <mesh
+                position={[0, header ? 2 : 0, 0]}
                 onClick={(e) => onPinClick(p.name, e)}
                 onPointerOver={() => (document.body.style.cursor = 'pointer')}
                 onPointerOut={() => (document.body.style.cursor = '')}
               >
-                <boxGeometry args={[2.2, 4, 2.2]} />
-                <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+                <boxGeometry args={[2.2, header ? 6 : 4, 2.2]} />
+                {/* not drawn, but still hit by the pointer */}
+                <meshBasicMaterial visible={false} />
               </mesh>
             )}
             {(labels || tagged?.has(p.name)) && (
-              <Html position={[0, 2.2, 0]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
+              <Html position={[0, header && detailed ? 7 : 2.2, 0]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
                 <div className="pin-label small" style={{ borderColor: color }}>
                   {p.name}
                 </div>
@@ -248,51 +367,6 @@ function LedGlow({ sp, def }: { sp: ScenePart; def: PartDef }) {
         <meshBasicMaterial color={def.model.color} transparent opacity={0.45} depthWrite={false} />
       </mesh>
       <pointLight ref={light} color={def.model.color} intensity={0} distance={40} decay={2} />
-    </group>
-  );
-}
-
-/**
- * Full detail on breakout boards and modules: the black pin header, gold mounting holes, two small
- * SMD parts and the part's name printed on the board, all from the part's size and pins.
- */
-function PartDetail({ def }: { def: PartDef }) {
-  const [w, d, h] = def.model.size;
-  const shape = def.model.shape;
-  const tex = useMemo(() => markingTexture([def.name.split(/[ (]/)[0]], (w * 0.8) / (d * 0.22), 'rgba(236,240,244,0.85)'), [def.name, w, d]);
-  if (shape !== 'breakout' && shape !== 'module' && shape !== 'oled') return null;
-  const pins = def.pins.map((p) => partPinLocal(def, p.name)).filter((v): v is THREE.Vector3 => !!v);
-  const xs = pins.map((v) => v.x);
-  const z = pins[0]?.z ?? -d / 2;
-  const top = shape === 'oled' ? 1.6 : h;
-  return (
-    <group>
-      {pins.length > 0 && (
-        <mesh position={[(Math.min(...xs) + Math.max(...xs)) / 2, top + 1.25, z]}>
-          <boxGeometry args={[Math.max(...xs) - Math.min(...xs) + 2.54, 2.5, 2.54]} />
-          <meshStandardMaterial color="#15181b" roughness={0.8} />
-        </mesh>
-      )}
-      {w > 12 && d > 12 &&
-        [-1, 1].map((s) => (
-          <mesh key={s} position={[s * (w / 2 - 2.2), top + 0.01, d / 2 - 2.2]} rotation-x={-Math.PI / 2}>
-            <ringGeometry args={[1.1, 1.9, 24]} />
-            <meshStandardMaterial color="#D9B45A" metalness={0.85} roughness={0.3} />
-          </mesh>
-        ))}
-      {shape !== 'oled' &&
-        [-1, 1].map((s) => (
-          <mesh key={`r${s}`} position={[s * w * 0.28, top + 0.25, d * 0.18]}>
-            <boxGeometry args={[1.6, 0.5, 0.8]} />
-            <meshStandardMaterial color={s < 0 ? '#1e1f22' : '#b8996a'} roughness={0.6} />
-          </mesh>
-        ))}
-      {shape !== 'oled' && (
-        <mesh position={[0, top + 0.02, d / 2 - Math.min(3.5, d * 0.14)]} rotation-x={-Math.PI / 2}>
-          <planeGeometry args={[w * 0.8, d * 0.22]} />
-          <meshBasicMaterial map={tex} transparent depthWrite={false} />
-        </mesh>
-      )}
     </group>
   );
 }
@@ -363,11 +437,10 @@ function PartModel({ sp }: { sp: ScenePart }) {
           onPointerOver={() => !useScene.getState().wireMode && (document.body.style.cursor = 'grab')}
           onPointerOut={() => (document.body.style.cursor = '')}
         >
-          <PartBody def={def} />
-          {detailed && <PartDetail def={def} />}
+          <PartBody def={def} partId={sp.id} detail={detailed} />
         </group>
-        {def.model.shape === 'led' && <LedGlow sp={sp} def={def} />}
-        <PartPins def={def} labels={labels || selected || highlighted || wireMode} tagged={wired} onPinClick={onPinClick} />
+        {(partKind(def) === 'led' || partKind(def) === 'rgb-led' || partKind(def) === 'pixel') && <LedGlow sp={sp} def={def} />}
+        <PartPins def={def} detailed={detailed} labels={labels || selected || highlighted || wireMode} tagged={wired} onPinClick={onPinClick} />
       </group>
       {(selected || highlighted || dragging) && (
         <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -416,7 +489,7 @@ function DragPlane() {
       onPointerLeave={end}
     >
       <planeGeometry args={[800, 800]} />
-      <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      <meshBasicMaterial visible={false} />
     </mesh>
   );
 }

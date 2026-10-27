@@ -154,6 +154,7 @@ export class OpenAiProvider implements AiProvider {
     };
     if (req.system) body.instructions = req.system;
     if (req.tools?.length) body.tools = toOpenAiTools(req.tools);
+    if (req.tools?.length && req.toolChoice === 'none') body.tool_choice = 'none';
     if (req.jsonSchema) body.text = toOpenAiFormat(req.jsonSchema);
     const res = await httpJson<OpenAiResponse>('openai', `${BASE}/responses`, { headers: this.headers(), body, timeoutMs: req.timeoutMs });
     if (res.status === 'failed') throw new ProviderError('server', 'openai', 'The response failed');

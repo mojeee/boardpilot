@@ -14,7 +14,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "module", "size": [33, 20, 9], "color": "#1E7A3C" },
+  "model": { "shape": "module", "size": [33, 20, 9], "color": "#1E7A3C", "kind": "box" },
   "keywords": ["mh-z19b", "mh-z19", "winsen", "co2", "ndir", "anidride carbonica"],
   "sources": [
     { "title": "Winsen MH-Z19B user manual", "section": "Pins Vin, GND, Tx, Rx, PWM, HD, Vo; UART 9600 baud, 3.3 V logic" }

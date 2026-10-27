@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import type { BoardDef, PartDef, PinMount, Scene, ScenePart, SceneWire, TargetRef } from '@shared/types';
 import { pinById, pinMount, pinPositionMm, PARTS } from '@shared/board';
+import { partPinPoint } from '@shared/partModel';
 
 export const PART_BASE_Y = -3;
 export const FLOOR_Y = -9;
@@ -28,18 +29,11 @@ export function partRotationDeg(sp: ScenePart): number {
   return sp.rotation ?? (sp.position[2] >= 0 ? 0 : 180);
 }
 
-const SMALL_SHAPES = new Set(['led', 'button', 'pot', 'motor', 'relay']);
-
-/** Pin position in the part's own frame: pins in one row along the -z edge. */
+/** Pin position in the part's own frame: pins in one row along the -z edge (shared/partModel.ts). */
 export function partPinLocal(def: PartDef, pinName: string): THREE.Vector3 | null {
   const i = def.pins.findIndex((p) => p.name === pinName);
   if (i < 0) return null;
-  const n = def.pins.length;
-  const [, d, h] = def.model.size;
-  const x = (i - (n - 1) / 2) * PITCH;
-  const edge = SMALL_SHAPES.has(def.model.shape) ? d / 2 + 1.5 : d / 2 - 1.3;
-  const y = def.model.shape === 'breakout' || def.model.shape === 'oled' || def.model.shape === 'module' ? h + 2.2 : 0.8;
-  return new THREE.Vector3(x, y, -edge);
+  return new THREE.Vector3(...partPinPoint(def, i));
 }
 
 /** Pin offset from the part origin, rotated with the part. */

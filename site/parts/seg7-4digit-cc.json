@@ -79,7 +79,8 @@
       19,
       8
     ],
-    "color": "#EDEDED"
+    "color": "#EDEDED",
+    "kind": "seg7"
   },
   "keywords": [
     "7 segment",

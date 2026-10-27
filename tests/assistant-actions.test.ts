@@ -33,6 +33,21 @@ describe('app actions', () => {
     expect(searchActions('')).toHaveLength(8);
   });
 
+  it('reads settings the assistant may change, and refuses others', async () => {
+    const { parseSetting } = await import('@shared/actions');
+    expect(parseSetting('light=bench')).toEqual({ name: 'light', value: 'bench' });
+    expect(parseSetting('language: Italian')).toEqual({ name: 'language', value: 'it' });
+    expect(parseSetting('detail labels')).toEqual({ name: 'detail', value: 'labels' });
+    expect(parseSetting('mode=simulated')).toEqual({ name: 'hardware', value: 'simulator' });
+    expect(parseSetting('scenario=healthy')).toEqual({ name: 'scenario', value: 'healthy' });
+    expect(parseSetting('light=disco')).toHaveProperty('error');
+    // Keys and the MCP server stay the user's: there is no setting for them.
+    expect(parseSetting('api_key=sk-123')).toHaveProperty('error');
+    expect(parseSetting('mcp=on')).toHaveProperty('error');
+    expect(searchActions('language')[0].id).toBe('change_setting');
+    expect(bestAction('change the language setting')?.id).toBe('change_setting');
+  });
+
   it('runs "…, then …" as several actions in order', () => {
     expect(actionChain('flash my code, then open the monitor')?.map((a) => a.id)).toEqual(['flash_firmware', 'open_monitor']);
     expect(actionChain('back up my board')).toBeNull();
@@ -41,9 +56,11 @@ describe('app actions', () => {
 });
 
 describe('assistant tools for doing things', () => {
-  it('offers app_action, propose_parts and write_code', () => {
+  it('offers app_action, propose_project and write_code', () => {
     const names = TOOLS.map((t) => t.name);
-    expect(names).toEqual(expect.arrayContaining(['app_action', 'propose_parts', 'write_code']));
+    expect(names).toEqual(expect.arrayContaining(['app_action', 'propose_project', 'write_code']));
+    // propose_project (checked wiring) replaced the unchecked propose_parts.
+    expect(names).not.toContain('propose_parts');
     const app = TOOLS.find((t) => t.name === 'app_action')!;
     expect(JSON.stringify(app.parameters)).toContain('backup_flash');
   });
@@ -59,13 +76,25 @@ describe('assistant tools for doing things', () => {
     expect(bad.isError).toBe(true);
   });
 
-  it('proposes only parts from the library and says which ids were unknown', async () => {
+  it('adds parts with a checked proposal ("add a BME280 and an OLED") and refuses ids not in the library', async () => {
+    const scene: Scene = { board: 'esp32-devkitc-30', parts: [{ id: 'led1', partId: 'led-resistor', position: [0, 0, 40] }], wires: [] };
+    const req = (partIds: string[]) => ({
+      title: 'Weather',
+      summary: '',
+      board: null,
+      keepExisting: true,
+      parts: partIds.map((partId, i) => ({ id: `p${i + 1}`, partId, label: '', why: '' })),
+      wires: [],
+      links: [],
+    });
     const tt = turn();
-    const r = await runTool('propose_parts', { partIds: ['bme280-gy', 'flux-capacitor', 'ssd1306-i2c'], reason: 'weather' }, {} as HardwareHub, [], tt);
-    expect(tt.proposal).toEqual({ partIds: ['bme280-gy', 'ssd1306-i2c'], reason: 'weather' });
-    expect(JSON.parse(r.content).unknownIds).toEqual(['flux-capacitor']);
-    const none = await runTool('propose_parts', { partIds: ['nope'], reason: '' }, {} as HardwareHub, [], turn());
-    expect(none.isError).toBe(true);
+    const r = await runTool('propose_project', req(['bme280-gy', 'ssd1306-i2c']), {} as HardwareHub, [], tt, { scene });
+    expect(r.isError).toBe(false);
+    expect(tt.proposal?.scene.parts.map((p) => p.partId)).toEqual(['led-resistor', 'bme280-gy', 'ssd1306-i2c']);
+    expect(JSON.parse(r.content).errors).toEqual([]);
+    const bad = await runTool('propose_project', req(['bme280-gy', 'flux-capacitor']), {} as HardwareHub, [], turn(), { scene });
+    expect(bad.isError).toBe(true);
+    expect(bad.content).toContain('flux-capacitor');
   });
 
   it('asks the app to write code in the Code panel', async () => {
@@ -100,7 +129,7 @@ describe('what the assistant sees', () => {
   });
 });
 
-describe('Assistant.suggestCode and describeProject (free demo, fetch stubbed)', () => {
+describe('Assistant.suggestCode (free demo, fetch stubbed)', () => {
   afterEach(() => vi.unstubAllGlobals());
   const fakeBox = (): SecretBox => ({
     isEncryptionAvailable: () => true,
@@ -136,32 +165,6 @@ describe('Assistant.suggestCode and describeProject (free demo, fetch stubbed)',
     expect(r.value.afterLine).toBe(4);
     expect(r.value.text).toBe('  float t = bme.readTemperature();');
     expect(r.value.sources).toEqual([{ kind: 'library', label: 'parts library · bme280-gy' }]);
-  });
-
-  it('asks questions on the first turn only, then proposes parts from the library', async () => {
-    const a = make();
-    answer({ kind: 'questions', questions: [{ question: 'How is it powered?', options: ['USB', 'Battery'] }], name: '', summary: '', parts: [], code: '', notes: [], sources: [] });
-    const q = await a.describeProject({ text: 'a plant waterer', boardId: 'esp32-devkitc-30', answers: [] });
-    expect(q.ok && q.value.kind).toBe('questions');
-
-    answer({
-      kind: 'questions',
-      questions: [{ question: 'Again?', options: [] }],
-      name: 'Plant waterer',
-      summary: 'Waters the plant.',
-      parts: [
-        { partId: 'soil-moisture-capacitive', why: 'measures the soil' },
-        { partId: 'not-a-part', why: '' },
-      ],
-      code: 'void setup() {}\nvoid loop() {}',
-      notes: ['The pump needs its own supply.'],
-      sources: [],
-    });
-    const p = await a.describeProject({ text: 'a plant waterer', boardId: 'esp32-devkitc-30', answers: [{ question: 'How is it powered?', answer: 'USB' }] });
-    expect(p.ok).toBe(true);
-    if (!p.ok || p.value.kind !== 'proposal') throw new Error('expected a proposal');
-    expect(p.value.parts.map((x) => x.partId)).toEqual(['soil-moisture-capacitive']);
-    expect(p.value.notes).toEqual(['The pump needs its own supply.']);
   });
 });
 

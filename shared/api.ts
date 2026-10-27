@@ -9,8 +9,6 @@ import type {
   ChipInfo,
   CodeSuggestionRequest,
   ConnectionState,
-  DescribeReply,
-  DescribeRequest,
   HardwareMode,
   HelloReply,
   I2cTraceStep,
@@ -21,6 +19,7 @@ import type {
   PhotoRecognition,
   PortInfo,
   ProbeFrame,
+  ProjectFile,
   Result,
   Scene,
   ScenarioInfo,
@@ -31,6 +30,9 @@ import type { PreflightReport } from './preflight';
 import type { SceneOp } from './sceneEdit';
 import type { CoachAttempt } from './coach';
 import type { StarterFile } from './starter/common';
+import type { ArchiveEdit, ArchiveEntry } from './archive/types';
+import type { MemoryFolderImport, MemoryHit, MemoryInfo } from './memory';
+import type { CompileReport } from './compileOutput';
 
 export type Unsubscribe = () => void;
 
@@ -91,8 +93,6 @@ export interface BoardPilotApi {
     classify(text: string, options: { id: string; label: string }[]): Promise<Result<{ optionId: string | null; reason: string }>>;
     /** Code for the Code panel, from the drawing and the code so far. A suggestion to accept or dismiss. */
     suggestCode(ctx: AiContext, req: CodeSuggestionRequest): Promise<Result<AiCodeSuggestion>>;
-    /** New project → "Describe it": questions first, then parts and starter code to confirm. */
-    describeProject(req: DescribeRequest): Promise<Result<DescribeReply>>;
     reset(): Promise<void>;
   };
   session: {
@@ -127,6 +127,41 @@ export interface BoardPilotApi {
     save(scene: Scene): Promise<Result<string>>;
     open(): Promise<Result<Scene>>;
   };
+  /** Past projects: folders of old projects, read (never changed) and described in a table. */
+  archive: {
+    list(): Promise<{ roots: string[]; projects: ArchiveEntry[] }>;
+    /** Folder dialog, then a scan of the chosen folder. */
+    addFolder(): Promise<Result<{ found: number; truncated: boolean }>>;
+    /** Copies the fictional sample archive to the app data folder and scans it. */
+    addSample(): Promise<Result<{ found: number; truncated: boolean }>>;
+    /** Forgets a folder and its projects (the files stay where they are). */
+    removeFolder(root: string): Promise<Result<true>>;
+    rescan(): Promise<Result<{ found: number; truncated: boolean }>>;
+    /** The user's notes, tags and corrections; kept across rescans. */
+    update(id: string, edit: ArchiveEdit): Promise<Result<ArchiveEntry>>;
+    /** Shows the project folder, or a file in it, in Finder / Explorer. */
+    reveal(id: string, file?: string): Promise<void>;
+    /** Text of a file in a project (1 MB max), e.g. its main source. */
+    readFile(id: string, file: string): Promise<Result<{ name: string; text: string }>>;
+  };
+  /** Project memory: knowledge from old projects, kept in the app data folder on this computer. */
+  memory: {
+    list(): Promise<MemoryInfo[]>;
+    create(name: string): Promise<Result<MemoryInfo>>;
+    rename(id: string, name: string): Promise<Result<MemoryInfo>>;
+    remove(id: string): Promise<Result<true>>;
+    /** Asks for a folder and reads its source files (build output, .git and node_modules are skipped). */
+    importFolder(id: string): Promise<Result<MemoryFolderImport>>;
+    /** Asks for a datasheet or app note PDF and adds its text. */
+    importPdf(id: string): Promise<Result<MemoryInfo>>;
+    addNote(id: string, text: string): Promise<Result<MemoryInfo>>;
+    removeSource(id: string, sourceId: string): Promise<Result<MemoryInfo>>;
+    /** Asks where to save and writes the memory as one file to share. */
+    exportFile(id: string): Promise<Result<string>>;
+    /** Asks for a memory file from a colleague and adds it. */
+    importFile(): Promise<Result<MemoryInfo>>;
+    search(query: string, memoryIds: string[], limit: number): Promise<MemoryHit[]>;
+  };
   mcp: {
     status(): Promise<McpStatus>;
     setEnabled(on: boolean): Promise<McpStatus>;
@@ -152,6 +187,10 @@ export interface BoardPilotApi {
     status(): Promise<LicenseStatus>;
     activate(key: string): Promise<Result<LicenseStatus>>;
     openBuyPage(): Promise<void>;
+  };
+  code: {
+    /** Compile the project with arduino-cli for the board (nothing is uploaded). Desktop app only. */
+    compile(boardId: string, files: ProjectFile[], main: string): Promise<Result<CompileReport>>;
   };
   app: {
     setLanguage(lang: 'en' | 'it'): Promise<void>;

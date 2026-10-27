@@ -34,11 +34,12 @@ Target UI: the screenshots in `/design` (Home, Debug wizard, 3D workspace, Test 
 - **Desktop shell:** Electron. Build tooling: Vite (electron-vite or equivalent). Language: TypeScript, strict mode.
 - **UI:** React. State: Zustand. Styling: plain CSS with CSS variables from the design tokens below. No component library.
 - **3D:** three.js through `@react-three/fiber` and `@react-three/drei`.
+- **Code editor:** CodeMirror 6 (`@codemirror/*` with `lang-cpp`) in the Code panel; BoardPilot's pin, finding, completion and AI pieces live in `app/renderer/components/code/`, their logic in `shared/codeProject.ts`, `codeRefs.ts`, `codeComplete.ts`, `compileOutput.ts`.
 - **Charts:** a lightweight canvas-based library (uPlot) or custom canvas; must handle 20+ updates per second smoothly.
 - **Serial:** `serialport` npm package, used only in the Electron main process.
 - **Chip tools:** `esptool` (Python, installed with pip) spawned as a child process for chip identification, flash backup, restore and flashing.
 - **Firmware builds:** `arduino-cli` with the `esp32:esp32` core, used to build the diagnostic agent. Ship prebuilt agent binaries in `/resources/agent` so end users never need arduino-cli.
-- **AI:** the user picks the provider in AI settings: Anthropic Claude (`@anthropic-ai/sdk`, default `claude-sonnet-5`, fast `claude-haiku-4-5-20251001`), OpenAI GPT or Google Gemini (both via `fetch`, no SDK; defaults in `shared/ai.ts`). Called only from the main process through `app/main/ai/providers/`. Keys are entered in the app and stored encrypted with Electron `safeStorage`; `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` in `.env.local` are fallbacks.
+- **AI:** the user picks the provider in AI settings: Anthropic Claude (`@anthropic-ai/sdk`, default `claude-sonnet-5-5`, fast `claude-haiku-4-5-20251001`), OpenAI GPT or Google Gemini (both via `fetch`, no SDK; defaults in `shared/ai.ts`). Called only from the main process through `app/main/ai/providers/`. Keys are entered in the app and stored encrypted with Electron `safeStorage`; `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` in `.env.local` are fallbacks.
 - **MCP server:** `@modelcontextprotocol/sdk` in `app/main/mcp/`: the same tools for any AI agent, localhost with a token, off by default; writes only through the app's confirmation dialog (see `docs/mcp.md`).
 - **Security:** `contextIsolation: true`, `nodeIntegration: false`, typed API exposed through the preload script. The renderer never sees an API key, never touches the filesystem or serial ports directly.
 - **Languages:** English and Italian. Every user-facing string goes through `t()` from `shared/i18n` with an Italian entry in `shared/i18n/it/*.ts` (enforced by `tests/i18n.test.ts`).

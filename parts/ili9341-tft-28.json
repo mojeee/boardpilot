@@ -20,7 +20,8 @@
   ],
   "bus": "spi",
   "voltage": "3.3-5",
-  "model": { "shape": "oled", "size": [50, 80, 5], "color": "#B22222" },
+  "model": { "shape": "oled", "size": [50, 86, 5], "color": "#B22222" },
+  "display": { "widthPx": 240, "heightPx": 320, "activeMm": [43.2, 57.6], "color": "rgb565", "source": { "title": "MSP2807/MSP2806 2.8inch SPI module spec sheet (LCDwiki/Akizuki copy)", "section": "Product Parameters: Active Area (AA area) 43.2x57.6 mm, Module PCB Size 50.0x86.0 mm, RGB 65K" } },
   "keywords": ["ili9341", "tft", "2.8", "240x320", "touch", "xpt2046", "display", "touchscreen"],
   "sources": [
     { "title": "ILITEK ILI9341 datasheet", "section": "4-line serial interface" },

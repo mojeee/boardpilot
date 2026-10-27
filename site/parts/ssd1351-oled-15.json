@@ -50,6 +50,19 @@
     ],
     "color": "#1A1A1A"
   },
+  "display": {
+    "widthPx": 128,
+    "heightPx": 128,
+    "activeMm": [
+      26.86,
+      26.86
+    ],
+    "color": "rgb565",
+    "source": {
+      "title": "Waveshare 1.5inch RGB OLED Module product page (SSD1351)",
+      "section": "Specifications: display size 26.86 x 26.86 mm, outline 44.5 x 37.0 mm, 65K RGB"
+    }
+  },
   "keywords": [
     "ssd1351",
     "oled",

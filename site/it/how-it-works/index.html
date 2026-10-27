@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Come funziona BoardPilot: schede, pin, controlli di cablaggio, IA e simulazione | BoardPilot</title>
+    <meta name="description" content="Uno sguardo tecnico dentro BoardPilot: file di schede e componenti con le fonti dei datasheet, come si scelgono i pin sicuri, ogni regola di cablaggio, come l’IA costruisce un progetto che supera i controlli, misure, simulatore e Display Studio." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://boardpilot.agentflowbind.com/it/how-it-works/" />
+    <link rel="alternate" hreflang="en" href="https://boardpilot.agentflowbind.com/how-it-works/" />
+    <link rel="alternate" hreflang="it" href="https://boardpilot.agentflowbind.com/it/how-it-works/" />
+    <link rel="alternate" hreflang="x-default" href="https://boardpilot.agentflowbind.com/how-it-works/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="BoardPilot" />
+    <meta property="og:url" content="https://boardpilot.agentflowbind.com/it/how-it-works/" />
+    <meta property="og:title" content="Come funziona BoardPilot: schede, pin, controlli di cablaggio, IA e simulazione | BoardPilot" />
+    <meta property="og:description" content="Uno sguardo tecnico dentro BoardPilot: file di schede e componenti con le fonti dei datasheet, come si scelgono i pin sicuri, ogni regola di cablaggio, come l’IA costruisce un progetto che supera i controlli, misure, simulatore e Display Studio." />
+    <meta property="og:image" content="https://boardpilot.agentflowbind.com/img/workspace.jpg?v=11caa623b1" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#12171C" />
+    <link rel="icon" href="/favicon.svg?v=28c7ad82dd" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7284e4f787" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=26052ab476" />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Come funziona BoardPilot","description":"Uno sguardo tecnico dentro BoardPilot: file di schede e componenti con le fonti dei datasheet, come si scelgono i pin sicuri, ogni regola di cablaggio, come l’IA costruisce un progetto che supera i controlli, misure, simulatore e Display Studio.","inLanguage":"it","url":"https://boardpilot.agentflowbind.com/it/how-it-works/","publisher":{"@type":"Organization","name":"BoardPilot","url":"https://boardpilot.agentflowbind.com"}}</script>
+  </head>
+  <body>
+<header class="nav">
+      <div class="wrap nav-in">
+        <a class="brand" href="/it/"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</a>
+        <nav class="links">
+          <a href="/it/#features" data-i18n="nav.features">Funzioni</a>
+          <a href="/it/#demos" data-i18n="nav.demos">Demo</a>
+          <a href="/it/#compare" data-i18n="nav.compare">Confronto</a>
+          <a href="/it/learn/" data-i18n="nav.learn">Impara</a>
+          <a href="/it/tools/" data-i18n="nav.tools">Calcolatori</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="/it/#pricing" data-i18n="nav.pricing">Prezzi</a>
+          <a href="/it/#faq" data-i18n="nav.faq">Domande</a>
+        </nav>
+        <div class="nav-right">
+          <div class="lang" role="group" aria-label="Language">
+            <a href="/how-it-works/" hreflang="en" class="">EN</a><a href="/it/how-it-works/" hreflang="it" class="on">IT</a>
+          </div>
+          <a class="gh" href="https://github.com/mojeee/boardpilot" aria-label="GitHub">
+            <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a class="btn primary small" href="/it/#download" data-i18n="nav.download">Scarica</a>
+        </div>
+      </div>
+    </header>
+    <main class="article hiw">
+      <div class="wrap narrow">
+        <nav class="crumbs"><a href="/it/">BoardPilot</a> › <span>Come funziona</span></nav>
+        <h1>Come funziona BoardPilot</h1>
+        <p class="lead">Per chi vuole sapere cosa succede dentro, e come verificarlo. Tutto quello che segue è come funziona il codice oggi, con il link al file che lo fa. Il progetto è source-available su GitHub.</p>
+        <nav class="hiw-toc" aria-label="In questa pagina"><b>In questa pagina</b><a href="#architecture">L’architettura in un minuto</a><a href="#boards">Una scheda è un file, scritto dal suo datasheet</a><a href="#parts">Anche un componente è un file</a><a href="#pins">Come si scelgono i pin</a><a href="#checks">Cosa controlla il verificatore di cablaggio</a><a href="#ai">Come l’IA costruisce un progetto</a><a href="#code">Codice che corrisponde al disegno</a><a href="#measure">Misure, non supposizioni</a><a href="#sim">Come funziona il simulatore</a><a href="#display">Display Studio: pixel per pixel</a><a href="#tests">Come viene verificato</a></nav>
+        <section id="architecture">
+          <h2>L’architettura in un minuto</h2>
+          <p>BoardPilot è un’app desktop Electron scritta in TypeScript. Il <b>processo principale</b> gestisce tutto ciò che tocca il mondo esterno: porte seriali USB, gli strumenti dei chip (esptool, avrdude, picotool, STM32CubeProgrammer, nrfjprog, Teensy Loader), i file, le chiavi API e le chiamate all’IA. Il <b>renderer</b> è l’interfaccia React con la vista 3D three.js. Si parlano attraverso una piccola API tipizzata (il bridge di preload); l’interfaccia non vede mai una chiave, un percorso che non hai scelto o una porta seriale.</p>
+          <p>Quasi tutto ciò che l’app sa sono <b>dati, non codice</b>: 13 file di schede, 383 file di componenti, i flussi guidati e i modelli di progetto. Le stesse funzioni pure (scelta dei pin, controlli di cablaggio e del codice, lista della spesa, renderer dei display) girano nell’app, nei test e nella demo nel browser.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/CLAUDE.md"><code>CLAUDE.md</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/api.ts"><code>shared/api.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/app/main/ipc.ts"><code>app/main/ipc.ts</code></a></p>
+        </section>
+        <section id="boards">
+          <h2>Una scheda è un file, scritto dal suo datasheet</h2>
+          <p>Ogni scheda (<code>boards/&lt;id&gt;.json</code>) elenca ogni pin dei connettori: id ed etichetta stampata, numero GPIO, funzioni (canale ADC, UART, SPI, I2C…), la tensione massima che accetta e i <b>flag</b> su cui si basano le regole:</p>
+          <ul><li><code>flash</code>: collegato alla memoria flash (ESP32 GPIO da 6 a 11), mai utilizzabile;</li><li><code>input_only</code>: non può pilotare un’uscita, spesso senza pull-up interno (ESP32 GPIO da 34 a 39);</li><li><code>strapping</code> / <code>strapping_critical</code>: il livello al reset cambia l’avvio del chip (ESP32 GPIO 0, 2, 5, 12, 15);</li><li><code>adc1</code> / <code>adc2</code>: canali ADC; sull’ESP32 l’ADC2 smette di funzionare con il Wi-Fi acceso;</li><li><code>uart0</code>, <code>usb</code>, <code>swd</code>, <code>reserved</code>: usati dalla scheda stessa;</li><li><code>five_volt_tolerant</code>: accetta ingressi a 5 V anche se il chip lavora a 3,3 V.</li></ul>
+          <p>La scheda contiene anche le sue <b>regole</b>: i pin I2C predefiniti (e se si possono spostare), i pin del bus SPI hardware, un elenco ordinato di <b>pin sicuri</b> per uso generale (capaci di uscita, senza effetti all’avvio, non usati da USB o dal debugger), i pin ADC in ordine di preferenza e i pin di alimentazione con la tensione che forniscono. Ogni dato ha la sua sezione di datasheet in <code>boards/&lt;id&gt;.sources.md</code>, e <code>scripts/check-boards.mjs</code> rifiuta un file di scheda con un pin mancante, un duplicato o una regola che punta a un pin inesistente.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/boards/esp32-devkitc-30.json"><code>boards/esp32-devkitc-30.json</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/boards/esp32-devkitc-30.sources.md"><code>boards/esp32-devkitc-30.sources.md</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/scripts/check-boards.mjs"><code>scripts/check-boards.mjs</code></a></p>
+        </section>
+        <section id="parts">
+          <h2>Anche un componente è un file</h2>
+          <p>Ogni componente (<code>parts/&lt;id&gt;.json</code>) elenca i suoi pin nell’ordine stampato sul modulo, con un <b>ruolo</b> per ciascuno: <code>power</code>, <code>ground</code>, <code>i2c_sda</code>, <code>i2c_scl</code>, <code>spi_mosi</code>, <code>spi_miso</code>, <code>spi_sck</code>, <code>spi_cs</code>, <code>digital_in</code> (lo pilota la scheda), <code>digital_out</code> (lo pilota il componente), <code>analog_out</code>, <code>onewire</code>, <code>int</code> e <code>passive</code> (non va alla scheda: un carico, l’alimentazione propria di un modulo). Indica anche l’intervallo di alimentazione, ogni indirizzo I2C e il pin che lo seleziona, se il modulo ha i suoi pull-up, il registro dell’ID del chip e il valore atteso, le trappole note (ognuna con la sua fonte) e, quando un datasheet le riporta, le correnti. Le note dei pin portano dati di cablaggio come “tramite 10 kΩ verso GND” o “aggiungi un diodo di ricircolo sulla bobina”.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/parts/bme280-gy.json"><code>parts/bme280-gy.json</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/partSchema.ts"><code>shared/partSchema.ts</code></a></p>
+        </section>
+        <section id="pins">
+          <h2>Come si scelgono i pin</h2>
+          <p>“Assegna pin sicuri”, i modelli di progetto e le proposte dell’IA usano tutti la stessa funzione. Scorre i componenti in ordine e, per ogni pin di componente ancora senza filo, sceglie un pin della scheda in base al ruolo. I pin già collegati, da te o dall’assistente, non vengono mai spostati.</p>
+          <div class="hiw-table"><table><thead><tr><th>Ruolo del pin del componente</th><th>Pin della scheda scelto</th></tr></thead><tbody><tr><td><code>power</code></td><td>Un pin di alimentazione la cui tensione rientra nell’intervallo del componente, prima la tensione logica della scheda (3V3 per un sensore 3,3–5 V su un ESP32; 5V per un componente solo a 5 V).</td></tr><tr><td><code>ground</code></td><td>Un pin GND; più componenti vengono distribuiti sui pin GND della scheda.</td></tr><tr><td><code>i2c_sda</code>, <code>i2c_scl</code></td><td>I pin I2C predefiniti della scheda. Tutti i componenti I2C condividono quel bus, e quei pin restano liberi per lui.</td></tr><tr><td><code>spi_mosi</code>, <code>spi_miso</code>, <code>spi_sck</code></td><td>I pin SPI hardware della scheda, condivisi da tutti i componenti SPI.</td></tr><tr><td><code>spi_cs</code></td><td>Il pin CS del bus per il primo componente SPI, il primo pin sicuro libero per ognuno degli altri.</td></tr><tr><td><code>analog_out</code></td><td>Il primo pin ADC libero, nell’ordine di preferenza della scheda (sull’ESP32 prima l’ADC1, perché l’ADC2 si ferma con il Wi-Fi).</td></tr><tr><td><code>int</code></td><td>Prima un pin solo ingresso (vanno bene per gli interrupt e altrimenti sono difficili da usare), poi un pin sicuro.</td></tr><tr><td>altri segnali</td><td>Il primo pin libero dell’elenco dei pin sicuri della scheda.</td></tr><tr><td><code>passive</code></td><td>Non va alla scheda: un carico o l’alimentazione di un modulo si collegano tra componenti, o a mano.</td></tr></tbody></table></div>
+          <p>Il risultato è deterministico: lo stesso disegno sulla stessa scheda ottiene sempre gli stessi pin. Se la scheda finisce i pin, il pin resta scollegato e l’app lo dice.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/shared/assign.ts"><code>shared/assign.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/board.ts"><code>shared/board.ts</code></a></p>
+        </section>
+        <section id="checks">
+          <h2>Cosa controlla il verificatore di cablaggio</h2>
+          <p>Una funzione pura gira a <b>ogni modifica</b> del disegno, che il filo l’abbia disegnato tu, un modello di progetto o l’IA. Ogni risultato appare sul pin o sul filo in 3D, nel registro con la sua fonte (il file della scheda o del componente) e nel banner degli avvisi, con una correzione quando esiste.</p>
+          <div class="hiw-table"><table><thead><tr><th>Regola</th><th>Cosa trova</th></tr></thead><tbody><tr><td><code>unknown_pin</code></td><td>Un filo verso un pin che la scheda non ha.</td></tr><tr><td><code>flash_pin</code></td><td>Qualsiasi cosa collegata a un pin della flash.</td></tr><tr><td><code>voltage_mismatch</code></td><td>Un componente alimentato sopra la sua tensione (5 V su un sensore a 3,3 V), sotto, o un filo di massa su un pin di alimentazione (un cortocircuito).</td></tr><tr><td><code>wrong_pin_type</code></td><td>Un componente alimentato da un GPIO, un segnale su un pin di alimentazione o di massa.</td></tr><tr><td><code>missing_power</code>, <code>missing_ground</code></td><td>Un componente con il pin di alimentazione o di massa scollegato.</td></tr><tr><td><code>output_on_input_only</code></td><td>Un pin che la scheda deve pilotare (un LED, SDA, un chip select) su un pin solo ingresso.</td></tr><tr><td><code>not_adc</code></td><td>Un’uscita analogica collegata a un pin senza ADC.</td></tr><tr><td><code>adc2_wifi</code></td><td>Una lettura analogica su un pin ADC2 dell’ESP32, che fallisce con il Wi-Fi acceso.</td></tr><tr><td><code>strapping_pin</code></td><td>Un componente che può tirare un pin di strapping al reset e impedire l’avvio.</td></tr><tr><td><code>reserved_pin</code>, <code>uart0_pin</code></td><td>Pin usati dalla scheda stessa: il collegamento seriale USB, l’USB nativo, la porta di debug.</td></tr><tr><td><code>shared_pin_conflict</code></td><td>Due componenti che pilotano lo stesso pin (bus e alimentazione esclusi).</td></tr><tr><td><code>i2c_swapped</code></td><td>SDA e SCL invertiti rispetto ai pin I2C della scheda.</td></tr><tr><td><code>logic_level</code></td><td>Un componente a 3,3 V su una scheda a 5 V, o un’uscita a 5 V su un pin che non tollera 5 V.</td></tr><tr><td><code>i2c_address_conflict</code></td><td>Due componenti sullo stesso bus allo stesso indirizzo: un avviso quando uno si può spostare (indica il pin dell’indirizzo), un errore quando nessuno può.</td></tr></tbody></table></div>
+          <p>Le stesse regole producono una <b>lista della spesa</b>: due pull-up da 4,7 kΩ quando nessun modulo I2C ha i suoi, un pull-up 1-Wire quando le note del componente lo chiedono, un partitore da 1 kΩ + 2 kΩ per ogni uscita a 5 V su un pin a 3,3 V, un traslatore di livello per le linee bidirezionali e, dalle note dei componenti, diodi di ricircolo sulle bobine e resistenze di partitore per sensori nudi come un LDR.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/shared/wiring.ts"><code>shared/wiring.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/bom.ts"><code>shared/bom.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/tests/wiring.test.ts"><code>tests/wiring.test.ts</code></a></p>
+        </section>
+        <section id="ai">
+          <h2>Come l’IA costruisce un progetto</h2>
+          <p>L’assistente non collega niente da solo. È un modello linguistico con un insieme di <b>strumenti</b>, e dietro ogni strumento il lavoro vero lo fa l’app:</p>
+          <ol><li><b>Contesto.</b> A ogni domanda il modello riceve i dati e i pin della scheda (con i loro flag), il tuo disegno, le schede della libreria dei componenti presenti, il codice del progetto, gli eventi recenti dell’app e le ultime righe del registro.</li><li><b>Scelta dei componenti.</b> <code>search_parts</code> cerca nella libreria di 383 componenti e restituisce, per ognuno, ciò che li distingue: cosa misura, bus, alimentazione, come si adatta alla logica della scheda, note dei pin, trappole note, corrente. <code>offer_choices</code> ti mostra da 2 a 4 schede; scegli tu.</li><li><b>Proposta.</b> <code>propose_project</code> invia una lista di id della libreria, eventualmente i fili che il modello vuole e i collegamenti tra componenti (una pompa su un modulo MOSFET, un lettore RFID tramite un traslatore di livello). L’app rifiuta gli id sconosciuti (e suggerisce quelli reali più vicini), verifica ogni filo richiesto rispetto alla scheda e al componente, mette prima i collegamenti tra componenti, poi lascia che le regole dei pin sicuri colleghino il resto, infine esegue il verificatore.</li><li><b>Correzione.</b> Gli errori del verificatore, i pin rimasti scollegati e gli extra da comprare tornano al modello, che deve correggere gli errori e richiamare lo strumento prima di rispondere.</li><li><b>Risposta.</b> La risposta finale è strutturata: il messaggio, un’etichetta di affidabilità (misurato, dalla documentazione, suggerimento), le fonti e i pin o componenti da evidenziare. Il codice fa rispettare le regole di onestà: “misurato” è permesso solo se una misura è stata fatta in questo turno o è nel registro; le evidenziazioni che non esistono nel disegno vengono scartate.</li><li><b>Applicazione.</b> Non cambia nulla finché non premi Applica. Un nuovo progetto si apre nella sua scheda se quello aperto ha già componenti; Annulla riporta il disegno di prima. Scrivere sulla scheda dalla chat non è mai possibile: il modello può solo chiedere, e l’app mostra la sua finestra di conferma.</li></ol>
+          <p>Il modello ha anche strumenti per eseguire le azioni dell’app (backup della scheda, aprire il monitor, cambiare un’impostazione), chiedere codice nel pannello Codice, cercare nella memoria dei tuoi progetti e progettare cosa mostra un display.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/app/main/ai/tools.ts"><code>app/main/ai/tools.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/projectBuilder.ts"><code>shared/projectBuilder.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/app/main/ai/prompt.ts"><code>app/main/ai/prompt.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/app/main/ai/assistant.ts"><code>app/main/ai/assistant.ts</code></a></p>
+        </section>
+        <section id="code">
+          <h2>Codice che corrisponde al disegno</h2>
+          <p>Il codice di partenza nasce dal disegno: ogni pin diventa un <code>#define</code> con il pin della scheda a cui è collegato, i bus partono sui pin collegati e i progetti di partenza Pico SDK, ESP-IDF e STM32 HAL leggono all’avvio l’ID del chip di ogni componente che nella libreria ne ha uno. Il <b>verificatore del codice</b> confronta qualsiasi sketch (generato, incollato o scritto dall’IA) con il disegno: pin di <code>Wire.begin()</code> diversi dal cablaggio, <code>pinMode(…, OUTPUT)</code> su un pin solo ingresso, <code>analogRead</code> su un pin senza ADC o sull’ADC2 mentre lo sketch avvia il Wi-Fi, un LED collegato a un pin mentre il codice ne pilota un altro, una velocità seriale diversa da quella del monitor. I risultati indicano la riga di codice e il pin in 3D.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/shared/sketch.ts"><code>shared/sketch.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/codeCheck.ts"><code>shared/codeCheck.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/starter/index.ts"><code>shared/starter/index.ts</code></a></p>
+        </section>
+        <section id="measure">
+          <h2>Misure, non supposizioni</h2>
+          <p>Per vedere una scheda reale, BoardPilot installa un piccolo firmware, l’<b>agente diagnostico</b> (dopo una conferma e un backup completo della flash). L’app gli parla in seriale con una riga JSON per richiesta e risposta: leggere tutti i pin, verificare i pull-up esterni (pull interni spenti, poi lettura del livello), scansionare il bus I2C, leggere registri, leggere un pin ADC, pilotare un pin (solo dopo la tua conferma). L’agente stesso rifiuta i pin della flash e le uscite sui pin solo ingresso.</p>
+          <p>Il trucco classico è il <b>test di scambio</b>: sui chip in cui i pin I2C si possono spostare via software, il bus viene scansionato una volta come cablato e una volta con SDA e SCL scambiati. Se un dispositivo risponde solo con lo scambio, i fili sono invertiti, e l’app dice quali. Una lettura dell’ID del chip distingue poi un vero BME280 (0x60) da un BMP280 venduto come tale (0x58). La scheda misura la tensione solo sui pin ADC; altrove l’app riporta un livello digitale e non mostra mai una tensione che non ha misurato.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/firmware/agent"><code>firmware/agent</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/protocol.ts"><code>shared/protocol.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/flows/debug-sensor-not-responding.ts"><code>flows/debug-sensor-not-responding.ts</code></a></p>
+        </section>
+        <section id="sim">
+          <h2>Come funziona il simulatore</h2>
+          <p>La scheda simulata implementa la <b>stessa interfaccia</b> di quella reale, quindi ogni schermata, flusso e strumento dell’IA funziona uguale senza hardware. Uno scenario del simulatore contiene due cose: il disegno che vedi e la <b>verità fisica</b> sul banco, che può essere diversa, per esempio con SDA e SCL invertiti sul sensore, un BMP280 dove è disegnato un BME280, un sensore senza alimentazione, una porta occupata o una velocità seriale sbagliata. L’agente simulato risponde ai comandi dalla verità fisica, con le stesse regole del firmware reale, così i flussi di debug trovano il guasto come farebbero su un banco vero.</p>
+          <p>I modelli di progetto girano anche come <b>simulazione passo per passo</b> del programma: i pin cambiano, i valori si muovono, i display mostrano testo e ogni passo è collegato alla sua riga di codice. Tutto ciò che è simulato è etichettato come tale e mai mescolato ai dati misurati.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/app/main/sim/simDriver.ts"><code>app/main/sim/simDriver.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/app/main/sim/simWorld.ts"><code>app/main/sim/simWorld.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/app/main/sim/scenarios/weather-station-swapped.json"><code>app/main/sim/scenarios/weather-station-swapped.json</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/templates.ts"><code>shared/templates.ts</code></a></p>
+        </section>
+        <section id="display">
+          <h2>Display Studio: pixel per pixel</h2>
+          <p>Il progetto di un display è un dato: schermate di testi, valori, barre, grafici, indicatori a lancetta, icone e pattern di prova, con cambi a tempo o a condizione e valori simulati. L’app lo disegna in un framebuffer alla risoluzione e profondità di colore reali del pannello (RGB565 sui TFT a colori, un bit su OLED ed e-paper), con gli algoritmi di linea e cerchio di Adafruit GFX, un font 5×7 e calcoli dei pattern a interi. Lo sketch Arduino generato porta lo stesso font, le stesse icone e gli stessi calcoli e disegna con Adafruit GFX.</p>
+          <p>Per dimostrare che coincidono, un test compila sul computer la vera libreria Adafruit GFX con il codice di disegno generato e confronta <b>ogni pixel</b> dei suoi fotogrammi con quelli dell’app, su quattro pannelli e due rotazioni; la valutazione dal vivo dell’IA fa lo stesso per ogni display che l’IA progetta. Gli sketch si compilano anche per ESP32, ESP32-S3, Arduino Uno e Raspberry Pi Pico.</p>
+          <p class="hiw-src"><a href="https://github.com/mojeee/boardpilot/blob/main/shared/displayRender.ts"><code>shared/displayRender.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/shared/displayCode.ts"><code>shared/displayCode.ts</code></a> · <a href="https://github.com/mojeee/boardpilot/blob/main/tests/display.test.ts"><code>tests/display.test.ts</code></a></p>
+        </section>
+        <section id="tests">
+          <h2>Come viene verificato</h2>
+          <ul><li><b>Oltre 3.200 test unitari</b> (Vitest): file di schede e componenti, scelta dei pin e regole di cablaggio su ogni modello di progetto su ogni scheda, il verificatore del codice, i flussi contro il simulatore, il protocollo dell’agente, il renderer e il generatore di codice dei display.</li><li><b>Test end-to-end</b> (Playwright) guidano l’app compilata in modalità simulatore attraverso ogni scenario: collegamento, nuovo progetto, flash con backup, ogni flusso di debug, monitor, test hardware, report, esportazione PDF, un’azione dell’IA, una conversazione registrata.</li><li><b>Una valutazione dal vivo dell’IA</b> invia 26 richieste all’assistente vero con un modello piccolo che fa l’utente, valuta ogni conversazione con le regole dell’app stessa, compila i display progettati dall’IA per il confronto dei pixel e fa rileggere ogni conversazione a un secondo modello per i consigli pericolosi. L’ultimo giro ha superato 26 su 26 con Claude Sonnet 5.5; ogni giro, con cosa ha trovato e cosa è stato corretto, è pubblicato.</li></ul>
+          <p><a href="https://github.com/mojeee/boardpilot/blob/main/docs/ai-evals/README.md">Leggi i report della valutazione dell’IA</a> · <a href="https://github.com/mojeee/boardpilot">Codice su GitHub</a></p>
+        </section>
+      </div>
+    </main>
+<footer class="footer">
+      <div class="wrap foot-in">
+        <div class="brand"><img class="logo-img" src="/logo-mark.svg?v=28c7ad82dd" width="28" height="28" alt="" />BoardPilot</div>
+        <div class="foot-links">
+          <a href="https://github.com/mojeee/boardpilot">GitHub</a>
+          <a href="https://github.com/mojeee/boardpilot/blob/main/LICENSE.md" data-i18n="foot.license">Licenza</a>
+          <a href="https://github.com/mojeee/boardpilot/releases" data-i18n="foot.releases">Versioni</a>
+          <a href="/it/parts/" data-i18n="nav.parts">Componenti</a>
+          <a href="/it/boards/" data-i18n="nav.pinout">Schede</a>
+          <a href="https://github.com/mojeee/boardpilot/issues" data-i18n="foot.support">Assistenza</a>
+          <a href="/it/learn/">Impara</a>
+        </div>
+        <div class="fine">© 2026 Mojtaba Amini · <a href="https://agentflowbind.com">agentflowbind.com</a></div>
+      </div>
+    </footer>
+  </body>
+</html>

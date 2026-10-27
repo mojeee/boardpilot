@@ -14,7 +14,16 @@
   ],
   "bus": "spi",
   "voltage": "3.3",
-  "model": { "shape": "module", "size": [29, 15, 3], "color": "#1A1A1A" },
+  "model": {
+    "shape": "module", "size": [29, 15, 3], "color": "#1A1A1A", "silk": "NRF24L01",
+    "components": [
+      { "type": "chip", "at": [-4, 0.5], "size": [4, 4, 0.9], "package": "qfn", "label": "NRF24L01+" },
+      { "type": "crystal", "at": [2.5, 0.5], "size": [3.2, 2.5, 0.8], "label": "16.000" },
+      { "type": "antenna", "at": [10, 0.5], "size": [7, 9] },
+      { "type": "smd", "at": [-4, 5], "size": [1.6, 0.8], "count": 4 },
+      { "type": "smd", "at": [2.5, 5], "size": [1.0, 0.5], "count": 3 }
+    ]
+  },
   "keywords": ["nrf24l01", "nrf24", "2.4ghz", "radio", "wireless", "transceiver", "radio"],
   "sources": [
     { "title": "Nordic nRF24L01+ product specification", "section": "SPI interface, CE and IRQ pins; supply 1.9 to 3.6 V" }

@@ -3,7 +3,7 @@
 // button the user would click. Writes to the board go through the same confirmation dialogs as a
 // click would; backups and reads need none.
 
-import { APP_ACTIONS, actionById, type AppActionId } from '@shared/actions';
+import { APP_ACTIONS, actionById, parseSetting, type AppActionId } from '@shared/actions';
 import type { McpActionAnswer } from '@shared/api';
 import { BOARDS, PARTS, boardList, getBoard } from '@shared/board';
 import { assignPins } from '@shared/assign';
@@ -82,6 +82,8 @@ async function ensureBoard(run: Run) {
 
 const SCREEN: Record<string, Parameters<ReturnType<typeof useApp.getState>['setScreen']>[0]> = {
   project: 'newProject',
+  archive: 'archive',
+  pastprojects: 'archive',
   newproject: 'newProject',
   connect: 'connect',
   flash: 'flash',
@@ -244,6 +246,46 @@ async function execute(run: Run, id: AppActionId, arg: string) {
     case 'ai_settings':
       (await import('../components/AiSettings')).openAiSettings();
       return run.done();
+    case 'change_setting': {
+      const p = parseSetting(a);
+      if ('error' in p) run.fail(p.error);
+      const { name, value } = p as Exclude<typeof p, { error: string }>;
+      switch (name) {
+        case 'language':
+          (await import('./lang')).changeLanguage(value as 'en' | 'it');
+          break;
+        case 'light':
+          (await import('./view3d')).useView3d.getState().setLight(value as 'studio' | 'bench' | 'contrast');
+          break;
+        case 'detail':
+          (await import('./view3d')).useView3d.getState().setDetail(value as 'simple' | 'full' | 'labels');
+          break;
+        case 'floor':
+          useScene.getState().setStage(value as 'desk' | 'plain');
+          break;
+        case 'labels':
+          useScene.getState().set({ labels: value === 'on' });
+          break;
+        case 'hardware': {
+          run.step(value === 'real' ? t('Switching to your real board on USB') : t('Switching to the simulated board'));
+          const r = await window.bp.hw.setMode(value === 'real' ? 'real' : 'sim');
+          if (!r.ok) run.fail(`${t(r.error.humanMessage)} ${t(r.error.hint)}`);
+          useApp.getState().set({ conn: (r as Extract<typeof r, { ok: true }>).value });
+          run.ok();
+          break;
+        }
+        case 'scenario': {
+          if (useApp.getState().conn.mode !== 'sim') run.fail(t('Scenarios are for the simulated board. Switch to the simulator first.'));
+          const known = useApp.getState().scenarios.find((s) => s.id === value);
+          if (!known) run.fail(t('There is no scenario “{name}”. Scenarios: {list}.', { name: value, list: useApp.getState().scenarios.map((s) => s.id).join(', ') }));
+          const r = await window.bp.sim.load(value);
+          if (!r.ok) run.fail(`${t(r.error.humanMessage)} ${t(r.error.hint)}`);
+          useScene.getState().openScene(await window.bp.sim.scene());
+          break;
+        }
+      }
+      return run.done(t('{setting} is now {value}.', { setting: name, value }));
+    }
   }
 }
 

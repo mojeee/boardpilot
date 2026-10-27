@@ -180,6 +180,7 @@ export class GeminiProvider implements AiProvider {
     if (req.system) body.systemInstruction = { parts: [{ text: req.system }] };
     if (req.tools?.length) body.tools = toGeminiTools(req.tools);
     else if (withSearch) body.tools = [{ google_search: {} }];
+    if (req.tools?.length && req.toolChoice === 'none') body.toolConfig = { functionCallingConfig: { mode: 'NONE' } };
     return body;
   }
 

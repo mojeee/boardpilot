@@ -36,7 +36,8 @@
       5,
       8.6
     ],
-    "color": "#F2F2F2"
+    "color": "#F2F2F2",
+    "kind": "rgb-led"
   },
   "keywords": [
     "rgb led",

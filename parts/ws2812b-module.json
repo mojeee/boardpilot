@@ -10,7 +10,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "led", "size": [11.2, 10, 3], "color": "#1A1A1A" },
+  "model": { "shape": "led", "size": [11.2, 10, 3], "color": "#1A1A1A", "kind": "pixel" },
   "keywords": ["ws2812b", "neopixel", "5050", "rgb led", "addressable", "led rgb"],
   "sources": [
     { "title": "Worldsemi WS2812B datasheet", "section": "Supply 3.5 to 5.3 V; data input high level 0.7 × VDD" }

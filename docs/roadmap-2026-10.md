@@ -534,7 +534,9 @@ Goal: a cleaner, IDE-like workspace where the AI sees everything that happens an
          (accept with Tab, explain, dismiss) that use the parts and pins in the drawing, each with
          its source (part library entry, library name).
    - [x] New project also offers **"Describe it"**: the assistant asks questions, then suggests
-         parts, wiring and starter code for the user to confirm.
+         parts, wiring and starter code for the user to confirm. Since 0.7.1 the proposal is
+         checked by the wiring rules before the user sees it; tested against Claude with
+         `npm run eval:ai` (docs/ai-evals/); recorded conversations play on the website.
 6. **Warnings as a banner**
    - [x] Warnings (wiring checker, code check, AI findings) appear as a banner across the top of the
          project page: plain text, the source, and buttons Fix, Show on the board, Ask why, with

@@ -54,7 +54,12 @@ async function runNamedDemo(name: string, scenario: string | null) {
     await window.bp.sim.load(scenario);
     useScene.getState().openScene(await window.bp.sim.scene());
   }
-  if (name === 'debug') {
+  if (name === 'chat') {
+    // A recorded conversation with the assistant (website demo): #demo=chat&chat=<recording id>
+    const { playById, RECORDINGS } = await import('./replay/player');
+    const id = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('chat') ?? RECORDINGS[0]?.id ?? '';
+    if (!(await playById(id))) useApp.getState().setScreen('newProject');
+  } else if (name === 'debug') {
     useApp.getState().setScreen('debug');
     useWizard.getState().start('debug-sensor-not-responding');
     const w = () => useWizard.getState();
@@ -130,9 +135,60 @@ async function runNamedDemo(name: string, scenario: string | null) {
       await connectAndInstall();
       await startStream(20);
     }
+  } else if (name === 'parts') {
+    // #demo=parts&ids=dht22,hc-sr04[&board=esp32-devkitc-30][&cols=4]: parts in rows in front of
+    // the board, to look at their 3D models (the gallery image on the website, development).
+    const params = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
+    const id = params.get('board') ?? 'esp32-devkitc-30';
+    const ids = (params.get('ids') ?? 'bme280-gy,dht22,hc-sr04,ssd1306-i2c').split(',').filter(Boolean);
+    const { PARTS } = await import('@shared/board');
+    const cols = Number(params.get('cols') ?? 4);
+    const gap = Number(params.get('gap') ?? 0);
+    const sizes = ids.map((p) => PARTS[p]?.model.size ?? [20, 20, 5]);
+    const cell = gap || Math.max(30, ...sizes.map((s) => Math.max(s[0], s[1]) + 12));
+    const parts = ids.map((partId, i) => ({
+      id: `g${i}`,
+      partId,
+      position: [(i % cols - (Math.min(cols, ids.length) - 1) / 2) * cell, 0, 32 + cell / 2 + Math.floor(i / cols) * cell] as [number, number, number],
+      rotation: 0,
+    }));
+    useScene.getState().openScene({ board: id, parts, wires: [] });
+    await until(() => useApp.getState().conn.board === id);
+    openTask('connect');
+    // &close=1: the camera on the parts only, without the selection rings of a focus
+    if (params.get('close')) {
+      await sleep(800);
+      useScene.getState().focusOn(parts.map((p) => `part:${p.id}` as const));
+      await sleep(300);
+      useScene.setState({ highlight: [], selected: null });
+    }
   } else if (name === 'boards') {
     const { openBoardPicker } = await import('./components/BoardPicker');
     openBoardPicker();
+  } else if (name === 'archive') {
+    // #demo=archive[&open=<project name>]: Past projects with the sample archive scanned, one project open.
+    const { useArchive } = await import('./state/archive');
+    useApp.getState().setScreen('archive');
+    await useArchive.getState().load();
+    if (!useArchive.getState().projects.length) await useArchive.getState().addSample();
+    const want = new URLSearchParams(location.hash.replace(/^#\/?/, '')).get('open') ?? 'nodo-modbus-caldaia';
+    const p = useArchive.getState().projects.find((x) => x.name === want);
+    if (p) useArchive.getState().select(p.id);
+  } else if (name === 'similar') {
+    // #demo=similar: the sample archive, a new project described in the chat, and the
+    // "Similar past project" card (no AI is called: the card comes from the archive alone).
+    const { useArchive } = await import('./state/archive');
+    const { useProjects } = await import('./state/projects');
+    const { useLayout } = await import('./state/layout');
+    const { useAi } = await import('./state/store');
+    const { t } = await import('@shared/i18n');
+    await useArchive.getState().load();
+    if (!useArchive.getState().projects.length) await useArchive.getState().addSample();
+    openTask('newProject');
+    useProjects.getState().add({ board: useApp.getState().conn.board, parts: [], wires: [] }, t('New project'));
+    useLayout.getState().toggleRight(true);
+    useLayout.getState().setRightTab('assistant');
+    useAi.getState().push({ role: 'user', text: t('A Wi-Fi room thermostat with an NTC probe and a relay for the boiler') });
   } else if (name === 'template') {
     // #demo=template&id=plant-watering[&speed=4]: build a template and run it in the simulator.
     openTask('newProject');
@@ -299,6 +355,27 @@ async function runNamedDemo(name: string, scenario: string | null) {
   } else if (name === 'cmdk') {
     // #demo=cmdk: the "Ask AI or find anything" box open.
     (await import('./components/CommandBox')).openCommandBox();
+  } else if (name === 'display') {
+    // #demo=display[&part=st7789-240][&board=esp32-devkitc-30]: Display Studio with the test patterns
+    // on a display wired by the safe-pin rules, in a project tab of its own.
+    const hp = new URLSearchParams(location.hash.replace(/^#\/?/, ''));
+    const partId = hp.get('part') ?? 'st7789-240';
+    const boardId = hp.get('board') ?? 'esp32-devkitc-30';
+    const [{ buildProposal }, { PARTS }, { panelOf }, { testPatternSpec }, { useProjects }, { useLayout }] = await Promise.all([
+      import('@shared/projectBuilder'),
+      import('@shared/board'),
+      import('@shared/displaySpec'),
+      import('@shared/displayExamples'),
+      import('./state/projects'),
+      import('./state/layout'),
+    ]);
+    const panel = PARTS[partId] ? panelOf(PARTS[partId]) : null;
+    const r = buildProposal({ title: 'Display', summary: '', board: boardId, keepExisting: false, parts: [{ id: 'tft1', partId, label: 'Display', why: '' }], wires: [], links: [] }, { board: boardId, parts: [], wires: [] }, PARTS);
+    if (panel && r.ok) {
+      useProjects.getState().add({ ...r.proposal.scene, displays: [testPatternSpec('tft1', panel)] }, 'Display Studio');
+      useLayout.getState().toggleRight(true);
+      useLayout.getState().setRightTab('tools');
+    }
   } else if (name === 'project') {
     useScene.getState().openScene({ board: 'esp32-devkitc-30', parts: [], wires: [] });
     openTask('newProject');

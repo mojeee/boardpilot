@@ -11,7 +11,12 @@
   ],
   "bus": "analog",
   "voltage": "5",
-  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8", "silk": "MQ-135",
+    "components": [
+      { "type": "can", "at": [0, 1.5], "size": [19, 19, 16] }
+    ]
+  },
   "keywords": ["mq-135", "mq135", "air quality", "nh3", "benzene", "qualità aria", "gas"],
   "sources": [
     { "title": "Hanwei MQ-135 datasheet", "section": "Sensitive to NH3, NOx, alcohol, benzene, smoke, CO2; heater 5 V" },

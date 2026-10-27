@@ -63,7 +63,8 @@ export interface MotionClip {
   /** Length of the clip in seconds (5 to 15). */
   duration: number;
   /** Always-visible label: "Simulator" for anything the simulated board produced, "Lesson" for a Learn widget. */
-  tag: 'Simulator' | 'Lesson';
+  /** Simulator: the simulated board made it. Lesson: a Learn widget. Sample: the fictional sample archive. */
+  tag: 'Simulator' | 'Lesson' | 'Sample';
   steps: MotionStep[];
   /** Post text for the social channel (English, Italian). */
   post: { en: string; it: string };
@@ -80,6 +81,8 @@ export interface MotionJob {
   srtPrefix?: string;
   /** Board names for `board` steps (id → name), read from /boards by the render script. */
   boardNames?: Record<string, string>;
+  /** Language of the app and of the burned-in captions (default English). */
+  lang?: 'en' | 'it';
 }
 
 /** Phone readability rule from the issue: at most 8 words on screen at once. The brand name and

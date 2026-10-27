@@ -10,7 +10,11 @@ npm run motion -- found-it pwm                  # some clips
 npm run motion -- --format 9x16                 # one format (or 16x9,1x1)
 npm run motion -- --fps 10 honest-ai            # quick preview at a lower frame rate
 npm run motion -- --keep-frames                 # keep the PNG frames after encoding
+npm run motion -- --lang it                     # Italian app and captions (--lang en,it for both)
+npm run motion -- --format 16x9 --lang en,it --site past-projects   # also the website copies
 ```
+
+`--site` also writes the website copies of the 16:9 clip: `site/video/<clip>-<lang>.mp4` (1280 px wide, about 0.3 to 0.6 MB) and a `.jpg` poster frame. The landing page plays them muted, with the burned-in captions in the page's language.
 
 `npm run motion` builds the app first; `node scripts/render-motion.mjs …` renders an existing build. On Linux without a display the script runs Electron under `xvfb-run` with software WebGL, like the screenshot script.
 
@@ -56,6 +60,9 @@ Rules from the issue, checked by `tests/motion.test.ts`: at most 6 words per cap
 | `register-bits` | Register bits | The Learn lesson on bits: each button runs one line of C (typed on screen) and the register changes. | `#screen=learn&lesson=c-bits` |
 | `pwm` | PWM | The duty cycle grows: the wave widens, the LED brightens, the motor speeds up. | `#screen=learn&lesson=essentials` |
 | `i2c-decode` | I2C decoded | One register read decoded bit by bit: start, address, ACK, register, restart, data, stop. | `#demo=test`, crossed-wires scenario |
+| `past-projects` | Past projects | The sample archive in the table; the detail panel shows each value with the file and line it was read from (tag **Sample**). | `#demo=archive&open=nodo-modbus-caldaia` |
+| `similar-project` | Similar past project | A described project in the chat, the "Similar past project" card with what is in common, then Use as start (tag **Sample**). | `#demo=similar` |
+| `room-thermostat` | Room thermostat | The room thermostat template in the simulator: heat demand below the setpoint, at most one boiler switch a minute. | `#demo=template&id=hvac-room-thermostat` |
 | `no-hardware` | Works without hardware | The Simulator chip, the Simulator / Real board switch and the scenarios: every task runs without a board. | `#demo=live` |
 
 The **Honest AI** clip shows the source badges on the wizard result and the log, not a reply from a language model: a model reply needs a key and the network and is different every time, and the clip must never show an answer the app did not give. The post texts for each clip are in [launch/motion-posts.md](launch/motion-posts.md).
@@ -67,6 +74,6 @@ Clips are data in [`motion/clips.json`](../motion/clips.json) (types in `shared/
 - `hash`: the app link to open (`#demo=…`, `#screen=…`); `ready`: a CSS selector that exists once the demo reached its state; `settle`: extra seconds to wait.
 - `setup`: steps run before recording (for example the first camera framing). `steps`: the timeline, each with `at` in seconds.
 - Step types: `caption` (English on screen, Italian for the subtitles), `uncaption`, `ring` and `arrow` (a selector, optional `text` to pick the element containing it, a `tone` from the tokens), `clear`, `camera` (frame a selector or `all`; `fill` makes it cover the frame), `click`, `slide` (a range input), `pan` (scroll a wide panel), `hide` / `reveal` / `type` (wipe an element in), `scroll`, `board` (also shows its name), `part` (drops a library part, the 3D camera pulls back), `view` (camera preset), `focus` (3D targets like `wire:w1`), `mode`.
-- `tag`: `Simulator` for anything the simulated board produced, `Lesson` for a Learn widget. `post`: the post text in English and Italian.
+- `tag`: `Simulator` for anything the simulated board produced, `Lesson` for a Learn widget, `Sample` for the fictional sample archive. `post`: the post text in English and Italian.
 
 The overlay code is in `app/renderer/motion/` and loads only when the capture window opens with `motion=1`; the capture itself is `app/main/motion.ts`, active only with `BP_MOTION` set. Neither is shown in normal use.

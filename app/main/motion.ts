@@ -37,7 +37,7 @@ export function motionWindowOptions(job: MotionJob): BrowserWindowConstructorOpt
 }
 
 /** The hash the capture window opens: the clip's demo link plus motion=1 (loads the overlay code). */
-export const motionHash = (job: MotionJob) => `${job.clip.hash}&lang=en&motion=1`;
+export const motionHash = (job: MotionJob) => `${job.clip.hash}&lang=${job.lang ?? 'en'}&motion=1`;
 
 async function until(check: () => Promise<boolean>, ms: number, what: string) {
   const end = Date.now() + ms;

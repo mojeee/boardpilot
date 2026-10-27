@@ -49,11 +49,29 @@
   "model": {
     "shape": "oled",
     "size": [
-      80,
-      80,
+      103,
+      78.5,
       4
     ],
     "color": "#EDEDED"
+  },
+  "display": {
+    "widthPx": 400,
+    "heightPx": 300,
+    "activeMm": [
+      84.8,
+      63.6
+    ],
+    "glassMm": [
+      90.1,
+      77
+    ],
+    "color": "epaper",
+    "tint": "#111111",
+    "source": {
+      "title": "Waveshare 4.2inch e-Paper Module Manual + product page",
+      "section": "Parameters: display dimensions 84.8 x 63.6 mm, outline (screen only) 90.1 x 77.0 x 1.18 mm; product page outline 103.0 x 78.5 mm"
+    }
   },
   "keywords": [
     "e-paper",

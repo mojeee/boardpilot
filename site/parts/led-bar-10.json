@@ -105,7 +105,8 @@
       10,
       8
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "kind": "led-bar"
   },
   "keywords": [
     "led bar",

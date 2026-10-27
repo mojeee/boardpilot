@@ -251,6 +251,20 @@ test('the AI does an app action: "back up my board"', async () => {
   }
 });
 
+test('a recorded conversation builds a project: cards, Apply, wires on the board, code', async () => {
+  a = await launch({ hash: '#demo=chat&chat=weather-esp32' });
+  const { page } = a;
+  await expect(page.locator('.replay-bar')).toContainText('Recorded conversation');
+  // The assistant offers parts as cards, and the recorded pick lights up.
+  await expect(page.locator('.ai-choice').first()).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator('.ai-choice.on')).toHaveCount(1, { timeout: 30_000 });
+  // The proposal is applied: its parts are in the project and the code is open.
+  await expect(page.locator('.proposal')).toContainText('Applied to your project', { timeout: 60_000 });
+  await expect(page.locator('.proposal .proposal-wiring tr').first()).toBeVisible();
+  expect(await logText(page)).toContain('Applied the assistant’s project');
+  await expect(page.locator('.replay-bar')).toContainText('Try it yourself', { timeout: 30_000 });
+});
+
 test('the web demo build exists for the website', () => {
   expect(existsSync(join(__dirname, '../site/demo/index.html'))).toBe(true);
 });

@@ -11,7 +11,15 @@
   ],
   "bus": "analog",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [42, 15, 8], "color": "#B22222" },
+  "model": {
+    "shape": "module", "size": [42, 15, 8], "color": "#B22222", "silk": "KY-038",
+    "components": [
+      { "type": "mic", "at": [16, 1.5], "size": [9.7, 9.7, 6.5] },
+      { "type": "trimpot", "at": [3, 2], "size": [9.5, 4.8, 10] },
+      { "type": "chip", "at": [-9, 2], "size": [5, 4], "package": "soic", "label": "LM393" },
+      { "type": "led", "at": [-17, 3], "size": [1.6, 0.8], "color": "#ff3b30" }
+    ]
+  },
   "keywords": ["ky-038", "sound", "microphone", "noise", "clap", "suono", "microfono", "rumore"],
   "sources": [
     { "title": "Joy-IT KY-038 datasheet", "section": "Pins A0, G, +, D0" }

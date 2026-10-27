@@ -11,7 +11,15 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "module", "size": [36, 24, 8], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [36, 24, 8], "color": "#1F4FA8", "silk": "GY-NEO6MV2",
+    "components": [
+      { "type": "shield", "at": [-8, 2], "size": [12.2, 16, 2.4], "label": "u-blox NEO-6M" },
+      { "type": "patch", "at": [8, 2], "size": [12, 12, 4] },
+      { "type": "battery", "at": [-14, -2], "size": [6, 6] },
+      { "type": "led", "at": [14, -6], "size": [1.6, 0.8], "color": "#2f9bff" }
+    ]
+  },
   "keywords": ["neo-6m", "gps", "gnss", "u-blox", "location", "posizione", "navigatore"],
   "gotchas": [
     { "text": "The first fix needs a view of the sky and takes about 30 seconds or more. Indoors it may never find one.", "source": { "title": "u-blox NEO-6 datasheet", "section": "Time-to-first-fix, cold start 27 s" } },

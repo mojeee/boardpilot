@@ -3,10 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AiReply, AiSource } from '@shared/types';
 import type { SceneChange, SceneOp } from '@shared/sceneEdit';
-import { PARTS, targetLabel } from '@shared/board';
+import { targetLabel } from '@shared/board';
 import { currentBoard, log, useAi, useApp, useScene, type ChatItem } from '../state/store';
 import { showWhere, stopAction } from '../state/appActions';
-import { sceneWithParts } from '../state/buildProject';
 import { commitProjectEdit, previewProjectEdit } from '../state/sceneActions';
 import { revealLine } from '../state/code';
 import { useLayout } from '../state/layout';
@@ -16,12 +15,19 @@ import { askAi } from './ai';
 import { Icon } from './Icon';
 import { t } from '@shared/i18n';
 import { openAiSettings } from './AiSettings';
+import { ChoiceCards, ProposalCard, applyProposal } from './ProposalCard';
+import { SimilarProjects } from './SimilarProjects';
+import { ExampleChats, ReplayBar } from '../replay/ReplayBar';
+import { DisplayCard, applyDisplay } from './DisplayStudio';
+import { useReplay } from '../replay/player';
 
 const CONF_TEXT = { measured: 'Measured', documented: 'From documentation', suggestion: 'Suggestion' };
-const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said' };
+const SRC_KIND: Record<AiSource['kind'], string> = { measurement: 'measurement', datasheet: 'datasheet', library: 'library', user: 'you said', memory: 'project memory' };
 
-export function ReplyView({ reply }: { reply: AiReply }) {
+export function ReplyView({ reply, id }: { reply: AiReply; id?: number }) {
   const scene = useScene((s) => s.scene);
+  const mark = useAi((s) => (id === undefined ? undefined : s.marks[id]));
+  const last = useAi((s) => id !== undefined && s.items[s.items.length - 1]?.id === id);
   return (
     <div className="ai-reply">
       <div className="row gap">
@@ -41,7 +47,7 @@ export function ReplyView({ reply }: { reply: AiReply }) {
         <div className="ai-sources">
           {reply.sources.map((s, i) => (
             <div key={i} className={`src-line src-${s.kind}`}>
-              <span>{t(SRC_KIND[s.kind] ?? s.kind)}</span> {s.label}
+              <span>{t(SRC_KIND[s.kind] ?? s.kind)}</span> {s.kind === 'memory' ? s.label.replace(/^memory\s*·\s*/i, '') : s.label}
             </div>
           ))}
         </div>
@@ -56,7 +62,38 @@ export function ReplyView({ reply }: { reply: AiReply }) {
           ))}
         </details>
       )}
-      {reply.proposal && <ProposalCard proposal={reply.proposal} />}
+      {reply.choices && reply.choices.length > 0 && (
+        <ChoiceCards
+          choices={reply.choices}
+          picked={mark?.picked ?? null}
+          locked={!last || !!mark?.picked}
+          onPick={(c) => {
+            if (id !== undefined) useAi.getState().mark(id, { picked: c.label });
+            void askAi(c.label);
+          }}
+        />
+      )}
+      {reply.proposal && (
+        <ProposalCard
+          proposal={reply.proposal}
+          applied={mark?.applied ?? false}
+          onApply={() => {
+            const where = applyProposal(reply.proposal!);
+            if (id !== undefined) useAi.getState().mark(id, { applied: where });
+          }}
+        />
+      )}
+      {reply.display && id !== undefined && (
+        <DisplayCard
+          id={id}
+          display={reply.display}
+          applied={!!mark?.displayApplied}
+          onApply={() => {
+            applyDisplay(reply.display!.spec);
+            useAi.getState().mark(id, { displayApplied: true });
+          }}
+        />
+      )}
       {reply.sceneEdit && <AssistantEditCard edit={reply.sceneEdit} />}
       {reply.nextOptions.length > 0 && (
         <div className="next-options">
@@ -72,39 +109,6 @@ export function ReplyView({ reply }: { reply: AiReply }) {
 }
 
 /** Parts the assistant proposed: nothing changes until the user clicks "Add to the project". */
-function ProposalCard({ proposal }: { proposal: NonNullable<AiReply['proposal']> }) {
-  const [done, setDone] = useState(false);
-  const add = () => {
-    const before = useScene.getState().scene;
-    const { scene, notes } = sceneWithParts(before, proposal.partIds);
-    useScene.getState().setScene(scene, true);
-    useScene.getState().preset('home');
-    log('action', t('Added {parts} (you confirmed the assistant’s suggestion). ⌘Z undoes it.', { parts: proposal.partIds.map((id) => PARTS[id]?.name ?? id).join(', ') }), {
-      source: 'assistant suggestion, confirmed by you',
-    });
-    for (const n of notes) log('action', t('Pin assigned: {note}', { note: n }), { source: 'pin rules (safe pins)' });
-    setDone(true);
-  };
-  return (
-    <div className="ai-proposal">
-      <div className="label">{t('Parts to add')}</div>
-      <ul>
-        {proposal.partIds.map((id) => (
-          <li key={id}>
-            <b>{PARTS[id]?.name ?? id}</b> <span className="mono small dim">parts library · {id}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="row gap wrap">
-        <button className="btn small primary" disabled={done} onClick={add}>
-          {done ? t('Added') : t('Add to the project')}
-        </button>
-        <span className="small dim">{t('The safe-pin rules pick the pins. Nothing changes until you click.')}</span>
-      </div>
-    </div>
-  );
-}
-
 type EditState = 'pending' | 'applied' | 'declined' | 'expired';
 
 /**
@@ -366,6 +370,7 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
   const items = useMemo(() => all.filter((it) => it.role !== 'notice' || !it.tab || it.tab === activeTab), [all, activeTab]);
   const busy = useAi((s) => s.busy);
   const ai = useApp((s) => s.ai);
+  const replaying = useReplay((s) => !!s.rec);
   const list = useRef<HTMLDivElement>(null);
   useEffect(() => {
     list.current?.scrollTo({ top: list.current.scrollHeight, behavior: 'smooth' });
@@ -381,12 +386,22 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
           {ai.enabled ? (ai.provider === 'demo' ? t('demo') : ai.model) : t('off')}
         </button>
       </header>
-      {ai.enabled && ai.provider === 'demo' && <DemoBanner />}
+      {replaying ? <ReplayBar /> : ai.enabled && ai.provider === 'demo' && <DemoBanner />}
       <div className="ai-list" ref={list}>
-        {items.length === 0 && (
+        {items.length === 0 && !replaying && (
           <div className="ai-empty">
             {ai.enabled ? (
-              t('Ask anything about your board, wiring or code. I only state measurements I actually took, and show where every fact comes from.')
+              <>
+                {t('Ask anything about your board, wiring or code. I only state measurements I actually took, and show where every fact comes from.')}
+                <div className="label">{t('Describe a project to build')}</div>
+                <div className="next-options">
+                  {[t('A plant watering system'), t('A distance alarm with a buzzer'), t('A room monitor with a display')].map((x) => (
+                    <button key={x} className="btn small ghost" onClick={() => void askAi(x)}>
+                      {x}
+                    </button>
+                  ))}
+                </div>
+              </>
             ) : (
               <>
                 {t('The assistant is off because no API key is set. Add your own key for Claude, GPT or Gemini. Every check and measurement works without it.')}{' '}
@@ -395,6 +410,7 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
                 </button>
               </>
             )}
+            <ExampleChats />
           </div>
         )}
         {items.map((it) =>
@@ -403,7 +419,7 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
               {it.text}
             </div>
           ) : it.role === 'assistant' ? (
-            <ReplyView key={it.id} reply={it.reply} />
+            <ReplyView key={it.id} id={it.id} reply={it.reply} />
           ) : it.role === 'action' ? (
             <ActionCard key={it.id} item={it} />
           ) : it.role === 'edit' ? (
@@ -418,7 +434,8 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
         )}
         {busy && <div className="ai-thinking">{t('Checking…')}</div>}
       </div>
-      {!hideInput && <AskBox />}
+      {!hideInput && !replaying && <SimilarProjects />}
+      {!hideInput && !replaying && <AskBox />}
     </section>
   );
 }

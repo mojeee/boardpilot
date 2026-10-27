@@ -34,7 +34,23 @@
       20,
       12
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "TM1637",
+    "components": [
+      {
+        "type": "digits",
+        "at": [
+          0,
+          2.5
+        ],
+        "size": [
+          57,
+          14,
+          8
+        ],
+        "count": 6
+      }
+    ]
   },
   "keywords": [
     "tm1637",

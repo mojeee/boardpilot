@@ -22,7 +22,8 @@
       3,
       3
     ],
-    "color": "#C9CED4"
+    "color": "#C9CED4",
+    "kind": "reed"
   },
   "keywords": [
     "reed switch",

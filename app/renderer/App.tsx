@@ -22,6 +22,7 @@ import { Viewport } from './three/Viewport';
 import { WizardWithAssistant } from './wizard/WizardPanel';
 import { useWizard } from './wizard/session';
 import { Home } from './screens/Home';
+import { Archive } from './screens/Archive';
 import './styles/workspace.css';
 import { DebugPicker } from './screens/DebugPicker';
 import { TestHardware } from './screens/TestHardware';
@@ -38,6 +39,8 @@ import { DownloadAppPrompt, isWebDemo } from './components/WebDemo';
 import { usePartsLib } from './state/partsLib';
 import { useScene } from './state/store';
 import { t } from '@shared/i18n';
+import { startDisplayLoop } from './state/displays';
+import { DisplayPip } from './components/DisplayStudio';
 
 let booted = false;
 /** One-time start-up: events, license, user parts, project autosave. */
@@ -46,6 +49,7 @@ async function boot() {
   booted = true;
   await wireEvents();
   startEventFeed();
+  startDisplayLoop();
   await Promise.all([useLicense.getState().refresh(), usePartsLib.getState().load()]);
   if (useApp.getState().conn.mode === 'real') {
     const last = await window.bp.project.last();
@@ -146,6 +150,8 @@ function Center() {
       return <Report />;
     case 'learn':
       return <Learn />;
+    case 'archive':
+      return <Archive />;
     default:
       return <Viewport />;
   }
@@ -181,8 +187,8 @@ function Work() {
   const rightOpen = useLayout((s) => s.rightOpen);
   const bottomOpen = useLayout((s) => s.bottomOpen);
   const bottomMax = useLayout((s) => s.bottomMax);
-  // Home and Learn are whole pages of their own: no Code/Log panel under them.
-  const noBottom = useApp((s) => s.screen === 'home' || s.screen === 'learn');
+  // Home, Learn and Past projects are whole pages of their own: no Code/Log panel under them.
+  const noBottom = useApp((s) => s.screen === 'home' || s.screen === 'learn' || s.screen === 'archive');
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (handleLayoutKey(e)) e.preventDefault();
@@ -195,6 +201,7 @@ function Work() {
     <div className={cls}>
       <main className="center">
         <Center />
+        <DisplayPip />
       </main>
       <Right />
       {!noBottom && (

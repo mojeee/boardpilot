@@ -8,7 +8,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "motor", "size": [40, 40, 12], "color": "#1A1A1A" },
+  "model": { "shape": "motor", "size": [40, 40, 12], "color": "#1A1A1A", "kind": "speaker" },
   "keywords": ["speaker", "8 ohm", "loudspeaker", "audio", "altoparlante", "cassa"],
   "sources": [
     { "title": "Espressif ESP32 datasheet", "section": "GPIO drive strength is far too low for an 8 Ω load" }

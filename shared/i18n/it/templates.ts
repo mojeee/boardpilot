@@ -76,5 +76,24 @@ const it: Record<string, string> = {
   'Soil below 40%: pump on for 3 s': 'Terreno sotto il 40%: pompa accesa per 3 s',
   'distance': 'distanza',
   'motion': 'movimento',
+  // Room thermostat (hvac-room-thermostat)
+  'Room thermostat': 'Termostato ambiente',
+  'Reads the room temperature, closes a relay to ask the boiler for heat below the setpoint and opens it above, never more than once a minute. A button raises the setpoint; the display shows both.':
+    'Legge la temperatura della stanza, chiude un relè per chiedere calore alla caldaia sotto la temperatura impostata e lo apre sopra, mai più di una volta al minuto. Un pulsante alza la temperatura impostata; il display mostra entrambe.',
+  'Switch with hysteresis, so the relay does not chatter around the setpoint': 'Commutare con isteresi, così il relè non vibra intorno alla temperatura impostata',
+  'Protect the boiler with a minimum time between switches': 'Proteggere la caldaia con un tempo minimo tra due commutazioni',
+  'Keep the program responsive with millis() instead of delay()': 'Tenere il programma reattivo con millis() invece di delay()',
+  "The relay's COM and NO contacts replace the room thermostat on the boiler's thermostat terminals: a dry contact, nothing from the board reaches the boiler.":
+    'I contatti COM e NO del relè sostituiscono il termostato ambiente sui morsetti TA della caldaia: un contatto pulito, nulla della scheda arriva alla caldaia.',
+  'Check the boiler manual first: on some boilers these terminals carry mains voltage. Then the relay must be rated for it and the wiring done by a qualified person.':
+    'Controlla prima il manuale della caldaia: su alcune caldaie questi morsetti sono a tensione di rete. In quel caso il relè deve essere adatto e il collegamento va fatto da una persona qualificata.',
+  'A boiler with an OpenTherm input needs an OpenTherm adapter instead of a relay, to set the water temperature rather than only on and off.':
+    'Una caldaia con ingresso OpenTherm richiede un adattatore OpenTherm invece del relè, per impostare la temperatura dell’acqua e non solo acceso e spento.',
+  'Button: setpoint up 0.5 °C': 'Pulsante: temperatura impostata +0,5 °C',
+  'Read the room temperature': 'Leggi la temperatura della stanza',
+  'Decide: heat or not': 'Decidi: riscaldare o no',
+  'Below the setpoint: heat demand on (relay closes)': 'Sotto la temperatura impostata: richiesta di calore attiva (il relè chiude)',
+  'Above the setpoint: heat demand off (relay opens)': 'Sopra la temperatura impostata: richiesta di calore spenta (il relè apre)',
+  '{temperature} C  set {setpoint}': '{temperature} C  imp. {setpoint}',
 };
 export default it;

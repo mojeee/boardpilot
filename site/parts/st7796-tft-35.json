@@ -77,11 +77,24 @@
   "model": {
     "shape": "oled",
     "size": [
-      56,
-      80,
+      56.3,
+      98,
       6
     ],
     "color": "#B22222"
+  },
+  "display": {
+    "widthPx": 320,
+    "heightPx": 480,
+    "activeMm": [
+      48.96,
+      73.44
+    ],
+    "color": "rgb565",
+    "source": {
+      "title": "Waveshare 3.5inch Capacitive Touch LCD product page (ST7796S)",
+      "section": "Specifications: display size 48.96 x 73.44 mm"
+    }
   },
   "keywords": [
     "st7796",

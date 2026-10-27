@@ -50,7 +50,61 @@
       39,
       3
     ],
-    "color": "#1F4FA8"
+    "color": "#1F4FA8",
+    "silk": "RFID-RC522",
+    "components": [
+      {
+        "type": "coil",
+        "at": [
+          6,
+          3
+        ],
+        "size": [
+          42,
+          30
+        ],
+        "count": 4
+      },
+      {
+        "type": "chip",
+        "at": [
+          -22,
+          0
+        ],
+        "size": [
+          5,
+          5,
+          0.9
+        ],
+        "package": "qfn",
+        "label": "MFRC522"
+      },
+      {
+        "type": "crystal",
+        "at": [
+          -22,
+          9
+        ],
+        "size": [
+          11,
+          4.6,
+          3.5
+        ],
+        "label": "27.12"
+      },
+      {
+        "type": "smd",
+        "at": [
+          -22,
+          -8
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "count": 4
+      }
+    ]
   },
   "keywords": [
     "rc522",

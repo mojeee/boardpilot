@@ -10,7 +10,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3",
-  "model": { "shape": "led", "size": [11.2, 5, 8.6], "color": "#F2F2F2" },
+  "model": { "shape": "led", "size": [11.2, 5, 8.6], "color": "#F2F2F2", "kind": "rgb-led" },
   "keywords": ["rgb led", "common cathode", "led", "color", "led rgb", "catodo comune"],
   "sources": [
     { "title": "Generic 5 mm RGB LED datasheet", "section": "Leg order R, common (longest), G, B" }

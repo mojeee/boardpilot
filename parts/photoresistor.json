@@ -9,7 +9,7 @@
   ],
   "bus": "analog",
   "voltage": "3.3",
-  "model": { "shape": "led", "size": [6.1, 5, 4], "color": "#C8A04A" },
+  "model": { "shape": "led", "size": [6.1, 5, 4], "color": "#C8A04A", "kind": "ldr" },
   "keywords": ["ldr", "photoresistor", "photocell", "light", "fotoresistenza", "luce"],
   "sources": [
     { "title": "Espressif ESP32 Technical Reference Manual", "section": "ADC: input range and attenuation" }

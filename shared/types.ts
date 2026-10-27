@@ -3,6 +3,8 @@
 
 import type { StateMachine } from './statemachine';
 import type { SceneOp } from './sceneEdit';
+import type { ProjectProposal } from './projectBuilder';
+import type { DisplaySpec, SpecProblem } from './displaySpec';
 
 /* ---------- errors ---------- */
 
@@ -416,6 +418,75 @@ export interface PartPin {
 
 export type PartShape = 'breakout' | 'led' | 'button' | 'pot' | 'dht' | 'oled' | 'chip' | 'module' | 'motor' | 'relay';
 
+/**
+ * What the body of a part looks like at Detail "Full", when its shape covers several kinds of
+ * parts (a buzzer and an LED are both shape "led"). Optional: without it the shape's usual body.
+ */
+export type PartKind =
+  | 'led' | 'rgb-led' | 'buzzer' | 'piezo' | 'ldr' | 'flex' | 'fsr' | 'led-bar' | 'pixel'
+  | 'tactile' | 'tactile-cap' | 'arcade' | 'slide' | 'limit' | 'reed' | 'tilt' | 'touch'
+  | 'dip' | 'to92' | 'soic' | 'seg7'
+  | 'probe'
+  | 'servo' | 'stepper' | 'stepper-28byj' | 'dc-motor' | 'gear-motor' | 'fan' | 'speaker' | 'pump' | 'encoder'
+  | 'relay-module' | 'solenoid' | 'valve' | 'ssr'
+  | 'box';
+
+/**
+ * Something that sits on a part's PCB at Detail "Full" (the chip, a crystal, the sonar's two
+ * transducers…), like BoardComponent for boards. Positions are in the part's own frame: x along
+ * the pin row, z away from it, (0, 0) the centre of the part, mm.
+ */
+export interface PartComponent {
+  type:
+    | 'chip' | 'crystal' | 'transducer' | 'dome' | 'terminal' | 'relay' | 'trimpot' | 'led' | 'smd'
+    | 'capacitor' | 'jst' | 'button' | 'can' | 'shield' | 'antenna' | 'socket' | 'inductor' | 'lens'
+    | 'mic' | 'knob' | 'usb' | 'diode' | 'resistor' | 'digits' | 'battery' | 'coil' | 'patch' | 'heatsink' | 'block';
+  /** centre, mm */
+  at: [number, number];
+  /** [along x, along z, height] mm; height defaults per type */
+  size: [number, number] | [number, number, number];
+  /** printed on top (chips, relays, shields) */
+  label?: string;
+  /** chip package */
+  package?: 'qfn' | 'lga' | 'soic' | 'tssop' | 'msop' | 'sot23' | 'sot223' | 'dip' | 'lqfp';
+  /** metal lid on top (the BME280's LGA package, crystals) */
+  metal?: boolean;
+  color?: string;
+  /** screw terminals: number of screws; smd: small parts in the row; digits: 7-segment digits */
+  count?: number;
+  /** turned 90° (long side along z) */
+  rot?: boolean;
+}
+
+/**
+ * A pixel display: resolution and where the pixels are. Used for the 3D screen (its size and
+ * aspect) and by the live display texture (app/renderer/three/displayTexture.ts).
+ */
+export interface PartDisplay {
+  /** pixels as the panel sits on the module: columns along the pin row (x), rows away from it */
+  widthPx: number;
+  heightPx: number;
+  /** active area, mm: [along the pin row (x), away from it (z)] */
+  activeMm: [number, number];
+  /** glass (or LED block / LCD window) outline, mm, same axes; default: active area plus a border */
+  glassMm?: [number, number];
+  /** centre of the active area in the part frame, mm (default: centred below the pin header) */
+  centerMm?: [number, number];
+  /** what a pixel is: OLED mono or 4-bit gray, TFT colour, e-paper, STN LCD with backlight, LEDs */
+  color: 'mono' | 'gray4' | 'rgb565' | 'rgb666' | 'epaper' | 'lcd' | 'led';
+  /** colour of a lit pixel for mono, lcd and led panels */
+  tint?: string;
+  /** colour of the glass (or LCD window) with nothing shown; default by `color` */
+  glassColor?: string;
+  /** round panel (GC9A01) */
+  round?: boolean;
+  /** character LCD: columns × rows of 5 × 8 dot cells */
+  chars?: [number, number];
+  /** 7-segment display: number of digits */
+  digits?: number;
+  source: { title: string; section?: string };
+}
+
 /** Supply current from a datasheet: typical in normal use, lowest standby, short peaks (mA). */
 /** Clock frequencies in Hz. Which clock each one is (APB1 timer clock, APB_CLK…) is in the note. */
 export interface BoardClocks {
@@ -524,7 +595,23 @@ export interface PartDef {
   voltage: string;
   /** the part pulls its data lines up to this voltage when powered (breakouts with on-board pull-ups) */
   pullupsOnBoard?: boolean;
-  model: { shape: PartShape; size: [number, number, number]; color: string };
+  model: {
+    shape: PartShape;
+    size: [number, number, number];
+    color: string;
+    /** body variant within the shape (Detail "Full") */
+    kind?: PartKind;
+    /** what sits on the PCB (Detail "Full"); without it a generic chip */
+    components?: PartComponent[];
+    /** PCB outline: a probe with a pointed end (soil sensors) or round (round displays) */
+    outline?: 'rect' | 'probe' | 'round';
+    /** name printed on the PCB (default: the first word of the part name) */
+    silk?: string;
+    /** PCB colour when `color` is the colour people recognise the part by (an LCD's blue window) */
+    pcb?: string;
+  };
+  /** Pixel displays: resolution and active area, with the datasheet that gives them. */
+  display?: PartDisplay;
   /** Small product photo (JPEG data URL, about 160 px) for imported parts. */
   image?: string;
   /** Where a user-imported part came from. Built-in parts have no origin. */
@@ -574,10 +661,22 @@ export interface Scene {
   stateMachine?: StateMachine;
   /** The project's sketch, edited in the Code panel and saved with the project. */
   sketch?: ProjectSketch;
+  /** Ids of the project memories (old projects, notes, datasheets) the assistant searches for this project. */
+  memories?: string[];
+  /** Display Studio: what each display module in the drawing shows (one spec per display part). */
+  displays?: DisplaySpec[];
 }
 
 export interface ProjectSketch {
   /** file name, e.g. weather_station.ino */
+  name: string;
+  text: string;
+  /** The project's other files (pins.h, display.cpp, CMakeLists.txt…), shown as tabs in the Code panel. */
+  files?: ProjectFile[];
+}
+
+export interface ProjectFile {
+  /** Path inside the project folder: a plain name, or up to three joined by "/" (isSafeProjectPath). */
   name: string;
   text: string;
 }
@@ -613,7 +712,8 @@ export interface WiringFinding {
 export type Confidence = 'measured' | 'documented' | 'suggestion';
 
 export interface AiSource {
-  kind: 'measurement' | 'datasheet' | 'library' | 'user';
+  /** memory: the user's project memory, label "memory · <name> · <file>:<lines>" (shared/memory.ts) */
+  kind: 'measurement' | 'datasheet' | 'library' | 'user' | 'memory';
   label: string;
 }
 
@@ -624,17 +724,28 @@ export interface AiReply {
   highlight: TargetRef[];
   nextOptions: string[];
   /** tool calls the model made in this turn, for the "how I know this" view */
-  toolCalls?: { name: string; input: unknown; ok: boolean }[];
+  toolCalls?: { name: string; input: unknown; ok: boolean; error?: string }[];
   /** a write the model asked for; the UI must show a confirmation dialog */
   pendingWrite?: WriteRequest;
   /** app actions the model asked the app to run (shared/actions.ts), in order */
   actions?: { action: string; arg: string }[];
-  /** parts proposed for the user to add ("Add to the project") */
-  proposal?: { partIds: string[]; reason: string };
   /** a code suggestion the app writes in the Code panel */
   codeRequest?: string;
   /** changes to the drawing (shared/sceneEdit.ts), applied when the user clicks Apply */
   sceneEdit?: { ops: SceneOp[]; reason: string };
+  /** options to pick from, each with what makes it different (shown as cards) */
+  choices?: AiChoice[];
+  /** a whole project (parts, wiring, checks) the user can apply with one click */
+  proposal?: ProjectProposal;
+  /** what a display should show (Display Studio), checked, for the user to apply */
+  display?: { spec: DisplaySpec; problems: SpecProblem[] };
+}
+
+export interface AiChoice {
+  label: string;
+  detail: string;
+  /** the library part this choice stands for, if any */
+  partId?: string;
 }
 
 export interface WriteRequest {
@@ -663,6 +774,11 @@ export interface CodeSuggestionRequest {
   cursorLine: number;
   /** what the user asked for, in their words (may be empty: "what comes next") */
   request: string;
+  /** The file `code` is (when the project has several files), and the project's other files for context. */
+  file?: string;
+  otherFiles?: ProjectFile[];
+  /** Text the user selected, for "Explain this" / "Change this" (with its 1-based first line). */
+  selection?: { text: string; line: number };
 }
 
 /** A code suggestion from the assistant; always a suggestion the user accepts or dismisses. */
@@ -675,27 +791,6 @@ export interface AiCodeSuggestion {
   explanation: string;
   sources: AiSource[];
 }
-
-/** "Describe it" (New project): the description, the questions asked so far and their answers. */
-export interface DescribeRequest {
-  text: string;
-  boardId: string;
-  answers: { question: string; answer: string }[];
-}
-
-/** The assistant's turn in "Describe it": a few questions first, then a proposal to confirm. */
-export type DescribeReply =
-  | { kind: 'questions'; questions: { question: string; options: string[] }[] }
-  | {
-      kind: 'proposal';
-      name: string;
-      summary: string;
-      parts: { partId: string; why: string }[];
-      /** starter code for the parts (the pins come from the safe-pin rules when the project is built) */
-      code: string;
-      notes: string[];
-      sources: AiSource[];
-    };
 
 export interface PhotoRecognition {
   partId: string | null;

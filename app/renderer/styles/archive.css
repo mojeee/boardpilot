@@ -1,0 +1,51 @@
+/* Past projects screen and the similar-project card. Colors from tokens.css only. */
+
+.archive { position: absolute; inset: 0; display: flex; min-height: 0; }
+.archive-main { flex: 1; min-width: 0; overflow: auto; padding: 18px 20px 30px; display: flex; flex-direction: column; gap: 10px; }
+.archive-main > * { flex-shrink: 0; }
+.archive-main .screen-head { align-items: flex-start; gap: 16px; }
+.archive-note { font-size: 12px; padding: 7px 10px; border-radius: var(--radius-sm); background: var(--panel); border: 1px solid var(--line); color: var(--muted); }
+.archive-note.ok { border-color: #2c5a43; color: var(--ok); }
+.archive-note.err { border-color: #5a2a28; color: var(--err); }
+.archive-empty { max-width: 640px; }
+.archive-filters .text-in { width: 260px; }
+.archive-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.archive-table th { position: sticky; top: 0; background: var(--panel); }
+.archive-table tbody tr { cursor: pointer; }
+.archive-table tbody tr:hover td { background: #202831; }
+.archive-table tbody tr.on td { background: var(--ai-bg); }
+.archive-table td .chip { font-size: 10.5px; padding: 1px 6px; }
+.archive-table .chip.raw { background: transparent; border-color: var(--line); }
+.archive-table .chip.proto { color: var(--ai); background: var(--ai-bg); border-color: var(--ai-line); }
+.chip.role-sda { color: var(--pin-sda); border-color: var(--pin-sda); background: transparent; }
+.chip.role-spi { color: var(--pin-spi); border-color: var(--pin-spi); background: transparent; }
+.chip.role-uart { color: var(--pin-uart); border-color: var(--pin-uart); background: transparent; }
+.chip.role-gpio { color: var(--pin-gpio); border-color: var(--pin-gpio); background: transparent; }
+.chip.role-adc { color: var(--pin-adc); border-color: var(--pin-adc); background: transparent; }
+.src-mark { color: var(--ai); font-size: 10.5px; }
+.archive-roots { display: flex; flex-direction: column; gap: 4px; }
+
+.archive-detail { width: 380px; flex: none; border-left: 1px solid var(--line); background: var(--chrome); overflow: auto; padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 8px; }
+.archive-detail h3 { margin: 0; font-size: 16px; }
+.archive-detail p { margin: 0; }
+.archive-path { word-break: break-all; }
+.archive-facts { margin: 0; display: grid; grid-template-columns: 1fr; gap: 2px; }
+.archive-facts dt { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin-top: 8px; }
+.archive-facts dd { margin: 0; font-size: 12.5px; }
+.archive-facts ul { margin: 2px 0 0; padding-left: 16px; }
+.archive-facts li { margin: 1px 0; }
+.archive-fix { margin-top: 4px; }
+.archive-fix .text-in { flex: 1; min-width: 0; }
+.src { color: var(--dim); margin-left: 4px; font-size: 10.5px; }
+.src.user { color: var(--ai); }
+.src.ai { color: var(--ai); font-style: italic; }
+button.src { color: var(--dim); }
+button.src:hover { color: var(--text); }
+.archive-detail textarea { width: 100%; resize: vertical; }
+
+.similar-list { display: flex; flex-direction: column; gap: 6px; padding: 0 12px 8px; }
+.similar-card { display: flex; flex-direction: column; gap: 5px; background: var(--panel); border: 1px solid var(--ai-line); border-radius: var(--radius); padding: 9px 11px; }
+.similar-title { color: var(--ai); font-size: 11.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.similar-why { color: var(--muted); }
+.similar-summary { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.np-describe .similar-list { padding: 0; }

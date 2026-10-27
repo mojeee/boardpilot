@@ -29,7 +29,8 @@
       12.2,
       29
     ],
-    "color": "#2E6FD8"
+    "color": "#2E6FD8",
+    "kind": "servo"
   },
   "keywords": [
     "sg90",

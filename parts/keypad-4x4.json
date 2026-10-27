@@ -14,7 +14,27 @@
   ],
   "bus": "gpio",
   "voltage": "3.3",
-  "model": { "shape": "module", "size": [69, 77, 1], "color": "#1A1A1A" },
+  "model": {
+    "shape": "module", "size": [69, 77, 1], "color": "#1A1A1A", "silk": "4x4",
+    "components": [
+      { "type": "block", "at": [-24, -17], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "1" },
+      { "type": "block", "at": [-8, -17], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "2" },
+      { "type": "block", "at": [8, -17], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "3" },
+      { "type": "block", "at": [24, -17], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "A" },
+      { "type": "block", "at": [-24, -2], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "4" },
+      { "type": "block", "at": [-8, -2], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "5" },
+      { "type": "block", "at": [8, -2], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "6" },
+      { "type": "block", "at": [24, -2], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "B" },
+      { "type": "block", "at": [-24, 13], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "7" },
+      { "type": "block", "at": [-8, 13], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "8" },
+      { "type": "block", "at": [8, 13], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "9" },
+      { "type": "block", "at": [24, 13], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "C" },
+      { "type": "block", "at": [-24, 28], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "*" },
+      { "type": "block", "at": [-8, 28], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "0" },
+      { "type": "block", "at": [8, 28], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "#" },
+      { "type": "block", "at": [24, 28], "size": [13, 11, 0.5], "color": "#e9e7e0", "label": "D" }
+    ]
+  },
   "keywords": ["keypad", "4x4", "membrane", "matrix keypad", "tastierino", "tastiera"],
   "sources": [
     { "title": "Arduino Keypad library (Mark Stanley, Alexander Brevig)", "section": "Row/column scanning; pin 1 to 8 = R1-R4, C1-C4 on common membrane keypads" }

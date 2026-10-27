@@ -11,7 +11,12 @@
   ],
   "bus": "analog",
   "voltage": "5",
-  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8", "silk": "MQ-9",
+    "components": [
+      { "type": "can", "at": [0, 1.5], "size": [19, 19, 16] }
+    ]
+  },
   "keywords": ["mq-9", "mq9", "carbon monoxide", "lpg", "methane", "monossido di carbonio"],
   "sources": [
     { "title": "Hanwei MQ-9 datasheet", "section": "CO at low heater voltage, flammable gas at high heater voltage" },

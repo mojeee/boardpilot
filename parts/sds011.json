@@ -14,7 +14,7 @@
   ],
   "bus": "gpio",
   "voltage": "5",
-  "model": { "shape": "module", "size": [71, 70, 23], "color": "#C9CED4" },
+  "model": { "shape": "module", "size": [71, 70, 23], "color": "#C9CED4", "kind": "box" },
   "keywords": ["sds011", "nova fitness", "pm2.5", "pm10", "dust", "particulate", "polveri sottili", "qualità aria"],
   "sources": [
     { "title": "Nova Fitness SDS011 datasheet", "section": "Pin 1 CTL, 2 PM2.5 PWM, 3 5V, 4 PM10 PWM, 5 GND, 6 RX, 7 TX; UART 9600 baud, 3.3 V TTL" }

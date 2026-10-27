@@ -9,7 +9,7 @@
   ],
   "bus": "gpio",
   "voltage": "5-6.8",
-  "model": { "shape": "motor", "size": [40, 20, 40], "color": "#1A1A1A" },
+  "model": { "shape": "motor", "size": [40, 20, 40], "color": "#1A1A1A", "kind": "servo" },
   "keywords": ["ds3218", "servo", "20kg", "high torque", "metal gear", "servomotore"],
   "sources": [
     { "title": "DSServo DS3218 datasheet", "section": "Supply 4.8 to 6.8 V; pulse 500 to 2500 µs" }

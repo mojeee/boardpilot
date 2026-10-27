@@ -20,7 +20,7 @@ import { checkWiring } from '@shared/wiring';
 import { DEFAULT_BOARD_ID, getBoard, PARTS, pinByGpio } from '@shared/board';
 import type { AiStatus } from '@shared/ai';
 
-export type Screen = 'home' | 'connect' | 'newProject' | 'flash' | 'debug' | 'monitor' | 'test' | 'report' | 'learn';
+export type Screen = 'home' | 'connect' | 'newProject' | 'flash' | 'debug' | 'monitor' | 'test' | 'report' | 'learn' | 'archive';
 
 /* ---------------- app ---------------- */
 
@@ -148,7 +148,8 @@ function withFindings(scene: Scene) {
  * wiring change keeps the code as typed. Only a different file (a template was opened) comes back.
  */
 function keepSketch(target: Scene, current: Scene): Scene {
-  if (!current.sketch || target.sketch?.name !== current.sketch.name || target.sketch.text === current.sketch.text) return target;
+  const same = (a: Scene['sketch'], b: Scene['sketch']) => a?.text === b?.text && JSON.stringify(a?.files ?? []) === JSON.stringify(b?.files ?? []);
+  if (!current.sketch || target.sketch?.name !== current.sketch.name || same(target.sketch, current.sketch)) return target;
   return { ...target, sketch: current.sketch };
 }
 
@@ -230,9 +231,14 @@ export const useScene = create<SceneStore>((set, get) => ({
   preset: (name) => set((s) => ({ cameraPreset: { name, nonce: s.cameraPreset.nonce + 1 } })),
 }));
 
-/** Replace the project's code (typing, a loaded file, an accepted suggestion). Not an undo step. */
+/**
+ * Replace the project's main sketch (typing, a loaded file, an accepted suggestion). Not an undo
+ * step. The project's other files stay while the sketch keeps its name; a new name starts afresh.
+ */
 export function setSketch(name: string, text: string) {
-  useScene.getState().updateScene((s) => (s.sketch?.name === name && s.sketch.text === text ? s : { ...s, sketch: { name, text } }), { transient: true });
+  useScene
+    .getState()
+    .updateScene((s) => (s.sketch?.name === name && s.sketch.text === text ? s : { ...s, sketch: s.sketch?.name === name && s.sketch.files ? { name, text, files: s.sketch.files } : { name, text } }), { transient: true });
 }
 
 /* ---------------- live data ---------------- */
@@ -405,13 +411,24 @@ export type ChatItem =
 
 type NewChatItem = ChatItem extends infer T ? (T extends ChatItem ? Omit<T, 'id'> : never) : never;
 
+/** What the user did with a reply's cards: the option picked, whether the proposal was applied. */
+export interface ChatMark {
+  picked?: string;
+  /** where the proposal was applied: in the open project or as a new project tab */
+  applied?: 'here' | 'tab';
+  /** the reply's display design was applied (Display Studio) */
+  displayApplied?: boolean;
+}
+
 interface AiStore {
   items: ChatItem[];
   busy: boolean;
+  marks: Record<number, ChatMark>;
   push(i: NewChatItem): number;
   /** Change an item in place (an action's steps as they happen). */
   patch(id: number, fn: (item: ChatItem) => ChatItem): void;
   set(p: Partial<Pick<AiStore, 'busy'>>): void;
+  mark(id: number, m: ChatMark): void;
   clear(): void;
 }
 
@@ -419,6 +436,7 @@ let chatId = 1;
 export const useAi = create<AiStore>((set) => ({
   items: [],
   busy: false,
+  marks: {},
   push: (i) => {
     const id = chatId++;
     set((s) => ({ items: [...s.items.slice(-300), { ...i, id } as ChatItem] }));
@@ -426,5 +444,6 @@ export const useAi = create<AiStore>((set) => ({
   },
   patch: (id, fn) => set((s) => ({ items: s.items.map((x) => (x.id === id ? fn(x) : x)) })),
   set: (p) => set(p),
-  clear: () => set({ items: [] }),
+  mark: (id, m) => set((s) => ({ marks: { ...s.marks, [id]: { ...s.marks[id], ...m } } })),
+  clear: () => set({ items: [], marks: {} }),
 }));

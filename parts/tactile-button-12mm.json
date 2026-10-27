@@ -10,7 +10,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3",
-  "model": { "shape": "button", "size": [12, 12, 11], "color": "#2B2B2B" },
+  "model": { "shape": "button", "size": [12, 12, 11], "color": "#2B2B2B", "kind": "tactile-cap" },
   "keywords": ["tactile switch", "12mm", "push button", "button cap", "tact switch", "pulsante"],
   "sources": [
     { "title": "Omron B3F tactile switch datasheet", "section": "B3F-4000 (12 x 12 mm): terminals 1-2 and 3-4 joined inside" }

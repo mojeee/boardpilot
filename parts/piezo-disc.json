@@ -8,7 +8,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "led", "size": [27, 27, 0.5], "color": "#D9B45A" },
+  "model": { "shape": "led", "size": [27, 27, 0.5], "color": "#D9B45A", "kind": "piezo" },
   "keywords": ["piezo", "piezo disc", "buzzer", "knock", "tone", "disco piezoelettrico", "cicalino"],
   "sources": [
     { "title": "Murata piezoelectric sounder (7BB-27-4) datasheet", "section": "Resonant frequency about 4.6 kHz" },

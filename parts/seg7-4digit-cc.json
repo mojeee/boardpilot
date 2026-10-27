@@ -18,7 +18,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "chip", "size": [50, 19, 8], "color": "#EDEDED" },
+  "model": { "shape": "chip", "size": [50, 19, 8], "color": "#EDEDED", "kind": "seg7" },
   "keywords": ["7 segment", "4 digit", "5641as", "multiplexed", "common cathode", "display 7 segmenti"],
   "sources": [
     { "title": "5641AS 0.56\" 4-digit 7-segment datasheet", "section": "Pins 1 to 12: E D DP C G D4 B D3 D2 F A D1" }

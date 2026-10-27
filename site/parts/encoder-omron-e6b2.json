@@ -48,7 +48,8 @@
       40,
       35
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "encoder"
   },
   "keywords": [
     "e6b2",

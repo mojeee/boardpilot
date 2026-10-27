@@ -35,7 +35,59 @@
       16,
       8
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "FC-28",
+    "components": [
+      {
+        "type": "trimpot",
+        "at": [
+          -8,
+          3
+        ],
+        "size": [
+          9.5,
+          4.8,
+          10
+        ]
+      },
+      {
+        "type": "chip",
+        "at": [
+          5,
+          2
+        ],
+        "size": [
+          5,
+          4
+        ],
+        "package": "soic",
+        "label": "LM393"
+      },
+      {
+        "type": "led",
+        "at": [
+          11,
+          6
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "color": "#ff3b30"
+      },
+      {
+        "type": "led",
+        "at": [
+          11,
+          -1
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "color": "#5cff5c"
+      }
+    ]
   },
   "keywords": [
     "yl-69",

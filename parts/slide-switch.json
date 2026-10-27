@@ -9,7 +9,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3",
-  "model": { "shape": "button", "size": [8.6, 3.5, 4], "color": "#1A1A1A" },
+  "model": { "shape": "button", "size": [8.6, 3.5, 4], "color": "#1A1A1A", "kind": "slide" },
   "keywords": ["slide switch", "spdt", "switch", "on off", "interruttore", "deviatore"],
   "sources": [
     { "title": "Arduino reference", "section": "pinMode INPUT_PULLUP" }

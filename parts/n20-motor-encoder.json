@@ -12,7 +12,7 @@
   ],
   "bus": "gpio",
   "voltage": "3.3-5",
-  "model": { "shape": "motor", "size": [16.2, 10, 34], "color": "#C9CED4" },
+  "model": { "shape": "motor", "size": [16.2, 10, 34], "color": "#C9CED4", "kind": "gear-motor" },
   "keywords": ["n20", "gear motor", "encoder", "hall", "micro motor", "motoriduttore", "encoder"],
   "sources": [
     { "title": "N20 micro gear motor with magnetic encoder (vendor datasheet)", "section": "6-pin connector M1 GND C1 C2 VCC M2" }

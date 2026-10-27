@@ -1,0 +1,19 @@
+#MicroXplorer Configuration settings - do not modify
+File.Version=6
+Mcu.Family=STM32G0
+Mcu.Name=STM32G071R(6-8-B)Tx
+Mcu.UserName=STM32G071RBTx
+Mcu.IP0=ADC1
+Mcu.IP1=USART2
+Mcu.IP2=RCC
+PA0.Signal=ADC1_IN0
+PA0.GPIO_Label=NTC_MANDATA
+PA1.Signal=ADC1_IN1
+PA1.GPIO_Label=NTC_RITORNO
+PA2.Signal=USART2_TX
+PA3.Signal=USART2_RX
+PB5.Signal=GPIO_Output
+PB5.GPIO_Label=RS485_DE
+PC6.Signal=GPIO_Output
+PC6.GPIO_Label=RELE_POMPA
+ProjectManager.ProjectName=nodo-modbus-caldaia

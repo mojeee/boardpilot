@@ -11,7 +11,12 @@
   ],
   "bus": "analog",
   "voltage": "5",
-  "model": { "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8" },
+  "model": {
+    "shape": "module", "size": [32, 22, 27], "color": "#1F4FA8", "silk": "MQ-3",
+    "components": [
+      { "type": "can", "at": [0, 1.5], "size": [19, 19, 16] }
+    ]
+  },
   "keywords": ["mq-3", "mq3", "alcohol", "breath", "ethanol", "alcol"],
   "sources": [
     { "title": "Hanwei MQ-3 datasheet", "section": "Sensitive to alcohol vapour; heater 5 V" },

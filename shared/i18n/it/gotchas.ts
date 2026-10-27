@@ -1,6 +1,8 @@
 // Italian translations. Key = the exact English text passed to t().
 // Scope: part gotchas (the "gotchas" field in parts/*.json) and where they are shown.
 const it: Record<string, string> = {
+  'On a 3.3 V board the IRF520 only half turns on: its gate threshold is 2 to 4 V and its on-resistance is specified at 10 V. It gets hot and weak with pumps, motors and heaters. Use a logic-level MOSFET module such as the AOD4184, or a relay.':
+    'Su una scheda a 3,3 V l’IRF520 si accende solo a metà: la sua soglia di gate è da 2 a 4 V e la resistenza in conduzione è specificata a 10 V. Con pompe, motori e riscaldatori scalda e rende poco. Usa un modulo MOSFET logic-level come l’AOD4184, oppure un relè.',
   'Many boards sold as BME280 carry a BMP280, which has no humidity sensor. The chip ID register 0xD0 tells them apart: 0x60 is a BME280, 0x58 a BMP280.':
     'Molte schede vendute come BME280 montano un BMP280, che non ha il sensore di umidità. Il registro ID 0xD0 li distingue: 0x60 è un BME280, 0x58 un BMP280.',
   'Read in normal mode at a high rate, the sensor warms itself and reads high. For weather readings use forced mode, about one reading per minute.':

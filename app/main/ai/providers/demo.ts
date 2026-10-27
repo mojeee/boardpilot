@@ -78,7 +78,8 @@ export class DemoProvider extends GeminiProvider {
   /** Shrink a request to the relay's body limit: first drop the context blocks of earlier
    *  questions, then the oldest turns. Throws `too_large` if even the last question does not fit. */
   fit(req: ChatRequest): ChatRequest {
-    const size = (messages: ChatMessage[]) => bytes(this.body({ ...req, messages }, true, this.wantsSearch(req)));
+    let tools = req.tools;
+    const size = (messages: ChatMessage[]) => bytes(this.body({ ...req, tools, messages }, true, this.wantsSearch(req)));
     let messages = req.messages;
     if (size(messages) <= DEMO_MAX_BODY_BYTES) return req;
     const lastUser = messages.map((m) => m.role).lastIndexOf('user');
@@ -100,6 +101,11 @@ export class DemoProvider extends GeminiProvider {
           : m,
       );
     }
+    // Still too big: shorten the long tool descriptions to their first sentences (the tools and
+    // their parameters stay; the free demo gets less explanation than your own key).
+    if (size(messages) > DEMO_MAX_BODY_BYTES && tools?.length) {
+      tools = tools.map((t) => (t.description.length > 240 ? { ...t, description: shortDescription(t.description) } : t));
+    }
     const final = size(messages);
     if (final > DEMO_MAX_BODY_BYTES) {
       throw new ProviderError(
@@ -109,7 +115,7 @@ export class DemoProvider extends GeminiProvider {
         413,
       );
     }
-    return { ...req, messages: messages.map((m) => (m.role === 'user' && m.content.length === 0 ? { ...m, content: [{ type: 'text', text: '…' }] } : m)) };
+    return { ...req, tools, messages: messages.map((m) => (m.role === 'user' && m.content.length === 0 ? { ...m, content: [{ type: 'text', text: '…' }] } : m)) };
   }
 
   override async chat(req: ChatRequest): Promise<ChatResponse> {
@@ -139,4 +145,15 @@ function relayError(e: unknown): unknown {
   if (e.status === 503 || e.status === 404) return new ProviderError('not_configured', 'demo', e.message, e.status);
   if (e.status === 413) return new ProviderError('too_large', 'demo', e.message, e.status);
   return e;
+}
+
+/** The first sentences of a tool description, up to about 240 characters. */
+export function shortDescription(d: string): string {
+  const sentences = d.match(/[^.!?]+[.!?]+(\s|$)/g) ?? [d];
+  let out = '';
+  for (const x of sentences) {
+    if (out && out.length + x.length > 240) break;
+    out += x;
+  }
+  return (out || d.slice(0, 240)).trim();
 }

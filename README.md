@@ -128,6 +128,8 @@ In the app you can also paste a product link: BoardPilot recognises the chip, re
 
 Optional. It works out of the box with a **free demo** (an older Gemini model through BoardPilot's rate-limited test relay; for testing only, don't send private data), or with **your own key** for Claude, GPT or Gemini, stored encrypted on your computer. See [docs/ai.md](docs/ai.md).
 
+**Describe your project** (in the chat, or New project → Describe it): say what you want to build; the assistant asks what it needs, compares parts with you, then proposes the parts, the wiring on safe pins, the extras to buy and starter code, all checked by the wiring rules before you press Apply. It is tested against the real model with `npm run eval:ai` ([results](docs/ai-evals/)), and the website replays recorded conversations in the browser demo.
+
 ## Install
 
 Download from the [latest release](https://github.com/mojeee/boardpilot/releases/latest). Early builds are not code-signed yet: on Mac right-click the app → Open; on Windows click *More info → Run anyway*. For real boards install esptool (see [docs/hardware-setup.md](docs/hardware-setup.md)); simulator mode needs nothing.
@@ -147,7 +149,8 @@ No big code changes needed to help:
 ```bash
 npm install
 npm run dev          # the app, in simulator mode
-npm test             # 2800+ tests (Vitest); npm run typecheck
+npm test             # 3100+ tests (Vitest); npm run typecheck
+npm run eval:ai      # live AI evaluation of the project builder (needs ANTHROPIC_API_KEY, about $3)
 npm run build:agent  # rebuild the ESP32 diagnostic agent (arduino-cli + esp32 core)
 npm run dist:mac     # .dmg files in dist/
 npm run dist:win     # Windows installer in dist/

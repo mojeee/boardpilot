@@ -4,6 +4,9 @@
 //   node scripts/render-motion.mjs found-it pwm          some clips
 //   node scripts/render-motion.mjs --format 9x16         one format (or 16x9,1x1)
 //   node scripts/render-motion.mjs --keep-frames         keep the PNG frames after encoding
+//   node scripts/render-motion.mjs --lang it             Italian app and captions (en,it for both)
+//   node scripts/render-motion.mjs --site                also write web copies for the website:
+//                                                        site/video/<clip>-<lang>.mp4 (1280 px) and .jpg poster
 // Output: motion/out/<clip>/<clip>-<format>.mp4 and .gif, plus <clip>.en.srt and <clip>.it.srt.
 // Frames: motion/out/<clip>/<format>/frames/frame-00001.png … (kept when ffmpeg is missing).
 // On Linux without a display it runs under xvfb-run with software WebGL. ffmpeg is used as a
@@ -31,7 +34,8 @@ const option = (name) => {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : undefined;
 };
-const optionValues = new Set(['--format', '--fps'].map(option).filter(Boolean));
+const optionValues = new Set(['--format', '--fps', '--lang'].map(option).filter(Boolean));
+const langs = (option('--lang') ?? 'en').split(',').filter((l) => l === 'en' || l === 'it');
 const wanted = args.filter((a) => !a.startsWith('--') && !optionValues.has(a));
 
 const data = JSON.parse(readFileSync(join(root, 'motion/clips.json'), 'utf8'));
@@ -57,15 +61,17 @@ if (!existsSync(join(root, 'out/main/index.js')) || !existsSync(join(root, 'out/
 const hasFfmpeg = spawnSync('ffmpeg', ['-version'], { stdio: 'ignore' }).status === 0;
 const headless = process.platform === 'linux' && !process.env.DISPLAY;
 
-function record(clip, fmtId) {
+function record(clip, fmtId, lang) {
   const format = { id: fmtId, ...FORMATS[fmtId] };
-  const dir = join(OUT, clip.id, fmtId);
+  const dir = join(OUT, clip.id, lang === 'en' ? fmtId : `${fmtId}-${lang}`);
   const frames = join(dir, 'frames');
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(frames, { recursive: true });
   const jobPath = join(dir, 'job.json');
-  writeFileSync(jobPath, JSON.stringify({ clip, format, fps, outDir: frames, srtPrefix: join(OUT, clip.id, clip.id), boardNames }, null, 2));
-  const electron = ['electron', '.', '--no-sandbox', `--force-device-scale-factor=${format.scale}`, '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
+  writeFileSync(jobPath, JSON.stringify({ clip, format, fps, outDir: frames, srtPrefix: join(OUT, clip.id, clip.id), boardNames, lang }, null, 2));
+  // Software WebGL only on Linux: on macOS SwiftShader cannot start, so the real GPU draws (as in scripts/screenshots.mjs).
+  const gl = process.platform === 'linux' ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [];
+  const electron = ['electron', '.', '--no-sandbox', `--force-device-scale-factor=${format.scale}`, ...gl];
   const cmd = headless ? 'xvfb-run' : 'npx';
   const xargs = headless ? ['-a', '-s', '-screen 0 2200x2200x24', 'npx', ...electron] : electron;
   const r = spawnSync(cmd, xargs, { cwd: root, env: { ...process.env, BOARDPILOT_MODE: 'sim', BP_MOTION: jobPath }, encoding: 'utf8', timeout: (180 + clip.duration * fps * 15) * 1000 });
@@ -80,6 +86,17 @@ function record(clip, fmtId) {
   return { frames, meta };
 }
 
+/** The website copy: smaller, still sharp text, plus a poster frame from 70% into the clip. */
+function siteCommands(mp4, clip, lang) {
+  const dir = join(root, 'site/video');
+  mkdirSync(dir, { recursive: true });
+  const base = join(dir, `${clip.id}-${lang}`);
+  return [
+    ['-y', '-v', 'error', '-i', mp4, '-an', '-vf', 'scale=1280:-2:flags=lanczos', '-c:v', 'libx264', '-preset', 'slow', '-crf', '26', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', `${base}.mp4`],
+    ['-y', '-v', 'error', '-ss', String(clip.duration * 0.7), '-i', mp4, '-frames:v', '1', '-vf', 'scale=1280:-2:flags=lanczos', '-q:v', '4', `${base}.jpg`],
+  ];
+}
+
 function ffmpegCommands(frames, mp4, gif, width) {
   return [
     ['-y', '-v', 'error', '-framerate', String(fps), '-i', join(frames, 'frame-%05d.png'), '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4],
@@ -92,15 +109,15 @@ const pending = [];
 let failed = 0;
 
 for (const clip of clips) {
-  for (const fmtId of formats) {
-    process.stdout.write(`${clip.id} ${fmtId}… `);
-    const got = record(clip, fmtId);
+  for (const lang of langs) for (const fmtId of formats) {
+    process.stdout.write(`${clip.id} ${fmtId} ${lang}… `);
+    const got = record(clip, fmtId, lang);
     if (!got) {
       failed++;
       continue;
     }
     const { frames, meta } = got;
-    const base = join(OUT, clip.id, `${clip.id}-${fmtId}`);
+    const base = join(OUT, clip.id, `${clip.id}-${fmtId}${lang === 'en' ? '' : `.${lang}`}`);
     const cmds = ffmpegCommands(frames, `${base}.mp4`, `${base}.gif`, FORMATS[fmtId].width);
     const real = `${meta.frames} frames, ${meta.seconds} s`;
     if (!hasFfmpeg) {
@@ -108,6 +125,7 @@ for (const clip of clips) {
       pending.push(...cmds.map((c) => `ffmpeg ${c.map((a) => quote(relative(root, a) || a)).join(' ')}`));
       continue;
     }
+    if (flag('--site') && fmtId === '16x9') cmds.push(...siteCommands(`${base}.mp4`, clip, lang));
     const ok = cmds.every((c) => spawnSync('ffmpeg', c, { stdio: 'inherit' }).status === 0);
     if (!ok) {
       console.log('ffmpeg failed; frames kept');

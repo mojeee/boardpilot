@@ -97,7 +97,61 @@
       15.2,
       10
     ],
-    "color": "#B22222"
+    "color": "#B22222",
+    "silk": "A4988",
+    "components": [
+      {
+        "type": "chip",
+        "at": [
+          0,
+          0
+        ],
+        "size": [
+          5,
+          5,
+          0.9
+        ],
+        "package": "qfn",
+        "label": "A4988"
+      },
+      {
+        "type": "heatsink",
+        "at": [
+          0,
+          0
+        ],
+        "size": [
+          9,
+          9,
+          5
+        ]
+      },
+      {
+        "type": "trimpot",
+        "at": [
+          -10,
+          3
+        ],
+        "size": [
+          3,
+          3,
+          1.5
+        ],
+        "color": "#e8e8e2"
+      },
+      {
+        "type": "smd",
+        "at": [
+          10,
+          3
+        ],
+        "size": [
+          1.6,
+          0.8
+        ],
+        "count": 3
+      }
+    ]
   },
   "keywords": [
     "a4988",

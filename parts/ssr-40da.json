@@ -10,7 +10,7 @@
   ],
   "bus": "gpio",
   "voltage": "3-32",
-  "model": { "shape": "relay", "size": [60, 45, 23], "color": "#1A1A1A" },
+  "model": { "shape": "relay", "size": [60, 45, 23], "color": "#1A1A1A", "kind": "ssr" },
   "keywords": ["ssr", "ssr-40da", "solid state relay", "fotek", "ac", "relè statico"],
   "sources": [
     { "title": "Fotek SSR series datasheet", "section": "Input 3 to 32 VDC; output 24 to 380 VAC; zero-cross" }

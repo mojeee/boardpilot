@@ -23,7 +23,8 @@
       12,
       8.5
     ],
-    "color": "#1A1A1A"
+    "color": "#1A1A1A",
+    "kind": "buzzer"
   },
   "keywords": [
     "passive buzzer",

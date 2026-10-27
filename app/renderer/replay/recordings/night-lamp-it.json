@@ -1,0 +1,382 @@
+{
+ "id": "night-lamp-it",
+ "title": "Lampada notturna",
+ "blurb": "Un LED che si accende quando è buio, su ESP32 (in italiano).",
+ "board": "esp32-devkitc-30",
+ "lang": "it",
+ "model": "claude-sonnet-5",
+ "recordedAt": "2026-10-24",
+ "start": {
+  "board": "esp32-devkitc-30",
+  "parts": [],
+  "wires": []
+ },
+ "steps": [
+  {
+   "kind": "user",
+   "text": "Vorrei un LED che si accende da solo quando la stanza diventa buia."
+  },
+  {
+   "kind": "assistant",
+   "reply": {
+    "message": "Ti ho mostrato tre modi per rilevare il buio: un fotoresistore semplice, un modulo LDR con soglia regolabile, o un sensore digitale BH1750 più preciso. Scegli quello che preferisci e poi preparo lo schema con il LED.\n\nChe sensore di luce vuoi usare per capire quando è buio?",
+    "confidence": "documented",
+    "sources": [
+     {
+      "kind": "library",
+      "label": "photoresistor"
+     },
+     {
+      "kind": "library",
+      "label": "ldr-module"
+     },
+     {
+      "kind": "library",
+      "label": "bh1750-gy302"
+     },
+     {
+      "kind": "library",
+      "label": "led-resistor"
+     }
+    ],
+    "highlight": [],
+    "nextOptions": [],
+    "choices": [
+     {
+      "label": "Fotoresistore (LDR) semplice",
+      "detail": "Economico, si collega a un pin ADC (es. D34). Devi scegliere tu nel codice la soglia di 'buio' leggendo il valore analogico.",
+      "partId": "photoresistor"
+     },
+     {
+      "label": "Modulo LDR con comparatore (LM393)",
+      "detail": "Ha già un trimmer per impostare la soglia di buio: un'uscita digitale DO diventa HIGH/LOW da sola, oppure puoi leggere anche il valore analogico AO.",
+      "partId": "ldr-module"
+     },
+     {
+      "label": "Sensore di luce digitale BH1750 (I2C)",
+      "detail": "Più preciso, dà un valore di luce in lux via I2C. Un po' più di cablaggio (SDA/SCL) ma nessuna regolazione manuale di trimmer.",
+      "partId": "bh1750-gy302"
+     }
+    ],
+    "toolCalls": [
+     {
+      "name": "search_parts",
+      "input": {
+       "query": "light sensor photoresistor LDR",
+       "category": "sensor",
+       "limit": 6
+      },
+      "ok": true
+     },
+     {
+      "name": "search_parts",
+      "input": {
+       "query": "LED",
+       "category": "output",
+       "limit": 6
+      },
+      "ok": true
+     },
+     {
+      "name": "offer_choices",
+      "input": {
+       "question": "Che sensore di luce vuoi usare per capire quando è buio?",
+       "choices": [
+        {
+         "label": "Fotoresistore (LDR) semplice",
+         "detail": "Economico, si collega a un pin ADC (es. D34). Devi scegliere tu nel codice la soglia di 'buio' leggendo il valore analogico.",
+         "partId": "photoresistor"
+        },
+        {
+         "label": "Modulo LDR con comparatore (LM393)",
+         "detail": "Ha già un trimmer per impostare la soglia di buio: un'uscita digitale DO diventa HIGH/LOW da sola, oppure puoi leggere anche il valore analogico AO.",
+         "partId": "ldr-module"
+        },
+        {
+         "label": "Sensore di luce digitale BH1750 (I2C)",
+         "detail": "Più preciso, dà un valore di luce in lux via I2C. Un po' più di cablaggio (SDA/SCL) ma nessuna regolazione manuale di trimmer.",
+         "partId": "bh1750-gy302"
+        }
+       ]
+      },
+      "ok": true
+     }
+    ]
+   },
+   "ms": 14571
+  },
+  {
+   "kind": "pick",
+   "label": "Modulo LDR con comparatore (LM393)"
+  },
+  {
+   "kind": "user",
+   "text": "Modulo LDR con comparatore (LM393)"
+  },
+  {
+   "kind": "assistant",
+   "reply": {
+    "message": "Ecco la proposta: il modulo LDR (ldr1) va a 3V3 e GND, l'uscita digitale DO su D25 (GPIO 25) dice subito \"buio sì/no\" (soglia regolata col trimmer sul modulo), e l'uscita analogica AO su D34 (GPIO 34) se vuoi anche leggere il livello di luce preciso. Il LED (led1) è collegato su D26 (GPIO 26) con K a GND. Nessun errore o avviso dal controllo. Niente cambia finché non premi \"Apply to my project\". Dopo puoi regolare il trimmer del modulo guardando il LED di bordo del modulo stesso, e io preparo il codice per accendere D26 quando D25 segnala buio.",
+    "confidence": "documented",
+    "sources": [
+     {
+      "kind": "library",
+      "label": "ldr-module"
+     },
+     {
+      "kind": "library",
+      "label": "led-resistor"
+     },
+     {
+      "kind": "library",
+      "label": "board file esp32-devkitc-30 (safe-pin rules, ADC1 pins)"
+     }
+    ],
+    "highlight": [
+     "part:ldr1",
+     "part:led1",
+     "pin:D25",
+     "pin:D34",
+     "pin:D26"
+    ],
+    "nextOptions": [
+     "Applica la proposta",
+     "Scrivi il codice per accendere il LED al buio",
+     "Voglio usare pin diversi"
+    ],
+    "proposal": {
+     "title": "LED che si accende al buio",
+     "summary": "Un modulo LDR con comparatore (LM393) legge il livello di luce; quando scende sotto la soglia impostata dal trimmer, la scheda accende un LED.",
+     "board": "esp32-devkitc-30",
+     "boardName": "ESP32 DevKit (30 pins)",
+     "parts": [
+      {
+       "id": "ldr1",
+       "partId": "ldr-module",
+       "name": "Light sensor module (LDR + LM393)",
+       "label": "Sensore di luce LDR",
+       "why": "Rileva se la stanza è buia, con soglia regolabile via trimmer",
+       "added": true
+      },
+      {
+       "id": "led1",
+       "partId": "led-resistor",
+       "name": "LED with 220 Ω resistor",
+       "label": "LED di stato",
+       "why": "Si accende quando il sensore rileva buio",
+       "added": true
+      }
+     ],
+     "scene": {
+      "board": "esp32-devkitc-30",
+      "parts": [
+       {
+        "id": "ldr1",
+        "partId": "ldr-module",
+        "label": "Sensore di luce LDR",
+        "position": [
+         -11,
+         0,
+         43
+        ],
+        "confirmed": true
+       },
+       {
+        "id": "led1",
+        "partId": "led-resistor",
+        "label": "LED di stato",
+        "position": [
+         25,
+         0,
+         39
+        ],
+        "confirmed": true
+       }
+      ],
+      "wires": [
+       {
+        "id": "a1",
+        "from": {
+         "part": "board",
+         "pin": "3V3"
+        },
+        "to": {
+         "part": "ldr1",
+         "pin": "VCC"
+        },
+        "color": "#FF6B5E"
+       },
+       {
+        "id": "a2",
+        "from": {
+         "part": "board",
+         "pin": "GND2"
+        },
+        "to": {
+         "part": "ldr1",
+         "pin": "GND"
+        },
+        "color": "#8A96A3"
+       },
+       {
+        "id": "a3",
+        "from": {
+         "part": "board",
+         "pin": "D25"
+        },
+        "to": {
+         "part": "ldr1",
+         "pin": "DO"
+        },
+        "color": "#5CCB8F"
+       },
+       {
+        "id": "a4",
+        "from": {
+         "part": "board",
+         "pin": "D34"
+        },
+        "to": {
+         "part": "ldr1",
+         "pin": "AO"
+        },
+        "color": "#E8D24A"
+       },
+       {
+        "id": "a5",
+        "from": {
+         "part": "board",
+         "pin": "D26"
+        },
+        "to": {
+         "part": "led1",
+         "pin": "A"
+        },
+        "color": "#5CCB8F"
+       },
+       {
+        "id": "a6",
+        "from": {
+         "part": "board",
+         "pin": "GND1"
+        },
+        "to": {
+         "part": "led1",
+         "pin": "K"
+        },
+        "color": "#8A96A3"
+       }
+      ]
+     },
+     "wiring": [
+      {
+       "part": "ldr1",
+       "partLabel": "Sensore di luce LDR",
+       "pin": "VCC",
+       "role": "power",
+       "boardPin": "3V3",
+       "boardLabel": "3V3",
+       "gpio": null,
+       "color": "#FF6B5E",
+       "auto": true
+      },
+      {
+       "part": "ldr1",
+       "partLabel": "Sensore di luce LDR",
+       "pin": "GND",
+       "role": "ground",
+       "boardPin": "GND2",
+       "boardLabel": "GND",
+       "gpio": null,
+       "color": "#8A96A3",
+       "auto": true
+      },
+      {
+       "part": "ldr1",
+       "partLabel": "Sensore di luce LDR",
+       "pin": "DO",
+       "role": "digital_out",
+       "boardPin": "D25",
+       "boardLabel": "D25",
+       "gpio": 25,
+       "color": "#5CCB8F",
+       "auto": true
+      },
+      {
+       "part": "ldr1",
+       "partLabel": "Sensore di luce LDR",
+       "pin": "AO",
+       "role": "analog_out",
+       "boardPin": "D34",
+       "boardLabel": "D34",
+       "gpio": 34,
+       "color": "#E8D24A",
+       "auto": true
+      },
+      {
+       "part": "led1",
+       "partLabel": "LED di stato",
+       "pin": "A",
+       "role": "digital_in",
+       "boardPin": "D26",
+       "boardLabel": "D26",
+       "gpio": 26,
+       "color": "#5CCB8F",
+       "auto": true
+      },
+      {
+       "part": "led1",
+       "partLabel": "LED di stato",
+       "pin": "K",
+       "role": "ground",
+       "boardPin": "GND1",
+       "boardLabel": "GND",
+       "gpio": null,
+       "color": "#8A96A3",
+       "auto": true
+      }
+     ],
+     "findings": [],
+     "extras": [],
+     "unwired": [],
+     "notes": []
+    },
+    "toolCalls": [
+     {
+      "name": "propose_project",
+      "input": {
+       "title": "LED che si accende al buio",
+       "summary": "Un modulo LDR con comparatore (LM393) legge il livello di luce; quando scende sotto la soglia impostata dal trimmer, la scheda accende un LED.",
+       "board": null,
+       "keepExisting": true,
+       "parts": [
+        {
+         "id": "ldr1",
+         "partId": "ldr-module",
+         "label": "Sensore di luce LDR",
+         "why": "Rileva se la stanza è buia, con soglia regolabile via trimmer"
+        },
+        {
+         "id": "led1",
+         "partId": "led-resistor",
+         "label": "LED di stato",
+         "why": "Si accende quando il sensore rileva buio"
+        }
+       ],
+       "wires": [],
+       "links": []
+      },
+      "ok": true
+     }
+    ]
+   },
+   "ms": 10881
+  },
+  {
+   "kind": "apply"
+  },
+  {
+   "kind": "code"
+  }
+ ]
+}

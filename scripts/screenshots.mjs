@@ -34,10 +34,22 @@ const SHOTS = {
   newproject: { hash: `#demo=new-project&mode=port&scenario=weather-station-swapped${LOOK}`, delay: 26000 },
   export: { hash: `#demo=export&id=weather-station${LOOK}`, delay: 12000 },
   import: { hash: `#demo=import${LOOK}`, delay: 30000 },
+  // A recorded conversation with the assistant, replayed to the end (parts applied, code open).
+  chat: { hash: `#demo=chat&chat=weather-esp32&stage=desk${LOOK}`, delay: 34000 },
+  // The other recordings, for the website's demo gallery.
+  'chat-plant': { hash: `#demo=chat&chat=plant-pico&stage=desk${LOOK}`, delay: 34000 },
+  'chat-distance': { hash: `#demo=chat&chat=distance-uno&stage=desk${LOOK}`, delay: 34000 },
+  'chat-lamp': { hash: `#demo=chat&chat=night-lamp-it&stage=desk${LOOK}`, delay: 34000 },
+  // The assistant backing up the board before a write (the website's "flash safely" row).
+  // A template running in the simulator, step by step (the website's "How it works").
+  simrun: { hash: `#demo=template&id=plant-watering&speed=4&stage=desk${LOOK}`, delay: 16000 },
+  backup: { hash: `#demo=action&do=backup_flash&stage=desk${LOOK}`, delay: 16000 },
+  // Display Studio: the recorded test-pattern chat, applied, with the screen running.
+  display: { hash: `#demo=chat&chat=display-patterns&stage=desk${LOOK}`, delay: 26000 },
 };
 
 /** The 3D viewport inside the 1600 × 1000 window: under the top menu and the project tabs, left of the assistant, above the Code/Log panel. */
-const VIEWPORT = '0,84,1200,666';
+const VIEWPORT = '0,84,1200,616';
 
 const want = process.argv.slice(2);
 const headless = process.platform === 'linux' && !process.env.DISPLAY;
@@ -46,10 +58,15 @@ const headless = process.platform === 'linux' && !process.env.DISPLAY;
 const profile = () => mkdtempSync(join(tmpdir(), 'bp-shot-'));
 
 function run(env, delay) {
-  const electron = ['electron', '.', '--no-sandbox', '--force-device-scale-factor=2', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
+  // Software WebGL only where there is no GPU (Linux CI); on macOS SwiftShader cannot start and the
+  // capture comes out blank.
+  const gl = process.platform === 'linux' ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [];
+  const electron = ['electron', '.', '--no-sandbox', '--force-device-scale-factor=2', ...gl];
   const cmd = headless ? 'xvfb-run' : 'npx';
   const args = headless ? ['-a', '-s', '-screen 0 3300x2100x24', 'npx', ...electron] : electron;
-  spawnSync(cmd, args, { cwd: root, env: { ...process.env, BP_PROFILE: profile(), ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });
+  // No developer keys from .env.local: screenshots never call an AI (recorded chats replay without one).
+  const noKeys = { BP_NO_ENV_LOCAL: '1', ANTHROPIC_API_KEY: '', OPENAI_API_KEY: '', GEMINI_API_KEY: '' };
+  spawnSync(cmd, args, { cwd: root, env: { ...process.env, ...noKeys, BP_PROFILE: profile(), ...env, BP_SNAPSHOT_DELAY: String(delay) }, stdio: 'ignore', timeout: delay + 60000 });
 }
 
 if (want[0] === 'boards') {

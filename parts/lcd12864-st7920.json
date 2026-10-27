@@ -26,7 +26,8 @@
   ],
   "bus": "spi",
   "voltage": "5",
-  "model": { "shape": "oled", "size": [80, 70, 12], "color": "#2E6FD8" },
+  "model": { "shape": "oled", "size": [93, 70, 12], "color": "#2E6FD8", "pcb": "#2b6b3c" },
+  "display": { "widthPx": 128, "heightPx": 64, "activeMm": [66.52, 33.24], "glassMm": [72.0, 40.0], "color": "lcd", "tint": "#F2F6FF", "glassColor": "#2E6FD8", "source": { "title": "Raystar RG12864A2 datasheet (ST7920)", "section": "General Specification: module 93.0 x 70.0 x 13.6 (max) mm, view area 72.0 x 40.0 mm, active area 66.52 x 33.24 mm, dot 0.48 x 0.48, pitch 0.52 x 0.52" } },
   "keywords": ["st7920", "12864", "128x64", "lcd", "graphic lcd", "display grafico", "reprap"],
   "sources": [
     { "title": "Sitronix ST7920 datasheet", "section": "Serial interface: CS (RS), SID (R/W), SCLK (E); PSB LOW selects serial" }
