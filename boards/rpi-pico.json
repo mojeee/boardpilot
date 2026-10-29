@@ -958,6 +958,7 @@
   "toolchain": {
     "flasher": "picotool",
     "fqbn": "rp2040:rp2040:rpipico",
+    "pioBoard": "pico",
     "core": "rp2040:rp2040",
     "coreUrl": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
     "imageFormat": "uf2",

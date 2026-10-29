@@ -47,5 +47,23 @@ const it: Record<string, string> = {
     'Su questa scheda {pin} porta l’uscita di printf ({uart}), quindi il progetto iniziale non lo usa per {part}. Sposta il filo su un pin libero.',
   '{pin} is a debug (SWD) pin that programs the board, so the starter does not use it for {part}. Move the wire to a free pin.':
     '{pin} è un pin di debug (SWD) che programma la scheda, quindi il progetto iniziale non lo usa per {part}. Sposta il filo su un pin libero.',
+  // PlatformIO export (shared/starter/platformio.ts, Code panel)
+  'Save the code as a PlatformIO project folder (platformio.ini, src, include)…': 'Salva il codice come cartella di progetto PlatformIO (platformio.ini, src, include)…',
+  'Saved the PlatformIO project in {path}.': 'Progetto PlatformIO salvato in {path}.',
+  'The main sketch is not an .ino file, so there is no src/main.cpp. Rename the file that holds setup() and loop() to main.cpp.':
+    'Lo sketch principale non è un file .ino, quindi non c’è src/main.cpp. Rinomina in main.cpp il file con setup() e loop().',
+  'PlatformIO does not join several .ino files into one. Each became its own .cpp file: declare the functions you share between them in a header.':
+    'PlatformIO non unisce più file .ino in uno solo. Ognuno è diventato un file .cpp: dichiara in un header le funzioni che condividono.',
+  'The Arduino IDE adds function declarations for you; PlatformIO does not. If the build says a function “was not declared”, move it above the code that calls it or add its declaration at the top.':
+    'L’Arduino IDE aggiunge da solo le dichiarazioni delle funzioni; PlatformIO no. Se la compilazione dice che una funzione “was not declared”, spostala sopra il codice che la chiama o aggiungi la sua dichiarazione in cima.',
+  'TFT_eSPI reads its pins from platformio.ini here: User_Setup.h became -D build flags, so no library file needs editing.':
+    'Qui TFT_eSPI legge i pin da platformio.ini: User_Setup.h è diventato flag di compilazione -D, quindi non serve modificare file della libreria.',
+  'No PlatformIO library name is known for: {headers}. If the build cannot find them, search for the library at registry.platformio.org and add it under lib_deps.':
+    'Non conosco il nome PlatformIO delle librerie per: {headers}. Se la compilazione non le trova, cercale su registry.platformio.org e aggiungile sotto lib_deps.',
+  'This board file has no PlatformIO board id yet. Replace “board =” in platformio.ini with the id from docs.platformio.org/en/latest/boards.':
+    'Il file di questa scheda non ha ancora un id di scheda PlatformIO. Sostituisci “board =” in platformio.ini con l’id di docs.platformio.org/en/latest/boards.',
+  'For the Raspberry Pi Pico boards the project uses the community Arduino-Pico platform (the same core BoardPilot builds with).':
+    'Per le schede Raspberry Pi Pico il progetto usa la piattaforma Arduino-Pico della community (lo stesso core con cui compila BoardPilot).',
+  'The project already has a platformio.ini: it is kept as it is.': 'Il progetto ha già un platformio.ini: resta com’è.',
 };
 export default it;

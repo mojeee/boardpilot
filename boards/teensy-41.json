@@ -1160,6 +1160,7 @@
   "toolchain": {
     "flasher": "teensy",
     "fqbn": "teensy:avr:teensy41",
+    "pioBoard": "teensy41",
     "core": "teensy:avr",
     "coreUrl": "https://www.pjrc.com/teensy/package_teensy_index.json",
     "imageFormat": "hex",

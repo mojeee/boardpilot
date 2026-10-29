@@ -1700,6 +1700,7 @@
   "toolchain": {
     "flasher": "avrdude",
     "fqbn": "arduino:avr:mega",
+    "pioBoard": "megaatmega2560",
     "core": "arduino:avr",
     "avrdude": {
       "part": "m2560",

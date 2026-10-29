@@ -18,6 +18,7 @@ import { Icon } from './Icon';
 import { suggestCode } from './codeSuggest';
 import { compileNow } from './code/compile';
 import { slug } from '@shared/starter/common';
+import { generatePlatformio } from '@shared/starter/platformio';
 
 const mmss = (ms: number) => {
   const s = Math.floor(ms / 1000);
@@ -73,6 +74,15 @@ function CodeTools() {
       >
         <Icon name="save" size={13} />
       </button>
+      <button
+        className="btn small"
+        disabled={!hasCode}
+        onClick={() => void exportPlatformio()}
+        title={t('Save the code as a PlatformIO project folder (platformio.ini, src, include)…')}
+        data-where="code:platformio"
+      >
+        PlatformIO
+      </button>
       <button className="btn small" onClick={() => openTask('flash')} title={t('Write a program to the board, safely')}>
         {t('Flash to board')}
       </button>
@@ -87,6 +97,18 @@ async function saveCode() {
   const r = files.length > 1 ? await window.bp.session.saveProject(slug(sk.name.replace(/\.\w+$/, '')), files) : await window.bp.session.saveFile(sk.name, sk.text);
   if (r.ok) log('action', t('Saved the code in {path}.', { path: r.value }));
   else if (r.error.code !== 'cancelled') log('failed', [r.error.humanMessage, r.error.hint].filter(Boolean).join(' '));
+}
+
+/** Save the project's files as a PlatformIO project in a new folder. */
+async function exportPlatformio() {
+  const sk = currentSketch();
+  const board = getBoard(useScene.getState().scene.board);
+  const p = generatePlatformio(currentFiles(), board, { name: sk.name.replace(/\.\w+$/, '') });
+  const r = await window.bp.session.saveProject(p.folder, p.files);
+  if (r.ok) {
+    log('action', t('Saved the PlatformIO project in {path}.', { path: r.value }), { source: 'PlatformIO export' });
+    for (const n of p.notes) log('warning', n, { source: 'PlatformIO export' });
+  } else if (r.error.code !== 'cancelled') log('failed', [r.error.humanMessage, r.error.hint].filter(Boolean).join(' '));
 }
 
 /** Beside the code while a template runs: where the program is and what it sees (all simulated). */

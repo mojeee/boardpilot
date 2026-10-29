@@ -1113,6 +1113,7 @@
   "toolchain": {
     "flasher": "stm32",
     "fqbn": "STMicroelectronics:stm32:GenF4:pnum=BLACKPILL_F411CE,usb=CDCgen,upload_method=dfuMethod",
+    "pioBoard": "blackpill_f411ce",
     "core": "STMicroelectronics:stm32",
     "coreUrl": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
     "imageFormat": "bin",

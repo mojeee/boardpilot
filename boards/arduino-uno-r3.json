@@ -768,6 +768,7 @@
   "toolchain": {
     "flasher": "avrdude",
     "fqbn": "arduino:avr:uno",
+    "pioBoard": "uno",
     "core": "arduino:avr",
     "avrdude": {
       "part": "m328p",

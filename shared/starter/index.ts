@@ -13,6 +13,7 @@ export type { StarterFile, StarterProject } from './common';
 export { isSafeProjectName, isSafeProjectPath } from './common';
 export { generatePicoSdk, isRpBoard, PICO_TARGET } from './picoSdk';
 export { generateEspIdf, isIdfBoard, IDF_MIN_VERSION, IDF_PROJECT } from './espIdf';
+export { generatePlatformio, userSetupFlags, serialBaud, includedHeaders } from './platformio';
 export { generateStm32Hal, isStm32HalBoard, STM32_TARGET, STM32_REPOS } from './stm32Hal';
 
 export type StarterToolchain = 'arduino' | 'pico-sdk' | 'esp-idf' | 'stm32-hal';

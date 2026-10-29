@@ -326,6 +326,8 @@ export interface BoardToolchain {
   /** Pico SDK board name (PICO_BOARD), e.g. "pico", "pico2", "pico_w". RP2040/RP2350 boards only;
    *  the names are the header files in pico-sdk/src/boards/include/boards/. */
   picoBoard?: string;
+  /** PlatformIO board id for the PlatformIO export, e.g. "esp32dev" (docs.platformio.org/en/latest/boards). Left out when not known. */
+  pioBoard?: string;
   /** ESP-IDF target (idf.py set-target), e.g. "esp32", "esp32s3", "esp32c3". ESP32 family boards only. */
   idfTarget?: 'esp32' | 'esp32s3' | 'esp32c3';
   /** STM32 HAL starter project: device, clock tree and the UART that printf uses. STM32 boards only. */

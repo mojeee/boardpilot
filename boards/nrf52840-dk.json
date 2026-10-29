@@ -1302,6 +1302,7 @@
   "toolchain": {
     "flasher": "nrfjprog",
     "fqbn": "adafruit:nrf52:pca10056",
+    "pioBoard": "nrf52840_dk",
     "core": "adafruit:nrf52",
     "coreUrl": "https://adafruit.github.io/arduino-board-index/package_adafruit_index.json",
     "imageFormat": "hex",

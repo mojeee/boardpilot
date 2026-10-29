@@ -141,6 +141,7 @@ export function checkBoard(b) {
   if (tc.flasher === 'avrdude' && !tc.avrdude) e('avrdude boards need toolchain.avrdude');
   const rp = b.family === 'rp2040' || b.family === 'rp2350';
   if (rp && !/^[a-z0-9_]+$/.test(tc.picoBoard ?? '')) e('RP2040/RP2350 boards need toolchain.picoBoard (the Pico SDK PICO_BOARD name, e.g. "pico")');
+  if (tc.pioBoard !== undefined && !/^[a-z0-9][a-z0-9_.-]*$/i.test(tc.pioBoard)) e('toolchain.pioBoard must be a PlatformIO board id such as "esp32dev" (docs.platformio.org/en/latest/boards)');
   if (!rp && tc.picoBoard !== undefined) e('toolchain.picoBoard is only for RP2040/RP2350 boards');
   // ESP-IDF target (idf.py set-target) for the ESP-IDF starter project.
   const esp = b.family === 'esp32' || b.family === 'esp32s3' || b.family === 'esp32c3';

@@ -683,6 +683,7 @@
   "toolchain": {
     "flasher": "avrdude",
     "fqbn": "arduino:avr:nano",
+    "pioBoard": "nanoatmega328new",
     "core": "arduino:avr",
     "avrdude": {
       "part": "m328p",

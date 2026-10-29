@@ -1050,6 +1050,7 @@
   "toolchain": {
     "flasher": "esptool",
     "fqbn": "esp32:esp32:esp32s3",
+    "pioBoard": "esp32-s3-devkitc-1",
     "core": "esp32:esp32",
     "coreUrl": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
     "esptoolChip": "esp32s3",
