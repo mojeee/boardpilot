@@ -282,6 +282,7 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('archive:update', (id: string, edit: ArchiveEdit) => archive.update(id, edit));
   h('archive:reveal', (id: string, file?: string) => archive.reveal(id, file));
   h('archive:readFile', (id: string, file: string) => archive.readFile(id, file));
+  h('archive:readSources', (id: string) => archive.readSources(id));
   // Project memory: old projects, notes and datasheets, kept only on this computer.
   const memory = new MemoryStore(join(dataDir, 'memory'));
   ai.setMemory(memory);

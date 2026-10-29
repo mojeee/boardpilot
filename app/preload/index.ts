@@ -90,6 +90,7 @@ const api: BoardPilotApi = {
     update: call('archive:update'),
     reveal: call('archive:reveal'),
     readFile: call('archive:readFile'),
+    readSources: call('archive:readSources'),
   } as BoardPilotApi['archive'],
   memory: {
     list: call('memory:list'),

@@ -12,7 +12,7 @@ import type { ArchiveProject, ProjectFile } from '@shared/archive/types';
 
 export const SCAN_LIMITS = { depth: 8, entries: 20_000, filesPerProject: 2_000, textBytes: 1024 * 1024, schematicBytes: 4 * 1024 * 1024 };
 
-const SKIP_DIRS = /^(\.git|\.svn|\.hg|node_modules|\.pio|\.pioenvs|build|cmake-build-\w+|Debug|Release|out|dist|\.vscode|\.idea|\.settings|\.metadata|__pycache__|managed_components|\.cache)$/i;
+export const SKIP_DIRS = /^(\.git|\.svn|\.hg|node_modules|\.pio|\.pioenvs|build|cmake-build-\w+|Debug|Release|out|dist|\.vscode|\.idea|\.settings|\.metadata|__pycache__|managed_components|\.cache)$/i;
 
 /** Files whose text the extractors read; everything else is listed by name only. */
 const TEXT_FILE = /\.(ino|c|cc|cpp|h|hpp|ini|ioc|yml|yaml|md|txt|csv|kicad_sch|json)$|^sdkconfig(\.defaults)?$|^cmakelists\.txt$/i;

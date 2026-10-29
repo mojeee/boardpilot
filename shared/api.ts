@@ -143,6 +143,11 @@ export interface BoardPilotApi {
     reveal(id: string, file?: string): Promise<void>;
     /** Text of a file in a project (1 MB max), e.g. its main source. */
     readFile(id: string, file: string): Promise<Result<{ name: string; text: string }>>;
+    /**
+     * Every source file of a project folder (C, C++, Arduino, headers, platformio.ini) with its path inside
+     * the project, limited in number, size and depth; `left` names what was left out.
+     */
+    readSources(id: string): Promise<Result<{ files: { name: string; text: string }[]; left: string[] }>>;
   };
   /** Project memory: knowledge from old projects, kept in the app data folder on this computer. */
   memory: {

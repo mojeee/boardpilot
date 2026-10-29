@@ -4,11 +4,11 @@
 import { PARTS, getBoard } from '@shared/board';
 import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
-import type { Scene } from '@shared/types';
+import type { Scene, SceneWire } from '@shared/types';
 import { freeSpot } from './sceneActions';
 
 /** A scene with the parts added to `base`, wired by the safe-pin rules; notes say which pins were picked. */
-export function sceneWithParts(base: Scene, partIds: string[]): { scene: Scene; notes: string[] } {
+export function sceneWithParts(base: Scene, partIds: string[], seed?: (placed: Scene) => SceneWire[]): { scene: Scene; notes: string[] } {
   const board = getBoard(base.board);
   let scene: Scene = { ...base, parts: [...base.parts] };
   for (const partId of partIds) {
@@ -20,6 +20,8 @@ export function sceneWithParts(base: Scene, partIds: string[]): { scene: Scene; 
     const [x, z] = freeSpot(scene.parts);
     scene = { ...scene, parts: [...scene.parts, { id: `${stem}${n}`, partId, position: [x, 0, z], label: def.name.split(/[ (]/)[0], confirmed: true }] };
   }
+  // wires that must stay as they are (pins recovered from an old project) go in before the safe-pin rules fill the rest
+  if (seed) scene = { ...scene, wires: [...scene.wires, ...seed(scene)] };
   const r = assignPins(scene, board, PARTS);
   return { scene: r.scene, notes: r.notes };
 }

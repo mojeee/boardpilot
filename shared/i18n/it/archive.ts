@@ -93,4 +93,16 @@ export default {
   'A Wi-Fi room thermostat with an NTC probe and a relay for the boiler': 'Termostato Wi-Fi con sonda NTC e relè per la caldaia',
   '“{name}” runs on a custom board ({mcu}). The project opens on the bare {board}: its pin numbers carry over, but the pad positions are not your board’s. Change it with the board picker.':
     '“{name}” gira su una scheda personalizzata ({mcu}). Il progetto si apre sul {board} nudo: i numeri dei pin restano validi, ma la posizione dei pad non è quella della tua scheda. Cambialo con il selettore di schede.',
+  "Use as start, keep its pins": "Usa come punto di partenza, mantieni i suoi pin",
+  "Loads every code file of the project unchanged and keeps the display pins written in them. Then the wiring rules check those pins.": "Carica senza modifiche tutti i file di codice del progetto e mantiene i pin del display scritti al loro interno. Poi le regole di cablaggio controllano quei pin.",
+  "{name} is GPIO {gpio}, which is not a pin of {board}, so it was not wired.": "{name} è il GPIO {gpio}, che non è un pin di {board}, quindi non è stato collegato.",
+  "{part} {pin} to {boardPin} (GPIO {gpio}, from {name})": "{part} {pin} su {boardPin} (GPIO {gpio}, da {name})",
+  "The files of “{name}” could not be read, so only its main file is loaded and the pins are chosen by the safe-pin rules.": "I file di “{name}” non si sono potuti leggere, quindi viene caricato solo il file principale e i pin sono scelti dalle regole dei pin sicuri.",
+  "Loaded {n} code files of “{name}” unchanged.": "Caricati {n} file di codice di “{name}” senza modifiche.",
+  "Left out (too many, too big or too deep): {list}.": "Esclusi (troppi, troppo grandi o troppo in profondità): {list}.",
+  "Pin kept: {note}": "Pin mantenuto: {note}",
+  "No display pins were found in the files, so every pin was chosen by the safe-pin rules.": "Nei file non sono stati trovati pin del display, quindi ogni pin è stato scelto dalle regole dei pin sicuri.",
+  "Wiring check on the pins kept from “{name}”: no problems found.": "Controllo del cablaggio sui pin mantenuti da “{name}”: nessun problema trovato.",
+  "The project’s files could not be read.": "I file del progetto non si sono potuti leggere.",
+  "Check that the folder still exists and try again.": "Controlla che la cartella esista ancora e riprova.",
 } as Record<string, string>;

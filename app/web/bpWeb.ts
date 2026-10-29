@@ -278,6 +278,7 @@ const api: BoardPilotApi = {
     update: wrap((id: string, edit: ArchiveEdit) => archive.update(id, edit)),
     reveal: async () => showNeedsApp(t('Opening a project folder needs the BoardPilot app.')),
     readFile: wrap((id: string, file: string) => archive.readFile(id, file)),
+    readSources: wrap((id: string) => archive.readSources(id)),
   },
   // Project memory reads folders and keeps them on the computer: the app only.
   memory: {

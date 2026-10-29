@@ -240,6 +240,11 @@ function Detail({ e }: { e: ArchiveEntry }) {
         <button className="btn small primary" onClick={() => void startFromArchive(e)}>
           {t('Use as start')}
         </button>
+        {e.mainSource && !e.scene && (
+          <button className="btn small" title={t('Loads every code file of the project unchanged and keeps the display pins written in them. Then the wiring rules check those pins.')} onClick={() => void startFromArchive(e, { keepPins: true })}>
+            {t('Use as start, keep its pins')}
+          </button>
+        )}
         {!window.bp.web && (
           <button className="btn small ghost" onClick={() => open()}>
             {t('Open folder')}
