@@ -17,6 +17,7 @@ import { codePinName } from './planner';
 import { FONT_5X7 } from './displayFont';
 import { COLOR_BARS, GRAPH_STEP_MS, ICON_BITS, buttonLabelAt } from './displayRender';
 import { parseColor, parseCondition, rgb565, rotatedSize, type DisplayElement, type DisplaySpec, type PanelInfo } from './displaySpec';
+import { dataOf } from './displayAssets';
 import { TOUCH_PARTS, NO_TOUCH_CODE, touchCode, type TouchCode } from './displayTouch';
 import { t } from './i18n';
 
@@ -189,7 +190,9 @@ function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec, typed
         if (vv) out.push(`  { char num[24]; dtostrf(v_${ident(vv.name)}, 0, ${Math.max(0, Math.min(3, vv.digits))}, num); strncat(buf, num, sizeof(buf) - strlen(buf) - 1); }`);
         else out.push(`  strncat(buf, ${cstr(p)}, sizeof(buf) - strlen(buf) - 1);`);
       }
-      out.push(`  bpTextAligned(${el.x}, ${el.y}, buf, ${Math.max(1, Math.round(el.size))}, ${col(el.color)}, ${el.align === 'center' ? 1 : el.align === 'right' ? 2 : 0});`, '}');
+      const align = el.align === 'center' ? 1 : el.align === 'right' ? 2 : 0;
+      if (el.font && spec.fonts?.some((f) => f.id === el.font)) out.push(`  bpGfxTextAligned(${el.x}, ${el.y}, buf, &F_${ident(el.font)}, ${Math.max(1, Math.round(el.size))}, ${col(el.color)}, ${align});`, '}');
+      else out.push(`  bpTextAligned(${el.x}, ${el.y}, buf, ${Math.max(1, Math.round(el.size))}, ${col(el.color)}, ${align});`, '}');
       break;
     }
     case 'rect':
@@ -245,6 +248,14 @@ function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec, typed
     case 'icon':
       out.push(`bpIcon(${el.x}, ${el.y}, ICON_${el.name.toUpperCase()}, ${Math.max(1, Math.round(el.scale))}, ${col(el.color)});`);
       break;
+    case 'bitmap': {
+      const bm = spec.bitmaps?.find((b) => b.id === el.bitmap);
+      if (!bm) break;
+      const s = Math.max(1, Math.round(el.scale));
+      if (bm.format === 'mono') out.push(`bpBitmapMono(${el.x}, ${el.y}, BM_${ident(bm.id)}, ${bm.w}, ${bm.h}, ${s}, ${col(el.color)});`);
+      else out.push(`bpBitmap565(${el.x}, ${el.y}, BM_${ident(bm.id)}, ${bm.w}, ${bm.h}, ${s});`);
+      break;
+    }
     case 'button': {
       if (el.hidden) break;  // a hit region draws nothing
       if (el.fill.trim()) out.push(`gfx.fillRect(${el.x}, ${el.y}, ${el.w}, ${el.h}, ${col(el.fill)});`);
@@ -479,6 +490,104 @@ function targetFor(lib: DisplayLibrary, panel: PanelInfo, p: Pins, board: BoardD
   };
 }
 
+/** Hex bytes, 16 to a line. */
+function byteLines(bytes: number[], indent = '  '): string[] {
+  const out: string[] = [];
+  for (let i = 0; i < bytes.length; i += 16) out.push(`${indent}${bytes.slice(i, i + 16).map((b) => hex(b)).join(', ')},`);
+  return out;
+}
+
+/** Pictures and fonts the drawing uses, as PROGMEM arrays with the small routines that draw them. */
+function assetCode(spec: DisplaySpec, panel: PanelInfo): string[] {
+  const out: string[] = [];
+  const usedBitmaps = (spec.bitmaps ?? []).filter((b) => spec.screens.some((sc) => sc.elements.some((e) => e.type === 'bitmap' && e.bitmap === b.id)));
+  const usedFonts = (spec.fonts ?? []).filter((f) => spec.screens.some((sc) => sc.elements.some((e) => e.type === 'text' && e.font === f.id)));
+  if (usedBitmaps.length) {
+    out.push('// Pictures imported in Display Studio, in flash (PROGMEM). Mono: rows of bytes, bit 7 = left. Colour: RGB565 words.');
+    for (const bm of usedBitmaps) {
+      const bytes = dataOf(bm);
+      if (bm.format === 'mono') out.push(`static const uint8_t BM_${ident(bm.id)}[] PROGMEM = {  // ${bm.w}x${bm.h}, ${bytes.length} bytes`, ...byteLines(bytes), '};');
+      else {
+        const words: number[] = [];
+        for (let i = 0; i + 1 < bytes.length; i += 2) words.push((bytes[i] << 8) | bytes[i + 1]);
+        out.push(`static const uint16_t BM_${ident(bm.id)}[] PROGMEM = {  // ${bm.w}x${bm.h}, ${bytes.length} bytes`);
+        for (let i = 0; i < words.length; i += 12) out.push(`  ${words.slice(i, i + 12).map((w) => hex(w, 4)).join(', ')},`);
+        out.push('};');
+      }
+    }
+    if (usedBitmaps.some((b) => b.format === 'mono'))
+      out.push(
+        'void bpBitmapMono(int x, int y, const uint8_t *bm, int w, int h, int s, uint16_t c) {',
+        '  int rb = (w + 7) / 8;',
+        '  for (int row = 0; row < h; row++) for (int col = 0; col < w; col++) if (pgm_read_byte(&bm[row * rb + (col >> 3)]) & (0x80 >> (col & 7))) gfx.fillRect(x + col * s, y + row * s, s, s, c);',
+        '}',
+      );
+    if (usedBitmaps.some((b) => b.format === 'rgb565'))
+      out.push(
+        'void bpBitmap565(int x, int y, const uint16_t *bm, int w, int h, int s) {',
+        '  for (int row = 0; row < h; row++) for (int col = 0; col < w; col++) {',
+        '    uint16_t v = pgm_read_word(&bm[row * w + col]);',
+        ...(panel.color === 'rgb565'
+          ? ['    gfx.fillRect(x + col * s, y + row * s, s, s, v);']
+          : ['    int r = (v >> 11) & 31, g = (v >> 5) & 63, b = v & 31;  // to the on/off pixel this panel shows', '    gfx.fillRect(x + col * s, y + row * s, s, s, bpColor((r << 3) | (r >> 2), (g << 2) | (g >> 4), (b << 3) | (b >> 2)));']),
+        '  }',
+        '}',
+      );
+  }
+  if (usedFonts.length) {
+    out.push(
+      '// Fonts imported in Display Studio (Adafruit GFX format). y is the baseline.',
+      'struct BpGlyph { uint16_t off; uint8_t w, h, adv; int8_t xo, yo; };',
+      'struct BpFont { const uint8_t *bm; const BpGlyph *gl; uint8_t first, last, yAdv; };',
+    );
+    for (const f of usedFonts) {
+      const n = ident(f.id);
+      out.push(`static const uint8_t F_${n}_BM[] PROGMEM = {  // ${f.name}`, ...byteLines(dataOf(f)), '};', `static const BpGlyph F_${n}_GL[] PROGMEM = {`);
+      for (const g of f.glyphs) out.push(`  {${g.offset}, ${g.w}, ${g.h}, ${g.xAdvance}, ${g.xOffset}, ${g.yOffset}},`);
+      out.push('};', `static const BpFont F_${n} = {F_${n}_BM, F_${n}_GL, ${f.first}, ${f.last}, ${f.yAdvance}};`);
+    }
+    out.push(
+      'int bpFontWidth(const BpFont *f, const char *s, int n, int size) {',
+      '  int w = 0;',
+      '  for (int i = 0; i < n; i++) { uint8_t c = (uint8_t)s[i]; if (c >= f->first && c <= f->last) w += pgm_read_byte(&f->gl[c - f->first].adv) * size; }',
+      '  return w;',
+      '}',
+      '',
+      'void bpGfxText(int x, int y, const char *s, const BpFont *f, int size, uint16_t c) {',
+      '  int cx = x;',
+      '  for (; *s; s++) {',
+      "    if (*s == '\n') { cx = x; y += size * f->yAdv; continue; }",
+      '    uint8_t ch = (uint8_t)*s; if (ch < f->first || ch > f->last) continue;',
+      '    const BpGlyph *g = &f->gl[ch - f->first];',
+      '    uint16_t bo = pgm_read_word(&g->off); uint8_t gw = pgm_read_byte(&g->w), gh = pgm_read_byte(&g->h);',
+      '    int xo = (int8_t)pgm_read_byte(&g->xo), yo = (int8_t)pgm_read_byte(&g->yo);',
+      '    uint8_t bits = 0, bit = 0;',
+      '    for (int yy = 0; yy < gh; yy++) for (int xx = 0; xx < gw; xx++) {',
+      '      if (!(bit++ & 7)) bits = pgm_read_byte(&f->bm[bo++]);',
+      '      if (bits & 0x80) gfx.fillRect(cx + (xo + xx) * size, y + (yo + yy) * size, size, size, c);',
+      '      bits <<= 1;',
+      '    }',
+      '    cx += pgm_read_byte(&g->adv) * size;',
+      '  }',
+      '}',
+      '',
+      'void bpGfxTextAligned(int x, int y, const char *s, const BpFont *f, int size, uint16_t c, int align) {',
+      '  char line[96];',
+      '  while (*s) {',
+      "    int n = 0; while (s[n] && s[n] != '\n' && n < 95) n++;",
+      '    memcpy(line, s, n); line[n] = 0;',
+      '    int w = bpFontWidth(f, line, n, size);',
+      '    bpGfxText(align == 1 ? x - w / 2 : align == 2 ? x - w : x, y, line, f, size, c);',
+      "    s += n; if (*s == '\n') s++;",
+      '    y += size * f->yAdv;',
+      '  }',
+      '}',
+      '',
+    );
+  }
+  return out;
+}
+
 /**
  * The tap logic in C, the same as DisplaySim.tap: the topmost visible button under the finger runs its
  * actions, otherwise a "touch" change of screen from this screen applies. handleTouch() fires once per press.
@@ -702,6 +811,7 @@ export function generateDisplayCode(
     '  }',
     '}',
     '',
+    ...assetCode(spec, panel),
     ...varFunction(spec),
     '',
     `int screen = ${screenIdx.get(spec.start) ?? 0};  // ${spec.screens.map((s, i) => `${i} ${s.id}`).join(', ')}`,

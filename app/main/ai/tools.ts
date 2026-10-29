@@ -198,6 +198,7 @@ export const TOOLS: ToolSpec[] = [
       'Coordinates are pixels from the top-left of the rotated screen. Text uses a 5x7 font in 6x8 cells: a line is 6*size*chars-size wide and 8*size-size tall; "{name}" inserts a value; "°" works. ' +
       'Elements (type and fields): text {x,y,text,size 1-8,color,align left|center|right}; rect {x,y,w,h,color,fill}; line {x,y,x2,y2,color}; circle {x,y,r,color,fill}; bar {x,y,w,h,value,min,max,color,vertical}; graph {x,y,w,h,value,min,max,color} (history, one sample every 250 ms); gauge {x,y,r,value,min,max,color,startDeg,endDeg,ticks} (a dial with scale marks and a needle; degrees clockwise from 12 o\'clock, e.g. -120 to 120); ' +
       `icon {x,y,name,scale,color} (8x8, names: ${ICONS.join(', ')}); ` +
+      'bitmap {x,y,bitmap,scale,color} (a picture the user imported into Display Studio, by its id from get_display; you cannot create pictures; a one-bit picture is drawn in color, a colour one keeps its own); text may also have font (the id of an imported Adafruit GFX font from get_display; then y is the baseline and size scales it; without font the built-in 5x7 font is used, size 1-8). ' +
       'button {x,y,w,h,label,size,color,fill,hidden,actions} (a touch button: a tap inside runs its actions; fill "" = no background; hidden true = an invisible hit region; keep it at least 24x24 px; actions is a list of {do:"screen",screen} | {do:"set",var,value} | {do:"toggle",var} where var is one of the values; a value set by a tap replaces its simulation; the preview is tapped by clicking it; the code reads the touch part wired in the project: XPT2046, FT6236 or GT911); ' +
       `pattern {x,y,w,h,kind,size,speed,colors} (kinds: colorbars, checker, gradient (no colors on a colour panel = rainbow), grid, stripes, scroll, rings, bounce (ball of radius size), fill (cycles colors every size*100 ms); speed in pixels per second, 0 = still). ` +
       'Every element may have visibleIf (e.g. "temp > 30", "temp > 30 && hum < 40", "alarm || !ok") and blinkMs. Colours: "#RRGGBB" or names; on one-colour panels light colours are on, dark are off. ' +
@@ -487,10 +488,19 @@ export async function runTool(
         };
         if (name === 'get_display') {
           const current = builder.scene.displays?.find((d) => d.part === partId);
-          return done({ ...facts, currentDesign: current ?? null });
+          // The picture and font bytes stay in the app: the assistant sees their ids and sizes and refers to them by id.
+          const lean = current && { ...current, bitmaps: undefined, fonts: undefined };
+          return done({
+            ...facts,
+            currentDesign: lean ?? null,
+            importedPictures: (current?.bitmaps ?? []).map((b) => ({ id: b.id, widthPx: b.w, heightPx: b.h, kind: b.format === 'mono' ? 'one-bit (drawn in one colour)' : 'full colour' })),
+            importedFonts: (current?.fonts ?? []).map((f) => ({ id: f.id, name: f.name, yAdvance: f.yAdvance, characters: `${f.first}-${f.last}` })),
+          });
         }
-        const spec = normalizeSpec({ ...input, part: partId });
-        const problems = checkSpec(spec, panel);
+        // Imported pictures and fonts are not something the assistant sends: they carry over from the current design.
+        const before = builder.scene.displays?.find((d) => d.part === partId);
+        const spec = normalizeSpec({ bitmaps: before?.bitmaps, fonts: before?.fonts, ...input, part: partId });
+        const problems = checkSpec(spec, panel, BOARDS[scene.board]);
         turn.display = { spec, problems };
         const [w, h] = rotatedSize(panel, spec.rotation);
         const errors = problems.filter((p) => p.severity === 'error').map((p) => p.message);

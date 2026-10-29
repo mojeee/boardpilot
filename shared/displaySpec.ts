@@ -6,6 +6,9 @@
 
 import type { PartDef } from './types';
 import { t } from './i18n';
+import { MAX_BITMAP_SIDE, base64ToBytes, bitmapSize, bitmapValid, fontLineWidth, fontValid, type BitmapFormat, type DisplayBitmap, type DisplayFont, type GfxGlyph } from './displayAssets';
+
+export type { DisplayBitmap, DisplayFont } from './displayAssets';
 
 /* ---------------- the panel ---------------- */
 
@@ -86,7 +89,8 @@ interface ElBase {
 
 export type DisplayElement = ElBase &
   (
-    | { type: 'text'; x: number; y: number; text: string; size: number; color: string; align: 'left' | 'center' | 'right' }
+    /** `font` is the id of an imported Adafruit GFX font (spec.fonts); then y is the baseline, as in Adafruit GFX */
+    | { type: 'text'; x: number; y: number; text: string; size: number; color: string; align: 'left' | 'center' | 'right'; font?: string }
     | { type: 'rect'; x: number; y: number; w: number; h: number; color: string; fill: boolean }
     | { type: 'line'; x: number; y: number; x2: number; y2: number; color: string }
     | { type: 'circle'; x: number; y: number; r: number; color: string; fill: boolean }
@@ -95,6 +99,8 @@ export type DisplayElement = ElBase &
     /** a dial: `ticks` scale marks and a needle, angles in degrees clockwise from 12 o'clock */
     | { type: 'gauge'; x: number; y: number; r: number; value: string; min: number; max: number; color: string; startDeg: number; endDeg: number; ticks: number }
     | { type: 'icon'; x: number; y: number; name: IconName; scale: number; color: string }
+    /** an imported picture (spec.bitmaps), `scale` times bigger; a one-bit picture is drawn in `color`, a colour one keeps its own */
+    | { type: 'bitmap'; x: number; y: number; bitmap: string; scale: number; color: string }
     /** a touch button (or, with `hidden`, an invisible hit region): a tap inside runs its actions. `fill` "" = no background. */
     | { type: 'button'; x: number; y: number; w: number; h: number; label: string; size: number; color: string; fill: string; hidden: boolean; actions: TouchAction[] }
     | { type: 'pattern'; x: number; y: number; w: number; h: number; kind: PatternKind; size: number; speed: number; colors: string[] }
@@ -133,6 +139,10 @@ export interface DisplaySpec {
   screens: DisplayScreen[];
   start: string;
   transitions: DisplayTransition[];
+  /** pictures imported from image files, used by `bitmap` elements */
+  bitmaps?: DisplayBitmap[];
+  /** Adafruit GFX fonts imported from header files, used by `text` elements with a `font` */
+  fonts?: DisplayFont[];
 }
 
 /* ---------------- colours ---------------- */
@@ -245,7 +255,7 @@ export function rotatedSize(panel: PanelInfo, rotation: number): [number, number
 }
 
 /** What is wrong with a spec on a panel, in plain words: the assistant fixes errors before answering. */
-export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
+export function checkSpec(spec: DisplaySpec, panel: PanelInfo, board?: { name?: string; flashBytes?: number; ramBytes?: number }): SpecProblem[] {
   const out: SpecProblem[] = [];
   const err = (message: string) => out.push({ severity: 'error', message });
   const warn = (message: string) => out.push({ severity: 'warning', message });
@@ -270,6 +280,12 @@ export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
       for (const name of [...('text' in el ? usesVar(el.text) : []), ...('value' in el ? [el.value] : []), ...conditionVars(el.visibleIf)]) {
         if (name && !varNames.has(name)) err(t('{where} uses the value “{name}”, which is not defined.', { where, name }));
       }
+      if (el.type === 'bitmap') {
+        const bm = spec.bitmaps?.find((b) => b.id === el.bitmap);
+        if (!bm) err(t('{where} uses the picture “{id}”, which is not imported.', { where, id: el.bitmap }));
+        else if (el.x < 0 || el.y < 0 || el.x + bm.w * el.scale > W || el.y + bm.h * el.scale > H) warn(t('{where} goes past the {w}x{h} screen.', { where, w: W, h: H }));
+      }
+      if (el.type === 'text' && el.font && !spec.fonts?.some((f) => f.id === el.font)) err(t('{where} uses the font “{id}”, which is not imported.', { where, id: el.font }));
       if (el.type === 'button') {
         if (!el.actions.length && !el.hidden) warn(t('{where}: the button does nothing when tapped. Give it an action.', { where }));
         for (const a of el.actions) {
@@ -280,7 +296,12 @@ export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
         if (el.w < 24 || el.h < 24) warn(t('{where}: the button is smaller than 24x24 pixels, which is hard to tap with a finger.', { where }));
         if (!el.hidden && el.label.length * 6 * el.size - el.size > el.w) warn(t('{where}: the label “{text}” is wider than the button.', { where, text: el.label.slice(0, 24) }));
       }
-      if (el.type === 'text') {
+      const font = el.type === 'text' && el.font ? spec.fonts?.find((f) => f.id === el.font) : undefined;
+      if (el.type === 'text' && font) {
+        const wPx = Math.max(...el.text.split('\n').map((l) => fontLineWidth(font, l, el.size)));
+        const x0 = el.align === 'center' ? el.x - Math.floor(wPx / 2) : el.align === 'right' ? el.x - wPx : el.x;
+        if (x0 < 0 || x0 + wPx > W || el.y < 0 || el.y > H) warn(t('{where}: the text “{text}” goes past the {w}x{h} screen.', { where, text: el.text.slice(0, 24), w: W, h: H }));
+      } else if (el.type === 'text') {
         const lines = el.text.split('\n');
         const wPx = Math.max(...lines.map((l) => l.length)) * 6 * el.size - el.size;
         const x0 = el.align === 'center' ? el.x - wPx / 2 : el.align === 'right' ? el.x - wPx : el.x;
@@ -295,6 +316,18 @@ export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
         warn(t('{where}: a {kind} pattern needs a colour screen; on this one it shows in two tones only.', { where, kind: el.kind }));
     }
   }
+  // Pictures and fonts live in the board's flash (PROGMEM); a full-colour picture is two bytes a pixel.
+  const used = (spec.bitmaps ?? []).filter((b) => spec.screens.some((sc) => sc.elements.some((e) => e.type === 'bitmap' && e.bitmap === b.id)));
+  const bitmapBytes = used.reduce((n, b) => n + bitmapSize(b), 0);
+  const fontBytes = (spec.fonts ?? []).reduce((n, f) => n + base64ToBytes(f.bitmap).length + f.glyphs.length * 7, 0);
+  const total = bitmapBytes + fontBytes;
+  if (board?.flashBytes && total > 0) {
+    // Leave room for the program: more than a quarter of the flash for pictures is a warning, more than half cannot work.
+    if (total > board.flashBytes / 2) err(t('The pictures and fonts take {kb} KB, more than half of the {flash} KB flash of {board}. Use smaller or one-bit pictures.', { kb: Math.ceil(total / 1024), flash: Math.round(board.flashBytes / 1024), board: board.name ?? '' }));
+    else if (total > board.flashBytes / 4) warn(t('The pictures and fonts take {kb} KB, over a quarter of the {flash} KB flash of {board}.', { kb: Math.ceil(total / 1024), flash: Math.round(board.flashBytes / 1024), board: board.name ?? '' }));
+  }
+  if (board?.ramBytes && board.ramBytes <= 8192 && total > 0) warn(t('Pictures are kept in flash and read one pixel at a time, so they do not use RAM, but this board has only {ram} KB of RAM for everything else.', { ram: Math.round(board.ramBytes / 1024) }));
+  for (const b of spec.bitmaps ?? []) if (!bitmapValid(b)) err(t('The picture “{id}” is damaged or larger than {max} pixels a side.', { id: b.id, max: MAX_BITMAP_SIDE }));
   if (panel.color === 'epaper' && spec.screens.some((s) => s.elements.some((e) => e.type === 'pattern' && e.speed > 0)))
     warn(t('E-paper takes seconds to refresh: moving patterns will not look smooth on the real panel.'));
   return out;
@@ -306,7 +339,7 @@ const num = (v: unknown, d: number, lo = -10000, hi = 10000) => (typeof v === 'n
 const str = (v: unknown, d = '') => (typeof v === 'string' ? v : d);
 const obj = (v: unknown): Record<string, unknown> => (typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
-const ELEMENT_TYPES = ['text', 'rect', 'line', 'circle', 'bar', 'graph', 'gauge', 'icon', 'button', 'pattern'];
+const ELEMENT_TYPES = ['text', 'rect', 'line', 'circle', 'bar', 'graph', 'gauge', 'icon', 'bitmap', 'button', 'pattern'];
 const PATTERNS: PatternKind[] = ['colorbars', 'checker', 'gradient', 'grid', 'stripes', 'bounce', 'scroll', 'rings', 'fill'];
 
 /** A spec from loose JSON (the assistant's tool input): defaults filled, numbers clamped, unknown types dropped. */
@@ -336,7 +369,7 @@ export function normalizeSpec(raw: unknown): DisplaySpec {
         const wh = { w: Math.round(num(e.w, 10, 0, 2000)), h: Math.round(num(e.h, 10, 0, 2000)) };
         switch (str(e.type)) {
           case 'text':
-            return { ...base, type: 'text', ...xy, text: str(e.text), size: Math.round(num(e.size, 1, 1, 8)), color: color(e.color, '#FFFFFF'), align: e.align === 'center' || e.align === 'right' ? e.align : 'left' };
+            return { ...base, type: 'text', ...xy, text: str(e.text), size: Math.round(num(e.size, 1, 1, 8)), color: color(e.color, '#FFFFFF'), align: e.align === 'center' || e.align === 'right' ? e.align : 'left', ...(str(e.font) ? { font: str(e.font) } : {}) };
           case 'rect':
             return { ...base, type: 'rect', ...xy, ...wh, color: color(e.color, '#FFFFFF'), fill: e.fill === true };
           case 'line':
@@ -363,6 +396,8 @@ export function normalizeSpec(raw: unknown): DisplaySpec {
             };
           case 'icon':
             return { ...base, type: 'icon', ...xy, name: (ICONS as string[]).includes(str(e.name)) ? (str(e.name) as IconName) : 'warning', scale: Math.round(num(e.scale, 1, 1, 8)), color: color(e.color, '#FFFFFF') };
+          case 'bitmap':
+            return { ...base, type: 'bitmap', ...xy, bitmap: str(e.bitmap), scale: Math.round(num(e.scale, 1, 1, 8)), color: color(e.color, '#FFFFFF') };
           case 'button':
             return {
               ...base,
@@ -402,7 +437,30 @@ export function normalizeSpec(raw: unknown): DisplaySpec {
     const tr = obj(x);
     return { from: str(tr.from), to: str(tr.to), afterMs: Math.round(num(tr.afterMs, 0, 0, 3600000)), when: str(tr.when), ...(tr.touch === true ? { touch: true } : {}) };
   });
+  const bitmaps: DisplayBitmap[] = arr(r.bitmaps)
+    .map((x) => obj(x))
+    .map((b): DisplayBitmap => ({ id: str(b.id).replace(/[^A-Za-z0-9_]/g, '_'), w: Math.round(num(b.w, 0, 0, MAX_BITMAP_SIDE)), h: Math.round(num(b.h, 0, 0, MAX_BITMAP_SIDE)), format: (b.format === 'rgb565' ? 'rgb565' : 'mono') as BitmapFormat, data: str(b.data) }))
+    .filter((b) => b.id && bitmapValid(b))
+    .slice(0, 16);
+  const fonts: DisplayFont[] = arr(r.fonts)
+    .map((x) => obj(x))
+    .map((f): DisplayFont => ({
+      id: str(f.id).replace(/[^A-Za-z0-9_]/g, '_'),
+      name: str(f.name, str(f.id)),
+      first: Math.round(num(f.first, 32, 0, 255)),
+      last: Math.round(num(f.last, 126, 0, 255)),
+      yAdvance: Math.round(num(f.yAdvance, 12, 0, 255)),
+      glyphs: arr(f.glyphs).map((g): GfxGlyph => {
+        const o = obj(g);
+        return { offset: Math.round(num(o.offset, 0, 0, 65535)), w: Math.round(num(o.w, 0, 0, 255)), h: Math.round(num(o.h, 0, 0, 255)), xAdvance: Math.round(num(o.xAdvance, 0, 0, 255)), xOffset: Math.round(num(o.xOffset, 0, -128, 127)), yOffset: Math.round(num(o.yOffset, 0, -128, 127)) };
+      }),
+      bitmap: str(f.bitmap),
+    }))
+    .filter((f) => f.id && fontValid(f))
+    .slice(0, 4);
   return {
+    ...(bitmaps.length ? { bitmaps } : {}),
+    ...(fonts.length ? { fonts } : {}),
     title: str(r.title, 'Display') || 'Display',
     part: str(r.part),
     rotation: Math.round(num(r.rotation, 0, 0, 3)),

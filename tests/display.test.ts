@@ -15,6 +15,7 @@ import { buildProposal } from '@shared/projectBuilder';
 import { FONT_5X7, glyphCode, glyphPixel } from '@shared/displayFont';
 import { checkSpec, normalizeSpec, panelOf, rgb565 } from '@shared/displaySpec';
 import { DisplaySim, Framebuffer } from '@shared/displayRender';
+import { base64ToBytes, bitmapFromRgba, bitmapSize, parseGfxFont } from '@shared/displayAssets';
 import { availableLibraries, generateDisplayCode } from '@shared/displayCode';
 import { testPatternSpec } from '@shared/displayExamples';
 import type { Scene } from '@shared/types';
@@ -368,6 +369,134 @@ describe('touch input', () => {
     const d = TOOLS.find((x) => x.name === 'design_display')!;
     expect(d.description).toContain('button {x,y,w,h,label');
     expect(d.description).toContain('touch true');
+  });
+});
+
+describe('pictures and fonts', () => {
+  const p = panel('st7789-240');
+  // A 10x2 picture: row 0 white, row 1 red, with the last pixel of row 0 transparent.
+  const rgba = (() => {
+    const a: number[] = [];
+    for (let y = 0; y < 2; y++) for (let x = 0; x < 10; x++) a.push(...(y === 0 ? [255, 255, 255, x === 9 ? 0 : 255] : [255, 0, 0, 255]));
+    return a;
+  })();
+  const specWith = (bm: ReturnType<typeof bitmapFromRgba>, extra: Record<string, unknown> = {}) =>
+    normalizeSpec({ title: 'Pic', part: 'disp1', bitmaps: [bm], screens: [{ id: 'a', elements: [{ type: 'bitmap', x: 4, y: 6, bitmap: bm.id, scale: 2, color: '#00FF00' }] }], start: 'a', ...extra });
+
+  it('packs a 1-bit mask (MSB first, rows padded to bytes) and an RGB565 picture', () => {
+    const mono = bitmapFromRgba('logo', rgba, 10, 2, 'mono');
+    // Row 0: nine light pixels then a transparent one = 0xFF, 0x80. Row 1: red is dark ((255*3)/10 < 128) = 0x00, 0x00.
+    expect(base64ToBytes(mono.data)).toEqual([0xff, 0x80, 0x00, 0x00]);
+    expect(bitmapSize(mono)).toBe(4);
+    expect(base64ToBytes(bitmapFromRgba('logo', rgba, 10, 2, 'mono', { invert: true }).data)).toEqual([0x00, 0x00, 0xff, 0xc0]);
+    const col = bitmapFromRgba('logo', rgba, 10, 2, 'rgb565');
+    const bytes = base64ToBytes(col.data);
+    expect(bytes).toHaveLength(40);
+    expect((bytes[0] << 8) | bytes[1]).toBe(0xffff);
+    expect((bytes[18] << 8) | bytes[19]).toBe(0x0000); // transparent pixel mixed with black
+    expect((bytes[20] << 8) | bytes[21]).toBe(rgb565([255, 0, 0]));
+  });
+
+  it('draws a mask in its colour and a colour picture in its own, at a scale', () => {
+    const fb = new Framebuffer(p, 0);
+    new DisplaySim(specWith(bitmapFromRgba('logo', rgba, 10, 2, 'mono')), p).frame(fb, 0);
+    expect(fb.px[6 * fb.w + 4]).toBe(rgb565([0, 255, 0]));
+    expect(fb.px[7 * fb.w + 5]).toBe(rgb565([0, 255, 0])); // scale 2
+    expect(fb.px[8 * fb.w + 4]).toBe(0); // the dark row
+    const fb2 = new Framebuffer(p, 0);
+    new DisplaySim(specWith(bitmapFromRgba('logo', rgba, 10, 2, 'rgb565')), p).frame(fb2, 0);
+    expect(fb2.px[8 * fb2.w + 4]).toBe(rgb565([255, 0, 0]));
+    expect(fb2.px[6 * fb2.w + 4]).toBe(rgb565([255, 255, 255]));
+  });
+
+  it('writes the picture as a PROGMEM array with its draw call', () => {
+    const board = getBoard('esp32-devkitc-30');
+    const scene = sceneWith('st7789-240', 'esp32-devkitc-30');
+    const mono = generateDisplayCode(specWith(bitmapFromRgba('logo', rgba, 10, 2, 'mono')), p, PARTS['st7789-240'], scene, board);
+    expect(mono.code).toContain('static const uint8_t BM_logo[] PROGMEM = {  // 10x2, 4 bytes');
+    expect(mono.code).toContain('0xFF, 0x80, 0x00, 0x00,');
+    expect(mono.code).toContain('bpBitmapMono(4, 6, BM_logo, 10, 2, 2, 0x07E0);');
+    const col = generateDisplayCode(specWith(bitmapFromRgba('logo', rgba, 10, 2, 'rgb565')), p, PARTS['st7789-240'], scene, board);
+    expect(col.code).toContain('static const uint16_t BM_logo[] PROGMEM');
+    expect(col.code).toContain('bpBitmap565(4, 6, BM_logo, 10, 2, 2);');
+    // A one-colour panel turns a colour picture into on/off pixels in the sketch.
+    const o = panel('ssd1306-i2c');
+    const mono2 = generateDisplayCode(specWith(bitmapFromRgba('logo', rgba, 10, 2, 'rgb565')), o, PARTS['ssd1306-i2c'], sceneWith('ssd1306-i2c', 'esp32-devkitc-30'), board);
+    expect(mono2.code).toContain('bpColor((r << 3) | (r >> 2)');
+    // No bitmaps: no picture code.
+    expect(generateDisplayCode(testPatternSpec('disp1', p), p, PARTS['st7789-240'], scene, board).code).not.toContain('BM_');
+  });
+
+  it('checks pictures: missing, damaged, and too big for the flash', () => {
+    const missing = normalizeSpec({ screens: [{ id: 'a', elements: [{ type: 'bitmap', bitmap: 'ghost' }] }] });
+    expect(checkSpec(missing, p).some((x) => x.severity === 'error' && x.message.includes('“ghost”'))).toBe(true);
+    // Damaged data is dropped by normalizeSpec, so the element reports the missing picture.
+    const damaged = normalizeSpec({ bitmaps: [{ id: 'bad', w: 10, h: 10, format: 'mono', data: 'AAAA' }], screens: [{ id: 'a', elements: [{ type: 'bitmap', bitmap: 'bad' }] }] });
+    expect(damaged.bitmaps).toBeUndefined();
+    // A 240x240 colour picture (112.5 KB) does not fit the 32 KB flash of an Uno, nor is it small on a 4 MB ESP32.
+    const px = new Uint8Array(240 * 240 * 4).fill(200);
+    const big = bitmapFromRgba('big', px, 240, 240, 'rgb565');
+    const spec = specWith(big);
+    const uno = getBoard('arduino-uno-r3');
+    expect(checkSpec(spec, p, uno).some((x) => x.severity === 'error' && x.message.includes('more than half'))).toBe(true);
+    expect(checkSpec(spec, p, getBoard('esp32-devkitc-30')).filter((x) => x.severity === 'error')).toEqual([]);
+    // The one-bit version of the same picture is small enough.
+    expect(checkSpec(specWith(bitmapFromRgba('big', px, 240, 240, 'mono')), p, uno).filter((x) => x.severity === 'error')).toEqual([]);
+  });
+
+  // A tiny Adafruit GFX font: "A" (3x3, one byte per 8 bits) and "B" (2x2), in the format fontconvert writes.
+  const header = `
+    const uint8_t TinyBitmaps[] PROGMEM = { 0xAA, 0x80, 0xF0 };
+    const GFXglyph TinyGlyphs[] PROGMEM = {
+      { 0, 3, 3, 4, 0, -3 },  // 0x41 'A'
+      { 2, 2, 2, 3, 1, -2 } };  // 0x42 'B'
+    const GFXfont Tiny PROGMEM = { (uint8_t *)TinyBitmaps, (GFXglyph *)TinyGlyphs, 0x41, 0x42, 5 };
+  `;
+
+  it('reads an Adafruit GFX font header and says so when the text is something else', () => {
+    const r = parseGfxFont(header);
+    if ('error' in r) throw new Error(r.error);
+    expect(r.font).toMatchObject({ name: 'Tiny', first: 0x41, last: 0x42, yAdvance: 5 });
+    expect(r.font.glyphs[0]).toEqual({ offset: 0, w: 3, h: 3, xAdvance: 4, xOffset: 0, yOffset: -3 });
+    expect(r.font.glyphs[1]).toEqual({ offset: 2, w: 2, h: 2, xAdvance: 3, xOffset: 1, yOffset: -2 });
+    expect(base64ToBytes(r.font.bitmap)).toEqual([0xaa, 0x80, 0xf0]);
+    expect(parseGfxFont('int x = 3;')).toHaveProperty('error');
+    expect(parseGfxFont(header.replace('0x42, 5', '0x43, 5'))).toHaveProperty('error');
+  });
+
+  it('draws text in the font as Adafruit does (baseline y, advance per glyph) and writes it to the sketch', () => {
+    const r = parseGfxFont(header);
+    if ('error' in r) throw new Error(r.error);
+    const spec = normalizeSpec({ title: 'F', part: 'disp1', fonts: [r.font], screens: [{ id: 'a', elements: [{ type: 'text', x: 10, y: 20, text: 'AB', size: 1, color: '#FFFFFF', font: 'Tiny' }] }], start: 'a' });
+    expect(spec.fonts).toHaveLength(1);
+    expect(checkSpec(spec, p).filter((x) => x.severity === 'error')).toEqual([]);
+    const fb = new Framebuffer(p, 0);
+    new DisplaySim(spec, p).frame(fb, 0);
+    const on = (x: number, y: number) => fb.px[y * fb.w + x] === 0xffff;
+    // "A": bits 1010 1010 1 in rows of 3 at y - 3 = 17: row 17 = 1,0,1; row 18 = 0,1,0; row 19 = 1,0,1.
+    expect([on(10, 17), on(11, 17), on(12, 17), on(11, 18), on(10, 19), on(12, 19), on(10, 18)]).toEqual([true, false, true, true, true, true, false]);
+    // "B" starts 4 pixels on, offset by xOffset 1 and yOffset -2: bits 1111 = a 2x2 block at (15, 18).
+    expect([on(15, 18), on(16, 18), on(15, 19), on(16, 19), on(14, 18)]).toEqual([true, true, true, true, false]);
+    // An unknown font name is an error; the generator writes the arrays and the call.
+    expect(checkSpec(normalizeSpec({ screens: [{ id: 'a', elements: [{ type: 'text', text: 'x', font: 'nope' }] }] }), p).some((x) => x.severity === 'error' && x.message.includes('“nope”'))).toBe(true);
+    const code = generateDisplayCode(spec, p, PARTS['st7789-240'], sceneWith('st7789-240', 'esp32-devkitc-30'), getBoard('esp32-devkitc-30')).code;
+    expect(code).toContain('static const BpFont F_Tiny = {F_Tiny_BM, F_Tiny_GL, 65, 66, 5};');
+    expect(code).toContain('{0, 3, 3, 4, 0, -3},');
+    expect(code).toContain('bpGfxTextAligned(10, 20, buf, &F_Tiny, 1, ');
+  });
+
+  it('the assistant keeps imported pictures and fonts when it redesigns, and sees their ids', async () => {
+    const { runTool } = await import('../app/main/ai/tools');
+    const scene = sceneWith('st7789-240', 'esp32-devkitc-30');
+    const bm = bitmapFromRgba('logo', rgba, 10, 2, 'mono');
+    scene.displays = [specWith(bm)];
+    const turn = { highlight: [], calls: [] } as Parameters<typeof runTool>[4];
+    const facts = JSON.parse((await runTool('get_display', { part: 'disp1' }, {} as never, [], turn, { scene })).content);
+    expect(facts.importedPictures).toEqual([{ id: 'logo', widthPx: 10, heightPx: 2, kind: 'one-bit (drawn in one colour)' }]);
+    expect(JSON.stringify(facts)).not.toContain(bm.data);
+    await runTool('design_display', { title: 'x', part: 'disp1', rotation: 0, vars: [], screens: [{ id: 'a', elements: [{ type: 'bitmap', x: 0, y: 0, bitmap: 'logo' }] }], start: 'a', transitions: [] }, {} as never, [], turn, { scene });
+    expect(turn.display?.spec.bitmaps?.[0].id).toBe('logo');
+    expect(turn.display?.problems.filter((x) => x.severity === 'error')).toEqual([]);
   });
 });
 

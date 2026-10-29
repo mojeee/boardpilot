@@ -5,6 +5,7 @@
 // preview shows the real 16-bit banding); mono OLEDs and e-paper keep one bit per pixel.
 
 import { CELL_H, CELL_W, GLYPH_H, GLYPH_W, glyphCode, glyphPixel } from './displayFont';
+import { dataOf, fontLineWidth, type DisplayBitmap, type DisplayFont } from './displayAssets';
 import {
   formatText,
   from565,
@@ -186,6 +187,40 @@ export class Framebuffer {
     }
   }
 
+  /**
+   * Text in an Adafruit GFX font, as Adafruit's drawChar draws a custom font: (x, y) is the left end of the
+   * baseline, each set bit is a pixel (a size x size square when bigger), the cursor moves by xAdvance.
+   * "\n" starts a new line at x, yAdvance lower.
+   */
+  gfxText(x: number, y: number, s: string, font: DisplayFont, size: number, c: number) {
+    const bits = dataOf(font);
+    let cx = x;
+    let cy = y;
+    for (const ch of s) {
+      if (ch === '\n') {
+        cx = x;
+        cy += size * font.yAdvance;
+        continue;
+      }
+      const code = ch.charCodeAt(0);
+      if (code < font.first || code > font.last) continue;
+      const g = font.glyphs[code - font.first];
+      let bo = g.offset;
+      let bit = 0;
+      let byte = 0;
+      for (let yy = 0; yy < g.h; yy++)
+        for (let xx = 0; xx < g.w; xx++) {
+          if (!(bit++ & 7)) byte = bits[bo++] ?? 0;
+          if (byte & 0x80) {
+            if (size === 1) this.pixel(cx + g.xOffset + xx, cy + g.yOffset + yy, c);
+            else this.fillRect(cx + (g.xOffset + xx) * size, cy + (g.yOffset + yy) * size, size, size, c);
+          }
+          byte = (byte << 1) & 255;
+        }
+      cx += g.xAdvance * size;
+    }
+  }
+
   /** RGBA for a canvas, in the panel's native orientation (what the glass shows). */
   toRgba(native = false): Uint8ClampedArray {
     const W = native ? this.panel.widthPx : this.w;
@@ -284,6 +319,21 @@ function drawPattern(fb: Framebuffer, el: Extract<DisplayElement, { type: 'patte
   }
 }
 
+/** A picture on the framebuffer at an integer scale. A one-bit picture is drawn in `ink`; a colour one keeps its colours (on a one-colour panel they turn to light or dark by the same luminance rule). */
+function drawBitmap(fb: Framebuffer, bm: DisplayBitmap, x: number, y: number, s: number, panel: PanelInfo, ink: number) {
+  const bytes = dataOf(bm);
+  if (bm.format === 'mono') {
+    const rb = Math.ceil(bm.w / 8);
+    for (let row = 0; row < bm.h; row++) for (let col = 0; col < bm.w; col++) if ((bytes[row * rb + (col >> 3)] >> (7 - (col & 7))) & 1) fb.fillRect(x + col * s, y + row * s, s, s, ink);
+    return;
+  }
+  for (let row = 0; row < bm.h; row++)
+    for (let col = 0; col < bm.w; col++) {
+      const v = (bytes[(row * bm.w + col) * 2] << 8) | bytes[(row * bm.w + col) * 2 + 1];
+      fb.fillRect(x + col * s, y + row * s, s, s, panel.color === 'rgb565' ? v : store(panel, from565(v)));
+    }
+}
+
 /** Where a button's one-line label starts: centred in the button, integer maths (the sketch computes the same). */
 export function buttonLabelAt(el: Extract<DisplayElement, { type: 'button' }>): [number, number] {
   const size = Math.max(1, Math.round(el.size));
@@ -372,12 +422,27 @@ export class DisplaySim {
         case 'text': {
           const s = formatText(el.text, this.spec.vars, vals);
           const size = Math.max(1, Math.round(el.size));
+          const font = el.font ? this.spec.fonts?.find((f) => f.id === el.font) : undefined;
+          if (font) {
+            // Custom font: y is the baseline; every line is aligned by its own width, like the sketch.
+            s.split('\n').forEach((ln, i) => {
+              const wPx = fontLineWidth(font, ln, size);
+              const x0 = el.align === 'center' ? el.x - Math.floor(wPx / 2) : el.align === 'right' ? el.x - wPx : el.x;
+              fb.gfxText(x0, el.y + i * size * font.yAdvance, ln, font, size, st(el.color));
+            });
+            break;
+          }
           const lines = s.split('\n');
           lines.forEach((ln, i) => {
             const wPx = ln.length * CELL_W * size - size;
             const x0 = el.align === 'center' ? el.x - Math.floor(wPx / 2) : el.align === 'right' ? el.x - wPx : el.x;
             fb.text(x0, el.y + i * CELL_H * size, ln, size, st(el.color));
           });
+          break;
+        }
+        case 'bitmap': {
+          const bm = this.spec.bitmaps?.find((b) => b.id === el.bitmap);
+          if (bm) drawBitmap(fb, bm, el.x, el.y, Math.max(1, Math.round(el.scale)), this.panel, st(el.color));
           break;
         }
         case 'rect':

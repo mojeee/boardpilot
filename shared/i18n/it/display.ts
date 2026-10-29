@@ -87,6 +87,36 @@ const it: Record<string, string> = {
     'Il GT911 sceglie il suo indirizzo I2C (0x5D o 0x14) dal livello di INT mentre RST viene rilasciato. Se il controller non viene trovato, potrebbe servire cambiare l’indirizzo nella libreria.',
   'The drawing has buttons but no touch controller is wired. Add an XPT2046, FT6236 or GT911 touch part to the project; until then the code only has an empty touch read to fill in.':
     'Il disegno ha pulsanti ma nessun controller touch collegato. Aggiungi al progetto un XPT2046, FT6236 o GT911; fino ad allora il codice ha solo una lettura touch vuota da completare.',
+  'Added the picture “{id}” ({w}x{h}, {bytes} bytes in flash) to the screen “{screen}”.': 'Aggiunta l’immagine “{id}” ({w}x{h}, {bytes} byte in flash) alla schermata “{screen}”.',
+  'This image could not be read. Try a PNG file.': 'Non riesco a leggere questa immagine. Prova con un file PNG.',
+  'Imported the font “{name}”. Ask the assistant to use it: text with this font takes its y position as the baseline.':
+    'Font “{name}” importato. Chiedi all’assistente di usarlo: con questo font la posizione y del testo è la linea di base.',
+  'Pictures and fonts': 'Immagini e font',
+  'Width in pixels': 'Larghezza in pixel',
+  'Picture type': 'Tipo di immagine',
+  '1-bit': '1 bit',
+  Colour: 'Colore',
+  'One bit per pixel, drawn in one colour. Small.': 'Un bit per pixel, disegnata in un solo colore. Piccola.',
+  'Full colour, two bytes per pixel.': 'A colori, due byte per pixel.',
+  'Swap light and dark': 'Inverti chiaro e scuro',
+  'Import a picture': 'Importa un’immagine',
+  'Import a font (.h)': 'Importa un font (.h)',
+  'A font header made for Adafruit GFX (for example FreeSans9pt7b.h). BoardPilot does not convert TrueType fonts.':
+    'Un file di font per Adafruit GFX (per esempio FreeSans9pt7b.h). BoardPilot non converte i font TrueType.',
+  'Without an imported font the text uses the built-in 5x7 font, which can be scaled from 1x to 8x.': 'Senza un font importato il testo usa il font 5x7 incorporato, ingrandibile da 1x a 8x.',
+  '{where} uses the picture “{id}”, which is not imported.': '{where} usa l’immagine “{id}”, che non è stata importata.',
+  '{where} uses the font “{id}”, which is not imported.': '{where} usa il font “{id}”, che non è stato importato.',
+  'The pictures and fonts take {kb} KB, more than half of the {flash} KB flash of {board}. Use smaller or one-bit pictures.':
+    'Immagini e font occupano {kb} KB, più della metà dei {flash} KB di flash di {board}. Usa immagini più piccole o a 1 bit.',
+  'The pictures and fonts take {kb} KB, over a quarter of the {flash} KB flash of {board}.': 'Immagini e font occupano {kb} KB, più di un quarto dei {flash} KB di flash di {board}.',
+  'Pictures are kept in flash and read one pixel at a time, so they do not use RAM, but this board has only {ram} KB of RAM for everything else.':
+    'Le immagini stanno in flash e si leggono un pixel alla volta, quindi non usano RAM, ma questa scheda ha solo {ram} KB di RAM per tutto il resto.',
+  'The picture “{id}” is damaged or larger than {max} pixels a side.': 'L’immagine “{id}” è danneggiata o più grande di {max} pixel per lato.',
+  'This is not an Adafruit GFX font header: it needs the Bitmaps array, the Glyphs table and the GFXfont line.': 'Questo non è un file di font per Adafruit GFX: servono l’array Bitmaps, la tabella Glyphs e la riga GFXfont.',
+  'The bitmap data of this font has values that are not bytes.': 'I dati bitmap di questo font hanno valori che non sono byte.',
+  'A glyph in this font does not have the six numbers (offset, width, height, advance, x offset, y offset).': 'Un glifo di questo font non ha i sei numeri (offset, larghezza, altezza, avanzamento, offset x, offset y).',
+  'The character range of this font does not match its glyph table.': 'L’intervallo di caratteri di questo font non corrisponde alla tabella dei glifi.',
+  'A glyph points past the end of the font’s bitmap data.': 'Un glifo punta oltre la fine dei dati bitmap del font.',
 };
 
 export default it;

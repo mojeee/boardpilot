@@ -7,6 +7,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PARTS, getBoard } from '@shared/board';
+import { bitmapFromRgba, bitmapSize, parseGfxFont, type BitmapFormat } from '@shared/displayAssets';
 import { checkSpec, panelOf, type DisplaySpec, type PanelInfo, type SpecProblem } from '@shared/displaySpec';
 import { availableLibraries, generateDisplayCode, libraryName, type DisplayLibrary, type DisplayOutput } from '@shared/displayCode';
 import { testPatternSpec } from '@shared/displayExamples';
@@ -165,6 +166,83 @@ function CodeChoice({ libs, library, output, onLibrary, onOutput }: { libs: Disp
   );
 }
 
+/** Picture and font import: an image becomes a PROGMEM array (one-bit or RGB565), an Adafruit GFX .h file a font. */
+function ImportAssets({ spec, panel, current }: { spec: DisplaySpec; panel: PanelInfo; current: string | undefined }) {
+  const [format, setFormat] = useState<BitmapFormat>(panel.color === 'rgb565' ? 'rgb565' : 'mono');
+  const [width, setWidth] = useState(64);
+  const [invert, setInvert] = useState(false);
+  const [msg, setMsg] = useState('');
+  const importImage = async (file: File) => {
+    try {
+      const img = await createImageBitmap(file);
+      const w = Math.max(1, Math.min(480, Math.round(width)));
+      const h = Math.max(1, Math.min(480, Math.round((img.height * w) / img.width)));
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext('2d');
+      if (!ctx) throw new Error('no canvas');
+      ctx.drawImage(img, 0, 0, w, h);
+      const px = ctx.getImageData(0, 0, w, h).data;
+      const base = file.name.replace(/\.[^.]*$/, '').replace(/[^A-Za-z0-9_]/g, '_').replace(/^(\d)/, '_$1') || 'picture';
+      let id = base;
+      for (let n = 2; spec.bitmaps?.some((b) => b.id === id); n++) id = `${base}_${n}`;
+      const bm = bitmapFromRgba(id, px, w, h, format, { invert });
+      const screenId = current && spec.screens.some((x) => x.id === current) ? current : spec.start;
+      applyDisplay({
+        ...spec,
+        bitmaps: [...(spec.bitmaps ?? []), bm],
+        screens: spec.screens.map((x) => (x.id === screenId ? { ...x, elements: [...x.elements, { type: 'bitmap', x: 0, y: 0, bitmap: id, scale: 1, color: '#FFFFFF', visibleIf: '', blinkMs: 0 }] } : x)),
+      });
+      setMsg(t('Added the picture “{id}” ({w}x{h}, {bytes} bytes in flash) to the screen “{screen}”.', { id, w, h, bytes: bitmapSize(bm), screen: screenId }));
+    } catch {
+      setMsg(t('This image could not be read. Try a PNG file.'));
+    }
+  };
+  const importFont = async (file: File) => {
+    const r = parseGfxFont(await file.text());
+    if ('error' in r) {
+      setMsg(r.error);
+      return;
+    }
+    applyDisplay({ ...spec, fonts: [...(spec.fonts ?? []).filter((f) => f.id !== r.font.id), r.font] });
+    setMsg(t('Imported the font “{name}”. Ask the assistant to use it: text with this font takes its y position as the baseline.', { name: r.font.name }));
+  };
+  return (
+    <details className="display-assets">
+      <summary>{t('Pictures and fonts')}</summary>
+      <div className="row gap wrap small">
+        <label>
+          {t('Width in pixels')} <input type="number" min={1} max={480} value={width} onChange={(e) => setWidth(Number(e.target.value) || 1)} style={{ width: 64 }} />
+        </label>
+        <div className="seg" role="group" aria-label={t('Picture type')}>
+          <button className={format === 'mono' ? 'on' : ''} onClick={() => setFormat('mono')} title={t('One bit per pixel, drawn in one colour. Small.')}>
+            {t('1-bit')}
+          </button>
+          <button className={format === 'rgb565' ? 'on' : ''} onClick={() => setFormat('rgb565')} title={t('Full colour, two bytes per pixel.')}>
+            {t('Colour')}
+          </button>
+        </div>
+        {format === 'mono' && (
+          <label>
+            <input type="checkbox" checked={invert} onChange={(e) => setInvert(e.target.checked)} /> {t('Swap light and dark')}
+          </label>
+        )}
+        <label className="btn small">
+          {t('Import a picture')}
+          <input type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importImage(f); }} />
+        </label>
+        <label className="btn small ghost" title={t('A font header made for Adafruit GFX (for example FreeSans9pt7b.h). BoardPilot does not convert TrueType fonts.')}>
+          {t('Import a font (.h)')}
+          <input type="file" accept=".h,text/plain" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void importFont(f); }} />
+        </label>
+      </div>
+      {msg && <div className="small dim">{msg}</div>}
+      <div className="small dim">{t('Without an imported font the text uses the built-in 5x7 font, which can be scaled from 1x to 8x.')}</div>
+    </details>
+  );
+}
+
 function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
   const key = spec.part;
   const board = useScene((s) => s.scene.board);
@@ -176,7 +254,7 @@ function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
   // Select the stored object itself (a new {} on every render would loop: zustand compares selections).
   const held = useDisplayClock((s) => s.overrides[key]);
   const overrides = held ?? NO_OVERRIDES;
-  const problems = useMemo(() => checkSpec(spec, panel), [spec, panel]);
+  const problems = useMemo(() => checkSpec(spec, panel, getBoard(board)), [spec, panel, board]);
   const setOverride = (name: string, v: number | null) => {
     useDisplayClock.setState((s) => {
       const o = { ...(s.overrides[key] ?? {}) };
@@ -241,6 +319,7 @@ function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
         </>
       )}
       <Problems problems={problems} />
+      <ImportAssets spec={spec} panel={panel} current={current} />
       {libs.length > 0 && <CodeChoice libs={libs} library={library} output={output} onLibrary={setLibrary} onOutput={setOutput} />}
       <div className="row gap wrap">
         <button className="btn small primary" onClick={() => writeDisplayCode(spec, { library, output })}>
