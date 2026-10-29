@@ -87,13 +87,34 @@ export function showScreen(key: string, screen: string) {
 
 export function restartDisplays() {
   useDisplayClock.setState({ ms: 0 });
-  for (const r of running.values()) r.sim.state = { screen: r.spec.start, enteredAt: 0 };
+  for (const r of running.values()) {
+    r.sim.state = { screen: r.spec.start, enteredAt: 0 };
+    r.sim.touched = {};
+  }
+}
+
+/** A tap on a display's preview, at (x, y) in screen pixels: runs the button under it (or a touch change of screen). */
+export function tapDisplay(key: string, x: number, y: number): boolean {
+  const r = running.get(key);
+  if (!r) return false;
+  const hit = r.sim.tap(Math.floor(x), Math.floor(y), Math.floor(useDisplayClock.getState().ms));
+  repaint(key);
+  return hit;
+}
+
+/** Hand a value back to the simulation after a tap had set it (the studio's slider takes over). */
+export function releaseTouched(key: string, name: string) {
+  const r = running.get(key);
+  if (r) delete r.sim.touched[name];
 }
 
 function paint(key: string, r: Running, ms: number) {
   r.sim.overrides = useDisplayClock.getState().overrides[key] ?? {};
   // Screens only move forward in time: after a restart the sim starts again from its first screen.
-  if (ms < r.sim.state.enteredAt) r.sim.state = { screen: r.spec.start, enteredAt: 0 };
+  if (ms < r.sim.state.enteredAt) {
+    r.sim.state = { screen: r.spec.start, enteredAt: 0 };
+    r.sim.touched = {};
+  }
   r.sim.frame(r.fb, ms);
   const put = (c: HTMLCanvasElement, native: boolean) => {
     const ctx = c.getContext('2d');

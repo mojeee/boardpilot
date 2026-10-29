@@ -12,11 +12,12 @@
 // controllers render in the preview but get no code yet (said plainly).
 
 import type { BoardDef, PartDef, Scene } from './types';
-import { boardPinFor, pinById } from './board';
+import { PARTS, boardPinFor, pinById } from './board';
 import { codePinName } from './planner';
 import { FONT_5X7 } from './displayFont';
-import { COLOR_BARS, GRAPH_STEP_MS, ICON_BITS } from './displayRender';
+import { COLOR_BARS, GRAPH_STEP_MS, ICON_BITS, buttonLabelAt } from './displayRender';
 import { parseColor, parseCondition, rgb565, rotatedSize, type DisplayElement, type DisplaySpec, type PanelInfo } from './displaySpec';
+import { TOUCH_PARTS, NO_TOUCH_CODE, touchCode, type TouchCode } from './displayTouch';
 import { t } from './i18n';
 
 export interface DisplayCode {
@@ -244,6 +245,16 @@ function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec, typed
     case 'icon':
       out.push(`bpIcon(${el.x}, ${el.y}, ICON_${el.name.toUpperCase()}, ${Math.max(1, Math.round(el.scale))}, ${col(el.color)});`);
       break;
+    case 'button': {
+      if (el.hidden) break;  // a hit region draws nothing
+      if (el.fill.trim()) out.push(`gfx.fillRect(${el.x}, ${el.y}, ${el.w}, ${el.h}, ${col(el.fill)});`);
+      out.push(`gfx.drawRect(${el.x}, ${el.y}, ${el.w}, ${el.h}, ${col(el.color)});`);
+      if (el.label) {
+        const [lx, ly] = buttonLabelAt(el);
+        out.push(`bpText(${lx}, ${ly}, ${cstr(el.label)}, ${Math.max(1, Math.round(el.size))}, ${col(el.color)});`);
+      }
+      break;
+    }
     case 'pattern': {
       const colors = (el.colors.length ? el.colors : el.kind === 'colorbars' ? COLOR_BARS : ['#FFFFFF', '#000000']).map(col);
       const rainbow = el.kind === 'gradient' && panel.color === 'rgb565' && el.colors.length < 2;
@@ -468,6 +479,35 @@ function targetFor(lib: DisplayLibrary, panel: PanelInfo, p: Pins, board: BoardD
   };
 }
 
+/**
+ * The tap logic in C, the same as DisplaySim.tap: the topmost visible button under the finger runs its
+ * actions, otherwise a "touch" change of screen from this screen applies. handleTouch() fires once per press.
+ */
+function touchLogic(spec: DisplaySpec, screenIdx: Map<string, number>, touchSet: Set<string>): string[] {
+  const out: string[] = ['// Touch: one tap per press, on the topmost visible button under the finger (as in the app).', 'bool bpTap(int x, int y, unsigned long ms) {', '  readValues(ms);', '  switch (screen) {'];
+  spec.screens.forEach((sc, i) => {
+    const btns = sc.elements.filter((e): e is Extract<DisplayElement, { type: 'button' }> => e.type === 'button').reverse();
+    const touchTr = spec.transitions.find((tr) => tr.touch && tr.from === sc.id && screenIdx.has(tr.to));
+    if (!btns.length && !touchTr) return;
+    out.push(`    case ${i}:  // ${sc.id}`);
+    for (const el of btns) {
+      const hit = `x >= ${el.x} && y >= ${el.y} && x < ${el.x + el.w} && y < ${el.y + el.h}`;
+      const guard = el.visibleIf.trim() ? ` && ${condC(el.visibleIf)}` : '';
+      const acts = el.actions.map((a) => {
+        if (a.do === 'screen') return screenIdx.has(a.screen) ? `screen = ${screenIdx.get(a.screen)}; enteredAt = ms;` : '';
+        if (!touchSet.has(a.var)) return '';
+        const n = ident(a.var);
+        return a.do === 'set' ? `t_${n} = ${fl(a.value)}; t_${n}_set = true; v_${n} = t_${n};` : `t_${n} = (v_${n} != 0) ? 0 : 1; t_${n}_set = true; v_${n} = t_${n};`;
+      });
+      out.push(`      if (${hit}${guard}) { ${acts.filter(Boolean).join(' ')} return true; }`);
+    }
+    if (touchTr) out.push(`      screen = ${screenIdx.get(touchTr.to)}; enteredAt = ms; return true;`);
+    else out.push('      break;');
+  });
+  out.push('  }', '  return false;', '}', '', 'bool touchDown = false;', 'void handleTouch(unsigned long ms) {', '  int x = 0, y = 0;', '  bool down = bpTouchRead(x, y);', '  if (down && !touchDown) bpTap(x, y, ms);', '  touchDown = down;', '}');
+  return out;
+}
+
 /** The sketch (or module) for a spec on a display part in the scene. */
 export function generateDisplayCode(
   spec: DisplaySpec,
@@ -498,16 +538,17 @@ export function generateDisplayCode(
     notes.push(t('There is no {wanted} driver for the {controller} on this board, so the code uses {used} instead.', { wanted: LIB_INFO[requested].name, controller: panel.controller, used: LIB_INFO[lib].name }));
   }
   const output: DisplayOutput = opts.output ?? 'sketch';
-  const pinOf = (...names: string[]): string => {
+  const pinOfPart = (partInstId: string, partDef: PartDef, names: string[]): string => {
     for (const n of names) {
-      const pp = def.pins.find((x) => x.name.toUpperCase() === n);
+      const pp = partDef.pins.find((x) => x.name.toUpperCase() === n);
       if (!pp) continue;
-      const bp = boardPinFor(scene, spec.part, pp.name);
+      const bp = boardPinFor(scene, partInstId, pp.name);
       const p = bp ? pinById(board, bp) : undefined;
       if (p) return codePinName(board, p);
     }
     return '-1';
   };
+  const pinOf = (...names: string[]): string => pinOfPart(spec.part, def, names);
   const pins: Pins = {
     cs: pinOf('CS'),
     dc: pinOf('DC', 'A0', 'RS', 'DC/RS'),
@@ -519,6 +560,9 @@ export function generateDisplayCode(
     spi: def.bus === 'spi',
   };
   const [W, H] = rotatedSize(panel, spec.rotation);
+  // TFT controllers are portrait; a module that mounts one landscape (0.96" ST7735: 160 x 80) turns it
+  // a quarter so rotation 0 is the module as drawn in BoardPilot.
+  const quarter = panel.color === 'rgb565' && panel.widthPx > panel.heightPx ? 1 : 0;
   const target = opts.host ? undefined : targetFor(lib, panel, pins, board, W, H, driver);
   const bus = target?.bus === 'i2c' && pins.spi ? 'spi' : target?.bus;
   if (bus === 'spi') {
@@ -538,15 +582,30 @@ export function generateDisplayCode(
 
   const L: string[] = [];
   const screenIdx = new Map(spec.screens.map((s, i) => [s.id, i]));
+  // Touch: the values a tap sets, whether the drawing reacts to touch at all, and which touch controller is wired.
+  const buttons = spec.screens.flatMap((sc) => sc.elements.filter((e): e is Extract<DisplayElement, { type: 'button' }> => e.type === 'button'));
+  const touchSet = new Set(buttons.flatMap((b) => b.actions.flatMap((a) => (a.do === 'screen' ? [] : [a.var]))).filter((n) => spec.vars.some((v) => v.name === n)));
+  const hasTouchUi = buttons.length > 0 || spec.transitions.some((tr) => tr.touch);
+  const touchPartDef = (id: string): PartDef | undefined => PARTS[id];
+  const touchInst = scene.parts.find((p) => TOUCH_PARTS[p.partId]);
+  const touchDef = touchInst ? touchPartDef(touchInst.partId) : undefined;
+  let touch: TouchCode | undefined;
+  if (!opts.host && hasTouchUi) {
+    if (touchInst && touchDef) {
+      const tp = (...names: string[]) => pinOfPart(touchInst.id, touchDef, names);
+      touch = touchCode(TOUCH_PARTS[touchInst.partId], panel, { cs: tp('T_CS', 'CS'), irq: tp('T_IRQ', 'IRQ'), sda: tp('SDA'), scl: tp('SCL'), int: tp('INT'), rst: tp('RST') }, W, H, (spec.rotation + quarter) & 3, bus === 'i2c');
+      notes.push(...touch.notes);
+    } else notes.push(t('The drawing has buttons but no touch controller is wired. Add an XPT2046, FT6236 or GT911 touch part to the project; until then the code only has an empty touch read to fill in.'));
+  }
   L.push(
     `// ${spec.title} — Display Studio ${asModule ? 'module' : 'sketch'} for ${def.name} on ${board.name}`,
     '// Written by BoardPilot. The preview in the app shows the same pixels (same font, shapes and',
     '// pattern maths). Values are simulated like in the app; replace the lines marked TODO with your sensors.',
   );
   if (target) {
-    L.push(`// Libraries (Arduino Library Manager): ${target.libraries.join(', ')}`, '');
+    L.push(`// Libraries (Arduino Library Manager): ${[...target.libraries, ...(touch?.libraries ?? [])].join(', ')}`, '');
     if (asModule) L.push('#include <Arduino.h>', '#include "display_screens.h"');
-    L.push(...target.include, ...(bus === 'spi' && lib === 'adafruit' && !target.include.includes('#include <SPI.h>') ? ['#include <SPI.h>'] : []));
+    L.push(...target.include, ...(touch ? touch.include.filter((l) => !target.include.includes(l)) : []), ...(bus === 'spi' && lib === 'adafruit' && !target.include.includes('#include <SPI.h>') ? ['#include <SPI.h>'] : []));
   }
   L.push('');
   if (opts.host) L.push('#include "Adafruit_GFX.h"', mono ? `GFXcanvas1 gfx(${W}, ${H});` : `GFXcanvas16 gfx(${W}, ${H});`);
@@ -649,9 +708,10 @@ export function generateDisplayCode(
     'unsigned long enteredAt = 0;',
     'unsigned long t0 = 0;',
     ...spec.vars.map((v) => `double v_${ident(v.name)} = 0;`),
+    ...[...touchSet].map((n) => `double t_${ident(n)} = 0; bool t_${ident(n)}_set = false;  // set by a tap on a button`),
     '',
     'void readValues(unsigned long ms) {',
-    ...spec.vars.map((v) => `  v_${ident(v.name)} = sim_${ident(v.name)}(ms);${v.from ? `  // TODO: ${v.from}` : ''}`),
+    ...spec.vars.map((v) => (touchSet.has(v.name) ? `  v_${ident(v.name)} = t_${ident(v.name)}_set ? t_${ident(v.name)} : sim_${ident(v.name)}(ms);${v.from ? `  // TODO: ${v.from}` : ''}` : `  v_${ident(v.name)} = sim_${ident(v.name)}(ms);${v.from ? `  // TODO: ${v.from}` : ''}`)),
     '}',
     '',
     'void changeScreens(unsigned long ms) {',
@@ -668,6 +728,7 @@ export function generateDisplayCode(
     L.push(`    ${i ? 'else ' : ''}if (screen == ${from} && (${timed} || ${when})) { next = ${to}; at = (${tr.afterMs > 0 ? 'true' : 'false'} && !(${when})) ? enteredAt + ${tr.afterMs}UL : ms; }`);
   });
   L.push('    if (next < 0 || next == screen) return;', '    screen = next; enteredAt = at;', '  }', '}', '');
+  if (hasTouchUi && !opts.host) L.push(...(touch ? touch.decl : NO_TOUCH_CODE), '', ...touchLogic(spec, screenIdx, touchSet), '');
   L.push('void drawScreen(unsigned long ms) {', '  switch (screen) {');
   spec.screens.forEach((sc, i) => {
     L.push(`    case ${i}:  // ${sc.id}`, `      gfx.fillScreen(${colorLiteral(panel, sc.background, typed)});`);
@@ -684,9 +745,10 @@ export function generateDisplayCode(
   else if (!tg.ownsPins && (board.family === 'rp2040' || board.family === 'rp2350') && pins.sck !== '-1') init.push(`  SPI.setSCK(${pins.sck}); SPI.setTX(${pins.mosi});`);
   // TFT controllers are portrait; a module that mounts one landscape (0.96" ST7735: 160 x 80) turns it
   // a quarter so rotation 0 is the module as drawn in BoardPilot.
-  const quarter = panel.color === 'rgb565' && panel.widthPx > panel.heightPx ? 1 : 0;
-  init.push(...tg.begin, `  tft.setRotation(${(spec.rotation + quarter) & 3});${quarter ? '  // the module mounts the panel landscape; use 3 if the picture is upside down' : ''}`, ...tg.afterRotation(canvas), '  t0 = millis();');
-  const frame = ['  unsigned long ms = millis() - t0;', '  changeScreens(ms);', '  readValues(ms);', '  drawScreen(ms);', `  ${tg.push(canvas)}`];
+  init.push(...tg.begin, `  tft.setRotation(${(spec.rotation + quarter) & 3});${quarter ? '  // the module mounts the panel landscape; use 3 if the picture is upside down' : ''}`, ...tg.afterRotation(canvas));
+  if (touch) init.push(...touch.begin);
+  init.push('  t0 = millis();');
+  const frame = ['  unsigned long ms = millis() - t0;', '  changeScreens(ms);', ...(hasTouchUi ? ['  handleTouch(ms);'] : []), '  readValues(ms);', '  drawScreen(ms);', `  ${tg.push(canvas)}`];
   if (asModule) {
     L.push('void display_init() {', ...init, '}', '', 'void display_update() {', ...frame, '}', '');
     const header = [
@@ -715,8 +777,8 @@ export function generateDisplayCode(
       '}',
       '',
     ].join('\n');
-    return { code: main, libraries: tg.libraries, notes, library: lib, files: [{ name: 'display_screens.h', text: header }, { name: 'display_screens.cpp', text: L.join('\n') }, ...tg.files] };
+    return { code: main, libraries: [...tg.libraries, ...(touch?.libraries ?? [])], notes, library: lib, files: [{ name: 'display_screens.h', text: header }, { name: 'display_screens.cpp', text: L.join('\n') }, ...tg.files] };
   }
   L.push('void setup() {', '  Serial.begin(115200);', ...init, '}', '', 'void loop() {', ...frame, '}', '');
-  return { code: L.join('\n'), libraries: tg.libraries, notes, library: lib, ...(tg.files.length ? { files: tg.files } : {}) };
+  return { code: L.join('\n'), libraries: [...tg.libraries, ...(touch?.libraries ?? [])], notes, library: lib, ...(tg.files.length ? { files: tg.files } : {}) };
 }

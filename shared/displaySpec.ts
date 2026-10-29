@@ -95,8 +95,13 @@ export type DisplayElement = ElBase &
     /** a dial: `ticks` scale marks and a needle, angles in degrees clockwise from 12 o'clock */
     | { type: 'gauge'; x: number; y: number; r: number; value: string; min: number; max: number; color: string; startDeg: number; endDeg: number; ticks: number }
     | { type: 'icon'; x: number; y: number; name: IconName; scale: number; color: string }
+    /** a touch button (or, with `hidden`, an invisible hit region): a tap inside runs its actions. `fill` "" = no background. */
+    | { type: 'button'; x: number; y: number; w: number; h: number; label: string; size: number; color: string; fill: string; hidden: boolean; actions: TouchAction[] }
     | { type: 'pattern'; x: number; y: number; w: number; h: number; kind: PatternKind; size: number; speed: number; colors: string[] }
   );
+
+/** What a tap on a button does: go to a screen, set a value, or flip a value between 0 and 1. */
+export type TouchAction = { do: 'screen'; screen: string } | { do: 'set'; var: string; value: number } | { do: 'toggle'; var: string };
 
 export type IconName = 'thermometer' | 'drop' | 'wifi' | 'battery' | 'warning' | 'heart' | 'sun' | 'bell' | 'check' | 'arrow_up' | 'arrow_down';
 export const ICONS: IconName[] = ['thermometer', 'drop', 'wifi', 'battery', 'warning', 'heart', 'sun', 'bell', 'check', 'arrow_up', 'arrow_down'];
@@ -114,6 +119,8 @@ export interface DisplayTransition {
   afterMs: number;
   /** or as soon as this holds, e.g. "temp > 30" ("" = none) */
   when: string;
+  /** or on a tap anywhere on `from` that no button takes */
+  touch?: boolean;
 }
 
 export interface DisplaySpec {
@@ -249,7 +256,7 @@ export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
   if (!ids.has(spec.start)) err(t('The first screen “{id}” does not exist.', { id: spec.start }));
   for (const tr of spec.transitions) {
     if (!ids.has(tr.from) || !ids.has(tr.to)) err(t('A change of screen goes from “{from}” to “{to}”, and one of them does not exist.', { from: tr.from, to: tr.to }));
-    if (!tr.afterMs && !tr.when.trim()) err(t('The change from “{from}” to “{to}” has neither a time nor a condition.', { from: tr.from, to: tr.to }));
+    if (!tr.afterMs && !tr.when.trim() && !tr.touch) err(t('The change from “{from}” to “{to}” has neither a time nor a condition.', { from: tr.from, to: tr.to }));
   }
   const usesVar = (s: string) => [...s.matchAll(/\{([A-Za-z_]\w*)\}/g)].map((m) => m[1]);
   const badCond = (where: string, c: string) => {
@@ -262,6 +269,16 @@ export function checkSpec(spec: DisplaySpec, panel: PanelInfo): SpecProblem[] {
       badCond(where, el.visibleIf);
       for (const name of [...('text' in el ? usesVar(el.text) : []), ...('value' in el ? [el.value] : []), ...conditionVars(el.visibleIf)]) {
         if (name && !varNames.has(name)) err(t('{where} uses the value “{name}”, which is not defined.', { where, name }));
+      }
+      if (el.type === 'button') {
+        if (!el.actions.length && !el.hidden) warn(t('{where}: the button does nothing when tapped. Give it an action.', { where }));
+        for (const a of el.actions) {
+          if (a.do === 'screen' && !ids.has(a.screen)) err(t('{where}: the button goes to the screen “{id}”, which does not exist.', { where, id: a.screen }));
+          if (a.do !== 'screen' && !varNames.has(a.var)) err(t('{where} uses the value “{name}”, which is not defined.', { where, name: a.var }));
+        }
+        // A fingertip covers about 7 mm; below roughly 24 px on a small panel, taps miss.
+        if (el.w < 24 || el.h < 24) warn(t('{where}: the button is smaller than 24x24 pixels, which is hard to tap with a finger.', { where }));
+        if (!el.hidden && el.label.length * 6 * el.size - el.size > el.w) warn(t('{where}: the label “{text}” is wider than the button.', { where, text: el.label.slice(0, 24) }));
       }
       if (el.type === 'text') {
         const lines = el.text.split('\n');
@@ -289,7 +306,7 @@ const num = (v: unknown, d: number, lo = -10000, hi = 10000) => (typeof v === 'n
 const str = (v: unknown, d = '') => (typeof v === 'string' ? v : d);
 const obj = (v: unknown): Record<string, unknown> => (typeof v === 'object' && v !== null && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
-const ELEMENT_TYPES = ['text', 'rect', 'line', 'circle', 'bar', 'graph', 'gauge', 'icon', 'pattern'];
+const ELEMENT_TYPES = ['text', 'rect', 'line', 'circle', 'bar', 'graph', 'gauge', 'icon', 'button', 'pattern'];
 const PATTERNS: PatternKind[] = ['colorbars', 'checker', 'gradient', 'grid', 'stripes', 'bounce', 'scroll', 'rings', 'fill'];
 
 /** A spec from loose JSON (the assistant's tool input): defaults filled, numbers clamped, unknown types dropped. */
@@ -346,6 +363,25 @@ export function normalizeSpec(raw: unknown): DisplaySpec {
             };
           case 'icon':
             return { ...base, type: 'icon', ...xy, name: (ICONS as string[]).includes(str(e.name)) ? (str(e.name) as IconName) : 'warning', scale: Math.round(num(e.scale, 1, 1, 8)), color: color(e.color, '#FFFFFF') };
+          case 'button':
+            return {
+              ...base,
+              type: 'button',
+              ...xy,
+              ...wh,
+              label: str(e.label),
+              size: Math.round(num(e.size, 2, 1, 8)),
+              color: color(e.color, '#FFFFFF'),
+              fill: str(e.fill),
+              hidden: e.hidden === true,
+              actions: arr(e.actions).map((a): TouchAction | null => {
+                const o = obj(a);
+                if (o.do === 'screen') return { do: 'screen', screen: str(o.screen) };
+                if (o.do === 'set') return { do: 'set', var: str(o.var), value: num(o.value, 0) };
+                if (o.do === 'toggle') return { do: 'toggle', var: str(o.var) };
+                return null;
+              }).filter((a): a is TouchAction => a !== null).slice(0, 4),
+            };
           default:
             return {
               ...base,
@@ -364,7 +400,7 @@ export function normalizeSpec(raw: unknown): DisplaySpec {
   });
   const transitions: DisplayTransition[] = arr(r.transitions).map((x) => {
     const tr = obj(x);
-    return { from: str(tr.from), to: str(tr.to), afterMs: Math.round(num(tr.afterMs, 0, 0, 3600000)), when: str(tr.when) };
+    return { from: str(tr.from), to: str(tr.to), afterMs: Math.round(num(tr.afterMs, 0, 0, 3600000)), when: str(tr.when), ...(tr.touch === true ? { touch: true } : {}) };
   });
   return {
     title: str(r.title, 'Display') || 'Display',

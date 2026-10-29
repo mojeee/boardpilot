@@ -74,6 +74,19 @@ const it: Record<string, string> = {
   '{where} goes past the {w}x{h} screen.': '{where} esce dallo schermo {w}x{h}.',
   '{where}: a {kind} pattern needs a colour screen; on this one it shows in two tones only.': '{where}: un pattern {kind} richiede uno schermo a colori; su questo si vede solo in due toni.',
   'E-paper takes seconds to refresh: moving patterns will not look smooth on the real panel.': 'L’e-paper impiega secondi ad aggiornarsi: i pattern in movimento non saranno fluidi sul pannello reale.',
+  'Simulated: click the screen to tap it ({w}x{h} pixels)': 'Simulato: clicca lo schermo per toccarlo ({w}x{h} pixel)',
+  'Click the preview to tap it, like a finger on the touch screen.': 'Clicca l’anteprima per toccarla, come con un dito sul touch screen.',
+  'on a tap': 'al tocco',
+  '{where}: the button does nothing when tapped. Give it an action.': '{where}: il pulsante non fa nulla quando lo tocchi. Dagli un’azione.',
+  '{where}: the button goes to the screen “{id}”, which does not exist.': '{where}: il pulsante porta alla schermata “{id}”, che non esiste.',
+  '{where}: the button is smaller than 24x24 pixels, which is hard to tap with a finger.': '{where}: il pulsante è più piccolo di 24x24 pixel, difficile da toccare con un dito.',
+  '{where}: the label “{text}” is wider than the button.': '{where}: l’etichetta “{text}” è più larga del pulsante.',
+  'The XPT2046 shares the SPI bus with the display: give it its own chip select (T_CS). Its numbers are raw: calibrate the corners once in the TOUCH_RAW lines.':
+    'L’XPT2046 condivide il bus SPI con il display: dagli un chip select suo (T_CS). I suoi numeri sono grezzi: calibra gli angoli una volta nelle righe TOUCH_RAW.',
+  'The GT911 picks its I2C address (0x5D or 0x14) from the level of INT while RST is released. If the controller is not found, the library’s own address setting may need changing.':
+    'Il GT911 sceglie il suo indirizzo I2C (0x5D o 0x14) dal livello di INT mentre RST viene rilasciato. Se il controller non viene trovato, potrebbe servire cambiare l’indirizzo nella libreria.',
+  'The drawing has buttons but no touch controller is wired. Add an XPT2046, FT6236 or GT911 touch part to the project; until then the code only has an empty touch read to fill in.':
+    'Il disegno ha pulsanti ma nessun controller touch collegato. Aggiungi al progetto un XPT2046, FT6236 o GT911; fino ad allora il codice ha solo una lettura touch vuota da completare.',
 };
 
 export default it;

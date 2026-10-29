@@ -258,6 +258,119 @@ describe('generated code: libraries and output', () => {
   });
 });
 
+describe('touch input', () => {
+  const p = panel('st7789-240');
+  const touchSpec = () =>
+    normalizeSpec({
+      title: 'Touch',
+      part: 'disp1',
+      vars: [{ name: 'led', source: { sim: 'steps', values: [0], everyS: 5 }, digits: 0 }, { name: 'temp', source: { sim: 'wave', min: 10, max: 30, periodS: 8 }, digits: 1 }],
+      screens: [
+        {
+          id: 'home',
+          elements: [
+            { type: 'button', x: 10, y: 10, w: 100, h: 40, label: 'LED', size: 2, color: '#FFFFFF', fill: '#202020', actions: [{ do: 'toggle', var: 'led' }] },
+            { type: 'button', x: 10, y: 60, w: 100, h: 40, label: 'Next', size: 2, color: '#00FF00', fill: '', actions: [{ do: 'screen', screen: 'settings' }] },
+            { type: 'button', x: 150, y: 10, w: 60, h: 60, hidden: true, actions: [{ do: 'set', var: 'temp', value: 99 }] },
+          ],
+        },
+        { id: 'settings', elements: [{ type: 'text', x: 0, y: 0, text: 'Settings', size: 2 }] },
+      ],
+      transitions: [{ from: 'settings', to: 'home', touch: true }],
+    });
+
+  it('normalises buttons and touch changes of screen', () => {
+    const s = touchSpec();
+    expect(s.screens[0].elements[0]).toMatchObject({ type: 'button', label: 'LED', hidden: false, actions: [{ do: 'toggle', var: 'led' }] });
+    expect(s.screens[0].elements[2]).toMatchObject({ hidden: true });
+    expect(s.transitions[0]).toMatchObject({ touch: true, afterMs: 0, when: '' });
+    // Unknown actions are dropped.
+    const loose = normalizeSpec({ screens: [{ id: 'a', elements: [{ type: 'button', actions: [{ do: 'explode' }, { do: 'set', var: 'v', value: 'x' }] }] }] });
+    expect(loose.screens[0].elements[0]).toMatchObject({ actions: [{ do: 'set', var: 'v', value: 0 }] });
+    // A touch change needs no time or condition.
+    expect(checkSpec(s, p).filter((x) => x.severity === 'error')).toEqual([]);
+  });
+
+  it('checks buttons: unknown screens and values, tiny and empty buttons', () => {
+    const bad = normalizeSpec({
+      screens: [{ id: 'a', elements: [{ type: 'button', x: 0, y: 0, w: 10, h: 10, label: 'Go', actions: [{ do: 'screen', screen: 'zzz' }, { do: 'toggle', var: 'ghost' }] }, { type: 'button', x: 50, y: 50, w: 60, h: 40, label: 'Idle' }] }],
+    });
+    const msgs = checkSpec(bad, p).map((x) => `${x.severity}: ${x.message}`);
+    expect(msgs.some((m) => m.startsWith('error') && m.includes('“zzz”'))).toBe(true);
+    expect(msgs.some((m) => m.startsWith('error') && m.includes('“ghost”'))).toBe(true);
+    expect(msgs.some((m) => m.startsWith('warning') && m.includes('smaller than 24x24'))).toBe(true);
+    expect(msgs.some((m) => m.startsWith('warning') && m.includes('does nothing'))).toBe(true);
+  });
+
+  it('a tap runs the topmost button: toggles and sets values, changes screen, and touch transitions apply', () => {
+    const sim = new DisplaySim(touchSpec(), p);
+    expect(sim.tap(230, 230, 100)).toBe(false);
+    expect(sim.tap(20, 20, 100)).toBe(true);
+    expect(sim.values(100).led).toBe(1);
+    sim.tap(20, 20, 200);
+    expect(sim.values(200).led).toBe(0);
+    sim.tap(160, 20, 300);
+    expect(sim.values(300).temp).toBe(99);
+    // The hidden region draws nothing; the visible button draws its border.
+    const fb = new Framebuffer(p, 0);
+    sim.frame(fb, 300);
+    expect(fb.px[30 * fb.w + 170]).toBe(0);
+    expect(fb.px[10 * fb.w + 10]).toBe(rgb565([255, 255, 255]));
+    // "Next" goes to settings; a tap there (no button) goes home by the touch transition.
+    expect(sim.tap(20, 70, 400)).toBe(true);
+    expect(sim.state).toEqual({ screen: 'settings', enteredAt: 400 });
+    expect(sim.tap(5, 5, 500)).toBe(true);
+    expect(sim.state.screen).toBe('home');
+  });
+
+  it('writes the touch read for each controller, with a calibration block', () => {
+    const board = getBoard('esp32-devkitc-30');
+    const build = (touchPart: string) => {
+      const r = buildProposal({ title: 't', summary: '', board: 'esp32-devkitc-30', keepExisting: false, parts: [{ id: 'disp1', partId: 'st7789-240', label: 'Display', why: '' }, { id: 'tch1', partId: touchPart, label: 'Touch', why: '' }], wires: [], links: [] }, { board: 'esp32-devkitc-30', parts: [], wires: [] }, PARTS);
+      if (!r.ok) throw new Error(r.errors.join(' '));
+      return generateDisplayCode(touchSpec(), p, PARTS['st7789-240'], r.proposal.scene, board);
+    };
+    const x = build('xpt2046-touch');
+    expect(x.code).toContain('#include <XPT2046_Touchscreen.h>');
+    expect(x.code).toMatch(/XPT2046_Touchscreen ts\(-?\d+(, -?\d+)?\);/);
+    expect(x.code).toContain('TOUCH_RAW_X_MIN');
+    expect(x.code).toContain('TODO: calibrate');
+    expect(x.code).toContain('ts.begin();');
+    expect(x.code).toContain('handleTouch(ms);');
+    expect(x.code).toContain('bool bpTap(int x, int y, unsigned long ms)');
+    expect(x.code).toContain('t_led_set ? t_led : sim_led(ms)');
+    expect(x.libraries).toContain('XPT2046_Touchscreen');
+    expect(x.code.indexOf('bool bpTouchRead')).toBeLessThan(x.code.indexOf('void handleTouch'));
+    const f = build('ft6236-touch');
+    expect(f.code).toContain('Adafruit_FT6206 ctp;');
+    expect(f.code).toContain('ctp.begin(40)');
+    expect(f.libraries).toContain('Adafruit FT6206 Library');
+    const g = build('gt911-touch');
+    expect(g.code).toContain('TAMC_GT911 tp = TAMC_GT911(');
+    expect(g.code).toContain('tp.points[0].x');
+    // A drawing with buttons but no touch part gets an empty read and a note.
+    const none = generateDisplayCode(touchSpec(), p, PARTS['st7789-240'], sceneWith('st7789-240', 'esp32-devkitc-30'), board);
+    expect(none.code).toContain('TODO: read your touch controller');
+    expect(none.notes.join(' ')).toMatch(/no touch controller is wired/);
+    // No buttons: no touch code at all.
+    const plain = generateDisplayCode(testPatternSpec('disp1', p), p, PARTS['st7789-240'], sceneWith('st7789-240', 'esp32-devkitc-30'), board);
+    expect(plain.code).not.toContain('bpTap');
+  });
+
+  it('draws the same button in host mode (the pixel test) without any touch hardware', () => {
+    const r = generateDisplayCode(touchSpec(), p, PARTS['st7789-240'], sceneWith('st7789-240', 'esp32-devkitc-30'), getBoard('esp32-devkitc-30'), { host: true });
+    expect(r.code).toContain('bpText(');
+    expect(r.code).not.toContain('bpTouchRead');
+  });
+
+  it('the assistant tool describes buttons', async () => {
+    const { TOOLS } = await import('../app/main/ai/tools');
+    const d = TOOLS.find((x) => x.name === 'design_display')!;
+    expect(d.description).toContain('button {x,y,w,h,label');
+    expect(d.description).toContain('touch true');
+  });
+});
+
 /* ---------------- native pixel test: the sketch's drawing vs the app's renderer ---------------- */
 
 describe.skipIf(!nativeAvailable)('the sketch draws the same pixels as the preview (Adafruit GFX built natively)', () => {

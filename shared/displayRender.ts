@@ -284,6 +284,13 @@ function drawPattern(fb: Framebuffer, el: Extract<DisplayElement, { type: 'patte
   }
 }
 
+/** Where a button's one-line label starts: centred in the button, integer maths (the sketch computes the same). */
+export function buttonLabelAt(el: Extract<DisplayElement, { type: 'button' }>): [number, number] {
+  const size = Math.max(1, Math.round(el.size));
+  const wPx = el.label.length * CELL_W * size - size;
+  return [el.x + Math.floor((el.w - wPx) / 2), el.y + Math.floor((el.h - (GLYPH_H * size)) / 2)];
+}
+
 export interface SimState {
   screen: string;
   enteredAt: number;
@@ -301,10 +308,40 @@ export class DisplaySim {
     this.state = { screen: spec.start, enteredAt: 0 };
   }
 
+  /** values a tap has set (a button's "set" or "toggle"); they replace the simulated curve until the display restarts */
+  touched: Record<string, number> = {};
+
   values(ms: number): Record<string, number> {
     const out: Record<string, number> = {};
-    for (const v of this.spec.vars) out[v.name] = v.name in this.overrides ? this.overrides[v.name] : varValue(v, ms);
+    for (const v of this.spec.vars) out[v.name] = v.name in this.touched ? this.touched[v.name] : v.name in this.overrides ? this.overrides[v.name] : varValue(v, ms);
     return out;
+  }
+
+  /**
+   * A tap at (x, y) in screen pixels at time `ms`. The topmost visible button under the finger runs its
+   * actions; if none is there, a "touch" change of screen from this screen applies. Returns true when
+   * something happened. The generated sketch does the same (bpTap).
+   */
+  tap(x: number, y: number, ms: number): boolean {
+    this.advance(ms);
+    const screen = this.spec.screens.find((s) => s.id === this.state.screen) ?? this.spec.screens[0];
+    if (!screen) return false;
+    const vals = this.values(ms);
+    for (let i = screen.elements.length - 1; i >= 0; i--) {
+      const el = screen.elements[i];
+      if (el.type !== 'button' || (el.visibleIf.trim() && !testCondition(el.visibleIf, vals))) continue;
+      if (x < el.x || y < el.y || x >= el.x + el.w || y >= el.y + el.h) continue;
+      for (const a of el.actions) {
+        if (a.do === 'screen') this.state = { screen: a.screen, enteredAt: ms };
+        else if (a.do === 'set') this.touched[a.var] = a.value;
+        else this.touched[a.var] = (this.values(ms)[a.var] ?? 0) !== 0 ? 0 : 1;
+      }
+      return true;
+    }
+    const tr = this.spec.transitions.find((t) => t.touch && t.from === this.state.screen);
+    if (!tr) return false;
+    this.state = { screen: tr.to, enteredAt: ms };
+    return true;
   }
 
   /** Follow the screen changes up to time `ms` (call with increasing times). */
@@ -405,6 +442,18 @@ export class DisplaySim {
           const bits = ICON_BITS[el.name] ?? ICON_BITS.warning;
           const s = Math.max(1, Math.round(el.scale));
           for (let row = 0; row < 8; row++) for (let col = 0; col < 8; col++) if ((bits[row] >> (7 - col)) & 1) fb.fillRect(el.x + col * s, el.y + row * s, s, s, st(el.color));
+          break;
+        }
+        case 'button': {
+          if (el.hidden) break;
+          const c = st(el.color);
+          if (el.fill.trim()) fb.fillRect(el.x, el.y, el.w, el.h, st(el.fill));
+          fb.drawRect(el.x, el.y, el.w, el.h, c);
+          const size = Math.max(1, Math.round(el.size));
+          if (el.label) {
+            const [lx, ly] = buttonLabelAt(el);
+            fb.text(lx, ly, el.label, size, c);
+          }
           break;
         }
         case 'pattern':

@@ -14,12 +14,12 @@ import { t } from '@shared/i18n';
 import { log, useApp, useScene } from '../state/store';
 import { openFile, setFileText, useCodeUi } from '../state/code';
 import { useLayout } from '../state/layout';
-import { panelForPart, repaint, restartDisplays, runDisplay, runningDisplay, showScreen, stopDisplay, useDisplayClock, useDisplayFrames } from '../state/displays';
+import { panelForPart, releaseTouched, repaint, restartDisplays, runDisplay, runningDisplay, showScreen, stopDisplay, tapDisplay, useDisplayClock, useDisplayFrames } from '../state/displays';
 import { askAi } from './ai';
 
 /** A running display's preview, scaled with crisp pixels. Each preview has its own canvas and copies
  *  the frames, so the studio, the chat card and the picture-in-picture can show the same display. */
-export function DisplayCanvas({ runKey, maxW = 360, maxH = 300, round }: { runKey: string; maxW?: number; maxH?: number; round?: boolean }) {
+export function DisplayCanvas({ runKey, maxW = 360, maxH = 300, round, tappable = true }: { runKey: string; maxW?: number; maxH?: number; round?: boolean; tappable?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const version = useDisplayFrames((s) => s.frames[runKey]?.version ?? 0);
   const r = runningDisplay(runKey);
@@ -34,11 +34,18 @@ export function DisplayCanvas({ runKey, maxW = 360, maxH = 300, round }: { runKe
   }, [r, version]);
   if (!r) return null;
   const scale = Math.max(1, Math.floor(Math.min(maxW / r.fb.w, maxH / r.fb.h)));
+  const touchy = tappable && (r.spec.screens.some((s) => s.elements.some((e) => e.type === 'button')) || r.spec.transitions.some((tr) => tr.touch));
+  // A click is a tap: the pixel under the pointer, in screen pixels (the canvas is scaled up with crisp pixels).
+  const tap = (e: React.MouseEvent<HTMLDivElement>) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    tapDisplay(runKey, ((e.clientX - box.left) / box.width) * r.fb.w, ((e.clientY - box.top) / box.height) * r.fb.h);
+  };
   return (
     <div
-      className={`display-canvas ${round ? 'round' : ''} panel-${r.panel.color}`}
-      style={{ width: r.fb.w * scale, height: r.fb.h * scale }}
-      title={t('Simulated: {w}x{h} pixels, as the {controller} shows them', { w: r.fb.w, h: r.fb.h, controller: r.panel.controller })}
+      className={`display-canvas ${round ? 'round' : ''} panel-${r.panel.color} ${touchy ? 'touchy' : ''}`}
+      style={{ width: r.fb.w * scale, height: r.fb.h * scale, ...(touchy ? { cursor: 'pointer' } : {}) }}
+      onClick={touchy ? tap : undefined}
+      title={touchy ? t('Simulated: click the screen to tap it ({w}x{h} pixels)', { w: r.fb.w, h: r.fb.h }) : t('Simulated: {w}x{h} pixels, as the {controller} shows them', { w: r.fb.w, h: r.fb.h, controller: r.panel.controller })}
     >
       <canvas ref={ref} />
     </div>
@@ -175,6 +182,7 @@ function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
       const o = { ...(s.overrides[key] ?? {}) };
       if (v === null) delete o[name];
       else o[name] = v;
+      releaseTouched(key, name);
       return { overrides: { ...s.overrides, [key]: o } };
     });
     repaint(key);
@@ -186,6 +194,7 @@ function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
         <span className="chip">{t('Simulated')}</span>
       </div>
       <DisplayCanvas runKey={key} round={panel.round} />
+      {spec.screens.some((s) => s.elements.some((e) => e.type === 'button')) && <div className="small dim">{t('Click the preview to tap it, like a finger on the touch screen.')}</div>}
       <div className="small dim mono">
         {panel.controller} · {panel.widthPx}x{panel.heightPx} · {panel.color === 'rgb565' ? t('16-bit colour') : panel.color === 'mono' ? t('one colour') : t('e-paper')}
       </div>
@@ -202,7 +211,7 @@ function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
         <ul className="small dim display-flow">
           {spec.transitions.map((tr, i) => (
             <li key={i}>
-              {tr.from} → {tr.to} {tr.afterMs ? t('after {s} s', { s: tr.afterMs / 1000 }) : ''} {tr.when ? t('when {cond}', { cond: tr.when }) : ''}
+              {tr.from} → {tr.to} {tr.afterMs ? t('after {s} s', { s: tr.afterMs / 1000 }) : ''} {tr.when ? t('when {cond}', { cond: tr.when }) : ''} {tr.touch ? t('on a tap') : ''}
             </li>
           ))}
         </ul>
