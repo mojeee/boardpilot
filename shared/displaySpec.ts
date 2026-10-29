@@ -32,8 +32,10 @@ const CONTROLLERS = ['SSD1306', 'SH1106', 'SSD1309', 'SSD1351', 'SSD1327', 'ST77
  */
 export function panelOf(def: PartDef): PanelInfo | null {
   const text = `${def.id} ${def.name} ${def.keywords.join(' ')}`;
-  const controller = CONTROLLERS.find((c) => text.toUpperCase().includes(c)) ?? (/nokia\s*5110/i.test(text) ? 'PCD8544' : '');
   const d = def.display;
+  // The part file names its controller; the name and keywords are the fallback for older files.
+  const controller = d?.controller?.toUpperCase() ?? CONTROLLERS.find((c) => text.toUpperCase().includes(c)) ?? (/nokia\s*5110/i.test(text) ? 'PCD8544' : '');
+
   let w = d?.widthPx;
   let h = d?.heightPx;
   if (!w || !h) {

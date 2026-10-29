@@ -215,6 +215,8 @@ export function validateDisplay(raw: unknown): PartDisplay | undefined {
   if (glass) out.glassMm = glass;
   const center = pair(d.centerMm, -200, 200);
   if (center) out.centerMm = center;
+  const controller = str(d.controller, 20);
+  if (/^[A-Za-z0-9]{3,20}$/.test(controller)) out.controller = controller.toUpperCase();
   if (HEX_COLOR.test(str(d.tint, 7))) out.tint = str(d.tint, 7);
   if (HEX_COLOR.test(str(d.glassColor, 7))) out.glassColor = str(d.glassColor, 7);
   if (d.round === true) out.round = true;

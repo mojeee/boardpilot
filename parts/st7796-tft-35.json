@@ -21,7 +21,7 @@
   "bus": "spi",
   "voltage": "3.3-5",
   "model": { "shape": "oled", "size": [56.3, 98, 6], "color": "#B22222" },
-  "display": { "widthPx": 320, "heightPx": 480, "activeMm": [48.96, 73.44], "color": "rgb565", "source": { "title": "LCDwiki 3.5inch SPI Module ST7796 (MSP3520) user manual", "section": "Specifications: display size 48.96 x 73.44 mm" } },
+  "display": { "controller": "ST7796", "widthPx": 320, "heightPx": 480, "activeMm": [48.96, 73.44], "color": "rgb565", "source": { "title": "LCDwiki 3.5inch SPI Module ST7796 (MSP3520) user manual", "section": "Specifications: display size 48.96 x 73.44 mm" } },
   "keywords": ["st7796", "st7796s", "tft", "3.5", "320x480", "touch", "xpt2046", "display"],
   "sources": [
     { "title": "Sitronix ST7796S datasheet", "section": "4-line serial interface" },

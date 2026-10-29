@@ -479,6 +479,8 @@ export interface PartDisplay {
   centerMm?: [number, number];
   /** what a pixel is: OLED mono or 4-bit gray, TFT colour, e-paper, STN LCD with backlight, LEDs */
   color: 'mono' | 'gray4' | 'rgb565' | 'rgb666' | 'epaper' | 'lcd' | 'led';
+  /** the display controller chip, e.g. "ST7796" (Display Studio reads it here; without it, from the part's name) */
+  controller?: string;
   /** colour of a lit pixel for mono, lcd and led panels */
   tint?: string;
   /** colour of the glass (or LCD window) with nothing shown; default by `color` */

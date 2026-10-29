@@ -21,7 +21,7 @@
   "bus": "spi",
   "voltage": "3.3-5",
   "model": { "shape": "oled", "size": [56.3, 98, 6], "color": "#B22222" },
-  "display": { "widthPx": 320, "heightPx": 480, "activeMm": [48.96, 73.44], "color": "rgb666", "source": { "title": "Elecrow wiki: 3.5 Inch 480x320 SPI TFT LCD Module with ILI9488 Driver (same board as LCDwiki MSP3520)", "section": "Specification: active area 48.96 x 73.44 mm, module PCB 56.34 x 98 mm" } },
+  "display": { "controller": "ILI9488", "widthPx": 320, "heightPx": 480, "activeMm": [48.96, 73.44], "color": "rgb666", "source": { "title": "Elecrow wiki: 3.5 Inch 480x320 SPI TFT LCD Module with ILI9488 Driver (same board as LCDwiki MSP3520)", "section": "Specification: active area 48.96 x 73.44 mm, module PCB 56.34 x 98 mm" } },
   "keywords": ["ili9488", "tft", "3.5", "320x480", "touch", "xpt2046", "display", "schermo"],
   "sources": [
     { "title": "ILITEK ILI9488 datasheet", "section": "4-line serial interface: 18-bit color only (3 bytes per pixel)" },
