@@ -2,7 +2,7 @@
 
 import { SerialPort } from 'serialport';
 import type { AgentReplyMap, AgentRequest, StreamFrame } from '@shared/types';
-import { LineSplitter, agentErrorText, encodeRequest, parseAgentLine } from '@shared/protocol';
+import { LineSplitter, agentErrorText, encodeRequest, parseAgentLine, parseHexList, parseSpiTrace } from '@shared/protocol';
 import type { AgentClient, SerialStream } from './driver';
 import { DriverError } from './errors';
 import { t } from '@shared/i18n';
@@ -24,6 +24,19 @@ export function openPort(path: string, baudRate: number): Promise<SerialPort> {
       }
     });
   });
+}
+
+/** Keeps only well-formed bytes and trace steps of the SPI replies; other replies pass through. */
+export function normalizeReply(cmd: AgentRequest['cmd'], body: Record<string, unknown>): Record<string, unknown> {
+  if (cmd === 'spi_xfer') {
+    const out: Record<string, unknown> = { ...body, trace: parseSpiTrace(body.trace) };
+    if (body.in !== undefined) out.in = parseHexList(body.in);
+    return out;
+  }
+  if (cmd === 'tft_id') {
+    return { ...body, rddid: parseHexList(body.rddid), rdid4: parseHexList(body.rdid4), trace: parseSpiTrace(body.trace) };
+  }
+  return body;
 }
 
 interface Pending {
@@ -94,7 +107,7 @@ export class SerialAgentClient implements AgentClient {
         this.pending.delete(id);
         reject(new DriverError('agent_timeout', t('The board agent did not answer.'), t('Press EN on the board to restart it, then try again.')));
       }, timeoutMs);
-      this.pending.set(id, { resolve: (b) => resolve(b as unknown as AgentReplyMap[K]), reject, timer });
+      this.pending.set(id, { resolve: (b) => resolve(normalizeReply(req.cmd, b) as unknown as AgentReplyMap[K]), reject, timer });
       this.port.write(encodeRequest(id, req as AgentRequest));
     });
   }

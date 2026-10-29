@@ -125,6 +125,8 @@ bool dispatch(const char* cmd) {
   BP_CMD("pullup_check", cmdPullupCheck)
   BP_CMD("i2c_scan", cmdI2cScan)
   BP_CMD("i2c_read", cmdI2cRead)
+  BP_CMD("spi_xfer", cmdSpiXfer)
+  BP_CMD("tft_id", cmdTftId)
   BP_CMD("adc", cmdAdc)
   BP_CMD("pwm", cmdPwm)
   BP_CMD("gpio_write", cmdGpioWrite)

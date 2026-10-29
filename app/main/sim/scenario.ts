@@ -14,8 +14,26 @@ export interface SimI2cDevice {
   powered: boolean;
 }
 
+/** A device on an SPI bus: which board GPIOs its pins are wired to and what it answers. */
+export interface SimSpiDevice {
+  sck: number;
+  miso: number;
+  mosi: number;
+  cs: number;
+  /** Data/command pin, for display controllers (needed by tft_id) */
+  dc?: number;
+  powered: boolean;
+  /** Bytes it clocks out for spi_xfer, by position in the transfer (missing = 0x00) */
+  reply?: string[];
+  /** Raw 4 bytes after the RDDID (0x04) and RDID4 (0xD3) commands, dummy byte first */
+  rddid?: string[];
+  rdid4?: string[];
+}
+
 export interface SimPhysical {
   i2c: SimI2cDevice[];
+  /** SPI devices. Missing means none. */
+  spi?: SimSpiDevice[];
   pins: Record<
     string,
     {

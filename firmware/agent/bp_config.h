@@ -8,7 +8,10 @@
 #endif
 
 #define AGENT_NAME "bp-agent"
-#define AGENT_VER "0.2"
+#define AGENT_VER "0.3"
+// Protocol revision, sent as "proto" in the hello reply. 1 = commands up to agent 0.2,
+// 2 adds spi_xfer and tft_id. Keep in step with AGENT_PROTO in shared/protocol.ts.
+#define AGENT_PROTO 2
 
 // Buffer sizes (AGENT_LINE_MAX includes the terminating NUL; longer request
 // lines are rejected with error "too_long"). The ATmega328P (Uno, Nano) has 2 KB of RAM in
@@ -51,6 +54,16 @@
 // reserved by the I2C specification, NXP UM10204 section 3.1.12).
 #define AGENT_I2C_FIRST_ADDR 0x08
 #define AGENT_I2C_LAST_ADDR 0x77
+
+// SPI (bit-banged, so it works on any pins of any board; the real clock stays well below `hz`).
+#define AGENT_SPI_DEFAULT_HZ 1000000UL
+#define AGENT_SPI_MIN_HZ 1000UL
+#define AGENT_SPI_MAX_HZ 8000000UL
+#if defined(AGENT_SMALL_RAM)
+#define AGENT_SPI_MAX_BYTES 16
+#else
+#define AGENT_SPI_MAX_BYTES 32
+#endif
 
 // PWM limits.
 #define AGENT_PWM_MIN_HZ 1UL

@@ -45,7 +45,8 @@ export interface HubEvents {
   trace: [{ cmd: string; sda: number; scl: number; trace: AgentReplyMap['i2c_scan']['trace'] }];
 }
 
-const WRITE_CMDS = new Set(['gpio_write', 'pwm']);
+// spi_xfer sends arbitrary bytes to whatever is on the bus (it could write to a flash chip), so it needs a token too.
+const WRITE_CMDS = new Set(['gpio_write', 'pwm', 'spi_xfer']);
 
 /**
  * Where the user's firmware file goes. ESP32: a single app .bin at 0x10000 (after bootloader and

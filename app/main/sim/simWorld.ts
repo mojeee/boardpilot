@@ -1,13 +1,13 @@
 // The simulated bench. Holds the physical truth of a scenario and answers agent commands the way
 // the real agent firmware would, including the pin safety rules.
 
-import type { AgentPinState, AgentReplyMap, AgentRequest, BoardDef, I2cTraceStep, StreamFrame } from '@shared/types';
+import type { AgentPinState, AgentReplyMap, AgentRequest, BoardDef, I2cTraceStep, SpiTraceStep, StreamFrame } from '@shared/types';
 import { DEFAULT_BOARD_ID, getBoard, headerGpios, isAdcPin, pinByGpio } from '@shared/board';
 import { benchScenarios } from './bench';
 import { DriverError } from '../hardware/errors';
 import { t } from '@shared/i18n';
-import { agentErrorText } from '@shared/protocol';
-import type { Scenario, SimPhysical, SimI2cDevice } from './scenario';
+import { AGENT_PROTO, AGENT_VER, agentErrorText } from '@shared/protocol';
+import type { Scenario, SimPhysical, SimI2cDevice, SimSpiDevice } from './scenario';
 import { simRegister } from './registers';
 
 import swapped from './scenarios/weather-station-swapped.json';
@@ -31,6 +31,20 @@ export const DEFAULT_SCENARIO = 'weather-station-swapped';
 
 export function scenariosFor(board: BoardDef): Scenario[] {
   return board.id === DEFAULT_BOARD_ID ? SCENARIOS : benchScenarios(board);
+}
+
+const hex2 = (n: number) => '0x' + n.toString(16).toUpperCase().padStart(2, '0');
+/** Bytes of hex text such as "9F 00" or "0x9F,0x00"; [] if the text is not whole hex bytes. */
+function hexBytes(text: string): number[] {
+  const t0 = text.trim();
+  const parts = /[\s,:]/.test(t0) ? t0.split(/[\s,:]+/) : (t0.replace(/^0x/i, '').match(/.{1,2}/g) ?? []);
+  const out: number[] = [];
+  for (const p of parts) {
+    const h = p.replace(/^0x/i, '');
+    if (!/^[0-9a-f]{2}$/i.test(h)) return [];
+    out.push(parseInt(h, 16));
+  }
+  return out;
 }
 
 function agentError(code: string): DriverError {
@@ -184,6 +198,18 @@ export class SimWorld {
     if (output && p.flags.includes('input_only')) throw agentError('input_only');
   }
 
+  /** SPI devices added by tests or scenarios; they follow the physical list. */
+  private extraSpi: SimSpiDevice[] = [];
+  addSpiDevice(d: SimSpiDevice) {
+    this.extraSpi.push(d);
+  }
+
+  private findSpi(sck: number, miso: number | undefined, mosi: number | undefined, cs: number | undefined): SimSpiDevice | undefined {
+    return [...(this.physical.spi ?? []), ...this.extraSpi].find(
+      (d) => d.powered && d.sck === sck && (miso === undefined || d.miso === miso) && (mosi === undefined || d.mosi === mosi) && (cs === undefined || d.cs === cs),
+    );
+  }
+
   private findDevice(sda: number, scl: number, addr?: string): SimI2cDevice | undefined {
     return this.physical.i2c.find(
       (d) => d.powered && d.sda === sda && d.scl === scl && (!addr || d.addr.toLowerCase() === addr.toLowerCase()),
@@ -203,7 +229,8 @@ export class SimWorld {
       case 'hello':
         return {
           agent: 'bp-agent',
-          ver: '0.2',
+          ver: AGENT_VER,
+          proto: AGENT_PROTO,
           chip: this.scenario.chip.chip,
           board: this.board.id,
           heapFree: (this.board.ramBytes ? Math.round(this.board.ramBytes * 0.6) : 201344) - Math.round(Math.random() * 400),
@@ -262,6 +289,43 @@ export class SimWorld {
         data.forEach((v, i) => trace.push({ t: 'data', v, dir: 'r', ack: i < data.length - 1 }));
         trace.push({ t: 'stop' });
         return { data, trace } as AgentReplyMap[K];
+      }
+      case 'spi_xfer': {
+        this.checkPin(r.sck, true);
+        if (r.mosi !== undefined) this.checkPin(r.mosi, true);
+        if (r.cs !== undefined) this.checkPin(r.cs, true);
+        if (r.miso !== undefined) this.checkPin(r.miso, false);
+        if (r.miso === undefined && r.mosi === undefined) throw agentError('bad_args');
+        const out = hexBytes(r.out);
+        if (!out.length || out.length > 32) throw agentError('bad_args');
+        const dev = this.findSpi(r.sck, r.miso, r.mosi, r.cs);
+        const trace: SpiTraceStep[] = [];
+        if (r.cs !== undefined) trace.push({ t: 'cs', level: 0 });
+        const inBytes: string[] = [];
+        out.forEach((b, i) => {
+          // A MISO line with nothing driving it reads HIGH when the bus has a pull-up; the sim says 0x00 (low).
+          const back = r.miso === undefined ? undefined : dev ? (dev.reply?.[i] ?? '0x00') : '0x00';
+          if (back !== undefined) inBytes.push(back);
+          trace.push({ t: 'byte', out: hex2(b), ...(back !== undefined ? { in: back } : {}) });
+        });
+        if (r.cs !== undefined) trace.push({ t: 'cs', level: 1 });
+        return (r.miso === undefined ? { trace } : { in: inBytes, trace }) as AgentReplyMap[K];
+      }
+      case 'tft_id': {
+        for (const g of [r.sck, r.mosi, r.cs, r.dc]) this.checkPin(g, true);
+        this.checkPin(r.miso, false);
+        const dev = this.findSpi(r.sck, r.miso, r.mosi, r.cs);
+        const live = dev && dev.dc === r.dc;
+        const none = ['0x00', '0x00', '0x00', '0x00'];
+        const rddid = live && dev.rddid ? dev.rddid : none;
+        const rdid4 = live && dev.rdid4 ? dev.rdid4 : none;
+        const trace: SpiTraceStep[] = [];
+        for (const [cmd, got] of [[0x04, rddid], [0xd3, rdid4]] as const) {
+          trace.push({ t: 'cs', level: 0 }, { t: 'byte', out: hex2(cmd) });
+          for (const g of got) trace.push({ t: 'byte', out: '0x00', in: g });
+          trace.push({ t: 'cs', level: 1 });
+        }
+        return { rddid, rdid4, trace } as AgentReplyMap[K];
       }
       case 'adc': {
         this.checkPin(r.pin, false);

@@ -203,6 +203,167 @@ void busErrorMsg() {
 }
 
 // ---------------------------------------------------------------------------
+// SPI (bit-banged master, modes 0-3, MSB first)
+// ---------------------------------------------------------------------------
+//
+// Clock polarity (CPOL) is bit 1 of the mode, clock phase (CPHA) is bit 0 (the usual
+// Motorola SPI convention used in chip datasheets). CPHA 0: data is sampled on the first clock
+// edge; CPHA 1: on the second edge. The trace lists the chip-select changes and each byte with
+// what was sent and what was read back at the same time.
+
+struct SpiCfg {
+  int sck, miso, mosi, cs;  // miso, mosi and cs may be -1 (not used)
+  uint8_t mode;
+  uint32_t halfUs;
+};
+
+bool gSpiFirst = true;
+
+void spiSep() {
+  if (!gSpiFirst) bpout::ch(',');
+  gSpiFirst = false;
+}
+
+void spiStepCs(bool level) {
+  spiSep();
+  bpout::raw(BPS("{\"t\":\"cs\",\"level\":"));
+  bpout::num(level ? 1 : 0);
+  bpout::ch('}');
+}
+
+void spiStepByte(uint8_t out, uint8_t in, bool hasIn) {
+  spiSep();
+  bpout::raw(BPS("{\"t\":\"byte\",\"out\":"));
+  bpout::hexByte(out);
+  if (hasIn) {
+    bpout::raw(BPS(",\"in\":"));
+    bpout::hexByte(in);
+  }
+  bpout::ch('}');
+}
+
+void spiHalf(const SpiCfg& c) {
+  if (c.halfUs) delayMicroseconds(c.halfUs);
+}
+
+void spiRelease(const SpiCfg& c) {
+  bppins::release(c.sck);
+  if (c.mosi >= 0) bppins::release(c.mosi);
+  if (c.cs >= 0) bppins::release(c.cs);
+  if (c.miso >= 0) bppins::release(c.miso);
+}
+
+void spiOpen(const SpiCfg& c) {
+  spiRelease(c);
+  bpPinMode(c.sck, OUTPUT);
+  bpWrite(c.sck, (c.mode >> 1) & 1);
+  if (c.mosi >= 0) {
+    bpPinMode(c.mosi, OUTPUT);
+    bpWrite(c.mosi, 0);
+  }
+  if (c.cs >= 0) {
+    bpPinMode(c.cs, OUTPUT);
+    bpWrite(c.cs, 1);
+  }
+  if (c.miso >= 0) bpPinMode(c.miso, INPUT);
+}
+
+uint8_t spiByte(const SpiCfg& c, uint8_t out) {
+  const uint8_t cpol = (c.mode >> 1) & 1;
+  const uint8_t cpha = c.mode & 1;
+  uint8_t in = 0;
+  for (int i = 7; i >= 0; i--) {
+    const uint8_t bit = (out >> i) & 1;
+    if (!cpha) {
+      if (c.mosi >= 0) bpWrite(c.mosi, bit);
+      spiHalf(c);
+      bpWrite(c.sck, !cpol);
+      if (c.miso >= 0 && bpRead(c.miso)) in |= (uint8_t)(1 << i);
+      spiHalf(c);
+      bpWrite(c.sck, cpol);
+    } else {
+      bpWrite(c.sck, !cpol);
+      if (c.mosi >= 0) bpWrite(c.mosi, bit);
+      spiHalf(c);
+      bpWrite(c.sck, cpol);
+      if (c.miso >= 0 && bpRead(c.miso)) in |= (uint8_t)(1 << i);
+      spiHalf(c);
+    }
+  }
+  return in;
+}
+
+// Reads the SPI pins shared by spi_xfer and tft_id. The needX flags make a pin required.
+bool argSpi(const BpReq& r, bool needMiso, bool needMosi, bool needCs, SpiCfg& c) {
+  c.miso = c.mosi = c.cs = -1;
+  if (!argPin(r, BPS("sck"), true, c.sck)) return false;
+  if (needMosi || has(r.doc, BPS("mosi"))) {
+    if (!argPin(r, BPS("mosi"), true, c.mosi)) return false;
+  }
+  // MISO is only read, so input-only pins are allowed there.
+  if (needMiso || has(r.doc, BPS("miso"))) {
+    if (!argPin(r, BPS("miso"), false, c.miso)) return false;
+  }
+  if (needCs || has(r.doc, BPS("cs"))) {
+    if (!argPin(r, BPS("cs"), true, c.cs)) return false;
+  }
+  if (c.miso < 0 && c.mosi < 0) {
+    bpout::error(r, BPS("bad_args"), BPS("Give at least a \"mosi\" or a \"miso\" pin."));
+    return false;
+  }
+  const int all[4] = {c.sck, c.miso, c.mosi, c.cs};
+  for (int i = 0; i < 4; i++) {
+    for (int j = i + 1; j < 4; j++) {
+      if (all[i] >= 0 && all[i] == all[j]) {
+        bpout::error(r, BPS("bad_args"), BPS("Each SPI signal needs its own pin. Two of them use the same pin."),
+                     all[i]);
+        return false;
+      }
+    }
+  }
+  long mode, hz;
+  if (!argLongOpt(r, BPS("mode"), 0, 0, 3, mode)) return false;
+  if (!argLongOpt(r, BPS("hz"), (long)AGENT_SPI_DEFAULT_HZ, (long)AGENT_SPI_MIN_HZ, (long)AGENT_SPI_MAX_HZ, hz)) {
+    return false;
+  }
+  c.mode = (uint8_t)mode;
+  // Half a clock period. Above about 100 kHz the loop itself is slower than the requested clock.
+  c.halfUs = (uint32_t)(500000UL / (uint32_t)hz);
+  return true;
+}
+
+// Hex bytes from text like "9F 00 00", "0x9F,0x00" or "9F0000". Returns the count,
+// -1 for bad text, -2 for too many bytes.
+int parseHexBytes(const char* s, uint8_t* out, int max) {
+  int n = 0;
+  int nib = -1;
+  for (const char* p = s; *p; p++) {
+    const char ch = *p;
+    if (ch == ' ' || ch == ',' || ch == ':') {
+      if (nib >= 0) return -1;  // a lone digit between separators
+      continue;
+    }
+    if ((ch == 'x' || ch == 'X') && p > s && *(p - 1) == '0' && nib == 0) {
+      nib = -1;  // the "0" before the x was only the "0x" prefix
+      continue;
+    }
+    int v;
+    if (ch >= '0' && ch <= '9') v = ch - '0';
+    else if (ch >= 'a' && ch <= 'f') v = ch - 'a' + 10;
+    else if (ch >= 'A' && ch <= 'F') v = ch - 'A' + 10;
+    else return -1;
+    if (nib < 0) {
+      nib = v;
+    } else {
+      if (n >= max) return -2;
+      out[n++] = (uint8_t)((nib << 4) | v);
+      nib = -1;
+    }
+  }
+  return nib >= 0 ? -1 : n;
+}
+
+// ---------------------------------------------------------------------------
 // Stream state
 // ---------------------------------------------------------------------------
 
@@ -229,6 +390,8 @@ void cmdHello(const BpReq& r) {
   bpout::str(BPS(AGENT_NAME));
   bpout::key(BPS("ver"));
   bpout::str(BPS(AGENT_VER));
+  bpout::key(BPS("proto"));
+  bpout::num(AGENT_PROTO);
   bpout::key(BPS("chip"));
 #if defined(BP_ESP32)
   bpout::strRam(ESP.getChipModel());
@@ -494,6 +657,119 @@ void cmdI2cRead(const BpReq& r) {
     stepStop();
   }
   traceEnd();
+  bpout::end();
+}
+
+void cmdSpiXfer(const BpReq& r) {
+  SpiCfg c;
+  if (!argSpi(r, false, false, false, c)) return;
+
+  char text[AGENT_SPI_MAX_BYTES * 5 + 1];
+  if (!bpjson::getString(r.doc, BPS("out"), text, sizeof(text))) {
+    bpout::error(r, BPS("bad_args"),
+                 BPS("\"out\" must be the bytes to send as hex text, for example \"9F 00 00\"."));
+    return;
+  }
+  uint8_t out[AGENT_SPI_MAX_BYTES];
+  const int n = parseHexBytes(text, out, AGENT_SPI_MAX_BYTES);
+  if (n == -2) {
+    bp_snprintf(gMsg, sizeof(gMsg), "Too many bytes in one transfer. The limit is %d.", AGENT_SPI_MAX_BYTES);
+    bpout::errorRam(r, BPS("bad_args"), gMsg);
+    return;
+  }
+  if (n <= 0) {
+    bpout::error(r, BPS("bad_args"), BPS("\"out\" must hold at least one whole hex byte, for example \"9F\"."));
+    return;
+  }
+
+  uint8_t in[AGENT_SPI_MAX_BYTES];
+  spiOpen(c);
+  if (c.cs >= 0) {
+    bpWrite(c.cs, 0);
+    spiHalf(c);
+  }
+  for (int i = 0; i < n; i++) in[i] = spiByte(c, out[i]);
+  if (c.cs >= 0) {
+    spiHalf(c);
+    bpWrite(c.cs, 1);
+  }
+  spiRelease(c);
+
+  bpout::begin(r, true);
+  if (c.miso >= 0) {
+    bpout::key(BPS("in"));
+    bpout::ch('[');
+    for (int i = 0; i < n; i++) {
+      if (i) bpout::ch(',');
+      bpout::hexByte(in[i]);
+    }
+    bpout::ch(']');
+  }
+  bpout::key(BPS("trace"));
+  bpout::ch('[');
+  gSpiFirst = true;
+  if (c.cs >= 0) spiStepCs(false);
+  for (int i = 0; i < n; i++) spiStepByte(out[i], in[i], c.miso >= 0);
+  if (c.cs >= 0) spiStepCs(true);
+  bpout::ch(']');
+  bpout::end();
+}
+
+// Reads the display controller ID registers RDDID (0x04) and RDID4 (0xD3). The command byte is
+// sent with D/C low, the answer is clocked out with D/C high. The first byte after the command is
+// a dummy byte on most controllers, so the reply lists all four raw bytes and the app decides
+// what they mean. Sources: ST7789V datasheet, command RDDID (04h); ILI9341 datasheet, command
+// "Read ID4" (D3h). Controllers wired for 3-wire SPI (MOSI and MISO on one pin) do not work here.
+void cmdTftId(const BpReq& r) {
+  SpiCfg c;
+  if (!argSpi(r, true, true, true, c)) return;
+  int dc;
+  if (!argPin(r, BPS("dc"), true, dc)) return;
+  if (dc == c.sck || dc == c.miso || dc == c.mosi || dc == c.cs) {
+    bpout::error(r, BPS("bad_args"), BPS("Each signal needs its own pin. \"dc\" is the same as another pin."), dc);
+    return;
+  }
+
+  static const uint8_t CMDS[2] = {0x04, 0xD3};
+  uint8_t got[2][4];
+  bppins::release(dc);
+  bpPinMode(dc, OUTPUT);
+  bpWrite(dc, 1);
+  spiOpen(c);
+  for (int k = 0; k < 2; k++) {
+    bpWrite(c.cs, 0);
+    spiHalf(c);
+    bpWrite(dc, 0);
+    spiByte(c, CMDS[k]);
+    bpWrite(dc, 1);
+    for (int i = 0; i < 4; i++) got[k][i] = spiByte(c, 0x00);
+    spiHalf(c);
+    bpWrite(c.cs, 1);
+    spiHalf(c);
+  }
+  spiRelease(c);
+  bppins::release(dc);
+
+  bpout::begin(r, true);
+  for (int k = 0; k < 2; k++) {
+    bpout::key(k == 0 ? BPS("rddid") : BPS("rdid4"));
+    bpout::ch('[');
+    for (int i = 0; i < 4; i++) {
+      if (i) bpout::ch(',');
+      bpout::hexByte(got[k][i]);
+    }
+    bpout::ch(']');
+  }
+  bpout::key(BPS("trace"));
+  bpout::ch('[');
+  gSpiFirst = true;
+  for (int k = 0; k < 2; k++) {
+    spiStepCs(false);
+    spiStepByte(CMDS[k], 0, false);
+    for (int i = 0; i < 4; i++) spiStepByte(0x00, got[k][i], true);
+    spiStepCs(true);
+  }
+  bpout::ch(']');
   bpout::end();
 }
 

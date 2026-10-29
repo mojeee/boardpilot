@@ -15,6 +15,7 @@ import type {
 import type { AgentClient, HardwareDriver, SerialStream } from '../hardware/driver';
 import { DriverError } from '../hardware/errors';
 import { t } from '@shared/i18n';
+import { AGENT_PROTO, AGENT_VER } from '@shared/protocol';
 import { bridgeFromUsb } from '../hardware/ports';
 import { boardsForUsb, canBackupFlash } from '@shared/board';
 import { SimWorld, garble } from './simWorld';
@@ -136,7 +137,7 @@ class SimAgentClient implements AgentClient {
   ) {
     setTimeout(() => {
       for (const cb of this.eventCbs)
-        cb('boot', { event: 'boot', agent: 'bp-agent', ver: '0.2', board: world.board.id, strapping: world.scenario.strappingAtBoot });
+        cb('boot', { event: 'boot', agent: 'bp-agent', ver: AGENT_VER, proto: AGENT_PROTO, board: world.board.id, strapping: world.scenario.strappingAtBoot });
     }, 50);
   }
 

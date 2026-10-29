@@ -10,6 +10,8 @@ void cmdStrapping(const BpReq& r);
 void cmdPullupCheck(const BpReq& r);
 void cmdI2cScan(const BpReq& r);
 void cmdI2cRead(const BpReq& r);
+void cmdSpiXfer(const BpReq& r);
+void cmdTftId(const BpReq& r);
 void cmdAdc(const BpReq& r);
 void cmdPwm(const BpReq& r);
 void cmdGpioWrite(const BpReq& r);

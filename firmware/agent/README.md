@@ -85,7 +85,7 @@ npm run build:agent -- rpi-pico arduino-uno-r3   # only these boards
 ```json
 {
   "name": "bp-agent",
-  "ver": "0.2",
+  "ver": "0.3",
   "board": "esp32-devkitc-30",
   "fqbn": "esp32:esp32:esp32",
   "format": "bin",
@@ -146,7 +146,7 @@ any line that is not a JSON object.
 At boot, the agent prints:
 
 ```json
-{"event":"boot","agent":"bp-agent","ver":"0.2","board":"esp32-devkitc-30","strapping":{"0":1,"2":0,"5":1,"12":0,"15":1},"strapReg":"0x13"}
+{"event":"boot","agent":"bp-agent","ver":"0.3","proto":2,"board":"esp32-devkitc-30","strapping":{"0":1,"2":0,"5":1,"12":0,"15":1},"strapReg":"0x13"}
 ```
 
 `board` is the board id the agent was built for. `strapping` holds the levels
@@ -160,7 +160,7 @@ chip latched at reset (the same number the ROM prints as `boot:0x..`).
 
 | Request | Reply |
 | --- | --- |
-| `{"id":1,"cmd":"hello"}` | `{"id":1,"ok":true,"agent":"bp-agent","ver":"0.2","chip":"ESP32-D0WD-V3","heapFree":201344,"board":"esp32-devkitc-30"}` |
+| `{"id":1,"cmd":"hello"}` | `{"id":1,"ok":true,"agent":"bp-agent","ver":"0.3","proto":2,"chip":"ESP32-D0WD-V3","heapFree":201344,"board":"esp32-devkitc-30"}` |
 | `{"id":2,"cmd":"pins"}` | `{"id":2,"ok":true,"pins":{"21":{"mode":"in","level":1},...}}` |
 | `{"id":3,"cmd":"pullup_check","pins":[21,22]}` | `{"id":3,"ok":true,"external":{"21":true,"22":true},"levels":{"21":1,"22":1}}` (plus `"unconfirmed":[34]`, see below) |
 | `{"id":4,"cmd":"i2c_scan","sda":21,"scl":22,"hz":100000}` | `{"id":4,"ok":true,"found":["0x76"],"trace":[...]}` |
@@ -173,6 +173,8 @@ chip latched at reset (the same number the ROM prints as `boot:0x..`).
 | `{"id":11,"cmd":"stream_stop"}` | `{"id":11,"ok":true}` (so does `stream` with `"pins":[]` or `"hz":0`) |
 | `{"id":12,"cmd":"strapping"}` | `{"id":12,"ok":true,"strapping":{...},"strapReg":"0x13"}` |
 | `{"id":13,"cmd":"reset_pins"}` | `{"id":13,"ok":true,"released":[25,26]}` (also stops the stream) |
+| `{"id":14,"cmd":"spi_xfer","sck":18,"miso":19,"mosi":23,"cs":5,"mode":0,"hz":1000000,"out":"9F 00 00"}` | `{"id":14,"ok":true,"in":["0x00","0xEF","0x40"],"trace":[{"t":"cs","level":0},{"t":"byte","out":"0x9F","in":"0x00"},...,{"t":"cs","level":1}]}`. Bit-banged on any pins, up to 32 bytes (16 on Uno/Nano), `mosi`, `miso` and `cs` are optional (at least one of `mosi`/`miso`), `in` is left out without `miso`. Refuses flash pins and outputs on input-only pins (MISO may be input-only). |
+| `{"id":15,"cmd":"tft_id","sck":18,"miso":19,"mosi":23,"cs":5,"dc":2}` | `{"id":15,"ok":true,"rddid":["0x00","0x85","0x85","0x52"],"rdid4":["0x00","0x00","0x93","0x41"],"trace":[...]}`. Raw bytes after RDDID (0x04) and RDID4 (0xD3), dummy byte first. |
 
 Stream frames, sent at `hz` (1 to 50, default 20):
 

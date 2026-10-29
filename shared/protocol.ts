@@ -1,8 +1,13 @@
 // Diagnostic agent protocol: newline-delimited JSON over serial.
 // Pure functions only, so the parser can be tested with recorded lines.
 
-import type { AgentPinState, AgentRequest, I2cTraceStep, StreamFrame } from './types';
+import type { AgentPinState, AgentRequest, I2cTraceStep, SpiTraceStep, StreamFrame } from './types';
 import { t } from './i18n';
+
+/** Agent firmware version the simulator reports and the app is built for. Same as AGENT_VER in firmware/agent/bp_config.h (tests/protocol.test.ts checks). */
+export const AGENT_VER = '0.3';
+/** Protocol revision (the `proto` field of the hello reply). 1 = up to agent 0.2, 2 adds spi_xfer and tft_id. */
+export const AGENT_PROTO = 2;
 
 export type ParsedLine =
   | { kind: 'reply'; id: number; ok: true; body: Record<string, unknown> }
@@ -45,6 +50,26 @@ export function parseTrace(raw: unknown): I2cTraceStep[] {
     if (s.rw === 'r' || s.rw === 'w') step.rw = s.rw;
     if (s.dir === 'r' || s.dir === 'w') step.dir = s.dir;
     if (typeof s.ack === 'boolean') step.ack = s.ack;
+    steps.push(step);
+  }
+  return steps;
+}
+
+/** Hex bytes of an `in` / `rddid` list ("0x9F"); entries that are not a byte are dropped. */
+export function parseHexList(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((v): v is string => typeof v === 'string' && /^0x[0-9a-fA-F]{1,2}$/.test(v));
+}
+
+export function parseSpiTrace(raw: unknown): SpiTraceStep[] {
+  if (!Array.isArray(raw)) return [];
+  const steps: SpiTraceStep[] = [];
+  for (const s of raw) {
+    if (!isObj(s) || (s.t !== 'cs' && s.t !== 'byte')) continue;
+    const step: SpiTraceStep = { t: s.t };
+    if (s.level === 0 || s.level === 1) step.level = s.level;
+    if (typeof s.out === 'string') step.out = s.out;
+    if (typeof s.in === 'string') step.in = s.in;
     steps.push(step);
   }
   return steps;

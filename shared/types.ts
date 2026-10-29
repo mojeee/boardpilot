@@ -122,6 +122,8 @@ export type AgentRequest =
   | { cmd: 'pullup_check'; pins: number[] }
   | { cmd: 'i2c_scan'; sda: number; scl: number; hz?: number }
   | { cmd: 'i2c_read'; sda: number; scl: number; addr: string; reg: string; len: number; hz?: number }
+  | { cmd: 'spi_xfer'; sck: number; miso?: number; mosi?: number; cs?: number; hz?: number; mode?: 0 | 1 | 2 | 3; out: string }
+  | { cmd: 'tft_id'; sck: number; miso: number; mosi: number; cs: number; dc: number; hz?: number; mode?: 0 | 1 | 2 | 3 }
   | { cmd: 'adc'; pin: number }
   | { cmd: 'pwm'; pin: number; duty: number; hz: number }
   | { cmd: 'gpio_write'; pin: number; level: 0 | 1 }
@@ -130,11 +132,18 @@ export type AgentRequest =
   | { cmd: 'stream_stop' }
   | { cmd: 'reset_pins' };
 
-export interface HelloReply { agent: string; ver: string; chip: string; heapFree: number; board?: string }
+/** `proto` is missing on agents older than 0.3 (protocol 1). */
+export interface HelloReply { agent: string; ver: string; proto?: number; chip: string; heapFree: number; board?: string }
 export interface PinsReply { pins: Record<string, AgentPinState> }
 export interface PullupReply { external: Record<string, boolean>; levels?: Record<string, 0 | 1> }
 export interface I2cScanReply { found: string[]; trace: I2cTraceStep[] }
 export interface I2cReadReply { data: string[]; trace: I2cTraceStep[] }
+/** One step of an SPI transfer: chip select going low (level 0) or high (1), or one byte clocked out and in. */
+export interface SpiTraceStep { t: 'cs' | 'byte'; level?: 0 | 1; out?: string; in?: string }
+/** `in` is missing when no MISO pin was given. */
+export interface SpiXferReply { in?: string[]; trace: SpiTraceStep[] }
+/** Raw bytes of RDDID (0x04) and RDID4 (0xD3); the first byte after the command is usually a dummy. */
+export interface TftIdReply { rddid: string[]; rdid4: string[]; trace: SpiTraceStep[] }
 export interface AdcReply { mv: number; raw: number }
 export interface StrappingReply { strapping: Record<string, 0 | 1> }
 
@@ -145,6 +154,8 @@ export interface AgentReplyMap {
   pullup_check: PullupReply;
   i2c_scan: I2cScanReply;
   i2c_read: I2cReadReply;
+  spi_xfer: SpiXferReply;
+  tft_id: TftIdReply;
   adc: AdcReply;
   pwm: Record<string, never>;
   gpio_write: Record<string, never>;
