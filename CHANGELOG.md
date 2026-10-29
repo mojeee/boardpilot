@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Pilot batch A: ST7796 3.5" part cites the LCDwiki module page (it had named a capacitive Waveshare module while its pins are XPT2046); `docs/launch/pilot-license.md` is the checklist for a pilot license key and an unsigned install; new live-eval scenario `irrigation-zones` (`BP_EVAL_RECORD=1 npm run eval:ai` records it as a website demo, not yet recorded).
 - MCP on Windows works: `BoardPilot --mcp-stdio` never received anything from the AI agent (in Electron's main process on Windows `process.stdin` is an empty stream that ends at once), so Claude Desktop, Claude Code and Cursor saw no tools and the headless mode quit after a second. It now reads the pipe directly.
 - MCP results say when they come from the simulator (`"simulated": true`), so an agent never takes the simulated bench for real hardware.
 - AI agents and the in-app assistant can change the project: `edit_project` adds, removes and renames parts, adds and removes wires, assigns safe pins and writes the code. One shared module (`shared/sceneEdit.ts`) checks every change against the board and part files and runs the wiring rules on the result; the user sees the list with Apply in the assistant panel (⌘Z undoes it).
