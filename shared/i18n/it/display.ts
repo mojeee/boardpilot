@@ -117,6 +117,17 @@ const it: Record<string, string> = {
   'A glyph in this font does not have the six numbers (offset, width, height, advance, x offset, y offset).': 'Un glifo di questo font non ha i sei numeri (offset, larghezza, altezza, avanzamento, offset x, offset y).',
   'The character range of this font does not match its glyph table.': 'L’intervallo di caratteri di questo font non corrisponde alla tabella dei glifi.',
   'A glyph points past the end of the font’s bitmap data.': 'Un glifo punta oltre la fine dei dati bitmap del font.',
+  'LVGL draws with its own widgets and Montserrat fonts: the screens match the preview in layout, colours and behaviour, not pixel for pixel.':
+    'LVGL disegna con i suoi widget e i font Montserrat: le schermate corrispondono all’anteprima per disposizione, colori e comportamento, non pixel per pixel.',
+  'Test patterns have no LVGL counterpart and are left out of this code.': 'I pattern di prova non hanno un equivalente in LVGL e restano fuori da questo codice.',
+  'The ° sign is in LVGL’s Montserrat fonts only if they were built with it; if it shows as a box, use a font that has it.':
+    'Il simbolo ° è nei font Montserrat di LVGL solo se sono stati generati con esso; se compare come un quadratino, usa un font che lo contiene.',
+  'Imported Adafruit GFX fonts are not used with LVGL (it has its own font format): the text uses Montserrat. LVGL’s font converter makes fonts for it.':
+    'I font Adafruit GFX importati non si usano con LVGL (ha un suo formato): il testo usa Montserrat. Il convertitore di font di LVGL crea font per lui.',
+  'Copy the generated lv_conf.h into Documents/Arduino/libraries next to the lvgl folder (replacing the one there), then build with LVGL 8.3.':
+    'Copia il file lv_conf.h generato in Documents/Arduino/libraries accanto alla cartella lvgl (sostituendo quello che c’è), poi compila con LVGL 8.3.',
+  'BoardPilot cannot build LVGL code itself: build it once in the Arduino IDE and tell the assistant about any error it shows.':
+    'BoardPilot non può compilare da solo il codice LVGL: compilalo una volta nell’Arduino IDE e riferisci all’assistente ogni errore che compare.',
 };
 
 export default it;

@@ -18,6 +18,7 @@ import { FONT_5X7 } from './displayFont';
 import { COLOR_BARS, GRAPH_STEP_MS, ICON_BITS, buttonLabelAt } from './displayRender';
 import { parseColor, parseCondition, rgb565, rotatedSize, type DisplayElement, type DisplaySpec, type PanelInfo } from './displaySpec';
 import { dataOf } from './displayAssets';
+import { lvConfH, lvglParts } from './displayLvgl';
 import { TOUCH_PARTS, NO_TOUCH_CODE, touchCode, type TouchCode } from './displayTouch';
 import { t } from './i18n';
 
@@ -287,10 +288,10 @@ function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec, typed
 
 /* ---------------- libraries: Adafruit GFX (default), LovyanGFX and TFT_eSPI ---------------- */
 
-export type DisplayLibrary = 'adafruit' | 'lovyangfx' | 'tft_espi';
+export type DisplayLibrary = 'adafruit' | 'lovyangfx' | 'tft_espi' | 'lvgl';
 /** sketch: one file with setup() and loop(). module: display_screens.h/.cpp with display_init() and display_update(), to add to your own sketch. */
 export type DisplayOutput = 'sketch' | 'module';
-export const DISPLAY_LIBRARIES: DisplayLibrary[] = ['adafruit', 'lovyangfx', 'tft_espi'];
+export const DISPLAY_LIBRARIES: DisplayLibrary[] = ['adafruit', 'lovyangfx', 'tft_espi', 'lvgl'];
 
 export interface DisplayFile {
   name: string;
@@ -301,6 +302,7 @@ const LIB_INFO: Record<DisplayLibrary, { name: string; libraries: string[] }> = 
   adafruit: { name: 'Adafruit GFX', libraries: [] },
   lovyangfx: { name: 'LovyanGFX', libraries: ['LovyanGFX'] },
   tft_espi: { name: 'TFT_eSPI', libraries: ['TFT_eSPI'] },
+  lvgl: { name: 'LVGL', libraries: ['lvgl', 'LovyanGFX'] },
 };
 
 /** The name shown for a library in the app. */
@@ -325,6 +327,8 @@ export function availableLibraries(panel: PanelInfo, board?: BoardDef): DisplayL
     // LovyanGFX: ESP32 family (its SPI host setting below). TFT_eSPI: ESP32 and RP2040/RP2350.
     if (fam.startsWith('esp32')) out.push('lovyangfx');
     if (fam.startsWith('esp32') || fam === 'rp2040' || fam === 'rp2350') out.push('tft_espi');
+    // LVGL 8 with LovyanGFX as the driver: the ESP32 and ESP32-S3 (enough RAM for LVGL's pool and two strips).
+    if (fam === 'esp32' || fam === 'esp32s3') out.push('lvgl');
   }
   return out;
 }
@@ -672,7 +676,21 @@ export function generateDisplayCode(
   // TFT controllers are portrait; a module that mounts one landscape (0.96" ST7735: 160 x 80) turns it
   // a quarter so rotation 0 is the module as drawn in BoardPilot.
   const quarter = panel.color === 'rgb565' && panel.widthPx > panel.heightPx ? 1 : 0;
-  const target = opts.host ? undefined : targetFor(lib, panel, pins, board, W, H, driver);
+  const lv = lib === 'lvgl' && !opts.host;
+  const baseTarget = opts.host ? undefined : targetFor(lv ? 'lovyangfx' : lib, panel, pins, board, W, H, driver);
+  // LVGL: LovyanGFX drives the panel (its class and init), LVGL draws; no RAM frame, LVGL has its own strips.
+  const target: Target | undefined =
+    baseTarget && lv
+      ? {
+          ...baseTarget,
+          libraries: LIB_INFO.lvgl.libraries,
+          include: [...baseTarget.include, '#include <lvgl.h>'],
+          decl: () => baseTarget.decl(false).filter((l) => !l.startsWith('LGFX &gfx')),
+          afterRotation: () => [],
+          notes: [],
+          files: [{ name: 'lv_conf.h', text: lvConfH() }],
+        }
+      : baseTarget;
   const bus = target?.bus === 'i2c' && pins.spi ? 'spi' : target?.bus;
   if (bus === 'spi') {
     if (pins.dc === '-1') notes.push(t('The display’s DC pin is not wired: wire it, then generate the code again.'));
@@ -682,8 +700,8 @@ export function generateDisplayCode(
   const bigRam = (board.ramBytes ?? 0) >= bytes * 2 + 32 * 1024;
   const mono = panel.color !== 'rgb565';
   // Colour panels draw into a RAM canvas and send whole frames (no flicker) when the chip has the RAM.
-  const canvas = !mono && bigRam;
-  if (!opts.host && !mono && !canvas) notes.push(t('This board has too little RAM for a full-screen frame buffer ({kb} KB), so the code draws straight to the display: fast animations will flicker.', { kb: Math.round(bytes / 1024) }));
+  const canvas = !mono && bigRam && !lv;
+  if (!opts.host && !mono && !canvas && !lv) notes.push(t('This board has too little RAM for a full-screen frame buffer ({kb} KB), so the code draws straight to the display: fast animations will flicker.', { kb: Math.round(bytes / 1024) }));
   if (target) notes.push(...target.notes);
   // LovyanGFX and TFT_eSPI read a bare number as a colour in their own way: pass typed RGB565 values.
   const typed = lib !== 'adafruit' && !opts.host;
@@ -720,6 +738,7 @@ export function generateDisplayCode(
   if (opts.host) L.push('#include "Adafruit_GFX.h"', mono ? `GFXcanvas1 gfx(${W}, ${H});` : `GFXcanvas16 gfx(${W}, ${H});`);
   else L.push(...target!.decl(canvas));
   L.push('');
+  if (!lv) {
   // Font and icons.
   L.push('// 5x7 font, codes 32-127 (127 = °), 5 column bytes per glyph, bit 0 = top row.');
   L.push('static const uint8_t FONT5X7[] PROGMEM = {');
@@ -812,6 +831,9 @@ export function generateDisplayCode(
     '}',
     '',
     ...assetCode(spec, panel),
+  );
+  }
+  L.push(
     ...varFunction(spec),
     '',
     `int screen = ${screenIdx.get(spec.start) ?? 0};  // ${spec.screens.map((s, i) => `${i} ${s.id}`).join(', ')}`,
@@ -838,14 +860,21 @@ export function generateDisplayCode(
     L.push(`    ${i ? 'else ' : ''}if (screen == ${from} && (${timed} || ${when})) { next = ${to}; at = (${tr.afterMs > 0 ? 'true' : 'false'} && !(${when})) ? enteredAt + ${tr.afterMs}UL : ms; }`);
   });
   L.push('    if (next < 0 || next == screen) return;', '    screen = next; enteredAt = at;', '  }', '}', '');
-  if (hasTouchUi && !opts.host) L.push(...(touch ? touch.decl : NO_TOUCH_CODE), '', ...touchLogic(spec, screenIdx, touchSet), '');
-  L.push('void drawScreen(unsigned long ms) {', '  switch (screen) {');
-  spec.screens.forEach((sc, i) => {
-    L.push(`    case ${i}:  // ${sc.id}`, `      gfx.fillScreen(${colorLiteral(panel, sc.background, typed)});`);
-    for (const el of sc.elements) for (const l of elementC(el, panel, spec, typed)) L.push(`      ${l}`);
-    L.push('      break;');
-  });
-  L.push('  }', '}', '');
+  if (hasTouchUi && !opts.host) L.push(...(touch ? touch.decl : NO_TOUCH_CODE), '', ...(lv ? [] : [...touchLogic(spec, screenIdx, touchSet), '']));
+  let lvgl: ReturnType<typeof lvglParts> | undefined;
+  if (lv) {
+    lvgl = lvglParts({ spec, panel, W, H, screenIdx, touchSet, hasTouchUi, h: { ident, fl, hex, condC, byteLines } });
+    L.push(...lvgl.body);
+    notes.push(...lvgl.notes);
+  } else {
+    L.push('void drawScreen(unsigned long ms) {', '  switch (screen) {');
+    spec.screens.forEach((sc, i) => {
+      L.push(`    case ${i}:  // ${sc.id}`, `      gfx.fillScreen(${colorLiteral(panel, sc.background, typed)});`);
+      for (const el of sc.elements) for (const l of elementC(el, panel, spec, typed)) L.push(`      ${l}`);
+      L.push('      break;');
+    });
+    L.push('  }', '}', '');
+  }
   if (opts.host) return { code: L.join('\n'), libraries: [], notes };
   const tg = target!;
   // Wiring the bus: I2C modules start Wire; Adafruit SPI ones tell the core which pins; LovyanGFX and TFT_eSPI have their own.
@@ -857,8 +886,9 @@ export function generateDisplayCode(
   // a quarter so rotation 0 is the module as drawn in BoardPilot.
   init.push(...tg.begin, `  tft.setRotation(${(spec.rotation + quarter) & 3});${quarter ? '  // the module mounts the panel landscape; use 3 if the picture is upside down' : ''}`, ...tg.afterRotation(canvas));
   if (touch) init.push(...touch.begin);
+  if (lvgl) init.push(...lvgl.init);
   init.push('  t0 = millis();');
-  const frame = ['  unsigned long ms = millis() - t0;', '  changeScreens(ms);', ...(hasTouchUi ? ['  handleTouch(ms);'] : []), '  readValues(ms);', '  drawScreen(ms);', `  ${tg.push(canvas)}`];
+  const frame = lvgl ? ['  lv_timer_handler();  // LVGL runs the screens (every 33 ms), reads touch and sends what changed'] : ['  unsigned long ms = millis() - t0;', '  changeScreens(ms);', ...(hasTouchUi ? ['  handleTouch(ms);'] : []), '  readValues(ms);', '  drawScreen(ms);', `  ${tg.push(canvas)}`];
   if (asModule) {
     L.push('void display_init() {', ...init, '}', '', 'void display_update() {', ...frame, '}', '');
     const header = [
@@ -889,6 +919,6 @@ export function generateDisplayCode(
     ].join('\n');
     return { code: main, libraries: [...tg.libraries, ...(touch?.libraries ?? [])], notes, library: lib, files: [{ name: 'display_screens.h', text: header }, { name: 'display_screens.cpp', text: L.join('\n') }, ...tg.files] };
   }
-  L.push('void setup() {', '  Serial.begin(115200);', ...init, '}', '', 'void loop() {', ...frame, '}', '');
+  L.push('void setup() {', '  Serial.begin(115200);', ...init, '}', '', 'void loop() {', ...frame, ...(lvgl ? ['  delay(5);'] : []), '}', '');
   return { code: L.join('\n'), libraries: [...tg.libraries, ...(touch?.libraries ?? [])], notes, library: lib, ...(tg.files.length ? { files: tg.files } : {}) };
 }

@@ -16,7 +16,7 @@ import { FONT_5X7, glyphCode, glyphPixel } from '@shared/displayFont';
 import { checkSpec, normalizeSpec, panelOf, rgb565 } from '@shared/displaySpec';
 import { DisplaySim, Framebuffer } from '@shared/displayRender';
 import { base64ToBytes, bitmapFromRgba, bitmapSize, parseGfxFont } from '@shared/displayAssets';
-import { availableLibraries, generateDisplayCode } from '@shared/displayCode';
+import { availableLibraries, generateDisplayCode, libraryName } from '@shared/displayCode';
 import { testPatternSpec } from '@shared/displayExamples';
 import type { Scene } from '@shared/types';
 
@@ -176,7 +176,7 @@ describe('generated code: libraries and output', () => {
     expect(r.code).toContain('lgfx::Panel_ILI9488 _panel;');
     expect(r.code).toContain('#include <LovyanGFX.hpp>');
     expect(r.notes.join(' ')).toMatch(/no Adafruit GFX driver for the ILI9488/);
-    expect(availableLibraries(panel('ili9488-tft-35'), getBoard('esp32-devkitc-30'))).toEqual(['lovyangfx', 'tft_espi']);
+    expect(availableLibraries(panel('ili9488-tft-35'), getBoard('esp32-devkitc-30'))).toEqual(['lovyangfx', 'tft_espi', 'lvgl']);
   });
 
   it('LovyanGFX: the LGFX class carries the wired pins and colours are typed RGB565', () => {
@@ -500,6 +500,153 @@ describe('pictures and fonts', () => {
   });
 });
 
+/** A drawing with every element LVGL maps: label with a value, bar, dial, graph, icon, shapes, a button and a touch change of screen. */
+const lvglSpec = () =>
+  normalizeSpec({
+    title: 'Dashboard',
+    part: 'disp1',
+    vars: [{ name: 'temp', source: { sim: 'wave', min: 10, max: 35, periodS: 8 }, unit: '°C', digits: 1, from: 'bme1.temperature' }, { name: 'led', source: { sim: 'steps', values: [0], everyS: 5 }, digits: 0 }],
+    screens: [
+      {
+        id: 'main',
+        background: '#101820',
+        elements: [
+          { type: 'text', x: 120, y: 10, text: 'Temp {temp} °C', size: 2, color: '#FFA500', align: 'center' },
+          { type: 'bar', x: 10, y: 50, w: 200, h: 16, value: 'temp', min: 10, max: 35, color: '#00FF00' },
+          { type: 'gauge', x: 120, y: 140, r: 60, value: 'temp', min: 10, max: 35, color: '#FFFFFF', startDeg: -120, endDeg: 120, ticks: 10 },
+          { type: 'graph', x: 10, y: 210, w: 220, h: 24, value: 'temp', min: 10, max: 35, color: '#3FB6E8' },
+          { type: 'icon', x: 200, y: 8, name: 'warning', scale: 2, color: 'red', visibleIf: 'temp > 30', blinkMs: 500 },
+          { type: 'rect', x: 5, y: 5, w: 40, h: 20, color: '#FFFFFF', fill: false },
+          { type: 'circle', x: 30, y: 100, r: 10, color: '#FF00FF', fill: true },
+          { type: 'line', x: 0, y: 0, x2: 50, y2: 50, color: '#FFFFFF' },
+          { type: 'button', x: 150, y: 90, w: 80, h: 40, label: 'LED', size: 2, color: '#FFFFFF', fill: '#202020', actions: [{ do: 'toggle', var: 'led' }, { do: 'screen', screen: 'info' }] },
+          { type: 'pattern', x: 0, y: 0, w: 10, h: 10, kind: 'checker', size: 2, speed: 0, colors: [] },
+        ],
+      },
+      { id: 'info', background: '#000000', elements: [{ type: 'text', x: 10, y: 10, text: 'Tap to go back', size: 1, color: '#FFFFFF' }] },
+    ],
+    start: 'main',
+    transitions: [{ from: 'info', to: 'main', touch: true }, { from: 'main', to: 'info', afterMs: 60000 }],
+  });
+
+describe('LVGL output', () => {
+  const gen = (opts: Parameters<typeof generateDisplayCode>[5] = {}, boardId = 'esp32-devkitc-30') => {
+    const p = panel('st7789-240');
+    return generateDisplayCode(lvglSpec(), p, PARTS['st7789-240'], sceneWith('st7789-240', boardId), getBoard(boardId), { library: 'lvgl', ...opts });
+  };
+
+  it('is offered for colour SPI displays on the ESP32 and ESP32-S3 only', () => {
+    expect(availableLibraries(panel('st7789-240'), getBoard('esp32-devkitc-30'))).toContain('lvgl');
+    expect(availableLibraries(panel('st7789-240'), getBoard('esp32-s3-devkitc-1'))).toContain('lvgl');
+    expect(availableLibraries(panel('st7789-240'), getBoard('rpi-pico'))).not.toContain('lvgl');
+    expect(availableLibraries(panel('ssd1306-i2c'), getBoard('esp32-devkitc-30'))).not.toContain('lvgl');
+    expect(libraryName('lvgl')).toBe('LVGL');
+  });
+
+  it('maps screens, text, bar, dial, graph, icon, shapes and the button to LVGL objects', () => {
+    const r = gen();
+    expect(r.library).toBe('lvgl');
+    const c = r.code;
+    expect(c).toContain('#include <lvgl.h>');
+    expect(c).toContain('#include <LovyanGFX.hpp>');
+    expect(c).toContain('lgfx::Panel_ST7789 _panel;');
+    expect(c).toContain('scr_0 = lv_obj_create(NULL);  // main');
+    expect(c).toContain('lv_label_create(scr_0)');
+    expect(c).toContain('lv_bar_create(scr_0)');
+    expect(c).toContain('lv_arc_create(scr_0)');
+    expect(c).toContain('lv_chart_create(scr_0)');
+    expect(c).toContain('lv_img_create(scr_0)');
+    expect(c).toContain('lv_line_create(scr_0)');
+    expect(c).toContain('lv_btn_create(scr_0)');
+    expect(c).toContain('LV_RADIUS_CIRCLE');
+    // The degree sign is UTF-8; values go in with snprintf and the variable's digits.
+    expect(c).toContain('\\302\\260');
+    expect(c).toContain(String.raw`snprintf(b, sizeof(b), "Temp %.1f \302\260C", v_temp)`);
+    // Dial angles: -120..120 degrees from 12 o'clock = 150..30 degrees from 3 o'clock.
+    expect(c).toContain('lv_arc_set_bg_angles(o_0_2, 150, 30);');
+    // Conditions and blinking become show/hide in the timer.
+    expect(c).toContain('(v_temp > 30)');
+    expect(c).toContain('lv_obj_add_flag(o_0_4, LV_OBJ_FLAG_HIDDEN)');
+    // Time, values and screen changes are the same logic as the other targets.
+    expect(c).toContain('void changeScreens(unsigned long ms)');
+    expect(c).toContain('double sim_temp(unsigned long ms)');
+    expect(c).toContain('lv_timer_create(update_ui, 33, NULL);');
+    // The flush goes through LovyanGFX; LVGL has its own draw buffers, no GFX canvas.
+    expect(c).toContain('tft.pushImage(area->x1, area->y1, w, h, (lgfx::rgb565_t *)&color_p->full);');
+    expect(c).not.toContain('FONT5X7');
+    expect(c).not.toContain('lgfx::LGFX_Sprite');
+    expect(c).not.toContain('gfx.');
+    expect(c).not.toContain('LGFX &gfx');
+    expect(c).toContain('lv_timer_handler();');
+    expect(r.libraries).toEqual(expect.arrayContaining(['lvgl', 'LovyanGFX']));
+  });
+
+  it('turns the button and touch screen changes into LVGL events and an input device', () => {
+    const c = gen().code;
+    expect(c).toContain('static void on_btn_0_8(lv_event_t *e)');
+    expect(c).toContain('lv_obj_add_event_cb(o_0_8, on_btn_0_8, LV_EVENT_CLICKED, NULL);');
+    expect(c).toContain('t_led = (v_led != 0) ? 0 : 1; t_led_set = true; v_led = t_led;');
+    expect(c).toContain('screen = 1; enteredAt = ms;');
+    expect(c).toContain('static void on_tap_1(lv_event_t *e)');
+    expect(c).toContain('lv_obj_add_event_cb(scr_1, on_tap_1, LV_EVENT_CLICKED, NULL);');
+    expect(c).toContain('indev_drv.read_cb = my_touch_read;');
+    expect(c).toContain('bpTouchRead(x, y)');
+    // No touch part wired: an empty read to fill in, and a note.
+    expect(c).toContain('TODO: read your touch controller');
+    expect(gen().notes.join(' ')).toMatch(/no touch controller is wired/);
+  });
+
+  it('uses the wired touch controller through the calibrated read', () => {
+    const r = buildProposal({ title: 't', summary: '', board: 'esp32-devkitc-30', keepExisting: false, parts: [{ id: 'disp1', partId: 'st7789-240', label: 'Display', why: '' }, { id: 'tch1', partId: 'ft6236-touch', label: 'Touch', why: '' }], wires: [], links: [] }, { board: 'esp32-devkitc-30', parts: [], wires: [] }, PARTS);
+    if (!r.ok) throw new Error(r.errors.join(' '));
+    const p = panel('st7789-240');
+    const g = generateDisplayCode(lvglSpec(), p, PARTS['st7789-240'], r.proposal.scene, getBoard('esp32-devkitc-30'), { library: 'lvgl' });
+    expect(g.code).toContain('Adafruit_FT6206 ctp;');
+    expect(g.code).toContain('TOUCH_RAW_X_MIN');
+    expect(g.libraries).toContain('Adafruit FT6206 Library');
+  });
+
+  it('writes lv_conf.h, leaves test patterns out and says what LVGL changes', () => {
+    const r = gen();
+    const conf = r.files!.find((f) => f.name === 'lv_conf.h')!.text;
+    expect(conf).toContain('#define LV_COLOR_DEPTH 16');
+    expect(conf).toContain('#define LV_FONT_MONTSERRAT_20 1');
+    expect(conf).toContain('#define LV_USE_CHART 1');
+    expect(conf).toContain('LV_TICK_CUSTOM_SYS_TIME_EXPR (millis())');
+    expect(r.code).not.toContain('checker');
+    const notes = r.notes.join(' ');
+    expect(notes).toMatch(/not pixel for pixel/);
+    expect(notes).toMatch(/Test patterns have no LVGL counterpart/);
+    expect(notes).toMatch(/lv_conf\.h/);
+  });
+
+  it('works as a module and on the ESP32-S3; other boards fall back to a library they have', () => {
+    const m = gen({ output: 'module' });
+    expect(m.files!.map((f) => f.name)).toEqual(['display_screens.h', 'display_screens.cpp', 'lv_conf.h']);
+    const cpp = m.files![1].text;
+    expect(cpp).toContain('void display_init() {');
+    expect(cpp).toContain('void display_update() {');
+    expect(cpp).toContain('lv_init();');
+    expect(cpp).not.toContain('void setup()');
+    expect(gen({}, 'esp32-s3-devkitc-1').code).toContain('cfg.spi_host = SPI2_HOST;');
+    // A Pico has no LVGL output: the generator uses a library the board has and says so.
+    const pico = gen({}, 'rpi-pico');
+    expect(pico.library).not.toBe('lvgl');
+    expect(pico.notes.join(' ')).toMatch(/no LVGL driver/);
+  });
+
+  it('keeps imported pictures as lv_img data', () => {
+    const p = panel('st7789-240');
+    const bm = bitmapFromRgba('logo', new Uint8Array(8 * 2 * 4).fill(255), 8, 2, 'mono');
+    const spec = normalizeSpec({ title: 'P', part: 'disp1', bitmaps: [bm], screens: [{ id: 'a', elements: [{ type: 'bitmap', x: 4, y: 6, bitmap: 'logo', scale: 2, color: '#00FF00' }] }], start: 'a' });
+    const c = generateDisplayCode(spec, p, PARTS['st7789-240'], sceneWith('st7789-240', 'esp32-devkitc-30'), getBoard('esp32-devkitc-30'), { library: 'lvgl' }).code;
+    expect(c).toContain('static const uint8_t BM_logo[] = {');
+    expect(c).toContain('DSC_BM_logo.header.cf = LV_IMG_CF_ALPHA_1BIT;');
+    expect(c).toContain('lv_img_set_zoom(o_0_0, 512);');
+    expect(c).toContain('lv_obj_set_style_img_recolor(o_0_0,');
+  });
+});
+
 /* ---------------- native pixel test: the sketch's drawing vs the app's renderer ---------------- */
 
 describe.skipIf(!nativeAvailable)('the sketch draws the same pixels as the preview (Adafruit GFX built natively)', () => {
@@ -586,6 +733,28 @@ describe.skipIf(process.env.BP_DISPLAY_COMPILE !== '1')('compiles the LovyanGFX 
         .map((l) => '-D' + l.replace('#define ', '').replace(/\s*\/\/.*/, '').replace(/ /, '='));
       const flags = setup ? ['--build-property', `build.extra_flags=-DUSER_SETUP_LOADED=1 ${defines.join(' ')}`] : [];
       const run = spawnSync('arduino-cli', ['compile', '--fqbn', fqbn, ...flags, dir], { encoding: 'utf8' });
+      expect(run.status, run.stderr.slice(-3000) + run.stdout.slice(-2000)).toBe(0);
+    }, 600_000);
+  }
+});
+
+// Gated like the others (BP_DISPLAY_COMPILE=1) and NOT run on the machine that wrote it (no arduino-cli there):
+//   arduino-cli lib install LovyanGFX "lvgl@8.3.11"
+// lv_conf.h is found through the sketch folder (-DLV_CONF_INCLUDE_SIMPLE).
+describe.skipIf(process.env.BP_DISPLAY_COMPILE !== '1')('compiles the LVGL code (arduino-cli)', () => {
+  const cases: [string, string, string, 'sketch' | 'module'][] = [
+    ['st7789-240', 'esp32-devkitc-30', 'esp32:esp32:esp32', 'sketch'],
+    ['ili9341-tft-28', 'esp32-s3-devkitc-1', 'esp32:esp32:esp32s3', 'module'],
+  ];
+  for (const [part, boardId, fqbn, output] of cases) {
+    it(`${part} on ${boardId} as a ${output}`, () => {
+      const p = panel(part);
+      const r = generateDisplayCode(lvglSpec(), p, PARTS[part], sceneWith(part, boardId), getBoard(boardId), { library: 'lvgl', output });
+      const dir = join(mkdtempSync(join(tmpdir(), 'bp-sketch-')), 'display_test');
+      execFileSync('mkdir', ['-p', dir]);
+      writeFileSync(join(dir, 'display_test.ino'), r.code);
+      for (const f of r.files ?? []) writeFileSync(join(dir, f.name), f.text);
+      const run = spawnSync('arduino-cli', ['compile', '--fqbn', fqbn, '--build-property', `build.extra_flags=-DLV_CONF_INCLUDE_SIMPLE -I${dir}`, dir], { encoding: 'utf8' });
       expect(run.status, run.stderr.slice(-3000) + run.stdout.slice(-2000)).toBe(0);
     }, 600_000);
   }
