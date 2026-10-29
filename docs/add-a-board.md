@@ -56,6 +56,19 @@ npm run build:site                                   # preview site/boards/my-bo
 
 In the app, **Board → Find my board** should pick it from its USB ids, and the 2D pinout should match the drawing. Then open a pull request. Thank you!
 
+## A customer's own board (built around a module)
+
+When the board is a custom PCB around an ESP32 module, start from a **bare module** instead of a DevKit: `boards/esp32-wroom-32-module.json` or `boards/esp32-s3-wroom-1-module.json` (`"bareModule": true`, castellated pads, no USB ids). Copy one to `boards/<customer>-<board>.json` and keep `bareModule` only if the PCB really is just the module; give a board with its own USB chip the `usb` ids of that chip.
+
+What to change, from the customer's **schematic** (never from a photo, and never guess a net):
+
+1. **Pins on the PCB.** Keep only the module pads the schematic routes to a connector or a part. Rename `id` and `label` to the net name on the schematic (`TFT_CS`, `RELAY1`) or the connector pin, and give `posMm` from the PCB layout if you have it.
+2. **Pins used on the board.** Every module pin that the schematic wires to something on the board (display, touch controller, relay driver, buttons, LEDs, the USB-serial chip) gets the flag `reserved` and a `notes` sentence that says what uses it, for example `"Drives the TFT chip select on the board."`. The wiring check then warns when a wire is added to it and shows that sentence ("{pin} is already used by something on the board"). A pin that is only wired to a spare connector stays free.
+3. **Defaults.** Set `rules.i2c`, `rules.spi`, `rules.safeIo` and `rules.adcPins` to the pins the customer's PCB really uses; the first `safeIo` entries are the ones the app picks for new parts.
+4. **Sources.** In the `.sources.md`, name the schematic file, its revision date and the sheet for each group of pins, and mark anything read from a low-quality scan as **estimated**.
+
+Until the schematic is available, use the bare module as it is and tell the customer which facts are missing: the app says so on the pins it cannot vouch for.
+
 ## Diagnostic agent (optional)
 
 To let the diagnostic agent run on the board, generate its board header with `node scripts/gen-agent-board.mjs my-board` and build it with `npm run build:agent` (needs arduino-cli and the board's core). The app works without it; the board simply has no live pin view until the agent is built.
