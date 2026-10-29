@@ -147,7 +147,7 @@ app.whenReady().then(async () => {
     // The client closed the pipe: we are done.
     const input = stdioInput();
     input.on('end', () => app.quit());
-    void runStdio(input, dataDir, app.getVersion(), () => ({ ...baseDeps(hub, dataDir, (n) => sessionLog.recent(n), () => userPartList), headless: true, requestWrite: async () => 'refused' as const, requestSceneEdit: async () => ({ status: 'refused' as const }), runAppAction: async () => ({ status: 'refused' as const, steps: [] }) }));
+    void runStdio(input, dataDir, app.getVersion(), () => ({ ...baseDeps(hub, dataDir, (n) => sessionLog.recent(n), () => userPartList), headless: true, requestWrite: async () => 'refused' as const, requestSceneEdit: async () => ({ status: 'refused' as const }), requestDisplayDesign: async () => ({ status: 'refused' as const }), runAppAction: async () => ({ status: 'refused' as const, steps: [] }) }));
     return;
   }
   refreshUserParts();

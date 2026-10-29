@@ -31,6 +31,7 @@ import type { PreflightReport } from './preflight';
 import type { SceneOp } from './sceneEdit';
 import type { CoachAttempt } from './coach';
 import type { StarterFile } from './starter/common';
+import type { DisplaySpec, SpecProblem } from './displaySpec';
 import type { ArchiveEdit, ArchiveEntry } from './archive/types';
 import type { MemoryFolderImport, MemoryHit, MemoryInfo } from './memory';
 import type { CompileReport } from './compileOutput';
@@ -184,6 +185,8 @@ export interface BoardPilotApi {
     writeResult(id: string, status: 'approved' | 'refused'): Promise<void>;
     /** Answer to an MCP project change. False when the request is no longer waiting (it timed out): then do not apply it. */
     sceneEditResult(id: string, answer: McpSceneEditAnswer): Promise<boolean>;
+    /** Answer to an MCP display design. False when the request is no longer waiting (it timed out): then do not apply it. */
+    displayResult(id: string, answer: McpDisplayAnswer): Promise<boolean>;
     /** Result of an app action an MCP agent asked for. */
     actionResult(id: string, answer: McpActionAnswer): Promise<boolean>;
   };
@@ -221,6 +224,7 @@ export interface BoardPilotApi {
     trace(cb: (t: TraceEvent) => void): Unsubscribe;
     mcpWrite(cb: (ask: McpWriteAsk) => void): Unsubscribe;
     mcpSceneEdit(cb: (ask: McpSceneEditAsk) => void): Unsubscribe;
+    mcpDisplay(cb: (ask: McpDisplayAsk) => void): Unsubscribe;
     mcpAction(cb: (ask: McpActionAsk) => void): Unsubscribe;
   };
 }
@@ -248,6 +252,20 @@ export interface McpSceneEditAsk {
   client: string;
   ops: SceneOp[];
   reason: string;
+}
+
+/** A Display Studio design an AI agent made over MCP; the app shows it animated with Apply. */
+export interface McpDisplayAsk {
+  id: string;
+  client: string;
+  spec: DisplaySpec;
+  problems: SpecProblem[];
+}
+
+export interface McpDisplayAnswer {
+  status: 'approved' | 'refused';
+  /** why it was not applied, in plain words */
+  error?: string;
 }
 
 /** One of the app's actions (shared/actions.ts) an AI agent asked to run over MCP. */

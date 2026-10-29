@@ -6,7 +6,12 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import type { LogEntry, Scene, WriteRequest } from '@shared/types';
-import type { McpSceneEditAnswer } from '@shared/api';
+import type { McpDisplayAnswer, McpSceneEditAnswer } from '@shared/api';
+import type { DisplaySpec } from '@shared/displaySpec';
+import { PARTS } from '@shared/board';
+import { buildProposal } from '@shared/projectBuilder';
+import { panelOf } from '@shared/displaySpec';
+import { testPatternSpec } from '@shared/displayExamples';
 import type { SceneOp } from '@shared/sceneEdit';
 import { SCENARIOS } from '../app/main/sim/simWorld';
 import { grant } from '../app/main/session/safety';
@@ -14,7 +19,7 @@ import { createMcpServer, McpHttpServer } from '../app/main/mcp/server';
 import type { McpDeps } from '../app/main/mcp/tools';
 import { makeHub } from './helpers';
 
-async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean; editAnswer?: (ops: SceneOp[]) => McpSceneEditAnswer } = {}) {
+async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean; editAnswer?: (ops: SceneOp[]) => McpSceneEditAnswer; scene?: Scene; displayAnswer?: McpDisplayAnswer } = {}) {
   const { hub, ready } = makeHub('weather-station-swapped');
   await ready;
   const log: { type: string; text: string; source?: string }[] = [];
@@ -22,9 +27,10 @@ async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean
   const writes: WriteRequest[] = [];
   const edits: SceneOp[][] = [];
   const actions: string[] = [];
+  const designs: DisplaySpec[] = [];
   const deps: Omit<McpDeps, 'clientName'> = {
     hub,
-    scene: async () => SCENARIOS.find((s) => s.id === 'weather-station-swapped')!.scene,
+    scene: async () => opts.scene ?? SCENARIOS.find((s) => s.id === 'weather-station-swapped')!.scene,
     recentLog: () => [],
     userParts: () => [],
     headless: !!opts.headless,
@@ -40,6 +46,11 @@ async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean
       edits.push(ops);
       return opts.editAnswer ? opts.editAnswer(ops) : { status: 'refused', error: 'the user clicked Not now' };
     },
+    // Stands in for the preview card with Apply in the assistant panel.
+    requestDisplayDesign: async (spec) => {
+      designs.push(spec);
+      return opts.displayAnswer ?? { status: 'refused', error: 'the user clicked Not now' };
+    },
     runAppAction: async (action) => {
       actions.push(action);
       return { status: 'done', steps: [`ran ${action}`] };
@@ -54,7 +65,7 @@ async function setup(opts: { answer?: 'approved' | 'refused'; headless?: boolean
     const text = (r.content as { text: string }[])[0].text;
     return { isError: !!r.isError, body: JSON.parse(text) };
   };
-  return { hub, client, call, log, writes, edits, actions };
+  return { hub, client, call, log, writes, edits, actions, designs };
 }
 
 describe('BoardPilot MCP server', () => {
@@ -62,7 +73,7 @@ describe('BoardPilot MCP server', () => {
     const { client } = await setup();
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name);
-    for (const n of ['list_ports', 'identify_board', 'get_board', 'get_part', 'search_parts', 'get_scene', 'check_wiring', 'check_code', 'read_pins', 'i2c_scan', 'i2c_read', 'adc_read', 'read_serial', 'get_log', 'request_flash', 'request_gpio_write'])
+    for (const n of ['list_ports', 'identify_board', 'get_board', 'get_part', 'search_parts', 'get_scene', 'check_wiring', 'check_code', 'read_pins', 'i2c_scan', 'i2c_read', 'adc_read', 'read_serial', 'get_log', 'get_display', 'design_display', 'request_flash', 'request_gpio_write'])
       expect(names).toContain(n);
     expect(tools.every((t) => t.inputSchema.type === 'object')).toBe(true);
   });
@@ -155,6 +166,55 @@ describe('BoardPilot MCP server', () => {
     expect(actions).toHaveLength(0);
   });
 
+  it('reads a display read-only and designs one only after the user applies it', async () => {
+    const r = buildProposal({ title: 't', summary: '', board: 'esp32-devkitc-30', keepExisting: false, parts: [{ id: 'disp1', partId: 'st7789-240', label: 'Display', why: '' }], wires: [], links: [] }, { board: 'esp32-devkitc-30', parts: [], wires: [] }, PARTS);
+    if (!r.ok) throw new Error(r.errors.join(' '));
+    const scene = r.proposal.scene;
+    const { call, designs, edits, writes } = await setup({ scene, displayAnswer: { status: 'approved' } });
+
+    const facts = await call('get_display', { part: 'disp1' });
+    expect(facts.body.confidence).toBe('documented');
+    expect(facts.body.value).toMatchObject({ widthPx: 240, heightPx: 240, controller: 'ST7789' });
+    expect(designs).toHaveLength(0);
+    const notDisplay = await call('get_display', { part: 'nope' });
+    expect(notDisplay.isError).toBe(true);
+    expect(notDisplay.body.error.humanMessage).toContain('disp1');
+
+    // a design with an error comes back for the agent to fix; the user is not asked
+    const bad = await call('design_display', { title: 'x', part: 'disp1', rotation: 0, vars: [], screens: [{ id: 'a', elements: [{ type: 'bar', x: 0, y: 0, w: 10, h: 5, value: 'ghost' }] }], start: 'a', transitions: [] });
+    expect(bad.body.value.status).toBe('invalid');
+    expect(bad.body.value.errors[0]).toMatch(/ghost/);
+    expect(designs).toHaveLength(0);
+
+    // pictures and fonts cannot be sent by an agent
+    const spec = testPatternSpec('disp1', panelOf(PARTS['st7789-240'])!);
+    const ok = await call('design_display', { ...spec, bitmaps: [{ id: 'evil', w: 1, h: 1, format: 'mono', data: 'AA==' }], fonts: [{ id: 'evil' }] });
+    expect(ok.body.value.status).toBe('approved');
+    expect(designs).toHaveLength(1);
+    expect(designs[0].bitmaps ?? []).toEqual([]);
+    expect(designs[0].fonts ?? []).toEqual([]);
+    // it only shows the design: no project edit, no write to the board
+    expect(edits).toHaveLength(0);
+    expect(writes).toHaveLength(0);
+  });
+
+  it('reports "Not now" on a display design, and refuses it headless', async () => {
+    const r = buildProposal({ title: 't', summary: '', board: 'esp32-devkitc-30', keepExisting: false, parts: [{ id: 'disp1', partId: 'st7789-240', label: 'Display', why: '' }], wires: [], links: [] }, { board: 'esp32-devkitc-30', parts: [], wires: [] }, PARTS);
+    if (!r.ok) throw new Error(r.errors.join(' '));
+    const spec = testPatternSpec('disp1', panelOf(PARTS['st7789-240'])!);
+    const no = await setup({ scene: r.proposal.scene });
+    const refused = await no.call('design_display', { ...spec });
+    expect(refused.body.value).toMatchObject({ status: 'refused', reason: 'the user clicked Not now' });
+    expect(no.designs).toHaveLength(1);
+    const headless = await setup({ scene: r.proposal.scene, headless: true });
+    const h = await headless.call('design_display', { ...spec });
+    expect(h.body.value.status).toBe('refused');
+    expect(h.body.value.reason).toMatch(/headless/);
+    expect(headless.designs).toHaveLength(0);
+    // reading is still fine headless
+    expect((await headless.call('get_display', { part: 'disp1' })).body.value.controller).toBe('ST7789');
+  });
+
   it('runs app actions in the window and returns their steps', async () => {
     const { call, actions } = await setup();
     const r = await call('run_app_action', { action: 'connect_board', arg: '', reason: 'find the board' });
@@ -166,7 +226,7 @@ describe('BoardPilot MCP server', () => {
   it('serves HTTP on localhost with a token, and refuses without it', async () => {
     const { hub } = makeHub('healthy');
     const dir = mkdtempSync(join(tmpdir(), 'bp-mcp-'));
-    const http = new McpHttpServer({ hub, scene: async () => null, recentLog: () => [], userParts: () => [], headless: false, requestWrite: async () => 'refused', requestSceneEdit: async () => ({ status: 'refused' }), runAppAction: async () => ({ status: 'refused', steps: [] }) }, dir, 'test');
+    const http = new McpHttpServer({ hub, scene: async () => null, recentLog: () => [], userParts: () => [], headless: false, requestWrite: async () => 'refused', requestSceneEdit: async () => ({ status: 'refused' }), requestDisplayDesign: async () => ({ status: 'refused' }), runAppAction: async () => ({ status: 'refused', steps: [] }) }, dir, 'test');
     const info = await http.start();
     try {
       expect(info.url).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/mcp$/);

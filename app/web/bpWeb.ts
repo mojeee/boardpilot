@@ -320,6 +320,7 @@ const api: BoardPilotApi = {
     },
     writeResult: async () => undefined,
     sceneEditResult: async () => false,
+    displayResult: async () => false,
     actionResult: async () => false,
   },
   coach: {
@@ -355,6 +356,7 @@ const api: BoardPilotApi = {
     trace: listen('trace') as (cb: (t: TraceEvent) => void) => Unsubscribe,
     mcpWrite: listen('mcpWrite'),
     mcpSceneEdit: listen('mcpSceneEdit'),
+    mcpDisplay: listen('mcpDisplay'),
     mcpAction: listen('mcpAction'),
   },
 };

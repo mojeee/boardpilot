@@ -130,6 +130,10 @@ const it: Record<string, string> = {
     'BoardPilot non può compilare da solo il codice LVGL: compilalo una volta nell’Arduino IDE e riferisci all’assistente ogni errore che compare.',
   'The frame ({kb} KB) is kept in PSRAM: switch PSRAM on in the board settings (Arduino IDE: Tools > PSRAM) before you build.':
     'Il frame ({kb} KB) sta nella PSRAM: attiva la PSRAM nelle impostazioni della scheda (Arduino IDE: Strumenti > PSRAM) prima di compilare.',
+  // MCP: an AI agent's display design (AssistantPanel.tsx, hw.ts)
+  '{client} (an AI agent) designed a screen for {part}. The preview is in the assistant panel.': '{client} (un agente IA) ha progettato una schermata per {part}. L’anteprima è nel pannello dell’assistente.',
+  'You did not apply the screen from {client}. The project is unchanged.': 'Non hai applicato la schermata di {client}. Il progetto non è cambiato.',
+  '{client} (an AI agent, through MCP) designed a screen. Nothing changes until you click Apply.': '{client} (un agente IA, tramite MCP) ha progettato una schermata. Non cambia nulla finché non clicchi Applica.',
 };
 
 export default it;

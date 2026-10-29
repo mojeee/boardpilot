@@ -23,7 +23,8 @@ const INSTRUCTIONS =
   'Results with "simulated": true come from BoardPilot’s simulator, not real hardware: tell the user so (ports, chips and readings are made up for the demo). ' +
   'Measurements need the diagnostic agent on the board: if a tool says it is missing, call request_flash and wait for the user. ' +
   'Writes (flash, driving a pin) only happen after the user clicks Confirm in BoardPilot. ' +
-  'To change the project drawing (add or remove parts and wires), call edit_project: the user sees the changes and clicks Apply; call get_scene first for the ids.';
+  'To change the project drawing (add or remove parts and wires), call edit_project: the user sees the changes and clicks Apply; call get_scene first for the ids. ' +
+  'To design what a display module shows, call get_display for its size and colours, then design_display: the user sees the animated design and clicks Apply; nothing is written to the board or the code.';
 
 /** One MCP server (protocol side) over the shared tool implementation. */
 export function createMcpServer(deps: Omit<McpDeps, 'clientName'>, version: string): Server {

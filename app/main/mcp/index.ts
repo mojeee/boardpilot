@@ -8,7 +8,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { LogEntry, PartDef, Scene, WriteRequest } from '@shared/types';
-import type { McpActionAnswer, McpSceneEditAnswer, McpStatus } from '@shared/api';
+import type { McpActionAnswer, McpDisplayAnswer, McpSceneEditAnswer, McpStatus } from '@shared/api';
+import type { DisplaySpec, SpecProblem } from '@shared/displaySpec';
 import type { SceneOp } from '@shared/sceneEdit';
 import type { HardwareHub } from '../hardware/hub';
 import { McpHttpServer } from './server';
@@ -94,6 +95,33 @@ export function setupMcp(opts: { hub: HardwareHub; dataDir: string; recentLog: (
     return true;
   });
 
+  // A display design waits for Apply on its card in the assistant panel (same timeout as a write).
+  const pendingDisplays = new Map<string, (a: McpDisplayAnswer) => void>();
+  const requestDisplayDesign = (spec: DisplaySpec, problems: SpecProblem[], client: string) =>
+    new Promise<McpDisplayAnswer>((resolve) => {
+      const win = BrowserWindow.getAllWindows()[0];
+      if (!win) return resolve({ status: 'refused', error: 'The BoardPilot window is not open.' });
+      const id = randomUUID();
+      const timer = setTimeout(() => {
+        pendingDisplays.delete(id);
+        resolve({ status: 'refused', error: 'The user did not answer within 3 minutes.' });
+      }, 3 * 60 * 1000);
+      pendingDisplays.set(id, (a) => {
+        clearTimeout(timer);
+        pendingDisplays.delete(id);
+        resolve(a);
+      });
+      if (win.isMinimized()) win.restore();
+      win.focus();
+      win.webContents.send('evt:mcpDisplay', { id, client, spec, problems });
+    });
+  ipcMain.handle('mcp:displayResult', (_e, id: string, answer: McpDisplayAnswer) => {
+    const done = pendingDisplays.get(id);
+    if (!done) return false;
+    done(answer?.status === 'approved' ? { status: 'approved' } : { status: 'refused', error: typeof answer?.error === 'string' ? answer.error : undefined });
+    return true;
+  });
+
   // App actions run in the window like the assistant's (a card with steps); those that write to the
   // board open their confirmation dialog, those that change the project wait for Apply. Long ones
   // (a backup, a confirmation) get 10 minutes.
@@ -130,6 +158,7 @@ export function setupMcp(opts: { hub: HardwareHub; dataDir: string; recentLog: (
     headless: false,
     requestWrite,
     requestSceneEdit,
+    requestDisplayDesign,
     runAppAction,
   };
   const server = new McpHttpServer(deps, opts.dataDir, app.getVersion());

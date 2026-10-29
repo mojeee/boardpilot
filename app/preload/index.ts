@@ -111,7 +111,7 @@ const api: BoardPilotApi = {
     importFile: call('memory:importFile'),
     search: call('memory:search'),
   } as BoardPilotApi['memory'],
-  mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult'), sceneEditResult: call('mcp:sceneEditResult'), actionResult: call('mcp:actionResult') } as BoardPilotApi['mcp'],
+  mcp: { status: call('mcp:status'), setEnabled: call('mcp:setEnabled'), writeResult: call('mcp:writeResult'), sceneEditResult: call('mcp:sceneEditResult'), displayResult: call('mcp:displayResult'), actionResult: call('mcp:actionResult') } as BoardPilotApi['mcp'],
   coach: {
     ask: call('coach:ask'),
     history: call('coach:history'),
@@ -138,6 +138,7 @@ const api: BoardPilotApi = {
     trace: listen('trace'),
     mcpWrite: listen('mcpWrite'),
     mcpSceneEdit: listen('mcpSceneEdit'),
+    mcpDisplay: listen('mcpDisplay'),
     mcpAction: listen('mcpAction'),
   } as BoardPilotApi['on'],
 };

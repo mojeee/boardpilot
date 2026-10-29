@@ -54,6 +54,13 @@ export async function wireEvents() {
     useAi.getState().push({ role: 'edit', ops: ask.ops, reason: ask.reason, client: ask.client, mcpId: ask.id, state: 'pending' });
     log('action', t('{client} (an AI agent) asks to change the project. The list is in the assistant panel.', { client: ask.client }), { source: `MCP: ${ask.client}` });
   });
+  // An AI agent made a display design over MCP: the animated preview goes to the assistant panel with
+  // Apply (McpDisplayCard in AssistantPanel.tsx); the agent gets the answer.
+  api.on.mcpDisplay((ask) => {
+    useLayout.getState().setRightTab('assistant');
+    useAi.getState().push({ role: 'display', spec: ask.spec, problems: ask.problems, client: ask.client, mcpId: ask.id, state: 'pending' });
+    log('action', t('{client} (an AI agent) designed a screen for {part}. The preview is in the assistant panel.', { client: ask.client, part: ask.spec.part }), { source: `MCP: ${ask.client}`, target: `part:${ask.spec.part}` });
+  });
   // An AI agent asked over MCP to run one of the app's actions: the same card as the assistant's.
   api.on.mcpAction(async (ask) => {
     const { runActionForAgent } = await import('./appActions');

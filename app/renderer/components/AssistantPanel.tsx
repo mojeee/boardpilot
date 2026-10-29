@@ -221,6 +221,39 @@ function McpEditCard({ item }: { item: Extract<ChatItem, { role: 'edit' }> }) {
   return <EditCard ops={item.ops} reason={item.reason} who={t('{client} (an AI agent, through MCP)', { client: item.client })} state={item.state} onApply={() => void apply()} onDecline={() => void decline()} />;
 }
 
+/** An MCP agent's design_display: the animated preview with Apply; the answer goes back to the agent, and only then is it applied. */
+function McpDisplayCard({ item }: { item: Extract<ChatItem, { role: 'display' }> }) {
+  const setState = (state: EditState) => useAi.getState().patch(item.id, (x) => (x.role === 'display' ? { ...x, state } : x));
+  const apply = async () => {
+    // Apply only if the agent is still waiting: after a timeout it was told "refused".
+    const waiting = await window.bp.mcp.displayResult(item.mcpId, { status: 'approved' });
+    if (!waiting) return setState('expired');
+    applyDisplay(item.spec);
+    setState('applied');
+  };
+  const decline = async () => {
+    await window.bp.mcp.displayResult(item.mcpId, { status: 'refused', error: 'the user clicked Not now' });
+    log('action', t('You did not apply the screen from {client}. The project is unchanged.', { client: item.client }), { source: `MCP: ${item.client}` });
+    setState('declined');
+  };
+  return (
+    <div className="ai-edit">
+      <div className="small dim">{t('{client} (an AI agent, through MCP) designed a screen. Nothing changes until you click Apply.', { client: item.client })}</div>
+      {item.state === 'expired' ? (
+        <p className="small dim">{t('This request timed out, so nothing was changed. Ask again.')}</p>
+      ) : (
+        <DisplayCard id={item.id} display={{ spec: item.spec, problems: item.problems }} applied={item.state === 'applied'} onApply={() => void apply()} />
+      )}
+      {item.state === 'pending' && (
+        <button className="btn small ghost" onClick={() => void decline()}>
+          {t('Not now')}
+        </button>
+      )}
+      {item.state === 'declined' && <span className="small dim">{t('Not applied. The project is unchanged.')}</span>}
+    </div>
+  );
+}
+
 const STEP_ICON = { run: '…', ok: '✓', fail: '✕', skip: '–' } as const;
 
 /** An app action running for the user: its steps, where it lives in the UI, and Stop. */
@@ -424,6 +457,8 @@ export function AssistantPanel({ title, hideInput, hideHeader }: { title?: strin
             <ActionCard key={it.id} item={it} />
           ) : it.role === 'edit' ? (
             <McpEditCard key={it.id} item={it} />
+          ) : it.role === 'display' ? (
+            <McpDisplayCard key={it.id} item={it} />
           ) : it.role === 'notice' ? (
             <NoticeCard key={it.id} item={it} />
           ) : (

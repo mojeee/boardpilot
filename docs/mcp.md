@@ -53,6 +53,8 @@ Add a stdio server to the client's MCP configuration (`~/.cursor/mcp.json`, or C
 | `read_serial` | A few seconds of the user's own firmware output | no |
 | `get_log` | The session log | no |
 | `edit_project` | Changes the project: add, remove or rename parts, add or remove wires, assign safe pins, write the code (`set_code`). Checked against the board and part files first; the wiring check runs on the result | the project only, after the user clicks **Apply** in the assistant panel (⌘Z undoes it) |
+| `get_display` | A display module in the project: resolution, colour type, controller, which libraries BoardPilot can write code for, the current Display Studio design and the pictures and fonts the user imported (ids and sizes only). From the part file and the project, not measured | no |
+| `design_display` | Designs what a display shows (screens, elements, simulated values, changes between screens). The app checks it against the panel and gives errors back to fix; when it is clean the user sees the animated preview and clicks **Apply**. Pictures and fonts can only come from the user's imports in Display Studio, never from the agent. No code is written and nothing goes to the board | the project's Display Studio design only, after the user clicks **Apply** in the assistant panel (⌘Z undoes it). Headless: refused |
 | `run_app_action` | Runs one of the app's own actions, the same list as the in-app assistant: connect and identify, back up, open the monitor, stream pins, debug a problem, test hardware, run the simulation, suggest code, export PDF… The app shows each step and the agent gets them back | only the ones that write, and only after the user's click in their confirmation dialog |
 | `request_flash` | Asks the user to install the diagnostic agent (flash backed up first) | only after the user's click |
 | `request_gpio_write` | Asks the user to drive a pin HIGH or LOW | only after the user's click |
@@ -72,4 +74,4 @@ Every result has the same shape:
 - Localhost only, with a session token; requests from web pages (with an `Origin` header) are refused.
 - No access to your files beyond the board and part data, and no API keys are exposed.
 - Nothing is written to the board without a click in BoardPilot. Headless, nothing is written at all.
-- The project changes only when the user clicks Apply on the agent's change list. App actions that change the project (assign pins, change the board) are refused over MCP: the agent uses `edit_project` instead.
+- The project changes only when the user clicks Apply on the agent's change list. App actions that change the project (assign pins, change the board) are refused over MCP: the agent uses `edit_project` instead. A display design (`design_display`) changes the project the same way, only after Apply on its preview card; it never writes the code or touches the board.

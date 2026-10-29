@@ -3,17 +3,19 @@
 // result carries its provenance ({ value, confidence, source, timestamp, boardId }): measured values
 // come from the board, documented ones from board and part files or the rules. Nothing is estimated
 // here. Write tools never write: they ask the user in the app, and headless they are refused.
-// edit_project changes the drawing, not the board, and also waits for the user's Apply.
+// edit_project changes the drawing, not the board, and also waits for the user's Apply. design_display
+// likewise: it checks the design, then the user presses Apply on the animated preview in the app.
 
 import type { AgentReplyMap, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import { BOARDS, PARTS, getBoard } from '@shared/board';
 import { checkWiring } from '@shared/wiring';
 import { checkCode } from '@shared/codeCheck';
 import { SCENE_EDIT_DESCRIPTION, SCENE_EDIT_SCHEMA, applySceneOps, describeChange, parseSceneOps, type SceneOp } from '@shared/sceneEdit';
-import type { McpActionAnswer, McpSceneEditAnswer } from '@shared/api';
+import type { McpActionAnswer, McpDisplayAnswer, McpSceneEditAnswer } from '@shared/api';
+import type { DisplaySpec, SpecProblem } from '@shared/displaySpec';
 import { ACTION_IDS, APP_ACTIONS } from '@shared/actions';
 import type { HardwareHub } from '../hardware/hub';
-import { TOOLS } from '../ai/tools';
+import { TOOLS, runTool, type ToolTurnState } from '../ai/tools';
 import type { JsonSchema } from '../ai/providers/types';
 
 export interface McpDeps {
@@ -28,6 +30,8 @@ export interface McpDeps {
   requestWrite(req: WriteRequest, client: string): Promise<'approved' | 'refused'>;
   /** Show project changes in the app with Apply. Headless: always "refused". */
   requestSceneEdit(ops: SceneOp[], reason: string, client: string): Promise<McpSceneEditAnswer>;
+  /** Show a display design in the app with Apply (it only changes the project's Display Studio design). Headless: always "refused". */
+  requestDisplayDesign(spec: DisplaySpec, problems: SpecProblem[], client: string): Promise<McpDisplayAnswer>;
   /** Run one of the app's actions in the window (writes still open their dialog). Headless: "refused". */
   runAppAction(action: string, arg: string, reason: string, client: string): Promise<McpActionAnswer>;
   /** Name of the MCP client, for the log ("Claude Code"). */
@@ -98,6 +102,16 @@ export const MCP_TOOLS: McpToolDef[] = [
   { name: 'get_log', description: 'Recent BoardPilot session log: checks, findings and user actions, with their sources.', inputSchema: obj({ limit: { type: 'integer', minimum: 1, maximum: 200 } }) },
   { name: 'edit_project', description: `${SCENE_EDIT_DESCRIPTION} Returns "approved" with the new project and its wiring findings, or "refused".`, inputSchema: SCENE_EDIT_SCHEMA },
   {
+    name: 'get_display',
+    description: `${spec('get_display').description} Read-only; documented from the part file and the open project, not measured.`,
+    inputSchema: spec('get_display').inputSchema,
+  },
+  {
+    name: 'design_display',
+    description: `${spec('design_display').description} Over MCP the app checks the design and returns errors for you to fix; when it is clean the user sees the animated preview in BoardPilot and clicks Apply. Only the project's Display Studio design changes: no code is written and nothing goes to the board. Returns "approved" or "refused".`,
+    inputSchema: spec('design_display').inputSchema,
+  },
+  {
     name: 'run_app_action',
     description:
       'Run one of BoardPilot’s own actions in the app window, the same as the user clicking it; the app shows each step. Actions that write to the board only open the usual confirmation dialog. ' +
@@ -143,7 +157,7 @@ export async function callMcpTool(name: string, raw: unknown, deps: McpDeps): Pr
   const allParts = (): Record<string, PartDef> => ({ ...PARTS, ...Object.fromEntries(deps.userParts().map((p) => [p.id, p])) });
   // Every call is visible in the app (rule 5), with the client as the source.
   const measured = ['read_pins', 'pullup_check', 'i2c_scan', 'i2c_read', 'adc_read', 'identify_board', 'list_ports', 'read_serial'].includes(name);
-  hub.note(name.startsWith('request_') || name === 'edit_project' || name === 'run_app_action' ? 'action' : measured ? 'check' : 'info', `MCP ${name} ${Object.keys(input).length ? JSON.stringify(input).slice(0, 120) : ''}`.trim(), `MCP: ${client}`);
+  hub.note(name.startsWith('request_') || name === 'edit_project' || name === 'design_display' || name === 'run_app_action' ? 'action' : measured ? 'check' : 'info', `MCP ${name} ${Object.keys(input).length ? JSON.stringify(input).slice(0, 120) : ''}`.trim(), `MCP: ${client}`);
 
   try {
     switch (name) {
@@ -229,6 +243,34 @@ export async function callMcpTool(name: string, raw: unknown, deps: McpDeps): Pr
         if (deps.headless) return wrap({ status: 'refused', reason: 'headless: app actions need the BoardPilot window open', steps: [] }, 'documented', 'BoardPilot safety rules');
         const r = await deps.runAppAction(action, arg, reason, client);
         return wrap(r, 'documented', `BoardPilot app action ${action} (the steps the app showed)`);
+      }
+      case 'get_display':
+      case 'design_display': {
+        const s = await deps.scene();
+        if (!s) return fail({ code: 'no_project', humanMessage: 'No project is open in BoardPilot.', hint: 'Open or draw a project with a display in the app.' });
+        const turn: ToolTurnState = { highlight: [], calls: [] };
+        // Pictures and fonts come only from the user's imports in Display Studio: an agent cannot send its own.
+        const { bitmaps: _bitmaps, fonts: _fonts, ...clean } = input;
+        const r = await runTool(name, name === 'get_display' ? { part: input.part } : clean, hub, [], turn, { scene: s, parts: allParts() });
+        let body: Record<string, unknown> = {};
+        try {
+          body = JSON.parse(r.content) as Record<string, unknown>;
+        } catch {
+          body = { message: r.content };
+        }
+        if (r.isError && !turn.display) return fail({ code: name === 'get_display' ? 'not_a_display' : 'invalid_design', humanMessage: String(body.message ?? r.content).slice(0, 600), hint: 'Check the part id with get_scene and the design against the tool description.' });
+        if (name === 'get_display') return wrap(body, 'documented', 'part file and the Display Studio design of the open project (not a measurement)');
+        const display = turn.display;
+        const errors = Array.isArray(body.errors) ? (body.errors as string[]) : [];
+        if (!display || errors.length) return wrap({ status: 'invalid', errors, warnings: body.warnings ?? [], next: 'Fix the errors and call design_display again. The user has not been asked yet.' }, 'documented', 'Display Studio design check (a check against the panel, not a measurement)');
+        const summary = { screen: body.screen, screens: body.screens, warnings: body.warnings ?? [] };
+        if (deps.headless) {
+          hub.note('action', 'MCP display design refused: BoardPilot is running headless, so nobody can apply it.', `MCP: ${client}`);
+          return wrap({ status: 'refused', reason: 'headless: display designs need the BoardPilot window open and a click from the user', ...summary }, 'documented', 'BoardPilot safety rules');
+        }
+        const answer = await deps.requestDisplayDesign(display.spec, display.problems, client);
+        if (answer.status !== 'approved') return wrap({ status: 'refused', reason: answer.error ?? 'the user did not apply the design', ...summary }, 'documented', 'the user did not apply the design in BoardPilot; the project is unchanged');
+        return wrap({ status: 'approved', ...summary, note: 'Values in the design are simulated until the generated code reads the real sensors. The user can press "Write the code" in BoardPilot.' }, 'documented', 'the user applied the design in BoardPilot (a Display Studio design, not a measurement)');
       }
       case 'edit_project': {
         const ops = parseSceneOps(input.changes);
