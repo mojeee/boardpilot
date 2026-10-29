@@ -17,6 +17,20 @@ BoardPilot uses Espressif's `esptool` to identify, back up and flash the chip.
 - **Mac**: `brew install esptool` (or `pip3 install esptool`).
 - **Windows**: install Python from python.org (tick *Add python.exe to PATH*), then `py -m pip install esptool`.
 
+If the app was built with a bundled esptool (see below), you do not need Python or pip: BoardPilot uses its own copy first and only falls back to the one on your PATH.
+
+### Locked chips
+
+Before it backs up, installs the agent, flashes or restores, BoardPilot asks the chip for its security state (`esptool get-security-info`). If **secure boot**, **flash encryption** or **secure download mode** is on, it stops with a plain message and changes nothing. Older chips that cannot answer the question are treated as "unknown" and continue as before.
+
+### Flash size and restore
+
+The backup is as big as the flash the chip reports; the app never assumes 4 MB (if it cannot read the size it refuses). Restore checks that the backup file still has the size recorded when it was made and that it fits the connected chip, before it writes anything.
+
+### Bundling esptool (maintainers)
+
+`npm run build:esptool` (`scripts/build-esptool.mjs`) builds a single-file esptool with PyInstaller into `resources/esptool/mac/` or `resources/esptool/win/`. Run it on the OS you are packaging for; PyInstaller cannot cross-compile, and the macOS binary must match the architectures of the .dmg (use a universal2 Python, or build once per architecture). `package.json` copies the folder into the installer as `esptool/<os>/`, and `findEsptool()` prefers it. The release workflow builds it when the repository variable `BUNDLE_ESPTOOL` is `true`. The folder is empty in git: until someone runs the build and tries it on a real board, installers fall back to the esptool on the PATH.
+
 Then in BoardPilot: ⚙ → **Real board**, and run **Connect and identify**. If the board does not answer, hold **BOOT**, tap **EN**, release **BOOT**, and try again.
 
 ## 3. The diagnostic agent

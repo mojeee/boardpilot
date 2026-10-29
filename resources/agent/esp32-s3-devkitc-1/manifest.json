@@ -7,19 +7,23 @@
   "parts": [
     {
       "offset": "0x0",
-      "file": "bootloader.bin"
+      "file": "bootloader.bin",
+      "sha256": "66cf6c060fc857c8ea6d6812aab8e9b27448431846426218b6fb81526b31e564"
     },
     {
       "offset": "0x8000",
-      "file": "partitions.bin"
+      "file": "partitions.bin",
+      "sha256": "148b959cbff1c38aa8e1d5c0ba9d612c54997b945e56a63f41223eef650653a1"
     },
     {
       "offset": "0xe000",
-      "file": "boot_app0.bin"
+      "file": "boot_app0.bin",
+      "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0"
     },
     {
       "offset": "0x10000",
-      "file": "agent.bin"
+      "file": "agent.bin",
+      "sha256": "2ac91c9966dde58399cbaf864883ef2c7240e4c270016427016cd82f725bc62a"
     }
   ],
   "chip": "esp32s3"

@@ -28,6 +28,7 @@ import { canBackupFlash, getBoard, isEspFamily, pinByGpio, BOARDS } from '@share
 import { t } from '@shared/i18n';
 import type { AgentClient, HardwareDriver, SerialStream } from './driver';
 import { DriverError, guard, toAppError } from './errors';
+import { verifyAgentManifest, type AgentManifest } from './agentManifest';
 import { RealDriver } from './realDriver';
 import { SimDriver } from '../sim/simDriver';
 import { SimWorld, DEFAULT_SCENARIO } from '../sim/simWorld';
@@ -252,11 +253,12 @@ export class HardwareHub extends EventEmitter<HubEvents> {
         t('Build it once with “npm run build:agent” (needs arduino-cli and the board’s core), then try again.'),
       );
     }
-    const m = JSON.parse(readFileSync(manifestPath, 'utf8')) as { ver?: string; parts: { offset: string; file: string }[] };
+    const m = JSON.parse(readFileSync(manifestPath, 'utf8')) as AgentManifest;
     return {
       name: `bp-agent ${m.ver ?? ''}`.trim(),
       kind: 'agent',
-      parts: m.parts.map((p) => ({ offset: parseInt(p.offset, 16), path: join(dir, p.file) })),
+      // Throws agent_unverified if any file differs from the SHA-256 in the manifest.
+      parts: verifyAgentManifest(dir, m),
       confirmToken: token,
     };
   }

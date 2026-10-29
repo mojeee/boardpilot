@@ -12,6 +12,7 @@
 // the board's toolchain.fqbn, and copies the images.
 
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -205,6 +206,8 @@ function buildBoard(b, cores) {
     return { ok: false, why: e.message };
   }
 
+  // SHA-256 of every image, checked by the app (app/main/hardware/agentManifest.ts) before any write.
+  for (const p of parts) p.sha256 = createHash('sha256').update(readFileSync(join(dest, p.file))).digest('hex');
   const manifest = { name: 'bp-agent', ver: AGENT_VER, board: b.id, fqbn, format: tc.imageFormat, parts };
   if (tc.esptoolChip) manifest.chip = tc.esptoolChip;
   writeFileSync(join(dest, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');

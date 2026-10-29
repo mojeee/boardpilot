@@ -100,9 +100,42 @@ function run(cmd: string, args: string[], timeoutMs: number, onLine?: (l: string
 
 let cached: EsptoolCommand | null = null;
 
+/** Folder name under resources/esptool/ for the current OS (PyInstaller builds, see docs/hardware-setup.md). */
+export function bundledEsptoolDir(platform: NodeJS.Platform = process.platform): string | null {
+  if (platform === 'win32') return 'win';
+  if (platform === 'darwin') return 'mac';
+  return null;
+}
+
+/**
+ * Path of the esptool binary shipped with the app, or null when this copy has none.
+ * Packaged: <resources>/esptool/<os>/esptool(.exe). Development: resources/esptool/<os>/.
+ */
+export function bundledEsptoolPath(
+  opts: { platform?: NodeJS.Platform; resourcesPath?: string; appPath?: string; exists?: (p: string) => boolean } = {},
+): string | null {
+  const platform = opts.platform ?? process.platform;
+  const dir = bundledEsptoolDir(platform);
+  if (!dir) return null;
+  const exists = opts.exists ?? existsSync;
+  const exe = platform === 'win32' ? 'esptool.exe' : 'esptool';
+  const resources = opts.resourcesPath ?? (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
+  const roots = [
+    resources && join(resources, 'esptool'),
+    opts.appPath && join(opts.appPath, 'resources', 'esptool'),
+    join(process.cwd(), 'resources', 'esptool'),
+  ].filter((x): x is string => !!x);
+  for (const r of roots) {
+    const p = join(r, dir, exe);
+    if (exists(p)) return p;
+  }
+  return null;
+}
+
 export async function findEsptool(): Promise<EsptoolCommand> {
   if (cached) return cached;
   // Node's spawn does not add .exe on Windows, so list the Windows names explicitly.
+  const bundled = bundledEsptoolPath();
   const candidates: { cmd: string; baseArgs: string[] }[] = IS_WIN
     ? [
         { cmd: 'esptool.exe', baseArgs: [] },
@@ -114,6 +147,8 @@ export async function findEsptool(): Promise<EsptoolCommand> {
         { cmd: 'esptool.py', baseArgs: [] },
         { cmd: 'python3', baseArgs: ['-m', 'esptool'] },
       ];
+  // A copy shipped with the app comes first, so users do not need Python.
+  if (bundled) candidates.unshift({ cmd: bundled, baseArgs: [] });
   for (const c of candidates) {
     try {
       const r = await run(c.cmd, [...c.baseArgs, 'version'], 15000);
@@ -134,7 +169,7 @@ export async function findEsptool(): Promise<EsptoolCommand> {
 }
 
 /** v5 uses hyphenated command names; v4 uses underscores. */
-export function commandName(tool: EsptoolCommand, name: 'flash-id' | 'read-flash' | 'write-flash' | 'chip-id'): string {
+export function commandName(tool: EsptoolCommand, name: 'flash-id' | 'read-flash' | 'write-flash' | 'chip-id' | 'get-security-info'): string {
   return tool.major >= 5 ? name : name.replace(/-/g, '_');
 }
 
@@ -164,6 +199,66 @@ export function classifyEsptoolError(out: string): DriverError {
   return new DriverError('esptool_failed', t('esptool reported a problem: {detail}', { detail: last }), t('Unplug the board, plug it back in and try again.'));
 }
 
+/** Flash size in bytes from esptool's "Detected flash size: 4MB" line, or undefined when it is not there. */
+export function parseFlashBytes(out: string): number | undefined {
+  const m = /Detected flash size:\s*(\d+)\s*(MB|KB)/i.exec(out);
+  return m ? Number(m[1]) * (m[2].toUpperCase() === 'MB' ? 1024 * 1024 : 1024) : undefined;
+}
+
+/**
+ * What `get-security-info` says about the chip. null means the output did not say (older chips such
+ * as the original ESP32 may not support the command), which is not the same as "off".
+ */
+export interface SecurityInfo {
+  secureBoot: boolean | null;
+  flashEncryption: boolean | null;
+  secureDownload: boolean | null;
+}
+
+/** Parses esptool v4 and v5 output of get_security_info / get-security-info. */
+export function parseSecurityInfo(out: string): SecurityInfo {
+  const flag = (re: RegExp): boolean | null => {
+    const m = re.exec(out);
+    return m ? /^enabled$/i.test(m[1]) : null;
+  };
+  let flashEncryption = flag(/Flash Encryption:\s*(Enabled|Disabled)/i);
+  if (flashEncryption === null) {
+    // ESP32-S3 / C3 style: SPI_BOOT_CRYPT_CNT with an odd number of bits set means encryption is on.
+    const c = /SPI Boot Crypt Count[^:\n]*:\s*(0x[0-9a-f]+|\d+)/i.exec(out);
+    if (c) {
+      let n = Number(c[1]);
+      let bits = 0;
+      while (n > 0) {
+        bits += n % 2;
+        n = Math.floor(n / 2);
+      }
+      flashEncryption = bits % 2 === 1;
+    }
+  }
+  return {
+    secureBoot: flag(/Secure Boot:\s*(Enabled|Disabled)/i),
+    flashEncryption,
+    secureDownload: flag(/Secure Download Mode:\s*(Enabled|Disabled)/i),
+  };
+}
+
+/** The refusal for a locked chip, or null when nothing in the output says it is locked. */
+export function securityRefusal(info: SecurityInfo): DriverError | null {
+  if (!info.secureBoot && !info.flashEncryption && !info.secureDownload) return null;
+  const what = [
+    info.secureBoot ? t('secure boot') : null,
+    info.flashEncryption ? t('flash encryption') : null,
+    info.secureDownload ? t('secure download mode') : null,
+  ]
+    .filter((x): x is string => !!x)
+    .join(', ');
+  return new DriverError(
+    'chip_locked',
+    t('This chip has {what} turned on, so the app cannot safely back it up or write to it.', { what }),
+    t('Nothing was changed. Use the tools of whoever set up this board (for example their signing key), or use a board that is not locked.'),
+  );
+}
+
 /** Parses both v4 and v5 output of flash_id / flash-id. */
 export function parseChipInfo(out: string, port: string, bridge: UsbBridge): ChipInfo {
   const chipM = /(?:Chip is|Chip type:)\s*([^\n(]+?)\s*(?:\((revision [^)]+)\))?\s*$/im.exec(out);
@@ -175,7 +270,7 @@ export function parseChipInfo(out: string, port: string, bridge: UsbBridge): Chi
   if (!chipM || !macM) {
     throw new DriverError('parse_failed', t('The board answered, but the app could not read its details.'), t('Try again. If it repeats, update esptool: pip3 install -U esptool'));
   }
-  const flashBytes = flashM ? Number(flashM[1]) * (flashM[2].toUpperCase() === 'MB' ? 1024 * 1024 : 1024) : undefined;
+  const flashBytes = parseFlashBytes(out);
   return {
     port,
     chip: chipM[1].trim(),
@@ -208,4 +303,40 @@ export async function esptool(
   });
   if (r.code !== 0) throw classifyEsptoolError(r.out);
   return r.out;
+}
+
+/**
+ * Reads the chip's security state. A chip that does not support the command (older ESP32) gives
+ * a result with unknown (null) fields; any other failure, such as a busy port, is passed on.
+ */
+export async function readSecurityInfo(port: string): Promise<SecurityInfo> {
+  const tool = await findEsptool();
+  try {
+    const out = await esptool(port, [commandName(tool, 'get-security-info')], { timeoutMs: 30000 });
+    return parseSecurityInfo(out);
+  } catch (e) {
+    if (e instanceof DriverError && e.code === 'esptool_failed') return { secureBoot: null, flashEncryption: null, secureDownload: null };
+    throw e;
+  }
+}
+
+/** Refuses with a plain message when secure boot or flash encryption is on. Call before any backup or write. */
+export async function assertChipUnlocked(port: string): Promise<void> {
+  const refusal = securityRefusal(await readSecurityInfo(port));
+  if (refusal) throw refusal;
+}
+
+/** Flash size in bytes as the chip reports it now; refuses when it cannot be read, instead of guessing. */
+export async function detectFlashBytes(port: string): Promise<number> {
+  const tool = await findEsptool();
+  const out = await esptool(port, [commandName(tool, 'flash-id')], { timeoutMs: 30000 });
+  const bytes = parseFlashBytes(out);
+  if (!bytes) {
+    throw new DriverError(
+      'flash_size_unknown',
+      t('The app could not tell how big the flash memory on this board is.'),
+      t('Nothing was changed. Unplug the board, plug it back in and try again. If it repeats, the flash chip may be unusual or damaged.'),
+    );
+  }
+  return bytes;
 }

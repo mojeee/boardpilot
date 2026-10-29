@@ -7,7 +7,8 @@
   "parts": [
     {
       "offset": "0x0",
-      "file": "agent.hex"
+      "file": "agent.hex",
+      "sha256": "7caa3b9cdac91dea519e2206d83a2c34fc7075bb997f00231441a1eff5c2e02a"
     }
   ]
 }

@@ -7,7 +7,8 @@
   "parts": [
     {
       "offset": "0x08000000",
-      "file": "agent.bin"
+      "file": "agent.bin",
+      "sha256": "15d7156db558b51e2cdf00ed170f2e181304f02d1573533e30445c1abc0cfaaf"
     }
   ]
 }

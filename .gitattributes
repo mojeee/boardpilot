@@ -1,0 +1,2 @@
+# Agent images are hashed (SHA-256 in manifest.json): never let git change their line endings.
+resources/agent/** -text

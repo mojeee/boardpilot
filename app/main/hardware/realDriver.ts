@@ -11,7 +11,7 @@ import type { AgentClient, HardwareDriver, SerialStream } from './driver';
 import { DriverError } from './errors';
 import { t } from '@shared/i18n';
 import { bridgeFromUsb, isUsefulMacPort } from './ports';
-import { commandName, esptool, findEsptool, parseChipInfo } from './esptool';
+import { assertChipUnlocked, commandName, detectFlashBytes, esptool, findEsptool, parseChipInfo } from './esptool';
 import { AGENT_BAUD, SerialAgentClient, SerialLineStream, openPort } from './agentClient';
 import { chipTool } from './tools';
 import type { ToolCtx } from './tools/proc';
@@ -82,12 +82,15 @@ export class RealDriver implements HardwareDriver {
       }
       return { id, port, chip: chip.chip, mac: chip.mac, sizeBytes: s.size, path, createdAt: new Date().toISOString() };
     }
+    // Secure boot or flash encryption: a raw read would be useless or unsafe, so stop before touching anything.
+    await assertChipUnlocked(port);
+    // Never assume a size: use what the chip reported, or ask it again.
+    const size = chip.flashBytes ?? (await detectFlashBytes(port));
     const tool = await findEsptool();
-    const size = chip.flashBytes ?? 4 * 1024 * 1024;
     const path = join(this.backupDir, `${id}.bin`);
-    // 4 MB at 460800 baud takes roughly 90 s; allow plenty.
+    // 4 MB at 460800 baud takes roughly 90 s; bigger flash takes longer, so scale the limit.
     await esptool(port, [commandName(tool, 'read-flash'), '0', `0x${size.toString(16)}`, path], {
-      timeoutMs: 6 * 60 * 1000,
+      timeoutMs: Math.max(6, Math.ceil(size / (1024 * 1024)) * 1.5) * 60 * 1000,
       baud: FAST_BAUD,
       onProgress,
     });
@@ -100,6 +103,24 @@ export class RealDriver implements HardwareDriver {
 
   async restoreFlash(port: string, backup: BackupInfo, onProgress?: (pct: number) => void): Promise<void> {
     if (!this.usesEsptool) return chipTool(this.board).restore(this.ctx(port), backup.path, onProgress);
+    await assertChipUnlocked(port);
+    // The backup must fit this chip, and the file must still be the size we recorded.
+    const flashBytes = await detectFlashBytes(port);
+    const onDisk = await stat(backup.path).catch(() => null);
+    if (!onDisk || onDisk.size !== backup.sizeBytes) {
+      throw new DriverError(
+        'backup_corrupt',
+        t('The backup file is missing or has changed since it was made, so it is not safe to restore.'),
+        t('Nothing was written. Pick another backup, or make a new one while the board still works.'),
+      );
+    }
+    if (backup.sizeBytes > flashBytes) {
+      throw new DriverError(
+        'backup_too_big',
+        t('This backup is bigger than the flash memory on the connected board, so it cannot be restored here.'),
+        t('Nothing was written. Connect the board the backup came from, or pick a backup made from this board.'),
+      );
+    }
     const tool = await findEsptool();
     await esptool(port, [commandName(tool, 'write-flash'), '0x0', backup.path], {
       timeoutMs: 6 * 60 * 1000,
@@ -115,6 +136,7 @@ export class RealDriver implements HardwareDriver {
       for (const p of image.parts) await tool.flash(this.ctx(port), p.path, p.offset, onProgress);
       return;
     }
+    await assertChipUnlocked(port);
     const tool = await findEsptool();
     const args = [commandName(tool, 'write-flash')];
     for (const p of image.parts) args.push(`0x${p.offset.toString(16)}`, p.path);

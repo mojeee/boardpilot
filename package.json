@@ -21,7 +21,8 @@
     "motion": "electron-vite build && node scripts/render-motion.mjs",
     "seo:ping": "node scripts/indexnow.mjs",
     "dist:win": "electron-vite build && electron-builder --win",
-    "test:e2e": "node scripts/e2e.mjs"
+    "test:e2e": "node scripts/e2e.mjs",
+    "build:esptool": "node scripts/build-esptool.mjs"
   },
   "build": {
     "appId": "com.agentflowbind.boardpilot",
@@ -54,7 +55,13 @@
         }
       ],
       "artifactName": "BoardPilot-mac-${arch}.${ext}",
-      "identity": null
+      "identity": null,
+      "extraResources": [
+        {
+          "from": "resources/esptool/mac",
+          "to": "esptool/mac"
+        }
+      ]
     },
     "dmg": {
       "title": "BoardPilot ${version}"
@@ -70,7 +77,13 @@
           ]
         }
       ],
-      "artifactName": "BoardPilot-win-${arch}.${ext}"
+      "artifactName": "BoardPilot-win-${arch}.${ext}",
+      "extraResources": [
+        {
+          "from": "resources/esptool/win",
+          "to": "esptool/win"
+        }
+      ]
     },
     "nsis": {
       "oneClick": false,

@@ -7,7 +7,8 @@
   "parts": [
     {
       "offset": "0x0",
-      "file": "agent.uf2"
+      "file": "agent.uf2",
+      "sha256": "1a517dc3e495e937535b2975387d9866ccda6278f4f35e37ca681a93f91e8e56"
     }
   ]
 }

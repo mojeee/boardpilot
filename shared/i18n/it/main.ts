@@ -61,6 +61,35 @@ const it: Record<string, string> = {
   'Look at the small chip next to the USB port: “CP2102” needs the Silicon Labs driver, “CH340” needs the WCH driver.':
     'Guarda il piccolo chip vicino alla porta USB: “CP2102” richiede il driver Silicon Labs, “CH340” il driver WCH.',
 
+  /* ---------- locked chips, flash size, agent checksums ---------- */
+  'secure boot': 'secure boot',
+  'flash encryption': 'cifratura della flash',
+  'secure download mode': 'secure download mode',
+  'This chip has {what} turned on, so the app cannot safely back it up or write to it.':
+    'Su questo chip è attivo: {what}. L’app non può farne un backup né scriverci in sicurezza.',
+  'Nothing was changed. Use the tools of whoever set up this board (for example their signing key), or use a board that is not locked.':
+    'Non è stato cambiato nulla. Usa gli strumenti di chi ha configurato questa scheda (per esempio la sua chiave di firma), oppure usa una scheda non bloccata.',
+  'The app could not tell how big the flash memory on this board is.':
+    'L’app non è riuscita a capire quanto è grande la memoria flash di questa scheda.',
+  'Nothing was changed. Unplug the board, plug it back in and try again. If it repeats, the flash chip may be unusual or damaged.':
+    'Non è stato cambiato nulla. Scollega la scheda, ricollegala e riprova. Se si ripete, il chip flash potrebbe essere insolito o danneggiato.',
+  'The backup file is missing or has changed since it was made, so it is not safe to restore.':
+    'Il file di backup manca o è cambiato da quando è stato creato, quindi non è sicuro ripristinarlo.',
+  'Nothing was written. Pick another backup, or make a new one while the board still works.':
+    'Non è stato scritto nulla. Scegli un altro backup, oppure falne uno nuovo finché la scheda funziona.',
+  'This backup is bigger than the flash memory on the connected board, so it cannot be restored here.':
+    'Questo backup è più grande della memoria flash della scheda collegata, quindi non può essere ripristinato qui.',
+  'Nothing was written. Connect the board the backup came from, or pick a backup made from this board.':
+    'Non è stato scritto nulla. Collega la scheda da cui viene il backup, oppure scegli un backup fatto da questa scheda.',
+  'The diagnostic agent file {file} has no checksum in its manifest.':
+    'Il file {file} dell’agente diagnostico non ha un checksum nel suo manifest.',
+  'The diagnostic agent file {file} could not be read.': 'Il file {file} dell’agente diagnostico non si può leggere.',
+  'The diagnostic agent file {file} does not match its checksum.':
+    'Il file {file} dell’agente diagnostico non corrisponde al suo checksum.',
+  '{what} It was not written to the board.': '{what} Non è stato scritto sulla scheda.',
+  'Install BoardPilot again, or rebuild the agent with “npm run build:agent”. Your board was not changed.':
+    'Reinstalla BoardPilot, oppure ricostruisci l’agente con “npm run build:agent”. La scheda non è stata modificata.',
+
   /* ---------- real driver ---------- */
   'The backup file is smaller than the flash. It is not safe to continue.':
     'Il file di backup è più piccolo della flash. Non è sicuro continuare.',
