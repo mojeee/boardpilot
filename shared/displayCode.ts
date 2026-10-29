@@ -5,8 +5,11 @@
 // sensor: every such line is marked TODO with the part it should come from.
 //
 // Drivers (Arduino Library Manager names): Adafruit SSD1306, Adafruit SH110X, Adafruit ST7735 and
-// ST7789 Library, Adafruit ILI9341, Adafruit GC9A01A, Adafruit PCD8544 Nokia 5110 LCD library; all on
-// Adafruit GFX Library. Other controllers render in the preview but get no code yet (said plainly).
+// ST7789 Library (also the ST7796S driver), Adafruit ILI9341, Adafruit GC9A01A, Adafruit PCD8544 Nokia
+// 5110 LCD library; all on Adafruit GFX Library. Colour SPI controllers can instead be driven by
+// LovyanGFX or TFT_eSPI (the only choice for the ILI9488, which has no Adafruit driver). The code is a
+// sketch or a module (display_screens.h/.cpp with display_init() and display_update()). Other
+// controllers render in the preview but get no code yet (said plainly).
 
 import type { BoardDef, PartDef, Scene } from './types';
 import { boardPinFor, pinById } from './board';
@@ -17,10 +20,14 @@ import { parseColor, parseCondition, rgb565, rotatedSize, type DisplayElement, t
 import { t } from './i18n';
 
 export interface DisplayCode {
-  /** the sketch, or '' when this controller has no generator yet */
+  /** the sketch (with output "module": the small sketch that calls the module), or '' when this controller has no generator yet */
   code: string;
   libraries: string[];
   notes: string[];
+  /** the library the code is for (the one asked for, or the one that can drive this display) */
+  library?: DisplayLibrary;
+  /** other files that go with the code: the module's display_screens.h/.cpp, TFT_eSPI's User_Setup.h */
+  files?: DisplayFile[];
 }
 
 interface Driver {
@@ -39,6 +46,7 @@ interface Pins {
   rst: string;
   mosi: string;
   sck: string;
+  miso: string;
   addr: string;
   /** the module is wired over SPI (an SSD1306 comes in I2C and SPI versions) */
   spi: boolean;
@@ -96,6 +104,15 @@ const DRIVERS: Record<string, Driver> = {
     mono: false,
     setup: (p) => ({ decl: `Adafruit_ILI9341 tft(${p.cs}, ${p.dc}, ${p.rst});`, begin: ['  tft.begin();'] }),
   },
+  // Adafruit_ST7796S ships in the "Adafruit ST7735 and ST7789 Library"; init(width, height) takes the
+  // panel size (Adafruit ST77XX library reference, class Adafruit_ST7796S).
+  ST7796: {
+    include: ['#include <SPI.h>', '#include <Adafruit_GFX.h>', '#include <Adafruit_ST7796S.h>'],
+    libraries: ['Adafruit ST7735 and ST7789 Library', 'Adafruit GFX Library'],
+    bus: 'spi',
+    mono: false,
+    setup: (p, panel) => ({ decl: `Adafruit_ST7796S tft(${p.cs}, ${p.dc}, ${p.rst});`, begin: [`  tft.init(${Math.min(panel.widthPx, panel.heightPx)}, ${Math.max(panel.widthPx, panel.heightPx)});`] }),
+  },
   GC9A01: {
     include: ['#include <SPI.h>', '#include <Adafruit_GFX.h>', '#include <Adafruit_GC9A01A.h>'],
     libraries: ['Adafruit GC9A01A', 'Adafruit GFX Library'],
@@ -113,9 +130,9 @@ const hex = (n: number, w = 2) => `0x${n.toString(16).toUpperCase().padStart(w, 
 const cstr = (s: string) => JSON.stringify(s).replace(/°/g, '\\177');
 
 /** A colour as the sketch stores it: RGB565 on colour panels, 1/0 (light/dark) on mono. */
-function colorLiteral(panel: PanelInfo, c: string): string {
+function colorLiteral(panel: PanelInfo, c: string, typed = false): string {
   const rgb = parseColor(c);
-  if (panel.color === 'rgb565') return hex(rgb565(rgb), 4);
+  if (panel.color === 'rgb565') return typed ? `uint16_t(${hex(rgb565(rgb), 4)})` : hex(rgb565(rgb), 4);
   return (rgb[0] * 3 + rgb[1] * 6 + rgb[2]) / 10 >= 128 ? '1' : '0';
 }
 
@@ -156,8 +173,8 @@ function varFunction(spec: DisplaySpec): string[] {
   return out;
 }
 
-function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec): string[] {
-  const col = (c: string) => colorLiteral(panel, c);
+function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec, typed = false): string[] {
+  const col = (c: string) => colorLiteral(panel, c, typed);
   const out: string[] = [];
   switch (el.type) {
     case 'text': {
@@ -246,7 +263,212 @@ function elementC(el: DisplayElement, panel: PanelInfo, spec: DisplaySpec): stri
   return guard.length ? [`if (${guard.join(' && ')}) {`, ...out.map((l) => `  ${l}`), '}'] : out;
 }
 
-/** The sketch for a spec on a display part in the scene. */
+/* ---------------- libraries: Adafruit GFX (default), LovyanGFX and TFT_eSPI ---------------- */
+
+export type DisplayLibrary = 'adafruit' | 'lovyangfx' | 'tft_espi';
+/** sketch: one file with setup() and loop(). module: display_screens.h/.cpp with display_init() and display_update(), to add to your own sketch. */
+export type DisplayOutput = 'sketch' | 'module';
+export const DISPLAY_LIBRARIES: DisplayLibrary[] = ['adafruit', 'lovyangfx', 'tft_espi'];
+
+export interface DisplayFile {
+  name: string;
+  text: string;
+}
+
+const LIB_INFO: Record<DisplayLibrary, { name: string; libraries: string[] }> = {
+  adafruit: { name: 'Adafruit GFX', libraries: [] },
+  lovyangfx: { name: 'LovyanGFX', libraries: ['LovyanGFX'] },
+  tft_espi: { name: 'TFT_eSPI', libraries: ['TFT_eSPI'] },
+};
+
+/** The name shown for a library in the app. */
+export const libraryName = (lib: DisplayLibrary) => LIB_INFO[lib].name;
+
+/** Colour SPI controllers LovyanGFX (Panel_xxx) and TFT_eSPI (xxx_DRIVER in User_Setup.h) both drive. */
+const GFX_PANELS: Record<string, { lgfx: string; tftEspi: string }> = {
+  ST7789: { lgfx: 'Panel_ST7789', tftEspi: 'ST7789_DRIVER' },
+  ST7735: { lgfx: 'Panel_ST7735S', tftEspi: 'ST7735_DRIVER' },
+  ILI9341: { lgfx: 'Panel_ILI9341', tftEspi: 'ILI9341_DRIVER' },
+  ILI9488: { lgfx: 'Panel_ILI9488', tftEspi: 'ILI9488_DRIVER' },
+  ST7796: { lgfx: 'Panel_ST7796', tftEspi: 'ST7796_DRIVER' },
+  GC9A01: { lgfx: 'Panel_GC9A01', tftEspi: 'GC9A01_DRIVER' },
+};
+
+/** The libraries that can drive this display on this board, best default first. */
+export function availableLibraries(panel: PanelInfo, board?: BoardDef): DisplayLibrary[] {
+  const out: DisplayLibrary[] = [];
+  if (DRIVERS[panel.controller]) out.push('adafruit');
+  if (panel.color === 'rgb565' && GFX_PANELS[panel.controller]) {
+    const fam: string = board?.family ?? 'esp32';
+    // LovyanGFX: ESP32 family (its SPI host setting below). TFT_eSPI: ESP32 and RP2040/RP2350.
+    if (fam.startsWith('esp32')) out.push('lovyangfx');
+    if (fam.startsWith('esp32') || fam === 'rp2040' || fam === 'rp2350') out.push('tft_espi');
+  }
+  return out;
+}
+
+const SUPPORTED_LIST = 'SSD1306, SH1106, ST7789, ST7735, ST7796, ILI9341, ILI9488, GC9A01';
+
+/** What a library needs from the generator, filled by `targetFor`. */
+interface Target {
+  libraries: string[];
+  include: string[];
+  /** declarations before the drawing code; `canvas` adds the RAM frame */
+  decl: (canvas: boolean) => string[];
+  /** lines of setup() before setRotation */
+  begin: string[];
+  /** lines of setup() after setRotation */
+  afterRotation: (canvas: boolean) => string[];
+  push: (canvas: boolean) => string;
+  /** LovyanGFX and TFT_eSPI set their own SPI pins; for Adafruit the sketch calls SPI.begin() */
+  ownsPins: boolean;
+  mono: boolean;
+  bus: 'i2c' | 'spi';
+  files: DisplayFile[];
+  notes: string[];
+}
+
+function userSetupH(panel: PanelInfo, p: Pins, family: string): string {
+  const entry = GFX_PANELS[panel.controller];
+  const w = Math.min(panel.widthPx, panel.heightPx);
+  const h = Math.max(panel.widthPx, panel.heightPx);
+  const pin = (name: string, v: string) => (v === '-1' ? `// #define ${name} -1  (not wired)` : `#define ${name} ${v}`);
+  return [
+    '// User_Setup.h for TFT_eSPI, written by BoardPilot from the pins in your drawing.',
+    '// Put this file in the TFT_eSPI library folder, replacing its User_Setup.h',
+    '// (Documents/Arduino/libraries/TFT_eSPI), and keep User_Setup_Select.h pointing at <User_Setup.h>.',
+    '// With PlatformIO you can pass the same lines as -D build flags instead.',
+    '',
+    `#define ${entry.tftEspi}`,
+    ...(panel.controller === 'ST7735'
+      ? [w === 80 ? '#define ST7735_GREENTAB160x80  // 0.96" 80x160 module' : '#define ST7735_BLACKTAB  // try ST7735_GREENTAB if the colours or edges look wrong']
+      : []),
+    `#define TFT_WIDTH ${w}`,
+    `#define TFT_HEIGHT ${h}`,
+    '',
+    pin('TFT_MOSI', p.mosi),
+    pin('TFT_SCLK', p.sck),
+    pin('TFT_CS', p.cs),
+    pin('TFT_DC', p.dc),
+    pin('TFT_RST', p.rst),
+    ...(p.miso !== '-1' ? [pin('TFT_MISO', p.miso)] : []),
+    ...(family === 'rp2040' || family === 'rp2350' ? ['// The RP2040/RP2350 pins must belong to the same SPI unit (SPI0 or SPI1).'] : []),
+    '',
+    '#define LOAD_GLCD  // the library needs one font loaded; the drawing uses its own 5x7 font',
+    `#define SPI_FREQUENCY ${panel.controller === 'ILI9488' ? '20000000' : '40000000'}`,
+    '',
+  ].join('\n');
+}
+
+const NO_FRAME = 'for (;;) delay(100);  // not enough free RAM for the frame: set canvas off, or use a smaller screen';
+
+function targetFor(lib: DisplayLibrary, panel: PanelInfo, p: Pins, board: BoardDef, W: number, H: number, driver: Driver | undefined): Target {
+  const notes: string[] = [];
+  if (lib === 'adafruit') {
+    const d = driver!;
+    const s = d.setup(p, panel);
+    return {
+      libraries: d.libraries,
+      include: d.include,
+      decl: (canvas) => [s.decl, canvas ? `GFXcanvas16 gfx(${W}, ${H});  // the frame, drawn in RAM then sent in one go` : 'Adafruit_GFX &gfx = tft;'],
+      begin: s.begin,
+      afterRotation: () => [],
+      push: (canvas) => (d.mono ? 'tft.display();  // send the frame to the OLED' : canvas ? `tft.drawRGBBitmap(0, 0, gfx.getBuffer(), ${W}, ${H});  // send the frame` : 'delay(1);'),
+      ownsPins: false,
+      mono: d.mono,
+      bus: d.bus,
+      files: [],
+      notes,
+    };
+  }
+  const entry = GFX_PANELS[panel.controller];
+  notes.push(t('LovyanGFX and TFT_eSPI draw lines and circles with their own algorithms, so a shape can differ from the preview by a pixel here and there.'));
+  const frame = (canvas: boolean) => (canvas ? ['  gfx.setColorDepth(16);', `  if (!gfx.createSprite(${W}, ${H})) {`, `    ${NO_FRAME}`, '  }'] : []);
+  const push = (canvas: boolean) => (canvas ? 'gfx.pushSprite(0, 0);  // send the frame' : 'delay(1);');
+  if (lib === 'lovyangfx') {
+    // The controller's own (portrait) size; ST7735 80x160 modules usually also need an offset.
+    const nw = Math.min(panel.widthPx, panel.heightPx);
+    const nh = Math.max(panel.widthPx, panel.heightPx);
+    // Adafruit's ST7789 and GC9A01A drivers switch inversion on; LovyanGFX leaves it to the config.
+    const invert = panel.controller === 'ST7789' || panel.controller === 'GC9A01';
+    if (panel.controller === 'ST7735' && nw === 80) notes.push(t('Some 0.96" 80x160 modules need cfg.offset_x and cfg.offset_y in the LGFX class to centre the picture.'));
+    return {
+      libraries: LIB_INFO.lovyangfx.libraries,
+      include: ['#define LGFX_USE_V1', '#include <LovyanGFX.hpp>'],
+      decl: (canvas) => [
+        'class LGFX : public lgfx::LGFX_Device {',
+        `  lgfx::${entry.lgfx} _panel;`,
+        '  lgfx::Bus_SPI _bus;',
+        ' public:',
+        '  LGFX() {',
+        '    {',
+        '      auto cfg = _bus.config();',
+        `      cfg.spi_host = ${board.family === 'esp32' ? 'VSPI_HOST' : 'SPI2_HOST'};`,
+        '      cfg.spi_mode = 0;',
+        `      cfg.freq_write = ${panel.controller === 'ILI9488' ? '20000000' : '40000000'};`,
+        '      cfg.freq_read = 16000000;',
+        '      cfg.spi_3wire = false;',
+        '      cfg.use_lock = true;',
+        '      cfg.dma_channel = SPI_DMA_CH_AUTO;',
+        `      cfg.pin_sclk = ${p.sck};  // the pins in your drawing`,
+        `      cfg.pin_mosi = ${p.mosi};`,
+        `      cfg.pin_miso = ${p.miso};`,
+        `      cfg.pin_dc = ${p.dc};`,
+        '      _bus.config(cfg);',
+        '      _panel.setBus(&_bus);',
+        '    }',
+        '    {',
+        '      auto cfg = _panel.config();',
+        `      cfg.pin_cs = ${p.cs};`,
+        `      cfg.pin_rst = ${p.rst};`,
+        '      cfg.pin_busy = -1;',
+        `      cfg.panel_width = ${nw};  // the controller's own (portrait) size`,
+        `      cfg.panel_height = ${nh};`,
+        '      cfg.offset_x = 0;',
+        '      cfg.offset_y = 0;',
+        '      cfg.offset_rotation = 0;',
+        '      cfg.readable = false;',
+        `      cfg.invert = ${invert};  // flip it if the colours look negative`,
+        '      cfg.rgb_order = false;  // true if red and blue are swapped',
+        '      cfg.dlen_16bit = false;',
+        '      cfg.bus_shared = true;',
+        '      _panel.config(cfg);',
+        '    }',
+        '    setPanel(&_panel);',
+        '  }',
+        '};',
+        '',
+        'LGFX tft;',
+        canvas ? 'lgfx::LGFX_Sprite gfx(&tft);  // the frame, drawn in RAM then sent in one go' : 'LGFX &gfx = tft;',
+      ],
+      begin: ['  tft.init();'],
+      afterRotation: frame,
+      push,
+      ownsPins: true,
+      mono: false,
+      bus: 'spi',
+      files: [],
+      notes,
+    };
+  }
+  notes.push(t('TFT_eSPI reads its pins from User_Setup.h: copy the generated file into the TFT_eSPI library folder before you build.'));
+  if (board.family !== 'esp32') notes.push(t('TFT_eSPI supports newer chips only in its latest versions. If the build fails on this board, try LovyanGFX.'));
+  return {
+    libraries: LIB_INFO.tft_espi.libraries,
+    include: ['#include <SPI.h>', '#include <TFT_eSPI.h>  // reads its pins and driver from User_Setup.h'],
+    decl: (canvas) => ['TFT_eSPI tft = TFT_eSPI();', canvas ? 'TFT_eSprite gfx = TFT_eSprite(&tft);  // the frame, drawn in RAM then sent in one go' : 'TFT_eSPI &gfx = tft;'],
+    begin: ['  tft.init();'],
+    afterRotation: frame,
+    push,
+    ownsPins: true,
+    mono: false,
+    bus: 'spi',
+    files: [{ name: 'User_Setup.h', text: userSetupH(panel, p, board.family) }],
+    notes,
+  };
+}
+
+/** The sketch (or module) for a spec on a display part in the scene. */
 export function generateDisplayCode(
   spec: DisplaySpec,
   panel: PanelInfo,
@@ -254,17 +476,28 @@ export function generateDisplayCode(
   scene: Scene,
   board: BoardDef,
   /** host: the drawing code only, on a GFXcanvas in RAM, for the native pixel test (tests/display.test.ts) */
-  opts: { host?: boolean } = {},
+  opts: { host?: boolean; library?: DisplayLibrary; output?: DisplayOutput } = {},
 ): DisplayCode {
   const notes: string[] = [];
   const driver = DRIVERS[panel.controller];
-  if (!driver && !opts.host) {
+  const avail = availableLibraries(panel, board);
+  if (!avail.length && !opts.host) {
     return {
       code: '',
       libraries: [],
-      notes: [t('The preview works for the {controller}, but BoardPilot cannot write its code yet (supported: SSD1306, SH1106, ST7789, ST7735, ILI9341, GC9A01).', { controller: panel.controller })],
+      notes: [
+        GFX_PANELS[panel.controller] && panel.color === 'rgb565'
+          ? t('The {controller} needs LovyanGFX or TFT_eSPI, which BoardPilot writes for ESP32 boards (TFT_eSPI also for RP2040 and RP2350). This board is not one of them.', { controller: panel.controller })
+          : t('The preview works for the {controller}, but BoardPilot cannot write its code yet (supported: {list}).', { controller: panel.controller, list: SUPPORTED_LIST }),
+      ],
     };
   }
+  const requested = opts.library ?? 'adafruit';
+  const lib: DisplayLibrary = opts.host ? 'adafruit' : avail.includes(requested) ? requested : avail[0];
+  if (!opts.host && lib !== requested) {
+    notes.push(t('There is no {wanted} driver for the {controller} on this board, so the code uses {used} instead.', { wanted: LIB_INFO[requested].name, controller: panel.controller, used: LIB_INFO[lib].name }));
+  }
+  const output: DisplayOutput = opts.output ?? 'sketch';
   const pinOf = (...names: string[]): string => {
     for (const n of names) {
       const pp = def.pins.find((x) => x.name.toUpperCase() === n);
@@ -277,42 +510,47 @@ export function generateDisplayCode(
   };
   const pins: Pins = {
     cs: pinOf('CS'),
-    dc: pinOf('DC', 'A0', 'RS'),
+    dc: pinOf('DC', 'A0', 'RS', 'DC/RS'),
     rst: pinOf('RST', 'RES', 'RESET'),
     mosi: pinOf('SDA', 'MOSI', 'SDI(MOSI)', 'DIN'),
+    miso: pinOf('MISO', 'SDO(MISO)', 'SDO'),
     sck: pinOf('SCL', 'SCK', 'CLK'),
     addr: (def.addresses?.[0] ?? '0x3C').toUpperCase().replace('0X', '0x'),
     spi: def.bus === 'spi',
   };
-  const bus = driver?.bus === 'i2c' && pins.spi ? 'spi' : driver?.bus;
+  const [W, H] = rotatedSize(panel, spec.rotation);
+  const target = opts.host ? undefined : targetFor(lib, panel, pins, board, W, H, driver);
+  const bus = target?.bus === 'i2c' && pins.spi ? 'spi' : target?.bus;
   if (bus === 'spi') {
     if (pins.dc === '-1') notes.push(t('The display’s DC pin is not wired: wire it, then generate the code again.'));
     if (pins.rst === '-1') notes.push(t('RST is not wired: the code uses -1 (no reset pin). Tie RST high or wire it to a free pin.'));
   }
-  const [W, H] = rotatedSize(panel, spec.rotation);
   const bytes = W * H * 2;
   const bigRam = (board.ramBytes ?? 0) >= bytes * 2 + 32 * 1024;
   const mono = panel.color !== 'rgb565';
   // Colour panels draw into a RAM canvas and send whole frames (no flicker) when the chip has the RAM.
   const canvas = !mono && bigRam;
   if (!opts.host && !mono && !canvas) notes.push(t('This board has too little RAM for a full-screen frame buffer ({kb} KB), so the code draws straight to the display: fast animations will flicker.', { kb: Math.round(bytes / 1024) }));
+  if (target) notes.push(...target.notes);
+  // LovyanGFX and TFT_eSPI read a bare number as a colour in their own way: pass typed RGB565 values.
+  const typed = lib !== 'adafruit' && !opts.host;
+  const asModule = output === 'module' && !opts.host;
 
   const L: string[] = [];
   const screenIdx = new Map(spec.screens.map((s, i) => [s.id, i]));
   L.push(
-    `// ${spec.title} — Display Studio sketch for ${def.name} on ${board.name}`,
+    `// ${spec.title} — Display Studio ${asModule ? 'module' : 'sketch'} for ${def.name} on ${board.name}`,
     '// Written by BoardPilot. The preview in the app shows the same pixels (same font, shapes and',
     '// pattern maths). Values are simulated like in the app; replace the lines marked TODO with your sensors.',
-    ...(opts.host ? [] : [`// Libraries (Arduino Library Manager): ${driver!.libraries.join(', ')}`, '', ...driver!.include, ...(bus === 'spi' && !driver!.include.includes('#include <SPI.h>') ? ['#include <SPI.h>'] : [])]),
-    '',
   );
-  const { decl, begin } = opts.host ? { decl: '', begin: [] } : driver!.setup(pins, panel);
-  if (opts.host) L.push('#include "Adafruit_GFX.h"', mono ? `GFXcanvas1 gfx(${W}, ${H});` : `GFXcanvas16 gfx(${W}, ${H});`);
-  else {
-    L.push(decl);
-    if (canvas) L.push(`GFXcanvas16 gfx(${W}, ${H});  // the frame, drawn in RAM then sent in one go`);
-    else L.push('Adafruit_GFX &gfx = tft;');
+  if (target) {
+    L.push(`// Libraries (Arduino Library Manager): ${target.libraries.join(', ')}`, '');
+    if (asModule) L.push('#include <Arduino.h>', '#include "display_screens.h"');
+    L.push(...target.include, ...(bus === 'spi' && lib === 'adafruit' && !target.include.includes('#include <SPI.h>') ? ['#include <SPI.h>'] : []));
   }
+  L.push('');
+  if (opts.host) L.push('#include "Adafruit_GFX.h"', mono ? `GFXcanvas1 gfx(${W}, ${H});` : `GFXcanvas16 gfx(${W}, ${H});`);
+  else L.push(...target!.decl(canvas));
   L.push('');
   // Font and icons.
   L.push('// 5x7 font, codes 32-127 (127 = °), 5 column bytes per glyph, bit 0 = top row.');
@@ -432,30 +670,53 @@ export function generateDisplayCode(
   L.push('    if (next < 0 || next == screen) return;', '    screen = next; enteredAt = at;', '  }', '}', '');
   L.push('void drawScreen(unsigned long ms) {', '  switch (screen) {');
   spec.screens.forEach((sc, i) => {
-    L.push(`    case ${i}:  // ${sc.id}`, `      gfx.fillScreen(${colorLiteral(panel, sc.background)});`);
-    for (const el of sc.elements) for (const l of elementC(el, panel, spec)) L.push(`      ${l}`);
+    L.push(`    case ${i}:  // ${sc.id}`, `      gfx.fillScreen(${colorLiteral(panel, sc.background, typed)});`);
+    for (const el of sc.elements) for (const l of elementC(el, panel, spec, typed)) L.push(`      ${l}`);
     L.push('      break;');
   });
   L.push('  }', '}', '');
   if (opts.host) return { code: L.join('\n'), libraries: [], notes };
-  const drv = driver!;
-  L.push('void setup() {', '  Serial.begin(115200);');
-  if (bus === 'i2c') L.push('  Wire.begin();');
-  else if (board.family.startsWith('esp32') && pins.sck !== '-1' && pins.mosi !== '-1') L.push(`  SPI.begin(${pins.sck}, -1, ${pins.mosi});  // the pins in your drawing`);
-  else if ((board.family === 'rp2040' || board.family === 'rp2350') && pins.sck !== '-1') L.push(`  SPI.setSCK(${pins.sck}); SPI.setTX(${pins.mosi});`);
+  const tg = target!;
+  // Wiring the bus: I2C modules start Wire; Adafruit SPI ones tell the core which pins; LovyanGFX and TFT_eSPI have their own.
+  const init: string[] = [];
+  if (bus === 'i2c') init.push('  Wire.begin();');
+  else if (!tg.ownsPins && board.family.startsWith('esp32') && pins.sck !== '-1' && pins.mosi !== '-1') init.push(`  SPI.begin(${pins.sck}, -1, ${pins.mosi});  // the pins in your drawing`);
+  else if (!tg.ownsPins && (board.family === 'rp2040' || board.family === 'rp2350') && pins.sck !== '-1') init.push(`  SPI.setSCK(${pins.sck}); SPI.setTX(${pins.mosi});`);
   // TFT controllers are portrait; a module that mounts one landscape (0.96" ST7735: 160 x 80) turns it
   // a quarter so rotation 0 is the module as drawn in BoardPilot.
   const quarter = panel.color === 'rgb565' && panel.widthPx > panel.heightPx ? 1 : 0;
-  L.push(...begin, `  tft.setRotation(${(spec.rotation + quarter) & 3});${quarter ? '  // the module mounts the panel landscape; use 3 if the picture is upside down' : ''}`, '  t0 = millis();', '}', '');
-  L.push(
-    'void loop() {',
-    '  unsigned long ms = millis() - t0;',
-    '  changeScreens(ms);',
-    '  readValues(ms);',
-    '  drawScreen(ms);',
-    drv.mono ? '  tft.display();  // send the frame to the OLED' : canvas ? `  tft.drawRGBBitmap(0, 0, gfx.getBuffer(), ${W}, ${H});  // send the frame` : '  delay(1);',
-    '}',
-    '',
-  );
-  return { code: L.join('\n'), libraries: drv.libraries, notes };
+  init.push(...tg.begin, `  tft.setRotation(${(spec.rotation + quarter) & 3});${quarter ? '  // the module mounts the panel landscape; use 3 if the picture is upside down' : ''}`, ...tg.afterRotation(canvas), '  t0 = millis();');
+  const frame = ['  unsigned long ms = millis() - t0;', '  changeScreens(ms);', '  readValues(ms);', '  drawScreen(ms);', `  ${tg.push(canvas)}`];
+  if (asModule) {
+    L.push('void display_init() {', ...init, '}', '', 'void display_update() {', ...frame, '}', '');
+    const header = [
+      `// display_screens.h — Display Studio module for ${spec.title}`,
+      '#ifndef DISPLAY_SCREENS_H',
+      '#define DISPLAY_SCREENS_H',
+      '',
+      'void display_init();    // call once from setup()',
+      'void display_update();  // call from loop(): changes screen when it is time, draws and sends the frame',
+      '',
+      '#endif',
+      '',
+    ].join('\n');
+    const main = [
+      `// ${spec.title} — uses the Display Studio module (display_screens.h and display_screens.cpp).`,
+      '// Copy the two calls below into your own sketch to add the display to it.',
+      '#include "display_screens.h"',
+      '',
+      'void setup() {',
+      '  Serial.begin(115200);',
+      '  display_init();',
+      '}',
+      '',
+      'void loop() {',
+      '  display_update();',
+      '}',
+      '',
+    ].join('\n');
+    return { code: main, libraries: tg.libraries, notes, library: lib, files: [{ name: 'display_screens.h', text: header }, { name: 'display_screens.cpp', text: L.join('\n') }, ...tg.files] };
+  }
+  L.push('void setup() {', '  Serial.begin(115200);', ...init, '}', '', 'void loop() {', ...frame, '}', '');
+  return { code: L.join('\n'), libraries: tg.libraries, notes, library: lib, ...(tg.files.length ? { files: tg.files } : {}) };
 }

@@ -8,11 +8,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PARTS, getBoard } from '@shared/board';
 import { checkSpec, panelOf, type DisplaySpec, type PanelInfo, type SpecProblem } from '@shared/displaySpec';
-import { generateDisplayCode } from '@shared/displayCode';
+import { availableLibraries, generateDisplayCode, libraryName, type DisplayLibrary, type DisplayOutput } from '@shared/displayCode';
 import { testPatternSpec } from '@shared/displayExamples';
 import { t } from '@shared/i18n';
 import { log, useApp, useScene } from '../state/store';
-import { useCodeUi } from '../state/code';
+import { openFile, setFileText, useCodeUi } from '../state/code';
 import { useLayout } from '../state/layout';
 import { panelForPart, repaint, restartDisplays, runDisplay, runningDisplay, showScreen, stopDisplay, useDisplayClock, useDisplayFrames } from '../state/displays';
 import { askAi } from './ai';
@@ -54,17 +54,31 @@ export function applyDisplay(spec: DisplaySpec) {
   });
 }
 
-/** Generate the sketch and offer it in the Code panel as a suggestion (Tab accepts, nothing is overwritten). */
-export function writeDisplayCode(spec: DisplaySpec) {
+/**
+ * Generate the code. A sketch is offered in the Code panel as a suggestion (Tab accepts, nothing is
+ * overwritten); a module is added as new files (display_screens.h/.cpp) next to the user's own code.
+ */
+export function writeDisplayCode(spec: DisplaySpec, choice: { library?: DisplayLibrary; output?: DisplayOutput } = {}) {
   const scene = useScene.getState().scene;
   const inst = scene.parts.find((p) => p.id === spec.part);
   const def = inst ? PARTS[inst.partId] : undefined;
   const panel = def ? panelOf(def) : null;
   if (!def || !panel) return;
   const board = getBoard(scene.board);
-  const r = generateDisplayCode(spec, panel, def, scene, board);
+  const r = generateDisplayCode(spec, panel, def, scene, board, choice);
   for (const n of r.notes) log('warning', n, { target: `part:${spec.part}`, source: 'Display Studio code generator' });
   if (!r.code) return;
+  const extra = r.files ?? [];
+  for (const file of extra) setFileText(file.name, file.text);
+  if (choice.output === 'module' && extra.length) {
+    openFile('display_screens.cpp');
+    useLayout.getState().showBottom('code');
+    log('action', t('Display Studio added the module for “{title}”: {files}. In your sketch, include "display_screens.h", call display_init() in setup() and display_update() in loop().', { title: spec.title, files: extra.map((x) => x.name).join(', ') }), {
+      source: 'Display Studio code generator',
+    });
+    return;
+  }
+  if (extra.length) log('action', t('Display Studio added {files} to the project files. TFT_eSPI needs it in its library folder: copy it there before you build.', { files: extra.map((x) => x.name).join(', ') }), { source: 'Display Studio code generator' });
   useCodeUi.getState().set({
     suggestion: {
       title: t('Display Studio: “{title}” for the {part}', { title: spec.title, part: def.name }),
@@ -119,8 +133,38 @@ function ClockControls() {
 
 const NO_OVERRIDES: Record<string, number> = {};
 
+/** Which library and which kind of output "Write the code" uses, with the choices this display and board allow. */
+function CodeChoice({ libs, library, output, onLibrary, onOutput }: { libs: DisplayLibrary[]; library: DisplayLibrary; output: DisplayOutput; onLibrary: (l: DisplayLibrary) => void; onOutput: (o: DisplayOutput) => void }) {
+  return (
+    <div className="row gap wrap">
+      {libs.length > 1 && (
+        <div className="seg" role="group" aria-label={t('Library')}>
+          {libs.map((l) => (
+            <button key={l} className={library === l ? 'on' : ''} onClick={() => onLibrary(l)}>
+              {libraryName(l)}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="seg" role="group" aria-label={t('Code as')}>
+        <button className={output === 'sketch' ? 'on' : ''} onClick={() => onOutput('sketch')} title={t('One sketch with setup() and loop()')}>
+          {t('Sketch')}
+        </button>
+        <button className={output === 'module' ? 'on' : ''} onClick={() => onOutput('module')} title={t('display_screens.h and display_screens.cpp with display_init() and display_update(), to add to your own sketch')}>
+          {t('Module')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
   const key = spec.part;
+  const board = useScene((s) => s.scene.board);
+  const libs = useMemo(() => availableLibraries(panel, getBoard(board)), [panel, board]);
+  const [pickedLibrary, setLibrary] = useState<DisplayLibrary | null>(null);
+  const [output, setOutput] = useState<DisplayOutput>('sketch');
+  const library = pickedLibrary && libs.includes(pickedLibrary) ? pickedLibrary : libs[0] ?? 'adafruit';
   const current = useDisplayClock((s) => s.screen[key]);
   // Select the stored object itself (a new {} on every render would loop: zustand compares selections).
   const held = useDisplayClock((s) => s.overrides[key]);
@@ -188,8 +232,9 @@ function SpecView({ spec, panel }: { spec: DisplaySpec; panel: PanelInfo }) {
         </>
       )}
       <Problems problems={problems} />
+      {libs.length > 0 && <CodeChoice libs={libs} library={library} output={output} onLibrary={setLibrary} onOutput={setOutput} />}
       <div className="row gap wrap">
-        <button className="btn small primary" onClick={() => writeDisplayCode(spec)}>
+        <button className="btn small primary" onClick={() => writeDisplayCode(spec, { library, output })}>
           {t('Write the code')}
         </button>
         <button className="btn small ghost" onClick={() => void askAi(t('Change the display “{title}” on {part}: ', { title: spec.title, part: spec.part }))}>

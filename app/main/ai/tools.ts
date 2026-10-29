@@ -6,6 +6,7 @@ import type { AiChoice, LogEntry, PartDef, Scene, TargetRef, WriteRequest } from
 import { ACTION_IDS, APP_ACTIONS, type AppActionId } from '@shared/actions';
 import { BOARDS, PARTS } from '@shared/board';
 import { SCENE_EDIT_DESCRIPTION, SCENE_EDIT_SCHEMA, applySceneOps, describeChange, parseSceneOps, type SceneOp } from '@shared/sceneEdit';
+import { availableLibraries, libraryName } from '@shared/displayCode';
 import { checkSpec, normalizeSpec, panelOf, rotatedSize, ICONS, type DisplaySpec, type SpecProblem } from '@shared/displaySpec';
 import { buildProposal, checkScene, partDetails, proposalForModel, searchParts, type ProjectProposal, type ProposalInput } from '@shared/projectBuilder';
 import { similarProjects, reasonsText } from '@shared/archive/similarity';
@@ -471,7 +472,7 @@ export async function runTool(
             isError: true,
           };
         }
-        const codeFor = ['SSD1306', 'SH1106', 'ST7789', 'ST7735', 'ILI9341', 'GC9A01'];
+        const libs = availableLibraries(panel, BOARDS[scene.board]);
         const facts = {
           part: partId,
           name: def.name,
@@ -480,7 +481,7 @@ export async function runTool(
           colour: panel.color === 'rgb565' ? '16-bit colour (RGB565)' : panel.color === 'mono' ? 'one colour (on/off pixels)' : 'e-paper, black and white, slow refresh',
           round: panel.round,
           controller: panel.controller,
-          codeGenerator: codeFor.includes(panel.controller) ? 'yes (Adafruit GFX driver)' : 'no: the preview works, code must be written by hand',
+          codeGenerator: libs.length ? `yes (${libs.map((l) => libraryName(l)).join(', ')}; supported controllers: SSD1306, SH1106, ST7789, ST7735, ST7796, ILI9341, ILI9488, GC9A01)` : 'no: the preview works, code must be written by hand',
         };
         if (name === 'get_display') {
           const current = builder.scene.displays?.find((d) => d.part === partId);
