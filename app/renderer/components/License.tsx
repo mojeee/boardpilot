@@ -1,11 +1,13 @@
-// Trial and license UI: a chip in the top bar, a dialog to enter a key, and a lock screen once
-// the 30-day trial is over.
+// Trial and license UI: a chip in the top bar, a dialog to enter a key, and what happens once the
+// 30-day trial is over: during the free beta (BETA_FREE) a notice that can be closed and comes back
+// at most once a week; otherwise a lock screen.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { create } from 'zustand';
 import type { LicenseStatus } from '@shared/types';
 import { t } from '@shared/i18n';
-import { REPO_URL } from '@shared/brand';
+import { BETA_FREE, FEEDBACK_URL, REPO_URL } from '@shared/brand';
+import { betaNoticeDue, licenseGate } from '@shared/betaNotice';
 import { Icon } from './Icon';
 import { LogoMark } from './Logo';
 
@@ -23,7 +25,18 @@ export const useLicense = create<LicenseStore>((set) => ({
   set: (p) => set(p),
 }));
 
-function KeyForm({ onDone }: { onDone?: () => void }) {
+const NOTICE_KEY = 'bp.betaNoticeClosed';
+
+/** Per-viewer convenience only: if storage is blocked the notice simply shows again next start. */
+function lastNoticeClosed(): string | null {
+  try {
+    return localStorage.getItem(NOTICE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function KeyForm({ onDone, showBuy = true }: { onDone?: () => void; showBuy?: boolean }) {
   const [key, setKey] = useState('');
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -44,9 +57,11 @@ function KeyForm({ onDone }: { onDone?: () => void }) {
         <button className="btn primary" disabled={busy || !key.trim()} onClick={activate}>
           <Icon name="key" size={15} /> {t('Activate')}
         </button>
-        <button className="btn" onClick={() => window.bp.license.openBuyPage()}>
-          {t('Buy a license')}
-        </button>
+        {showBuy && (
+          <button className="btn" onClick={() => window.bp.license.openBuyPage()}>
+            {t('Buy a license')}
+          </button>
+        )}
         <button className="btn ghost" onClick={() => window.bp.app.openExternal(`${REPO_URL}/blob/main/LICENSE.md`)}>
           {t('Read the license')}
         </button>
@@ -62,7 +77,9 @@ export function LicenseChip() {
     s.state === 'licensed'
       ? t('Licensed')
       : s.state === 'expired'
-        ? t('Trial ended')
+        ? BETA_FREE
+          ? t('Free beta')
+          : t('Trial ended')
         : t('Trial: {n} days left', { n: s.daysLeft });
   return (
     <button className={`chip lic-chip lic-${s.state}`} onClick={() => useLicense.getState().set({ dialog: true })}>
@@ -86,6 +103,21 @@ export function LicenseDialog() {
         </div>
         {s.state === 'licensed' ? (
           <p>{t('Licensed to {name} ({plan}). Thank you for supporting BoardPilot.', { name: s.licensee ?? '', plan: s.plan ?? '' })}</p>
+        ) : s.state === 'expired' && BETA_FREE ? (
+          <>
+            <p>{t('BoardPilot is free during the beta. The {total}-day trial is over, but you can keep using everything.', { total: s.trialDays })}</p>
+            <p>{t('The terms may change for future versions, and you will be told well in advance. Until then, tell us what works and what does not.')}</p>
+            <div className="row gap wrap">
+              <button className="btn primary" onClick={() => window.bp.app.openExternal(FEEDBACK_URL)}>
+                {t('Send feedback')}
+              </button>
+              <button className="btn ghost" onClick={() => window.bp.app.openExternal(`${REPO_URL}/blob/main/LICENSE.md`)}>
+                {t('Read the license')}
+              </button>
+            </div>
+            <p className="small dim">{t('Have a license key? Enter it here.')}</p>
+            <KeyForm showBuy={false} onDone={() => useLicense.getState().set({ dialog: false })} />
+          </>
         ) : (
           <>
             <p>
@@ -102,9 +134,61 @@ export function LicenseDialog() {
   );
 }
 
+/** Free beta: shown once the trial is over, closable, and back after a week at most. */
+export function BetaNotice() {
+  const s = useLicense((x) => x.status);
+  const dialogOpen = useLicense((x) => x.dialog);
+  const [open, setOpen] = useState(false);
+  const gate = s ? licenseGate(s.state, BETA_FREE) : 'none';
+  useEffect(() => {
+    if (gate === 'notice' && betaNoticeDue(lastNoticeClosed())) setOpen(true);
+  }, [gate]);
+  if (gate !== 'notice' || !s || !open || dialogOpen) return null;
+  const close = () => {
+    try {
+      localStorage.setItem(NOTICE_KEY, new Date().toISOString());
+    } catch {
+      /* storage blocked: the notice just comes back next start */
+    }
+    setOpen(false);
+  };
+  return (
+    <div className="modal-back" role="dialog" aria-modal>
+      <div className="modal">
+        <div className="row between">
+          <h2>{t('BoardPilot is free during the beta')}</h2>
+          <button className="close" aria-label={t('Close')} onClick={close}>
+            ×
+          </button>
+        </div>
+        <p>
+          {t('Your {total}-day trial is over, and that is fine: you can keep using everything. Thank you for trying BoardPilot.', {
+            total: s.trialDays,
+          })}
+        </p>
+        <p>{t('The terms may change for future versions, and you will be told well in advance. Tell us what works and what does not.')}</p>
+        <div className="row gap wrap">
+          <button
+            className="btn primary"
+            onClick={() => {
+              window.bp.app.openExternal(FEEDBACK_URL);
+              close();
+            }}
+          >
+            {t('Send feedback')}
+          </button>
+          <button className="btn" onClick={close}>
+            {t('Keep using BoardPilot')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function LockScreen() {
   const s = useLicense((x) => x.status);
-  if (!s || s.state !== 'expired') return null;
+  if (!s || licenseGate(s.state, BETA_FREE) !== 'lock') return null;
   return (
     <div className="lock-screen">
       <div className="lock-card">

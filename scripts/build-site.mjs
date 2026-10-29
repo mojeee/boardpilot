@@ -209,7 +209,7 @@ function landing(lang) {
           `${REPO}/releases/latest/download/BoardPilot-mac-x64.dmg`,
           `${REPO}/releases/latest/download/BoardPilot-win-x64.exe`,
         ],
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', description: lang === 'it' ? 'Prova gratuita di 30 giorni' : 'Free 30-day trial' },
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', description: lang === 'it' ? 'Gratis durante la beta pubblica' : 'Free during the public beta' },
         license: `${REPO}/blob/main/LICENSE.md`,
         author: { '@type': 'Person', name: 'Mojtaba Amini', url: 'https://github.com/mojeee' },
         sameAs: [REPO],

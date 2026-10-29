@@ -47,7 +47,7 @@ these exact facts.
 | Systems | macOS and Windows. Linux: planned, not available |
 | Builds | Not code-signed yet (the warning on first open is expected) |
 | Licence | **Source-available** (BoardPilot License). Parts data CC BY 4.0. Firmware (agent, probe library) MIT. Never "open source". |
-| Price | `[PRICE LINE]`: "Free during the public beta" only if that change has shipped; otherwise "Free 30-day trial" |
+| Price | `[PRICE LINE]`: "Free during the public beta" (the app shows a dismissible weekly notice instead of the lock screen since the BETA_FREE change; if you post an older build, say "Free 30-day trial" instead) |
 | Real hardware | `[REAL-HARDWARE LINE]`: today (Sep 29) the non-ESP32 agents are tested against a simulated bus only, and the real-board test pass is planned for the end of October. Write only what has been tested, on which boards. |
 | Without hardware | Simulator mode runs the whole app with realistic faults |
 | AI | Optional. Free demo (limited, for testing) or your own Claude, GPT or Gemini key |

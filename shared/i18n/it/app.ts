@@ -154,6 +154,19 @@ const it: Record<string, string> = {
   'The {total}-day trial has ended.': 'La prova di {total} giorni è terminata.',
   'BoardPilot is source-available: you can read and build the code, and continued use needs a license key.':
     'BoardPilot è source-available: puoi leggere e compilare il codice, ma per continuare a usarlo serve una chiave di licenza.',
+  'Free beta': 'Beta gratuita',
+  'BoardPilot is free during the beta. The {total}-day trial is over, but you can keep using everything.':
+    'BoardPilot è gratuito durante la beta. La prova di {total} giorni è finita, ma puoi continuare a usare tutto.',
+  'The terms may change for future versions, and you will be told well in advance. Until then, tell us what works and what does not.':
+    'Le condizioni potrebbero cambiare nelle versioni future, e ti avviseremo con largo anticipo. Fino ad allora, dicci cosa funziona e cosa no.',
+  'Send feedback': 'Invia un feedback',
+  'Have a license key? Enter it here.': 'Hai una chiave di licenza? Inseriscila qui.',
+  'BoardPilot is free during the beta': 'BoardPilot è gratuito durante la beta',
+  'Your {total}-day trial is over, and that is fine: you can keep using everything. Thank you for trying BoardPilot.':
+    'La tua prova di {total} giorni è finita, ma va bene così: puoi continuare a usare tutto. Grazie per aver provato BoardPilot.',
+  'The terms may change for future versions, and you will be told well in advance. Tell us what works and what does not.':
+    'Le condizioni potrebbero cambiare nelle versioni future, e ti avviseremo con largo anticipo. Dicci cosa funziona e cosa no.',
+  'Keep using BoardPilot': 'Continua a usare BoardPilot',
   'Your free trial has ended': 'La tua prova gratuita è terminata',
   'Thank you for trying BoardPilot for {total} days. To keep using it, enter a license key. Your projects, backups and parts library are safe on this Mac.':
     'Grazie per aver provato BoardPilot per {total} giorni. Per continuare a usarlo, inserisci una chiave di licenza. I tuoi progetti, i backup e la libreria dei componenti restano al sicuro su questo Mac.',

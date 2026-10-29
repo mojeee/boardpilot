@@ -32,7 +32,7 @@ import { NewProjectPanel } from './screens/NewProject';
 import { Learn } from './screens/Learn';
 import { runDemo } from './demo';
 import { PartEditor } from './components/PartEditor';
-import { LicenseDialog, LockScreen, useLicense } from './components/License';
+import { BetaNotice, LicenseDialog, LockScreen, useLicense } from './components/License';
 import { AiSettingsDialog, openAiSettings } from './components/AiSettings';
 import { BoardPickerDialog } from './components/BoardPicker';
 import { DownloadAppPrompt, isWebDemo } from './components/WebDemo';
@@ -241,6 +241,7 @@ export function App() {
       <ExportDialog />
       <ConfirmDialog />
       <LockScreen />
+      <BetaNotice />
       {isWebDemo() && <DownloadAppPrompt />}
     </div>
   );

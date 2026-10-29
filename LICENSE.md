@@ -1,8 +1,8 @@
-# BoardPilot License 1.0 (source-available)
+# BoardPilot License 1.1 (source-available)
 
 Copyright (c) 2026 Mojtaba Amini ("Licensor"). All rights reserved except as granted below.
 
-BoardPilot is **source-available**: the source code is public so you can read it, learn from it, check what it does with your hardware, build it yourself and contribute. It is **not** "open source" in the OSI sense, because continued use after the evaluation period requires a paid license.
+BoardPilot is **source-available**: the source code is public so you can read it, learn from it, check what it does with your hardware, build it yourself and contribute. It is **not** "open source" in the OSI sense, because the Licensor may require a paid license for future versions (see section 3).
 
 This license covers everything in this repository **except**:
 
@@ -13,23 +13,23 @@ This license covers everything in this repository **except**:
 
 - **Software**: the BoardPilot desktop application in this repository, its source code, builds made from it, and its documentation, excluding `firmware/` and `parts/`.
 - **You**: the person or organisation using the Software.
-- **License Key**: a key issued by the Licensor (format `BP1-…`) that unlocks the Software after the evaluation period.
+- **License Key**: a key issued by the Licensor (format `BP1-…`) that that may be required to use future versions of the Software (see section 3).
 
 ## 2. What you may do
 
 1. **Read, study and modify** the source code.
 2. **Build** the Software from source for your own use under the terms below.
-3. **Evaluate** the Software free of charge for **30 days** from its first start on each computer (the "Evaluation Period").
+3. **Use** the Software free of charge during the **public beta**. The 30-day "Evaluation Period" counted from the first start on each computer stays in the Software, so a paid model can be switched on later, but while the public beta lasts it does not limit your use.
 4. **Contribute** changes back to this repository (see section 6).
 5. **Share links** to this repository and to official downloads.
 
-## 3. What requires a paid License Key
+## 3. Public beta and future versions
 
-Using the Software after the Evaluation Period, on any computer, requires a valid License Key for each user (personal plan) or each seat (commercial and education plans), obtained from the Licensor through the official website <https://boardpilot.agentflowbind.com>.
+BoardPilot is **free to use during the public beta**; no License Key is needed. The terms may change for future versions: the Licensor may then require a valid License Key for each user (personal plan) or each seat (commercial and education plans), obtained through the official website <https://boardpilot.agentflowbind.com>. If that happens, users will be told well in advance, on the website and in the app, before any key is required. Until such an announcement, this section does not require you to pay or to hold a key.
 
 ## 4. What you may not do
 
-1. Remove, disable or work around the evaluation or license-key check, or distribute builds in which it is removed, disabled or bypassed.
+1. Remove, disable or work around the evaluation or license-key check, or distribute builds in which it is removed, disabled or bypassed. (This applies once a License Key is required under section 3.)
 2. Sell, rent, sublicense or redistribute the Software, modified or not, or offer it as a hosted service, except with the Licensor's written permission.
 3. Generate, share or publish License Keys, or keys that imitate them.
 4. Remove copyright, license or attribution notices.

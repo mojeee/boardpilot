@@ -76,7 +76,7 @@ export const ROWS = [
       [
         'Price',
         'Prezzo',
-        t('30-day free trial, then a license', 'Prova gratuita di 30 giorni, poi una licenza'),
+        t('Free during the public beta', 'Gratis durante la beta pubblica'),
         t('Free', 'Gratis'),
         t('Free', 'Gratis'),
         t('Free plan and paid plans', 'Piano gratuito e piani a pagamento'),

@@ -1,8 +1,10 @@
 # Pilot license and unsigned-install rehearsal
 
-Run this before a customer meeting so the lock screen and the "unknown developer" prompts never surprise us there.
+Run this before a customer meeting so the license state and the "unknown developer" prompts never surprise us there.
 
 ## 1. Issue a commercial pilot key
+
+The app is free during the public beta (`BETA_FREE` in `shared/brand.ts`): after 30 days it shows a closable notice once a week instead of the lock screen, so the customer is never locked out and a key is optional. Issue one anyway if the pilot should show a licensed state or run after the beta ends.
 
 The private key is `~/.boardpilot/license-private.pem` (or `$BOARDPILOT_LICENSE_KEY`). It is not in the repo. The matching public key is `LICENSE_PUBLIC_KEY_PEM` in `shared/brand.ts`; if the two do not match, no issued key will activate.
 

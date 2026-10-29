@@ -63,7 +63,7 @@ Boards are data files in [`boards/`](boards/) (pins with positions, flags and so
 | ![Debug wizard](docs/img/debug.jpg) **Debug wizard** Pull-ups, I2C scan, SDA/SCL swap test, chip ID (tells a BMP280 from a BME280), brownout and baud-rate detection. | ![Test hardware](docs/img/test.jpg) **Test hardware** I2C address grid, bus diagram, bit-level decoded transactions, GPIO and ADC tests. |
 | ![Monitor](docs/img/monitor.jpg) **Monitor** Serial console, live plots colored by pin, CSV recording, heap and stack. | ![Parts library](docs/img/library.jpg) **Parts library** Add, move, rotate and wire parts in 3D; wiring rules flag mistakes as you build. |
 
-Also: connect and identify (esptool v4/v5), safe flashing with automatic backup, new-project pin assignment with a starter sketch, reports as Markdown and PDF, English and Italian UI, 30-day free trial.
+Also: connect and identify (esptool v4/v5), safe flashing with automatic backup, new-project pin assignment with a starter sketch, reports as Markdown and PDF, English and Italian UI, free during the public beta.
 
 ### The new workspace (next release)
 
@@ -166,7 +166,7 @@ Architecture, product rules and conventions: [CLAUDE.md](CLAUDE.md). Contributin
 
 | What | License |
 |---|---|
-| The app (this repository, except below) | [BoardPilot License](LICENSE.md): source-available, free 30-day trial, then a license key |
+| The app (this repository, except below) | [BoardPilot License](LICENSE.md): source-available, free during the public beta (terms may change for future versions) |
 | `parts/` (parts library data) | [CC BY 4.0](parts/LICENSE) |
 | `firmware/` (diagnostic agent, BoardPilotProbe library) | [MIT](firmware/LICENSE) |
 
