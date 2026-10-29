@@ -185,7 +185,7 @@ const EXTRACT_SCHEMA = {
   properties: {
     name: { type: 'string', description: 'short product name, e.g. "HC-SR04 ultrasonic sensor"' },
     category: { type: 'string', enum: ['sensor', 'display', 'output', 'input'] },
-    bus: { type: 'string', enum: ['i2c', 'spi', 'onewire', 'gpio', 'analog'] },
+    bus: { type: 'string', enum: ['i2c', 'spi', 'onewire', 'gpio', 'analog', 'parallel8', 'rgb'] },
     voltage: { type: 'string', description: 'supply voltage: "3.3", "5" or a range like "3.3-5"' },
     addresses: { type: 'array', items: { type: 'string' }, description: 'I2C addresses like "0x76", empty if not I2C' },
     measures: { type: 'array', items: { type: 'string' } },

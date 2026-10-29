@@ -54,6 +54,8 @@ const it: Record<string, string> = {
   Bus: 'Bus',
   none: 'nessuno',
   'Supply (V)': 'Alimentazione (V)',
+  '8-bit parallel': 'Parallelo a 8 bit',
+  'RGB (parallel colour)': 'RGB (colore parallelo)',
   'I2C addresses': 'Indirizzi I2C',
   'Pins, in the order printed on the board': 'Pin, nell’ordine stampato sulla schedina',
   'Move up': 'Sposta su',

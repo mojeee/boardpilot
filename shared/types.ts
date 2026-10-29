@@ -375,6 +375,8 @@ export interface BoardDef {
   logicVolt: number;
   flashBytes?: number;
   ramBytes?: number;
+  /** External PSRAM in bytes, when the board has it (e.g. 8 MB on an ESP32-S3 N16R8 module). Left out when there is none. */
+  psramBytes?: number;
   pcbMm: { length: number; width: number; thickness: number };
   layoutPxPerMm: number;
   /** Legacy two-row header layout for pins that use row/index instead of posMm. */
@@ -607,7 +609,8 @@ export interface PartDef {
   category: 'sensor' | 'display' | 'output' | 'input';
   measures?: string[];
   pins: PartPin[];
-  bus?: 'i2c' | 'spi' | 'onewire' | 'gpio' | 'analog';
+  /** parallel8: 8-bit parallel display bus (8080 style); rgb: parallel RGB panel interface (ESP32-S3 LCD peripheral). */
+  bus?: 'i2c' | 'spi' | 'onewire' | 'gpio' | 'analog' | 'parallel8' | 'rgb';
   /** Every I2C address the part can have, the usual (default) one first. */
   addresses?: string[];
   idCheck?: { register: string; expect: string; otherValues?: Record<string, string> };

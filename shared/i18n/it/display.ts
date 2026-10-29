@@ -128,6 +128,8 @@ const it: Record<string, string> = {
     'Copia il file lv_conf.h generato in Documents/Arduino/libraries accanto alla cartella lvgl (sostituendo quello che c’è), poi compila con LVGL 8.3.',
   'BoardPilot cannot build LVGL code itself: build it once in the Arduino IDE and tell the assistant about any error it shows.':
     'BoardPilot non può compilare da solo il codice LVGL: compilalo una volta nell’Arduino IDE e riferisci all’assistente ogni errore che compare.',
+  'The frame ({kb} KB) is kept in PSRAM: switch PSRAM on in the board settings (Arduino IDE: Tools > PSRAM) before you build.':
+    'Il frame ({kb} KB) sta nella PSRAM: attiva la PSRAM nelle impostazioni della scheda (Arduino IDE: Strumenti > PSRAM) prima di compilare.',
 };
 
 export default it;

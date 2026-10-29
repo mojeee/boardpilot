@@ -409,7 +409,9 @@ function targetFor(lib: DisplayLibrary, panel: PanelInfo, p: Pins, board: BoardD
   }
   const entry = GFX_PANELS[panel.controller];
   notes.push(t('LovyanGFX and TFT_eSPI draw lines and circles with their own algorithms, so a shape can differ from the preview by a pixel here and there.'));
-  const frame = (canvas: boolean) => (canvas ? ['  gfx.setColorDepth(16);', `  if (!gfx.createSprite(${W}, ${H})) {`, `    ${NO_FRAME}`, '  }'] : []);
+  // A frame that fits only in external PSRAM (board.psramBytes): LovyanGFX is told to keep the sprite there.
+  const inPsram = lib === 'lovyangfx' && (board.ramBytes ?? 0) < W * H * 4 + 32 * 1024 && (board.psramBytes ?? 0) >= W * H * 2 + 64 * 1024;
+  const frame = (canvas: boolean) => (canvas ? [...(inPsram ? ['  gfx.setPsram(true);  // the frame goes to PSRAM'] : []), '  gfx.setColorDepth(16);', `  if (!gfx.createSprite(${W}, ${H})) {`, `    ${NO_FRAME}`, '  }'] : []);
   const push = (canvas: boolean) => (canvas ? 'gfx.pushSprite(0, 0);  // send the frame' : 'delay(1);');
   if (lib === 'lovyangfx') {
     // The controller's own (portrait) size; ST7735 80x160 modules usually also need an offset.
@@ -697,12 +699,15 @@ export function generateDisplayCode(
     if (pins.rst === '-1') notes.push(t('RST is not wired: the code uses -1 (no reset pin). Tie RST high or wire it to a free pin.'));
   }
   const bytes = W * H * 2;
+  // External PSRAM counts for the frame (the ESP32 core puts big allocations there once PSRAM is switched on in the Tools menu).
   const bigRam = (board.ramBytes ?? 0) >= bytes * 2 + 32 * 1024;
+  const psramRam = !bigRam && (board.psramBytes ?? 0) >= bytes + 64 * 1024;
   const mono = panel.color !== 'rgb565';
   // Colour panels draw into a RAM canvas and send whole frames (no flicker) when the chip has the RAM.
-  const canvas = !mono && bigRam && !lv;
+  const canvas = !mono && (bigRam || psramRam) && !lv;
   if (!opts.host && !mono && !canvas && !lv) notes.push(t('This board has too little RAM for a full-screen frame buffer ({kb} KB), so the code draws straight to the display: fast animations will flicker.', { kb: Math.round(bytes / 1024) }));
   if (target) notes.push(...target.notes);
+  if (!opts.host && canvas && psramRam) notes.push(t('The frame ({kb} KB) is kept in PSRAM: switch PSRAM on in the board settings (Arduino IDE: Tools > PSRAM) before you build.', { kb: Math.round(bytes / 1024) }));
   // LovyanGFX and TFT_eSPI read a bare number as a colour in their own way: pass typed RGB565 values.
   const typed = lib !== 'adafruit' && !opts.host;
   const asModule = output === 'module' && !opts.host;

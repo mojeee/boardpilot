@@ -647,6 +647,40 @@ describe('LVGL output', () => {
   });
 });
 
+describe('PSRAM and the display buses (#23 schema)', () => {
+  it('counts PSRAM for the frame buffer and tells you to switch it on', () => {
+    const p = panel('st7796-tft-35');
+    const base = getBoard('esp32-devkitc-30');
+    const spec = testPatternSpec('disp1', p);
+    const scene = sceneWith('st7796-tft-35', 'esp32-devkitc-30');
+    // 320x480 at 16 bits is 300 KB: no room in 520 KB of SRAM with the margin, so it draws straight to the glass.
+    const without = generateDisplayCode(spec, p, PARTS['st7796-tft-35'], scene, base, { library: 'lovyangfx' });
+    expect(without.code).toContain('LGFX &gfx = tft;');
+    // With 8 MB of PSRAM the frame goes there.
+    const withPsram = generateDisplayCode(spec, p, PARTS['st7796-tft-35'], scene, { ...base, psramBytes: 8 * 1024 * 1024 }, { library: 'lovyangfx' });
+    expect(withPsram.code).toContain('lgfx::LGFX_Sprite gfx(&tft);');
+    expect(withPsram.code).toContain('gfx.setPsram(true);');
+    expect(withPsram.notes.join(' ')).toMatch(/kept in PSRAM/);
+    expect(withPsram.notes.join(' ')).not.toMatch(/too little RAM/);
+    // Plenty of SRAM already: PSRAM is not mentioned.
+    const small = panel('st7789-240');
+    const sram = generateDisplayCode(testPatternSpec('disp1', small), small, PARTS['st7789-240'], sceneWith('st7789-240', 'esp32-devkitc-30'), { ...base, psramBytes: 8 * 1024 * 1024 });
+    expect(sram.notes.join(' ')).not.toMatch(/PSRAM/);
+  });
+
+  it('accepts the parallel8 and rgb buses in a part', async () => {
+    const { BUSES, validatePartDef } = await import('@shared/partSchema');
+    expect(BUSES).toEqual(expect.arrayContaining(['parallel8', 'rgb']));
+    for (const bus of ['parallel8', 'rgb']) {
+      const r = validatePartDef({ ...PARTS['st7789-240'], id: 'p-' + bus, name: 'Parallel panel ' + bus, bus });
+      expect(r.ok, JSON.stringify(r)).toBe(true);
+      if (r.ok) expect(r.value.bus).toBe(bus);
+    }
+    const unknown = validatePartDef({ ...PARTS['st7789-240'], id: 'x', bus: 'nonsense' });
+    expect(unknown.ok && unknown.value.bus).toBeFalsy();
+  });
+});
+
 /* ---------------- native pixel test: the sketch's drawing vs the app's renderer ---------------- */
 
 describe.skipIf(!nativeAvailable)('the sketch draws the same pixels as the preview (Adafruit GFX built natively)', () => {

@@ -23,7 +23,7 @@ export const COMPONENT_TYPES: PartComponent['type'][] = [
 const PACKAGES: NonNullable<PartComponent['package']>[] = ['qfn', 'lga', 'soic', 'tssop', 'msop', 'sot23', 'sot223', 'dip', 'lqfp'];
 const DISPLAY_COLORS: PartDisplay['color'][] = ['mono', 'gray4', 'rgb565', 'rgb666', 'epaper', 'lcd', 'led'];
 export const CATEGORIES: PartDef['category'][] = ['sensor', 'display', 'output', 'input'];
-export const BUSES: NonNullable<PartDef['bus']>[] = ['i2c', 'spi', 'onewire', 'gpio', 'analog'];
+export const BUSES: NonNullable<PartDef['bus']>[] = ['i2c', 'spi', 'onewire', 'gpio', 'analog', 'parallel8', 'rgb'];
 
 export function slugify(name: string): string {
   const s = name

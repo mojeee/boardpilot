@@ -14,6 +14,9 @@ import { addPart } from '../state/sceneActions';
 import { log } from '../state/store';
 import { PartBody, PartPins } from '../three/Parts';
 
+/** The bus as the editor shows it: short names in capitals, the two display buses in words. */
+const busLabel = (b: NonNullable<PartDef['bus']>) => (b === 'parallel8' ? t('8-bit parallel') : b === 'rgb' ? t('RGB (parallel colour)') : b.toUpperCase());
+
 interface EditorReq {
   draft: PartDef | null;
   notes?: string[];
@@ -180,7 +183,7 @@ export function PartEditor() {
                   <option value="">{t('none')}</option>
                   {BUSES.map((b) => (
                     <option key={b} value={b}>
-                      {b.toUpperCase()}
+                      {busLabel(b)}
                     </option>
                   ))}
                 </select>
