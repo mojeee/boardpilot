@@ -55,13 +55,16 @@
         }
       ],
       "artifactName": "BoardPilot-mac-${arch}.${ext}",
-      "identity": null,
       "extraResources": [
         {
           "from": "resources/esptool/mac",
           "to": "esptool/mac"
         }
-      ]
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "dmg": {
       "title": "BoardPilot ${version}"
@@ -83,7 +86,13 @@
           "from": "resources/esptool/win",
           "to": "esptool/win"
         }
-      ]
+      ],
+      "signtoolOptions": {
+        "signingHashAlgorithms": [
+          "sha256"
+        ],
+        "rfc3161TimeStampServer": "http://timestamp.digicert.com"
+      }
     },
     "nsis": {
       "oneClick": false,

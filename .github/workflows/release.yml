@@ -2,6 +2,12 @@ name: Release apps
 
 # Push a tag like v0.3.0 to build the macOS .dmg files and the Windows installer, then publish them
 # as one GitHub Release. The website download buttons point to releases/latest/download/<file>.
+#
+# Code signing is driven by repository secrets and skipped (unsigned build, as before) when absent:
+#   macOS:   MAC_CSC_LINK (base64 .p12 of a Developer ID Application certificate) and MAC_CSC_KEY_PASSWORD;
+#            for notarisation also APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD and APPLE_TEAM_ID.
+#   Windows: WIN_CSC_LINK (base64 .pfx code signing certificate) and WIN_CSC_KEY_PASSWORD.
+# Optional repository variable BUNDLE_ESPTOOL=true builds the bundled esptool (scripts/build-esptool.mjs).
 
 on:
   push:
@@ -20,6 +26,8 @@ permissions:
 jobs:
   mac:
     runs-on: macos-14
+    env:
+      HAS_MAC_SIGNING: ${{ secrets.MAC_CSC_LINK != '' && secrets.MAC_CSC_KEY_PASSWORD != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,8 +36,21 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Bundle esptool
+        if: vars.BUNDLE_ESPTOOL == 'true'
+        run: node scripts/build-esptool.mjs
       - run: npx electron-vite build
-      - name: Package macOS (unsigned)
+      - name: Package macOS (signed; notarised when the Apple secrets are set)
+        if: env.HAS_MAC_SIGNING == 'true'
+        run: npx electron-builder --mac --arm64 --x64 --publish never
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Package macOS (unsigned, no signing secrets)
+        if: env.HAS_MAC_SIGNING != 'true'
         run: npx electron-builder --mac --arm64 --x64 --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
@@ -42,6 +63,8 @@ jobs:
 
   windows:
     runs-on: windows-latest
+    env:
+      HAS_WIN_SIGNING: ${{ secrets.WIN_CSC_LINK != '' && secrets.WIN_CSC_KEY_PASSWORD != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -50,8 +73,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Bundle esptool
+        if: vars.BUNDLE_ESPTOOL == 'true'
+        run: node scripts/build-esptool.mjs
       - run: npx electron-vite build
-      - name: Package Windows (unsigned)
+      - name: Package Windows (signed)
+        if: env.HAS_WIN_SIGNING == 'true'
+        run: npx electron-builder --win --x64 --publish never
+        env:
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+      - name: Package Windows (unsigned, no signing secrets)
+        if: env.HAS_WIN_SIGNING != 'true'
         run: npx electron-builder --win --x64 --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'

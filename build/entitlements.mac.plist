@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Hardened Runtime entitlements for the signed and notarised macOS build (issue #13).
+     Used for the app and, as entitlementsInherit, for the helper processes and bundled tools.
+     - allow-jit and allow-unsigned-executable-memory: Electron's V8 needs them.
+     - disable-library-validation: the native serialport module and the bundled esptool
+       (a PyInstaller binary that loads libraries it unpacks at run time) are not signed with
+       the same team id as every library they load.
+     Not covered: USB or serial access needs no entitlement for a non-sandboxed app. -->
+<plist version="1.0">
+  <dict>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+  </dict>
+</plist>

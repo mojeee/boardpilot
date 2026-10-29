@@ -19,7 +19,7 @@ Pick the expiry 90 days after the issue date. Keep the printed `BP1-…` key in 
 
 ## 2. Install the unsigned build on a clean machine
 
-Installers are unsigned until the signing work (#13) lands.
+Installers are unsigned until the signing secrets are added to the repository (see the header of `.github/workflows/release.yml`: `MAC_CSC_LINK`, `MAC_CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID`, `WIN_CSC_LINK`, `WIN_CSC_KEY_PASSWORD`). Without them the workflow builds unsigned as before. Do the rehearsal below on an unsigned build, then again after the first signed release. The website FAQ about the unknown-developer warning stays until a signed build has been checked on a clean machine.
 
 - [ ] Build both installers from current `main` (the Release workflow, or `npm run dist:mac` / `npm run dist:win` on each platform).
 - [ ] Install on a machine that has never had BoardPilot.
