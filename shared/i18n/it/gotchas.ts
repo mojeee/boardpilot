@@ -91,5 +91,19 @@ const it: Record<string, string> = {
     'Da sapere ({part}): {text}',
   'Good to know':
     'Da sapere',
+  'Give the touch controller its own chip select (T_CS). It shares the clock and data lines with the display, so two chip selects on one pin lock both up.':
+    'Dai al controller touch il suo chip select (T_CS). Condivide clock e dati con il display, quindi due chip select sullo stesso pin bloccano entrambi.',
+  'It returns raw 12-bit numbers (0 to 4095) for X and Y, not pixels. Calibrate the corners of your screen once and map the numbers to pixels in code.':
+    'Restituisce numeri grezzi a 12 bit (da 0 a 4095) per X e Y, non pixel. Calibra una volta gli angoli dello schermo e converti i numeri in pixel nel codice.',
+  'T_IRQ goes LOW while the screen is pressed. Use it to read the position only when there is a touch.':
+    'T_IRQ va BASSO mentre lo schermo è premuto. Usalo per leggere la posizione solo quando c’è un tocco.',
+  'The address is always 0x38 and cannot be changed. Another I2C part at 0x38 (a PCF8574A, for example) clashes with it.':
+    'L’indirizzo è sempre 0x38 e non si può cambiare. Un altro componente I2C a 0x38 (per esempio un PCF8574A) va in conflitto.',
+  'Register 0xA8 reads 0x11 on a working chip. Libraries stop at start-up when it does not, so a wrong value there means a wiring or reset problem, or another chip.':
+    'Il registro 0xA8 legge 0x11 su un chip funzionante. Le librerie si fermano all’avvio se non è così, quindi un valore diverso indica un problema di cablaggio o di reset, oppure un altro chip.',
+  'The address is 0x5D or 0x14, chosen by the level of INT while RST is released: INT LOW gives 0x5D, INT HIGH gives 0x14. A board that does not handle INT during reset may answer at either one, so scan for both.':
+    'L’indirizzo è 0x5D o 0x14, scelto dal livello di INT quando RST viene rilasciato: INT BASSO dà 0x5D, INT ALTO dà 0x14. Una scheda che non gestisce INT durante il reset può rispondere a uno qualsiasi dei due, quindi cerca entrambi.',
+  'Its registers have 16-bit addresses (two bytes, high byte first). The product ID is at 0x8140 to 0x8143 and reads the ASCII text “911”. A reader that sends only one address byte gets nothing useful.':
+    'I suoi registri hanno indirizzi a 16 bit (due byte, prima quello alto). L’ID prodotto è a 0x8140–0x8143 e legge il testo ASCII “911”. Un lettore che invia un solo byte di indirizzo non ottiene nulla di utile.',
 };
 export default it;

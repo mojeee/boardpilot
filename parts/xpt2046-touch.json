@@ -1,0 +1,31 @@
+{
+  "id": "xpt2046-touch",
+  "name": "XPT2046 resistive touch controller (SPI)",
+  "category": "input",
+  "measures": ["touch position", "touch pressure"],
+  "pins": [
+    { "name": "VCC", "role": "power" },
+    { "name": "GND", "role": "ground" },
+    { "name": "T_CLK", "role": "spi_sck", "notes": "Clock, shares the SPI bus with the display" },
+    { "name": "T_CS", "role": "spi_cs", "notes": "Chip select of the touch controller: its own pin, not the display's" },
+    { "name": "T_DIN", "role": "spi_mosi", "notes": "Data in (from your board)" },
+    { "name": "T_DO", "role": "spi_miso", "notes": "Data out (to your board)" },
+    { "name": "T_IRQ", "role": "int", "notes": "LOW while the screen is touched" }
+  ],
+  "bus": "spi",
+  "voltage": "3.3",
+  "model": {
+    "shape": "breakout", "size": [20, 24, 1.6], "color": "#1F4FA8", "silk": "XPT2046",
+    "components": [{ "type": "chip", "at": [0, 1], "size": [5, 4.4, 1.1], "package": "tssop", "label": "XPT2046" }]
+  },
+  "gotchas": [
+    { "text": "Give the touch controller its own chip select (T_CS). It shares the clock and data lines with the display, so two chip selects on one pin lock both up.", "source": { "title": "XPT2046 touch controller datasheet", "section": "SPI interface: DOUT is high impedance while CS is HIGH" } },
+    { "text": "It returns raw 12-bit numbers (0 to 4095) for X and Y, not pixels. Calibrate the corners of your screen once and map the numbers to pixels in code.", "source": { "title": "XPT2046 touch controller datasheet", "section": "12-bit conversion: output code 0 to 4095" } },
+    { "text": "T_IRQ goes LOW while the screen is pressed. Use it to read the position only when there is a touch.", "source": { "title": "XPT2046 touch controller datasheet", "section": "PENIRQ pin" } }
+  ],
+  "keywords": ["xpt2046", "ads7843", "resistive touch", "touch screen", "touchscreen", "tft touch", "touch spi", "tocco resistivo", "touchscreen resistivo"],
+  "sources": [
+    { "title": "XPT2046 touch controller datasheet", "section": "SPI interface and PENIRQ" },
+    { "title": "LCDwiki 3.5inch SPI Module ST7796 (MSP3520) user manual", "section": "Pin description (T_CLK, T_CS, T_DIN, T_DO, T_IRQ)" }
+  ]
+}
