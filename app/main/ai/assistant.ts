@@ -340,7 +340,9 @@ export class Assistant {
     const board = getBoard(ctx.scene.board);
     const memoryIds = ctx.scene.memories ?? [];
     const memory = this.memory ? { access: this.memory, ids: memoryIds } : undefined;
-    const memoryLines = await this.memoryContext(memoryIds).catch(() => []);
+    const memoryLines: string[] = await this.memoryContext(memoryIds).catch(() => []);
+    // a customer's own board with no firmware in memory yet: offer once to add it (see "Custom boards" in the system prompt)
+    if (board.bareModule && !memoryIds.length) memoryLines.push('Onboarding: custom board and no project memory attached. Offer once to add the firmware to project memory, unless they already declined in this conversation.');
     // Provider-specific records (reasoning items, thought signatures) only go back to the model
     // that made them; after a provider or model change the neutral text and tool calls are used.
     const history = this.history.map((m): ChatMessage =>

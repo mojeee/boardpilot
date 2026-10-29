@@ -21,7 +21,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { BOARDS, PARTS } from '@shared/board';
 import { setLanguage } from '@shared/i18n';
 import { PROVIDER_INFO } from '@shared/ai';
-import type { AiContext, AiReply, LogEntry, Scene } from '@shared/types';
+import type { AiContext, AiReply, LogEntry, ProjectSketch, Scene } from '@shared/types';
 import type { ChatRecording, ReplayStep } from '@shared/chatReplay';
 import { checkScene } from '@shared/projectBuilder';
 import { assignPins } from '@shared/assign';
@@ -89,6 +89,13 @@ interface Scenario {
   record?: boolean;
   /** a display design is expected (Display Studio): what it must contain */
   display?: { minScreens: number; patterns?: string[]; condition?: boolean; fromParts?: boolean };
+  /** the project already has code (an imported firmware), as in Scene.sketch */
+  sketch?: ProjectSketch;
+  /**
+   * a customer board with imported firmware: graded on the first answer only. The answer must use the pins the
+   * code names, cite the code, say plainly that a pin the code never names is unknown, and offer project memory.
+   */
+  custom?: { gpios: number[]; unknownGpio: number };
   /** a request to do something in the app, not to build: graded on the first answer only */
   act?: {
     /** app actions expected, in order, as "action" or "action:text the argument contains" */
@@ -408,6 +415,32 @@ const S: Scenario[] = [
     record: true,
   },
   {
+    id: 'custom-board-import',
+    title: 'Customer board, imported firmware',
+    blurb: 'A customer ESP32 TFT controller: the assistant answers from the imported code and does not guess what else is on the PCB.',
+    board: 'esp32-wroom-32-module',
+    lang: 'en',
+    request: 'This is a customer board, I imported their firmware. Which pins does the display use, and what is wired to GPIO 27?',
+    persona: 'A technician who received a customer controller built around an ESP32-WROOM-32 module with a TFT. Has the firmware but no schematic yet. Answers briefly; will not attach anything during this chat.',
+    sketch: {
+      name: 'controller.ino',
+      text: [
+        '#include <TFT_eSPI.h>',
+        'TFT_eSPI tft;',
+        '#define VALVE1 26',
+        'void setup() {',
+        '  pinMode(VALVE1, OUTPUT);',
+        '  tft.init();',
+        '}',
+        'void loop() { digitalWrite(VALVE1, HIGH); delay(1000); }',
+      ].join('\n'),
+      files: [{ name: 'User_Setup.h', text: ['#define ILI9341_DRIVER', '#define TFT_MISO 19', '#define TFT_MOSI 23', '#define TFT_SCLK 18', '#define TFT_CS 15', '#define TFT_DC 2', '#define TFT_RST 4'].join('\n') }],
+    },
+    needs: [],
+    // GPIO 27 is not named anywhere in the files: the honest answer says so instead of guessing
+    custom: { gpios: [23, 18, 15, 2], unknownGpio: 27 },
+  },
+  {
     id: 'display-round-gauge',
     title: 'Round gauge',
     blurb: 'A new project: a round GC9A01 screen showing the temperature as a gauge, on a Pico.',
@@ -635,7 +668,7 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
   settings.save({ provider: 'anthropic', model: MODEL, apiKey: KEY });
   const assistant = new Assistant(hub, settings, env);
 
-  let scene: Scene = { board: sc.board, parts: sc.start ?? [], wires: [] };
+  let scene: Scene = { board: sc.board, parts: sc.start ?? [], wires: [], ...(sc.sketch ? { sketch: sc.sketch } : {}) };
   if (sc.startWired) scene = assignPins(scene, BOARDS[sc.board], PARTS).scene;
   const startScene = scene;
   const log: LogEntry[] = [];
@@ -681,7 +714,7 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
     if (reply.actions?.length) lines.push(`  ACTIONS: ${reply.actions.map((x) => `${x.action}(${x.arg})`).join(', ')}`);
     if (reply.codeRequest) lines.push(`  CODE REQUEST: ${reply.codeRequest}`);
     if (reply.display) lines.push(`  DISPLAY: ${reply.display.spec.title} on ${reply.display.spec.part}: ${reply.display.spec.screens.map((x) => `${x.id}[${x.elements.map((e) => (e.type === 'pattern' ? e.kind : e.type)).join(' ')}]`).join(', ')}; ${reply.display.problems.filter((p) => p.severity === 'error').length} errors`);
-    if (sc.act) {
+    if (sc.act || sc.custom) {
       actsSeen = reply;
       break;
     }
@@ -774,6 +807,17 @@ async function runScenario(sc: Scenario, run: number): Promise<RunResult> {
     }
     if (sc.act.code) check('asks for code in the Code panel', !!actsSeen?.codeRequest, 'no write_code call');
     check('changes nothing else', !actsSeen?.proposal && !actsSeen?.pendingWrite, 'made a proposal or asked for a board write');
+  } else if (sc.custom) {
+    const r = actsSeen;
+    const msg = r?.message ?? '';
+    const named = sc.custom.gpios.filter((g) => new RegExp(`\\b${g}\\b`).test(msg));
+    check('names the display pins from the imported code', named.length >= 3, `mentions GPIO ${named.join(', ') || 'none of them'}`);
+    check('cites the code as its source', (r?.sources ?? []).some((s) => /User_Setup|controller\.ino/i.test(s.label)) || /User_Setup/i.test(msg), `sources: ${(r?.sources ?? []).map((s) => s.label).join(' | ') || 'none'}`);
+    const sentence = msg.split(/(?<=[.!?])\s+/).find((x) => new RegExp(`\\b${sc.custom!.unknownGpio}\\b`).test(x)) ?? '';
+    check(`says GPIO ${sc.custom.unknownGpio} is not named in the files`, /\b(not|n't|no|nothing|unknown|cannot|can't|don't|do not)\b/i.test(sentence), `sentence: ${sentence || 'GPIO not mentioned'}`);
+    check('does not call the unknown pin a suggestion-free fact', r?.confidence !== 'measured' && !(r?.confidence === 'documented' && /\b(relay|backlight|touch|buzzer|led)\b/i.test(sentence) && !/\b(not|may|might|could|unknown)\b/i.test(sentence)), `confidence ${r?.confidence}: ${sentence}`);
+    check('offers to add the firmware to project memory', /memory/i.test(msg) || (r?.nextOptions ?? []).some((o) => /memory/i.test(o)), 'no mention of project memory');
+    check('changes nothing', !r?.proposal && !r?.pendingWrite, 'made a proposal or asked for a board write');
   } else if (sc.display && !sc.needs.length) {
     // A display on parts already wired: no new project needed.
   } else if (sc.expectNoProposal) {

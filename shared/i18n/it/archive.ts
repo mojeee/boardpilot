@@ -105,4 +105,5 @@ export default {
   "Wiring check on the pins kept from “{name}”: no problems found.": "Controllo del cablaggio sui pin mantenuti da “{name}”: nessun problema trovato.",
   "The project’s files could not be read.": "I file del progetto non si sono potuti leggere.",
   "Check that the folder still exists and try again.": "Controlla che la cartella esista ancora e riprova.",
+  "To let the assistant search this firmware, add its folder in Project tools → Project memory and attach it to this project.": "Per far cercare questo firmware all’assistente, aggiungi la sua cartella in Strumenti del progetto → Memoria di progetto e collegala a questo progetto.",
 } as Record<string, string>;

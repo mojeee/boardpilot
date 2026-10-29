@@ -212,6 +212,7 @@ export async function startFromArchive(e: ArchiveEntry, opts: { keepPins?: boole
       if (left.length) log('warning', t('Left out (too many, too big or too deep): {list}.', { list: left.slice(0, 8).join(', ') }), { source: `archive · ${e.name}` });
       for (const n of k.kept) log('action', t('Pin kept: {note}', { note: n }), { source: `archive · ${e.name} (read from its files)` });
       for (const n of k.skipped) log('warning', n, { source: `archive · ${e.name}` });
+      log('info', t('To let the assistant search this firmware, add its folder in Project tools → Project memory and attach it to this project.'), { source: `archive · ${e.name}` });
       if (!k.kept.length) log('info', t('No display pins were found in the files, so every pin was chosen by the safe-pin rules.'), { source: `archive · ${e.name}` });
       // the wiring rules on the pins that were kept
       const found = checkWiring(useScene.getState().scene, getBoard(boardId), PARTS).filter((f) => f.severity !== 'info');

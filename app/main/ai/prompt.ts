@@ -3,6 +3,9 @@
 
 import type { AiContext, BoardDef } from '@shared/types';
 import { BOARDS, PARTS } from '@shared/board';
+import { stripComments } from '@shared/codeCheck';
+import { combineSources, projectFiles } from '@shared/codeProject';
+import { displayPinsFromCode, ROLE_LABEL } from '@shared/displayPins';
 import { getLanguage } from '@shared/i18n';
 
 export const SYSTEM_PROMPT = `You are the assistant inside BoardPilot, a desktop app that guides beginners through embedded work on a development board: ESP32 boards, Raspberry Pi Pico, Arduino Uno/Nano/Mega, STM32 Nucleo and Black Pill, Nordic nRF52840 DK or Teensy. The context block names the board in use and lists its pins with their flags.
@@ -124,6 +127,7 @@ export function buildContextBlock(board: BoardDef, ctx: AiContext, extra: string
     : null;
   const { sketch, memories: _memories, ...drawing } = ctx.scene;
   return [
+    ...customBoardBlock(board, ctx),
     '<context>',
     `Reply language: ${getLanguage() === 'it' ? 'Italian (keep pin names, code and units as they are)' : 'English'}`,
     `Screen: ${ctx.screen}${ctx.flowId ? `, flow ${ctx.flowId}, step ${ctx.stepId ?? '?'}` : ''}`,
@@ -139,6 +143,29 @@ export function buildContextBlock(board: BoardDef, ctx: AiContext, extra: string
     ...extra,
     '</context>',
   ].join('\n');
+}
+
+/**
+ * A project on a bare module is a customer's own board: say what is and is not known about it, and which display
+ * pins their code names (read from the code, so they can be cited). Empty for every other board.
+ */
+export function customBoardBlock(board: BoardDef, ctx: AiContext): string[] {
+  const sketch = ctx.scene.sketch;
+  const named = sketch ? displayPinsFromCode(stripComments(combineSources(projectFiles(sketch), sketch.name).text)) : [];
+  if (!board.bareModule && !named.length) return [];
+  const lines: string[] = [];
+  if (board.bareModule) {
+    lines.push(
+      `Custom board: the project is on the bare module ${board.module} (${board.name}), the part the user's own PCB is built around. Pin ids are the module's GPIOs. Its schematic is not in the library: nothing else on the PCB is known unless the user, project memory or their code says so. Never say what is connected to a pin of their board from the board file alone; a pin use read from their code is documented from that file (name the file), anything else about the PCB is a suggestion until the user confirms it. Offer once, early, to add their firmware to project memory (Project tools → Project memory) if none is attached; do not ask again after they decline.`,
+      `Pins flagged reserved are used on the user's board: ${JSON.stringify(board.pins.filter((p) => p.flags.includes('reserved')).map((p) => ({ id: p.id, note: p.notes })))}`,
+    );
+  }
+  if (named.length) {
+    lines.push(
+      `Display pins named in the project code (read from the code, as written; cite them as documented from that file): ${JSON.stringify(named.map((p) => ({ role: ROLE_LABEL[p.role], gpio: p.gpio, as: p.name, line: p.line })))}`,
+    );
+  }
+  return lines;
 }
 
 /** The code with line numbers, cut to a size the models take comfortably. */
