@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Pilot batch (Giardinocontrol):** bare ESP32-WROOM-32 and ESP32-S3-WROOM-1 module boards for custom PCBs (pin facts marked for review); archive import reads TFT_eSPI, LovyanGFX and Adafruit display libraries and their pins (file:line), "Use as start, keep its pins" loads every code file; the code checker has a new SPI rule (`code_spi_pins`); the assistant gets custom-board context.
+- Display Studio: LovyanGFX, TFT_eSPI and LVGL output (sketch or module), ST7796 and ILI9488, touch buttons and tap actions with generated XPT2046/FT6236/GT911 reads, bitmaps and Adafruit GFX font import; new touch parts. The generated C++ has not been compiled against the real libraries yet.
+- Flashing safety: locked chips (secure boot, flash encryption) are refused before backup or flash, agent images are checked against SHA-256 in their manifest, no 4 MB flash assumption, bundled-esptool lookup. Diagnostic agent 0.3: `spi_xfer` and `tft_id` (prebuilt agents must be rebuilt).
+- Free public beta: a closable weekly notice replaces the lock screen after the trial (`BETA_FREE`); signing and notarisation are set up in the release workflow and run only when the secrets exist.
+- Export as PlatformIO project, runtime user boards (import a board JSON in the board picker), MCP `get_display` and `design_display` (applied only on the user's click), `parallel8`/`rgb` bus values and `psramBytes`.
 - Pilot batch A: ST7796 3.5" part cites the LCDwiki module page (it had named a capacitive Waveshare module while its pins are XPT2046); `docs/launch/pilot-license.md` is the checklist for a pilot license key and an unsigned install; new live-eval scenario `irrigation-zones` (`BP_EVAL_RECORD=1 npm run eval:ai` records it as a website demo, not yet recorded).
 - MCP on Windows works: `BoardPilot --mcp-stdio` never received anything from the AI agent (in Electron's main process on Windows `process.stdin` is an empty stream that ends at once), so Claude Desktop, Claude Code and Cursor saw no tools and the headless mode quit after a second. It now reads the pipe directly.
 - MCP results say when they come from the simulator (`"simulated": true`), so an agent never takes the simulated bench for real hardware.

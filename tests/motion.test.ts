@@ -41,7 +41,11 @@ describe('motion clips', () => {
   it('the boards clip shows every board', () => {
     const shown = clips.find((c) => c.id === 'thirteen-boards')!.steps.flatMap((s) => (s.do === 'board' ? [s.id] : []));
     const all = readdirSync(join(root, 'boards'));
-    expect(shown.sort()).toEqual(all.filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)).sort());
+    // Bare modules (custom PCBs) are not dev boards: the clip shows the boards you can buy and plug in.
+    const devBoards = all
+      .filter((f) => f.endsWith('.json'))
+      .filter((f) => !JSON.parse(readFileSync(join(root, 'boards', f), 'utf8')).bareModule);
+    expect(shown.sort()).toEqual(devBoards.map((f) => f.slice(0, -5)).sort());
   });
 
   it('the parts clip claim matches the library', () => {
