@@ -14,6 +14,20 @@ export const DEFAULT_SKETCH_NAME = 'sketch.ino';
 export const isSourceFile = (name: string) => /\.(ino|pde|c|cc|cpp|cxx|h|hh|hpp|hxx)$/i.test(name);
 export const isHeaderFile = (name: string) => /\.(h|hh|hpp|hxx)$/i.test(name);
 
+/** platformio.ini: its `-D NAME=value` build flags are read like #defines (TFT_eSPI takes its pins from them). */
+export const isBuildIni = (name: string) => /(^|\/)platformio\.ini$/i.test(name);
+
+/** The ini as #define lines, one per line of the ini (line numbers stay the same; only the first -D of a line is read). */
+export function iniAsDefines(text: string): string {
+  return text
+    .split('\n')
+    .map((l) => {
+      const m = /-D[ \t]*(\w+)=(-?\w+)/.exec(l);
+      return m ? `#define ${m[1]} ${m[2]}` : '';
+    })
+    .join('\n');
+}
+
 /** Every file of the project, the main sketch first. */
 export function projectFiles(sketch: ProjectSketch | undefined): ProjectFile[] {
   if (!sketch) return [{ name: DEFAULT_SKETCH_NAME, text: '' }];
@@ -75,8 +89,8 @@ export function newFileText(name: string): string {
  * code that uses them), then the main sketch, then the other sources; with the map back.
  */
 export function combineSources(files: ProjectFile[], main: string): { text: string; at: (line: number) => { file: string; line: number } } {
-  const src = files.filter((f) => isSourceFile(f.name));
-  const order = [...src.filter((f) => isHeaderFile(f.name)), ...src.filter((f) => f.name === main), ...src.filter((f) => !isHeaderFile(f.name) && f.name !== main)];
+  const src = files.filter((f) => isSourceFile(f.name) || isBuildIni(f.name)).map((f) => (isBuildIni(f.name) ? { ...f, text: iniAsDefines(f.text) } : f));
+  const order = [...src.filter((f) => isHeaderFile(f.name) || isBuildIni(f.name)), ...src.filter((f) => f.name === main), ...src.filter((f) => !isHeaderFile(f.name) && !isBuildIni(f.name) && f.name !== main)];
   const starts: { file: string; first: number }[] = [];
   const chunks: string[] = [];
   let line = 1;
@@ -100,7 +114,7 @@ export function combineSources(files: ProjectFile[], main: string): { text: stri
 export function checkProject(sketch: ProjectSketch | undefined, scene: Scene, board: BoardDef, parts: Record<string, PartDef>, opts: CodeCheckOptions = {}): CodeFinding[] {
   if (!sketch) return [];
   const files = projectFiles(sketch);
-  const sources = files.filter((f) => isSourceFile(f.name) || f.name === sketch.name);
+  const sources = files.filter((f) => isSourceFile(f.name) || isBuildIni(f.name) || f.name === sketch.name);
   if (!sources.some((f) => f.text.trim())) return [];
   if (sources.length <= 1) return checkCode(sketch.text, scene, board, parts, opts);
   const { text, at } = combineSources(sources, sketch.name);

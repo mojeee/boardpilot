@@ -82,7 +82,7 @@ export const MCP_TOOLS: McpToolDef[] = [
   },
   {
     name: 'check_code',
-    description: 'Compare an Arduino sketch with the open project’s wiring: Wire.begin pins vs the drawn I2C pins, outputs on input-only pins, analogRead on non-ADC or ADC2-with-Wi-Fi pins, the code driving an unwired pin, Serial.begin baud. Returns findings with line numbers.',
+    description: 'Compare an Arduino sketch with the open project’s wiring: Wire.begin pins vs the drawn I2C pins, SPI pins (SPI.begin, TFT_eSPI User_Setup.h or PlatformIO -D flags, LovyanGFX cfg.pin_*, Adafruit TFT constructors) vs the drawn SPI and display pins, outputs on input-only pins, analogRead on non-ADC or ADC2-with-Wi-Fi pins, the code driving an unwired pin, Serial.begin baud. Returns findings with line numbers.',
     inputSchema: obj({ code: { type: 'string' }, monitorBaud: { type: 'integer' } }, ['code']),
   },
   spec('read_pins'),

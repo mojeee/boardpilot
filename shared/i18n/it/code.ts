@@ -120,5 +120,17 @@ const it: Record<string, string> = {
   'PWM outputs': 'Uscite PWM',
   'Digital outputs': 'Uscite digitali',
   'Digital inputs': 'Ingressi digitali',
+  "clock (SCLK)": "clock (SCLK)",
+  "data out (MOSI)": "uscita dati (MOSI)",
+  "data in (MISO)": "ingresso dati (MISO)",
+  "chip select": "chip select",
+  "data/command (DC)": "dati/comando (DC)",
+  "touch chip select": "chip select del touch",
+  "Line {line}: the code sets the SPI clock to {sck} and data out (MOSI) to {mosi}, the reverse of the drawing (clock on {dsck}, MOSI on {dmosi}).": "Riga {line}: il codice imposta il clock SPI su {sck} e l’uscita dati (MOSI) su {mosi}, al contrario del disegno (clock su {dsck}, MOSI su {dmosi}).",
+  "Swap the two pins in the code, or move the wires to match the code.": "Scambia i due pin nel codice, oppure sposta i fili per farli corrispondere al codice.",
+  "Line {line}: the code puts the SPI {signal} on {pin} ({name}), but the drawing has it on {want}.": "Riga {line}: il codice mette {signal} dell’SPI su {pin} ({name}), ma nel disegno è su {want}.",
+  "Change the code to use {want}, or move the wire to {pin}.": "Cambia il codice per usare {want}, oppure sposta il filo su {pin}.",
+  "Line {line}: the display pin {name} is not on this board’s header.": "Riga {line}: il pin del display {name} non è sul connettore di questa scheda.",
+  "Line {line}: {pin} is used as the display {signal} ({name}), but {pin} can only be an input.": "Riga {line}: {pin} è usato come {signal} del display ({name}), ma {pin} può essere solo un ingresso.",
 };
 export default it;

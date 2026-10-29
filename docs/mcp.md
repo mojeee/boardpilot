@@ -48,7 +48,7 @@ Add a stdio server to the client's MCP configuration (`~/.cursor/mcp.json`, or C
 | `get_part`, `search_parts` | The open parts library: pins, voltage, I2C addresses, chip-ID register, gotchas, sources | no |
 | `get_scene` | The project open in BoardPilot: board, parts, wires | no |
 | `check_wiring` | The wiring rules on the project (or a scene you pass) | no |
-| `check_code` | Compares an Arduino sketch with the project's wiring (pins, I2C, ADC, baud) | no |
+| `check_code` | Compares an Arduino sketch with the project's wiring (pins, I2C, SPI and display pins, ADC, baud) | no |
 | `read_pins`, `pullup_check`, `i2c_scan`, `i2c_read`, `adc_read` | Live measurements through the diagnostic agent, with decoded I2C traces | no |
 | `read_serial` | A few seconds of the user's own firmware output | no |
 | `get_log` | The session log | no |

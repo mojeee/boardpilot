@@ -46,7 +46,7 @@ function useBannerItems(): BannerItem[] {
       out.push({
         key: `c:${f.id}:${f.message}`,
         severity: f.severity,
-        title: f.rule === 'code_i2c_pins' || f.rule === 'code_pin_not_wired' ? t('Code and drawing disagree.') : t('Check the code.'),
+        title: f.rule === 'code_i2c_pins' || f.rule === 'code_spi_pins' || f.rule === 'code_pin_not_wired' ? t('Code and drawing disagree.') : t('Check the code.'),
         text: `${stripLine(f.message)} ${f.hint}`,
         source: f.line ? t('code check · line {line}', { line: f.line }) : t('code check'),
         targets: f.targets,

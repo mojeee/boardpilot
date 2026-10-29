@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { checkCode } from '@shared/codeCheck';
+import { checkProject } from '@shared/codeProject';
 import { getBoard, PARTS } from '@shared/board';
 import type { Scene } from '@shared/types';
 
@@ -126,5 +127,105 @@ describe('code vs wiring checker', () => {
     expect(checkCode(code('D13'), s, nucleo, PARTS)).toEqual([]);
     expect(checkCode(code(led?.chipPin ?? 'PA5'), s, nucleo, PARTS)).toEqual([]);
     expect(checkCode(code('12'), s, nucleo, PARTS).map((f) => f.rule)).toContain('code_pin_not_wired');
+  });
+});
+
+/** An ILI9341 display on the ESP32 DevKit's default VSPI pins: MOSI D23, MISO D19, SCK D18, CS D5, DC D2, RESET D4. */
+const tftScene: Scene = {
+  board: esp.id,
+  parts: [{ id: 'tft1', partId: 'ili9341-tft-28', position: [0, 0, 60] }],
+  wires: [
+    ['D23', 'SDI(MOSI)'],
+    ['D19', 'SDO(MISO)'],
+    ['D18', 'SCK'],
+    ['D5', 'CS'],
+    ['D2', 'DC'],
+    ['D4', 'RESET'],
+  ].map(([pin, to], i) => ({ id: `t${i}`, from: { part: 'board', pin }, to: { part: 'tft1', pin: to }, color: '#fff' })),
+};
+const SETUP = (over: Record<string, string> = {}) => {
+  const d = { TFT_MOSI: '23', TFT_MISO: '19', TFT_SCLK: '18', TFT_CS: '5', TFT_DC: '2', TFT_RST: '4', ...over };
+  return `#define ILI9341_DRIVER\n${Object.entries(d).map(([k, v]) => `#define ${k} ${v}`).join('\n')}\n#include <TFT_eSPI.h>\nTFT_eSPI tft;\nvoid setup() { tft.init(); }\n`;
+};
+const spi = (code: string, scene = tftScene) => checkCode(code, scene, esp, PARTS).filter((f) => f.rule === 'code_spi_pins');
+
+describe('SPI and display pins (TFT_eSPI, LovyanGFX, SPI.begin)', () => {
+  it('accepts display pins that match the drawing', () => {
+    expect(checkCode(SETUP(), tftScene, esp, PARTS)).toEqual([]);
+  });
+
+  it('flags clock and MOSI swapped against the drawing as an error, once', () => {
+    const f = spi(SETUP({ TFT_SCLK: '23', TFT_MOSI: '18' }));
+    expect(f).toHaveLength(1);
+    expect(f[0]).toMatchObject({ severity: 'error', line: 2 });
+    expect(f[0].message).toMatch(/reverse of the drawing/);
+    expect(f[0].targets).toEqual(expect.arrayContaining(['pin:D23', 'pin:D18']));
+    expect(f[0].source).toMatch(/not a measurement/);
+  });
+
+  it('flags a chip select, DC or reset that is not where the drawing has it', () => {
+    const f = spi(SETUP({ TFT_CS: '15', TFT_DC: '27', TFT_RST: '26' }));
+    expect(f.map((x) => x.severity)).toEqual(['warning', 'warning', 'warning']);
+    expect(f.map((x) => x.line)).toEqual([5, 6, 7]);
+    expect(f[0].message).toContain('chip select');
+    expect(f[0].hint).toContain('5');
+  });
+
+  it('reads LovyanGFX cfg.pin_* blocks, with the touch chip select compared to the drawn chip selects', () => {
+    const lgfx = `#include <LovyanGFX.hpp>
+class LGFX : public lgfx::LGFX_Device {
+  lgfx::Bus_SPI _bus_instance;
+  lgfx::Panel_ILI9341 _panel_instance;
+public:
+  LGFX() {
+    { auto cfg = _bus_instance.config();
+      cfg.pin_sclk = 18; cfg.pin_mosi = 23; cfg.pin_miso = 12; cfg.pin_dc = 2;
+      _bus_instance.config(cfg); }
+    { auto cfg = _panel_instance.config();
+      cfg.pin_cs = 5; cfg.pin_rst = 4;
+      _panel_instance.config(cfg); }
+  }
+};`;
+    const f = spi(lgfx);
+    expect(f).toHaveLength(1);
+    expect(f[0].message).toContain('data in (MISO)');
+    expect(f[0].line).toBe(8);
+  });
+
+  it('checks SPI.begin(sck, miso, mosi) and a plain SPI.begin() against the drawing', () => {
+    expect(spi('void setup(){ SPI.begin(18, 19, 23, 5); }')).toEqual([]);
+    expect(spi('void setup(){ SPI.begin(14, 12, 13); }').map((f) => f.line)).toEqual([1, 1, 1]);
+    // the DevKit's default VSPI pins are what the drawing uses
+    expect(spi('void setup(){ SPI.begin(); }')).toEqual([]);
+    const moved: Scene = { ...tftScene, wires: tftScene.wires.map((w) => (w.from.pin === 'D18' ? { ...w, from: { part: 'board', pin: 'D14' } } : w)) };
+    const f = spi('void setup(){ SPI.begin(); }', moved);
+    expect(f).toHaveLength(1);
+    expect(f[0].message).toContain('SPI.begin()');
+  });
+
+  it('says nothing about SPI when the drawing has no SPI part, but still stops flash and input-only pins', () => {
+    const none: Scene = { board: esp.id, parts: [], wires: [] };
+    expect(spi(SETUP({ TFT_CS: '15' }), none)).toEqual([]);
+    const flash = checkCode(SETUP({ TFT_SCLK: '6' }), none, esp, PARTS);
+    expect(flash.map((f) => f.rule)).toContain('code_unknown_pin'); // GPIO 6 is not on the 30-pin header
+    const input = checkCode(SETUP({ TFT_DC: '34' }), none, esp, PARTS);
+    expect(input.find((f) => f.rule === 'code_output_on_input_only')).toMatchObject({ severity: 'error', line: 6 });
+  });
+
+  it('counts display pins as used, so a wired DC pin is not reported as unused', () => {
+    expect(checkCode(SETUP(), tftScene, esp, PARTS).map((f) => f.rule)).not.toContain('code_wired_pin_unused');
+  });
+
+  it('reads PlatformIO -D flags and User_Setup.h across project files, mapped to their own file and line', () => {
+    const sketch = {
+      name: 'main.ino',
+      text: '#include <TFT_eSPI.h>\nTFT_eSPI tft;\nvoid setup(){ tft.init(); }\n',
+      files: [
+        { name: 'platformio.ini', text: '[env:esp32dev]\nbuild_flags =\n  -D ILI9341_DRIVER=1\n  -D TFT_MOSI=18\n  -D TFT_SCLK=23\n  -D TFT_CS=5\n' },
+      ],
+    };
+    const f = checkProject(sketch, tftScene, esp, PARTS).filter((x) => x.rule === 'code_spi_pins');
+    expect(f).toHaveLength(1);
+    expect(f[0]).toMatchObject({ severity: 'error', file: 'platformio.ini', line: 4 });
   });
 });

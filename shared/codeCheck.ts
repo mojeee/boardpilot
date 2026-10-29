@@ -9,11 +9,13 @@
 import type { BoardDef, PartDef, PartPinRole, PinDef, Scene, TargetRef } from './types';
 import { isAdcPin, isEspFamily, pinById } from './board';
 import { t } from './i18n';
+import { displayPinsFromCode, pinNumber, type DisplayPinRole } from './displayPins';
 
 export interface CodeFinding {
   id: string;
   rule:
     | 'code_i2c_pins'
+    | 'code_spi_pins'
     | 'code_output_on_input_only'
     | 'code_flash_pin'
     | 'code_no_pullup'
@@ -419,6 +421,161 @@ export function checkCode(source: string, scene: Scene, board: BoardDef, parts: 
     const dscl = pinById(board, board.rules.i2c.scl);
     cur = plain;
     if (plain && !withPins && dsda && dscl) i2cCompare(dsda, dscl, plain.line);
+  }
+
+  /* ---- SPI and display pins: library setups (TFT_eSPI, LovyanGFX, Adafruit) and SPI.begin vs the drawing ---- */
+  cur = undefined;
+  {
+    interface CodeSpi {
+      role: DisplayPinRole;
+      pin: PinDef | null;
+      name: string;
+      line: number;
+    }
+    const found: CodeSpi[] = [];
+    const take = (role: DisplayPinRole, gpio: number, name: string, line: number) => {
+      if (!found.some((x) => x.role === role)) found.push({ role, pin: resolve(String(gpio)) ?? null, name, line });
+    };
+    for (const d of displayPinsFromCode(code)) take(d.role, d.gpio, d.name, d.line);
+    const plainSpiBegin = all.find((c) => c.name === 'SPI.begin' && c.args.length === 0);
+    for (const c of all) {
+      const num = (i: number) => (c.args[i] === undefined ? null : pinNumber(c.args[i], consts));
+      // ESP32: SPI.begin(sck, miso, mosi[, ss])
+      if (c.name === 'SPI.begin' && c.args.length >= 3) {
+        const [sck, miso, mosi] = [num(0), num(1), num(2)];
+        if (sck !== null) take('sclk', sck, 'SPI.begin sck', c.line);
+        if (miso !== null) take('miso', miso, 'SPI.begin miso', c.line);
+        if (mosi !== null) take('mosi', mosi, 'SPI.begin mosi', c.line);
+      }
+      // Pico (arduino-pico): SPI.setSCK / setTX (= MOSI) / setRX (= MISO)
+      const n0 = num(0);
+      if (n0 !== null && c.name === 'SPI.setSCK') take('sclk', n0, 'SPI.setSCK', c.line);
+      if (n0 !== null && c.name === 'SPI.setTX') take('mosi', n0, 'SPI.setTX', c.line);
+      if (n0 !== null && c.name === 'SPI.setRX') take('miso', n0, 'SPI.setRX', c.line);
+    }
+    // a plain SPI.begin() on an ESP32 uses the board's default SPI pins
+    const dflt = board.rules.spi;
+    if (esp && plainSpiBegin && dflt && !found.some((x) => x.role === 'sclk' || x.role === 'mosi')) {
+      for (const [role, id] of [['sclk', dflt.sck], ['mosi', dflt.mosi], ['miso', dflt.miso]] as const) {
+        const g = pinById(board, id)?.gpio;
+        if (g !== null && g !== undefined) take(role, g, 'SPI.begin()', plainSpiBegin.line);
+      }
+    }
+
+    // what the drawing has: the board pins wired to a part pin with each SPI role, or to a display pin by its name
+    const onBoard = (pred: (def: PartDef, pinName: string, role: PartPinRole | undefined) => boolean) => {
+      const out = new Map<string, PinDef>();
+      for (const w of scene.wires) {
+        const boardEnd = w.from.part === 'board' ? w.from : w.to.part === 'board' ? w.to : null;
+        const partEnd = w.from.part === 'board' ? w.to : w.from;
+        const inst = scene.parts.find((p) => p.id === partEnd.part);
+        const def = inst ? parts[inst.partId] : undefined;
+        const bp = boardEnd ? pinById(board, boardEnd.pin) : undefined;
+        if (bp && def && pred(def, partEnd.pin, def.pins.find((x) => x.name === partEnd.pin)?.role)) out.set(bp.id, bp);
+      }
+      return out;
+    };
+    const isSpiPart = (def: PartDef) => def.pins.some((x) => x.role === 'spi_sck' || x.role === 'spi_mosi');
+    const cs = onBoard((_d, _n, r) => r === 'spi_cs');
+    const drawn: Partial<Record<DisplayPinRole, Map<string, PinDef>>> = {
+      sclk: onBoard((_d, _n, r) => r === 'spi_sck'),
+      mosi: onBoard((_d, _n, r) => r === 'spi_mosi'),
+      miso: onBoard((_d, _n, r) => r === 'spi_miso'),
+      cs,
+      touch_cs: cs,
+      dc: onBoard((d, n) => isSpiPart(d) && /^(dc|rs|a0|d\/c|dc\/rs)$/i.test(n.trim())),
+      rst: onBoard((d, n) => isSpiPart(d) && /^(res|rst|reset|resetb)$/i.test(n.trim())),
+    };
+    const SIGNAL: Partial<Record<DisplayPinRole, string>> = {
+      sclk: t('clock (SCLK)'),
+      mosi: t('data out (MOSI)'),
+      miso: t('data in (MISO)'),
+      cs: t('chip select'),
+      dc: t('data/command (DC)'),
+      rst: t('reset'),
+      touch_cs: t('touch chip select'),
+    };
+    const OUTPUTS: DisplayPinRole[] = ['sclk', 'mosi', 'cs', 'dc', 'rst', 'bl'];
+
+    for (const f of found) if (f.pin) mentioned.add(f.pin.id);
+
+    // clock and data out swapped: the clock pin of the code is the drawn MOSI and the other way round
+    const sck = found.find((x) => x.role === 'sclk');
+    const mosi = found.find((x) => x.role === 'mosi');
+    const dSck = drawn.sclk;
+    const dMosi = drawn.mosi;
+    let swapped = false;
+    if (sck?.pin && mosi?.pin && dSck?.size && dMosi?.size && dSck.has(mosi.pin.id) && dMosi.has(sck.pin.id) && !dSck.has(sck.pin.id)) {
+      swapped = true;
+      const dS = [...dSck.values()][0];
+      const dM = [...dMosi.values()][0];
+      add({
+        rule: 'code_spi_pins',
+        severity: 'error',
+        message: t('Line {line}: the code sets the SPI clock to {sck} and data out (MOSI) to {mosi}, the reverse of the drawing (clock on {dsck}, MOSI on {dmosi}).', {
+          line: ln(mosi.line),
+          sck: label(sck.pin),
+          mosi: label(mosi.pin),
+          dsck: label(dS),
+          dmosi: label(dM),
+        }),
+        hint: t('Swap the two pins in the code, or move the wires to match the code.'),
+        line: mosi.line,
+        targets: [pinT(sck.pin), pinT(mosi.pin), pinT(dS), pinT(dM)],
+      });
+    }
+    for (const f of found) {
+      const set = drawn[f.role];
+      if (!f.pin || !set?.size || set.has(f.pin.id)) continue;
+      if (swapped && (f.role === 'sclk' || f.role === 'mosi')) continue;
+      const want = [...set.values()][0];
+      add({
+        rule: 'code_spi_pins',
+        severity: 'warning',
+        message: t('Line {line}: the code puts the SPI {signal} on {pin} ({name}), but the drawing has it on {want}.', {
+          line: ln(f.line),
+          signal: SIGNAL[f.role] ?? f.role,
+          pin: label(f.pin),
+          name: f.name,
+          want: [...set.values()].map(label).join(' / '),
+        }),
+        hint: t('Change the code to use {want}, or move the wire to {pin}.', { want: want.gpio !== null && !headerNumbering ? String(want.gpio) : want.label, pin: label(f.pin) }),
+        line: f.line,
+        targets: [pinT(f.pin), pinT(want)],
+      });
+    }
+    // pins the board does not have, or cannot use for this signal, whatever the drawing says
+    for (const f of found) {
+      if (f.name === 'SPI.begin()') continue;
+      if (f.pin === null) {
+        add({
+          rule: 'code_unknown_pin',
+          severity: 'warning',
+          message: t('Line {line}: the display pin {name} is not on this board’s header.', { line: ln(f.line), name: f.name }),
+          hint: t('Check the pin number against the board’s pinout (2D pinout view).'),
+          line: f.line,
+          targets: [],
+        });
+      } else if (f.pin.flags.includes('flash')) {
+        add({
+          rule: 'code_flash_pin',
+          severity: 'error',
+          message: t('Line {line}: {pin} is connected to the board’s flash memory. Using it stops the program.', { line: ln(f.line), pin: label(f.pin) }),
+          hint: t('Use another pin.'),
+          line: f.line,
+          targets: [pinT(f.pin)],
+        });
+      } else if (OUTPUTS.includes(f.role) && f.pin.flags.includes('input_only')) {
+        add({
+          rule: 'code_output_on_input_only',
+          severity: 'error',
+          message: t('Line {line}: {pin} is used as the display {signal} ({name}), but {pin} can only be an input.', { line: ln(f.line), pin: label(f.pin), signal: SIGNAL[f.role] ?? f.role, name: f.name }),
+          hint: t('Pick an output-capable pin for this signal and move the wire to it.'),
+          line: f.line,
+          targets: [pinT(f.pin)],
+        });
+      }
+    }
   }
 
   // Outputs: a part the board drives is wired to one pin while the code writes another.
