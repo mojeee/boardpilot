@@ -7,6 +7,7 @@ import type { PartDef, Scene } from '../types';
 import { BOARDS } from '../board';
 import { partsFromDescription } from '../describe';
 import { stripComments } from '../codeCheck';
+import { ROLE_LABEL, displayPinsFromCode, displayPinsFromFlags, tftEspiDrivers, type DisplayPin } from '../displayPins';
 import { HEADERS, libDepFacts, type HeaderFacts } from './includeMap';
 import type {
   ArchiveBus,
@@ -87,6 +88,30 @@ export function mcuFamily(mcu: string): string {
   if (/PIC(\d+)/.test(m)) return `pic${/PIC(\d+)/.exec(m)![1]}`;
   if (/IMXRT|RT106/.test(m)) return 'imxrt';
   return m.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8);
+}
+
+/** Display controllers named by a TFT_eSPI driver define or a LovyanGFX panel class that have exactly one part in the library. */
+const CONTROLLER_PART: Record<string, string> = { ILI9341: 'ili9341-tft-28', GC9A01: 'gc9a01-round', ILI9488: 'ili9488-tft-35', ST7796: 'st7796-tft-35' };
+
+/** Display pins a library setup names, as archive facts (each with the file and line it was read from). */
+function addDisplayPins(acc: Acc, file: string, pins: DisplayPin[]) {
+  for (const p of pins) {
+    const ev = { file, line: p.line };
+    acc.pins.add({ pin: `GPIO ${p.gpio}`, use: `${ROLE_LABEL[p.role]} (${p.name})` }, ev);
+    if (p.role === 'mosi' || p.role === 'sclk' || p.role === 'miso' || p.role === 'touch_sclk') acc.buses.add('spi', ev);
+    if (p.role === 'touch_sda' || p.role === 'touch_scl') acc.buses.add('i2c', ev);
+  }
+}
+
+/** TFT_eSPI driver defines and LovyanGFX panel classes: the controller is a library fact, and a part when it is unambiguous. */
+function addDisplayController(acc: Acc, f: ProjectFile, text: string, parts: Record<string, PartDef>) {
+  const hits = [...tftEspiDrivers(text).map((d) => ({ ...d, lib: 'TFT_eSPI' })), ...[...text.matchAll(/\bPanel_([A-Z]+\d+[A-Z]?)\b/g)].map((m) => ({ controller: m[1], line: lineOf(text, m.index ?? 0), lib: 'LovyanGFX' }))];
+  for (const h of hits) {
+    const ev = { file: f.path, line: h.line };
+    acc.libraries.add(`${h.lib} (${h.controller})`, ev);
+    const partId = CONTROLLER_PART[h.controller.replace(/-/g, '')];
+    if (partId && parts[partId]) acc.parts.add({ name: parts[partId].name, partId }, ev);
+  }
 }
 
 /** PlatformIO board ids for the boards in /boards (source: docs.platformio.org/en/latest/boards). */
@@ -170,6 +195,9 @@ function readPlatformio(acc: Acc, f: ProjectFile, parts: Record<string, PartDef>
     if (/^\s*\[/.test(line)) inDeps = false;
     else if (inDeps && /^\s+\S/.test(line)) addDep(acc, line.trim(), ev, parts);
   });
+  // TFT_eSPI can be configured from build flags (-D TFT_MOSI=23) instead of User_Setup.h
+  addDisplayPins(acc, f.path, displayPinsFromFlags(f.text));
+  addDisplayController(acc, f, f.text, parts);
 }
 
 function addDep(acc: Acc, dep: string, ev: Evidence, parts: Record<string, PartDef>) {
@@ -221,6 +249,9 @@ function readSource(acc: Acc, f: ProjectFile, parts: Record<string, PartDef>) {
     if (facts.bus) acc.buses.add(facts.bus, ev);
     if (facts.protocol) acc.protocols.add(facts.protocol, ev);
   }
+  // display pins: TFT_eSPI User_Setup.h defines, LovyanGFX cfg.pin_*, Adafruit constructors
+  addDisplayPins(acc, f.path, displayPinsFromCode(code));
+  addDisplayController(acc, f, code, parts);
   // pins: pinMode(NAME, MODE) with NAME resolved through #define / const int
   const consts = new Map<string, string>();
   for (const m of code.matchAll(/^[ \t]*#define[ \t]+(\w+)[ \t]+\(?(\w+)\)?[ \t]*$/gm)) consts.set(m[1], m[2]);
