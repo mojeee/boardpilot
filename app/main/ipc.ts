@@ -3,12 +3,14 @@
 import { BrowserWindow, dialog, ipcMain, app, shell } from 'electron';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve, sep } from 'node:path';
-import type { AgentRequest, AiContext, CodeSuggestionRequest, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
+import type { AgentRequest, AiContext, BoardDef, CodeSuggestionRequest, HardwareMode, LogEntry, PartDef, Result, Scene, WriteRequest } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import type { CompileReport } from '@shared/compileOutput';
 import { BUY_URL } from '@shared/brand';
 import { setLanguage, t } from '@shared/i18n';
 import type { UserParts } from './parts/userParts';
+import type { UserBoards } from './boards/userBoards';
+import { MAX_BOARD_BYTES } from '@shared/boardSchema';
 import { importPartFromUrl } from './parts/importer';
 import type { License } from './license/license';
 import { EVENT_CHANNELS } from '@shared/api';
@@ -28,7 +30,7 @@ import { registerMemoryIpc } from './memory/ipc';
 import { compileProject } from './hardware/compile';
 import { getBoard } from '@shared/board';
 
-export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License, archiveStore: ArchiveStore) {
+export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, dataDir: string, parts: UserParts, license: License, archiveStore: ArchiveStore, boards: UserBoards) {
   const h = (ch: string, fn: (...args: never[]) => unknown) => ipcMain.handle(ch, (_e, ...args) => fn(...(args as never[])));
 
   h('hw:state', () => hub.state);
@@ -213,6 +215,23 @@ export function registerIpc(hub: HardwareHub, ai: Assistant, log: SessionLog, da
   h('parts:save', (def: PartDef, replaceId?: string) => parts.save(def, replaceId));
   h('parts:remove', (id: string) => parts.remove(id));
   h('parts:import', (url: string) => importPartFromUrl(url, ai));
+
+  // Boards the user imports (JSON files like boards/*.json, checked with the same rules)
+  h('boards:list', () => boards.list());
+  h('boards:save', (raw: unknown) => boards.save(raw));
+  h('boards:remove', (id: string) => boards.remove(String(id)));
+  h('boards:import', async (): Promise<Result<BoardDef>> => {
+    const win = BrowserWindow.getFocusedWindow();
+    const opts: Electron.OpenDialogOptions = { title: t('Choose a board definition'), properties: ['openFile'], filters: [{ name: 'Board definition', extensions: ['json'] }] };
+    const r = win ? await dialog.showOpenDialog(win, opts) : await dialog.showOpenDialog(opts);
+    if (r.canceled || !r.filePaths[0]) return { ok: false, error: { code: 'cancelled', humanMessage: t('Nothing opened.'), hint: '' } };
+    try {
+      if ((await stat(r.filePaths[0])).size > MAX_BOARD_BYTES) return { ok: false, error: { code: 'bad_board', humanMessage: t('That board file is too big.'), hint: t('A board definition is a few hundred kilobytes at most.') } };
+      return await boards.save(JSON.parse(await readFile(r.filePaths[0], 'utf8')));
+    } catch {
+      return { ok: false, error: { code: 'bad_board', humanMessage: t('That file is not a board definition.'), hint: t('Pick a board JSON file like the ones in the boards folder of BoardPilot.') } };
+    }
+  });
 
   const projDir = join(dataDir, 'projects');
   const isScene = (x: unknown): x is Scene =>

@@ -69,6 +69,12 @@ const api: BoardPilotApi = {
     exportPdf: call('session:exportPdf'),
     info: call('session:info'),
   } as BoardPilotApi['session'],
+  boards: {
+    list: call('boards:list'),
+    import: call('boards:import'),
+    save: call('boards:save'),
+    remove: call('boards:remove'),
+  },
   parts: {
     list: call('parts:list'),
     save: call('parts:save'),

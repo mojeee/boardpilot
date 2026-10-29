@@ -7,6 +7,7 @@ import type { BoardDef } from '@shared/types';
 import { FAMILY_LABEL, ROLE_HEX, boardList, pinBaseRole, pinPositionMm, rectToMm } from '@shared/board';
 import { t } from '@shared/i18n';
 import { changeBoard } from '../state/sceneActions';
+import { isBuiltinBoard, useBoardsLib } from '../state/boardsLib';
 import { log, useScene } from '../state/store';
 import { Icon } from './Icon';
 
@@ -59,8 +60,54 @@ export function BoardPickerDialog() {
   return <BoardPickerBody />;
 }
 
+/** Import a board definition file (JSON, same format as the boards folder of BoardPilot) and remove the ones you imported. */
+function MyBoards() {
+  const lib = useBoardsLib();
+  const [busy, setBusy] = useState(false);
+  const mine = lib.user();
+  const current = useScene((s) => s.scene.board);
+  const importFile = async () => {
+    setBusy(true);
+    const r = await lib.importFile();
+    setBusy(false);
+    if (r.ok) log('action', t('Imported the board “{name}”.', { name: r.value.name }), { source: 'board file (checked like boards/*.json)' });
+    else if (r.error.code !== 'cancelled') log('failed', `${t(r.error.humanMessage)} ${t(r.error.hint)}`);
+  };
+  return (
+    <div className="import-link">
+      <div className="label">{t('My boards')}</div>
+      <p className="small dim">{t('Add a board of your own from a JSON file. It is checked with the same rules as the built-in boards. The live pin view needs a built-in board.')}</p>
+      {mine.map((b) => (
+        <div key={b.id} className="row between">
+          <span>
+            <b>{b.name}</b> <span className="small dim mono">{b.id}</span>
+          </span>
+          <button
+            className="btn small ghost"
+            onClick={async () => {
+              const msg = b.id === current ? t('Remove “{name}” from your boards? The project uses it and will switch to the default board.', { name: b.name }) : t('Remove “{name}” from your boards?', { name: b.name });
+              if (!window.confirm(msg)) return;
+              const r = await lib.remove(b.id);
+              if (r.ok) log('action', t('Removed the board “{name}”.', { name: b.name }));
+              else log('failed', `${t(r.error.humanMessage)} ${t(r.error.hint)}`);
+            }}
+          >
+            {t('Remove')}
+          </button>
+        </div>
+      ))}
+      <div className="row gap">
+        <button className="btn small" disabled={busy} onClick={() => void importFile()}>
+          {busy ? <span className="spinner" /> : t('Import a board file…')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function BoardPickerBody() {
   const current = useScene((s) => s.scene.board);
+  const libVersion = useBoardsLib((s) => s.version);
   const [q, setQ] = useState('');
   const [detected, setDetected] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -78,7 +125,8 @@ function BoardPickerBody() {
       else out.push({ family: b.family, boards: [b] });
     }
     return out;
-  }, [q]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, libVersion]);
 
   const detect = async () => {
     setBusy(true);
@@ -138,6 +186,7 @@ function BoardPickerBody() {
                       {b.toolchain.agent ? <span className="chip ok-chip">{t('Live pin view')}</span> : <span className="chip">{t('Wiring checks and flashing')}</span>}
                       {detected?.includes(b.id) && <span className="chip ai-chip">{t('Plugged in')}</span>}
                       {b.id === current && <span className="chip sim-chip">{t('In use')}</span>}
+                      {!isBuiltinBoard(b.id) && <span className="chip">{t('my board')}</span>}
                     </span>
                     <span className="small dim mono">{TOOL_NAME[b.toolchain.flasher]}</span>
                   </div>
@@ -147,6 +196,7 @@ function BoardPickerBody() {
           </div>
           {!groups.length && <div className="empty">{t('No board matches. Try another name.')}</div>}
         </div>
+        <MyBoards />
       </div>
     </div>
   );

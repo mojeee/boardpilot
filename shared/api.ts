@@ -16,6 +16,7 @@ import type {
   LiveFrame,
   LogEntry,
   PartDef,
+  BoardDef,
   PhotoRecognition,
   PortInfo,
   ProbeFrame,
@@ -113,6 +114,15 @@ export interface BoardPilotApi {
     /** Asks where to save, prints the drawing set (landscape, the given paper) to PDF and writes it. */
     exportPdf(html: string, suggestedName: string, paper: 'A4' | 'A3' | 'Letter' | 'Tabloid'): Promise<Result<string>>;
     info(): Promise<{ dataDir: string; logPath: string; version: string }>;
+  };
+  boards: {
+    /** The user's own boards (built-in boards ship with the renderer). */
+    list(): Promise<BoardDef[]>;
+    /** Asks for a board JSON file, checks it with the rules of boards/*.json and saves it. */
+    import(): Promise<Result<BoardDef>>;
+    /** Checks and saves a board definition (its id changes if it is taken). */
+    save(def: unknown): Promise<Result<BoardDef>>;
+    remove(id: string): Promise<Result<true>>;
   };
   parts: {
     /** The user's own parts (built-in parts ship with the renderer). */

@@ -37,6 +37,7 @@ import { AiSettingsDialog, openAiSettings } from './components/AiSettings';
 import { BoardPickerDialog } from './components/BoardPicker';
 import { DownloadAppPrompt, isWebDemo } from './components/WebDemo';
 import { usePartsLib } from './state/partsLib';
+import { useBoardsLib } from './state/boardsLib';
 import { useScene } from './state/store';
 import { t } from '@shared/i18n';
 import { startDisplayLoop } from './state/displays';
@@ -50,7 +51,7 @@ async function boot() {
   await wireEvents();
   startEventFeed();
   startDisplayLoop();
-  await Promise.all([useLicense.getState().refresh(), usePartsLib.getState().load()]);
+  await Promise.all([useLicense.getState().refresh(), usePartsLib.getState().load(), useBoardsLib.getState().load()]);
   if (useApp.getState().conn.mode === 'real') {
     const last = await window.bp.project.last();
     if (last) useScene.getState().openScene(last);

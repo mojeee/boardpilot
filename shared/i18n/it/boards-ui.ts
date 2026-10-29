@@ -268,6 +268,31 @@ const it: Record<string, string> = {
   "The I2C lines did not go HIGH: the bus is stuck or has no pull-up resistors.": "Le linee I2C non sono andate ALTE: il bus è bloccato o non ha resistenze di pull-up.",
   "Check that the sensor is powered and that SDA and SCL have pull-ups (most breakout boards include them).": "Controlla che il sensore sia alimentato e che SDA e SCL abbiano le pull-up (la maggior parte dei moduli le include).",
   "That pin number does not exist on this board.": "Quel numero di pin non esiste su questa scheda.",
+  // boards the user imports (shared/boardSchema.ts, main/boards/userBoards.ts, board picker)
+  'my board': 'mia scheda',
+  'My boards': 'Le mie schede',
+  'Import a board file…': 'Importa un file di scheda…',
+  'Add a board of your own from a JSON file. It is checked with the same rules as the built-in boards. The live pin view needs a built-in board.':
+    'Aggiungi una scheda tua da un file JSON. Viene controllata con le stesse regole delle schede incluse. La vista dei pin in tempo reale richiede una scheda inclusa.',
+  'Imported the board “{name}”.': 'Scheda “{name}” importata.',
+  'Removed the board “{name}”.': 'Scheda “{name}” rimossa.',
+  'Remove “{name}” from your boards?': 'Rimuovere “{name}” dalle tue schede?',
+  'Remove “{name}” from your boards? The project uses it and will switch to the default board.':
+    'Rimuovere “{name}” dalle tue schede? Il progetto la usa e passerà alla scheda predefinita.',
+  'Choose a board definition': 'Scegli una definizione di scheda',
+  'That file is not a board definition.': 'Quel file non è una definizione di scheda.',
+  'Pick a board JSON file like the ones in the boards folder of BoardPilot.': 'Scegli un file JSON di scheda come quelli nella cartella boards di BoardPilot.',
+  'That board file is too big.': 'Quel file di scheda è troppo grande.',
+  'A board definition is a few hundred kilobytes at most.': 'Una definizione di scheda pesa al massimo poche centinaia di kilobyte.',
+  'The board needs an id.': 'La scheda ha bisogno di un id.',
+  'Add "id": "my-board" (letters, digits and dashes) to the file.': 'Aggiungi "id": "mia-scheda" (lettere, cifre e trattini) al file.',
+  'The board definition has problems: {problems}': 'La definizione della scheda ha dei problemi: {problems}',
+  ' (and {n} more)': ' (e altri {n})',
+  'That file is not a complete board definition.': 'Quel file non è una definizione di scheda completa.',
+  'Start from a file in the boards folder of BoardPilot and change it.': 'Parti da un file nella cartella boards di BoardPilot e modificalo.',
+  'Fix the file (node scripts/check-boards.mjs lists every problem), then import it again.': 'Correggi il file (node scripts/check-boards.mjs elenca ogni problema), poi importalo di nuovo.',
+  'Built-in boards cannot be deleted.': 'Le schede incluse non si possono eliminare.',
+  'You can switch the project to another board instead.': 'Puoi invece cambiare scheda al progetto.',
 };
 
 export default it;

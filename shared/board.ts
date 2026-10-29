@@ -11,6 +11,18 @@ export const BOARDS: Record<string, BoardDef> = Object.fromEntries(
     .map((b) => [b.id, b]),
 );
 
+/** Boards shipped with the app. User boards are added with registerBoard and can be removed. */
+export const BUILTIN_BOARD_IDS = new Set(Object.keys(BOARDS));
+
+/** Adds (or replaces) a board the user imported. A built-in board is never replaced. */
+export function registerBoard(def: BoardDef) {
+  if (!BUILTIN_BOARD_IDS.has(def.id)) BOARDS[def.id] = def;
+}
+
+export function unregisterBoard(id: string) {
+  if (!BUILTIN_BOARD_IDS.has(id)) delete BOARDS[id];
+}
+
 /** Board ids in picker order: the order families are listed in, then by name. */
 const FAMILY_ORDER: BoardDef['family'][] = ['esp32', 'esp32s3', 'esp32c3', 'rp2040', 'rp2350', 'avr', 'stm32', 'nrf52', 'imxrt'];
 export function boardList(): BoardDef[] {

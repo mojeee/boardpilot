@@ -23,7 +23,7 @@ import { isProviderId, PROVIDER_INFO, type AiModelInfo, type AiProviderId, type 
 import type { AiSettingsStore } from '../settings/settings';
 import { MEASUREMENT_TOOLS, TOOLS, runTool, type ToolTurnState } from './tools';
 import type { ArchiveEntry } from '@shared/archive/types';
-import { buildContextBlock, SYSTEM_PROMPT } from './prompt';
+import { buildContextBlock, systemPrompt } from './prompt';
 import { buildCoachPrompt, COACH_REPLY_SCHEMA, parseCoachReply } from './coach';
 import type { MemoryAccess } from '../memory/store';
 import { citationBacked, type MemoryHit } from '@shared/memory';
@@ -361,7 +361,7 @@ export class Assistant {
         const response = await a.provider.chat({
           model: a.model,
           maxTokens: 16000,
-          system: SYSTEM_PROMPT,
+          system: systemPrompt(),
           cacheSystem: true,
           tools: TOOLS,
           toolChoice: answerNow || round === MAX_TOOL_ROUNDS - 1 ? 'none' : 'auto',

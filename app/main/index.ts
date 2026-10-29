@@ -9,6 +9,7 @@ import { Assistant } from './ai/assistant';
 import { registerIpc } from './ipc';
 import { SessionLog } from './session/sessionLog';
 import { UserParts } from './parts/userParts';
+import { UserBoards } from './boards/userBoards';
 import { License } from './license/license';
 import { AiSettingsStore } from './settings/settings';
 import { baseDeps, setupMcp } from './mcp';
@@ -64,6 +65,7 @@ const sessionLog = new SessionLog(dataDir);
 const aiSettings = new AiSettingsStore(join(dataDir, 'settings.json'), safeStorage);
 const assistant = new Assistant(hub, aiSettings);
 const userParts = new UserParts(join(dataDir, 'parts'));
+const userBoards = new UserBoards(join(dataDir, 'boards'));
 const license = new License(dataDir);
 // Past projects: read-only index of the user's project folders, also seen by the assistant
 const archive = new ArchiveStore(join(dataDir, 'archive', 'index.json'), () => PARTS);
@@ -136,7 +138,9 @@ function createWindow() {
 let userPartList: PartDef[] = [];
 const refreshUserParts = () => void userParts.load().then((p) => (userPartList = p)).catch(() => undefined);
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // the user's boards first: the hub, the assistant and the MCP tools look boards up by id
+  await userBoards.load().catch(() => undefined);
   if (MCP_STDIO) {
     if (process.platform === 'darwin') app.dock?.hide();
     refreshUserParts();
@@ -157,7 +161,7 @@ app.whenReady().then(() => {
       return userPartList;
     },
   });
-  registerIpc(hub, assistant, sessionLog, dataDir, userParts, license, archive);
+  registerIpc(hub, assistant, sessionLog, dataDir, userParts, license, archive, userBoards);
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

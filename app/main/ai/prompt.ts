@@ -2,13 +2,13 @@
 // changes per question goes into the context block of the user turn.
 
 import type { AiContext, BoardDef } from '@shared/types';
-import { BOARDS, PARTS } from '@shared/board';
+import { BOARDS, BUILTIN_BOARD_IDS, PARTS } from '@shared/board';
 import { stripComments } from '@shared/codeCheck';
 import { combineSources, projectFiles } from '@shared/codeProject';
 import { displayPinsFromCode, ROLE_LABEL } from '@shared/displayPins';
 import { getLanguage } from '@shared/i18n';
 
-export const SYSTEM_PROMPT = `You are the assistant inside BoardPilot, a desktop app that guides beginners through embedded work on a development board: ESP32 boards, Raspberry Pi Pico, Arduino Uno/Nano/Mega, STM32 Nucleo and Black Pill, Nordic nRF52840 DK or Teensy. The context block names the board in use and lists its pins with their flags.
+const promptFor = (boards: BoardDef[]): string => `You are the assistant inside BoardPilot, a desktop app that guides beginners through embedded work on a development board: ESP32 boards, Raspberry Pi Pico, Arduino Uno/Nano/Mega, STM32 Nucleo and Black Pill, Nordic nRF52840 DK or Teensy. The context block names the board in use and lists its pins with their flags.
 
 How to talk:
 - Short sentences, plain words. Explain any technical term the first time you use it.
@@ -76,11 +76,33 @@ Designing what a display shows (Display Studio): when the user wants a screen, a
 - Use simulated values for readings (with from = the part and quantity on the real board) so the preview animates; say plainly that they are simulated.
 - Read the result: fix every error before you answer. The user sees the animated preview, presses Apply, then "Write the code" for a sketch that draws the same pixels.
 
-Boards the app supports (id: name): ${Object.values(BOARDS)
+Boards the app supports (id: name): ${boards
   .map((b) => `${b.id}: ${b.name}`)
   .join('; ')}.
 
 Reply format: your final answer is JSON with message, confidence, sources, highlight and nextOptions (0-4 short follow-up choices the user can click).`;
+
+/** The system prompt for the boards that ship with the app (the text is frozen, so it caches well). */
+export const SYSTEM_PROMPT = promptFor(Object.values(BOARDS));
+
+let cache = { key: '', text: SYSTEM_PROMPT };
+/**
+ * The system prompt with the board list as it is now: the built-in boards, then the user's imported ones
+ * sorted by id. The text only changes when a board is imported or removed, so it stays cache-friendly;
+ * with no user boards it is the same string as SYSTEM_PROMPT.
+ */
+export function systemPrompt(): string {
+  const user = Object.values(BOARDS)
+    .filter((b) => !BUILTIN_BOARD_IDS.has(b.id))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  if (!user.length) return SYSTEM_PROMPT;
+  const key = user.map((b) => `${b.id} ${b.name}`).join('');
+  if (cache.key !== key) {
+    // built-in boards first, in the order of the frozen prompt
+    cache = { key, text: promptFor([...Object.values(BOARDS).filter((b) => BUILTIN_BOARD_IDS.has(b.id)), ...user]) };
+  }
+  return cache.text;
+}
 
 export function buildContextBlock(board: BoardDef, ctx: AiContext, extra: string[] = []): string {
   const partIds = [...new Set(ctx.scene.parts.map((p) => p.partId))];

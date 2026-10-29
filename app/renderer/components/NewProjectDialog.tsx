@@ -10,12 +10,14 @@ import { log, useScene } from '../state/store';
 import { useProjects, type NewMode } from '../state/projects';
 import { useTemplate } from '../state/templateRun';
 import { Icon } from './Icon';
+import { useBoardsLib } from '../state/boardsLib';
 import { ReadFromPort } from './ReadFromPort';
 import { DescribeProject } from './DescribeProject';
 
 const LEVEL: Record<string, string> = { 'first steps': 'First steps', easy: 'Easy', medium: 'Medium' };
 
 function BoardSelect({ value, onChange }: { value: string; onChange(id: string): void }) {
+  useBoardsLib((s) => s.version);
   const boards = boardList();
   const families = [...new Set(boards.map((b) => b.family))];
   return (

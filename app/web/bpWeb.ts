@@ -12,7 +12,7 @@
 
 import type { BoardPilotApi, McpStatus, TraceEvent, Unsubscribe } from '@shared/api';
 import { EVENT_CHANNELS } from '@shared/api';
-import type { AiContext, CodeSuggestionRequest, HardwareMode, LicenseStatus, LogEntry, PartDef, Result, Scene } from '@shared/types';
+import type { AiContext, BoardDef, CodeSuggestionRequest, HardwareMode, LicenseStatus, LogEntry, PartDef, Result, Scene } from '@shared/types';
 import type { AiProviderId, AiSettingsInput } from '@shared/ai';
 import { PROVIDER_INFO } from '@shared/ai';
 import { BUY_URL, TRIAL_DAYS } from '@shared/brand';
@@ -23,6 +23,8 @@ import { Assistant } from '../main/ai/assistant';
 import { AiSettingsStore, type SecretBox } from '../main/settings/settings';
 import { grant } from '../main/session/safety';
 import { UserParts } from '../main/parts/userParts';
+import { UserBoards } from '../main/boards/userBoards';
+import { MAX_BOARD_BYTES } from '@shared/boardSchema';
 import { CoachStore } from '../main/session/coachStore';
 import { makeCoachApi } from '../main/session/coachApi';
 import { ArchiveStore } from '../main/archive/archiveStore';
@@ -55,6 +57,7 @@ const hub = new HardwareHub(DATA, '/agent', 'sim');
 const settings = new AiSettingsStore(`${DATA}/settings.json`, noSecrets, env);
 const assistant = new Assistant(hub, settings, env);
 const userParts = new UserParts(`${DATA}/parts`);
+const userBoards = new UserBoards(`${DATA}/boards`);
 const coach = makeCoachApi(assistant, new CoachStore(`${DATA}/coach-answers.json`));
 const archiveStore = new ArchiveStore(`${DATA}/archive/index.json`, () => PARTS);
 assistant.useArchive(() => archiveStore.entries());
@@ -238,6 +241,21 @@ const api: BoardPilotApi = {
       return { ok: true as const, value: w ? t('a new tab (choose “Save as PDF” in the print dialog)') : inDownloads(`${name}.html`) };
     },
     info: async () => ({ dataDir: t('This browser tab (nothing is kept after you close it)'), logPath: '', version: __BP_VERSION__ }),
+  },
+  boards: {
+    list: wrap(() => userBoards.load()),
+    import: wrap(async () => {
+      const f = await pickFile('.json,application/json');
+      if (!f) return cancelled<BoardDef>(t('Nothing opened.'));
+      if (f.size > MAX_BOARD_BYTES) return { ok: false, error: { code: 'bad_board', humanMessage: t('That board file is too big.'), hint: t('A board definition is a few hundred kilobytes at most.') } } as Result<BoardDef>;
+      try {
+        return await userBoards.save(JSON.parse(await f.text()));
+      } catch {
+        return { ok: false, error: { code: 'bad_board', humanMessage: t('That file is not a board definition.'), hint: t('Pick a board JSON file like the ones in the boards folder of BoardPilot.') } } as Result<BoardDef>;
+      }
+    }),
+    save: wrap((raw: unknown) => userBoards.save(raw)),
+    remove: wrap((id: string) => userBoards.remove(String(id))),
   },
   parts: {
     list: wrap(() => userParts.load()),
