@@ -6,7 +6,7 @@ import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { BoardDef, Scene } from '@shared/types';
-import { BOARDS, PARTS, boardsForUsb, canOutput, chipMatchesBoard, getBoard, headerGpios, pinById, pinOutward, powerPinFor } from '@shared/board';
+import { BOARDS, PARTS, bareModuleForMcu, boardForChip, boardsForUsb, canOutput, chipMatchesBoard, getBoard, headerGpios, pinById, pinOutward, powerPinFor } from '@shared/board';
 import { checkWiring } from '@shared/wiring';
 import { assignPins } from '@shared/assign';
 import { generateSketch } from '@shared/sketch';
@@ -272,5 +272,82 @@ describe('chip tool output parsing', () => {
     expect(userImageOffset(getBoard('esp32-devkitc-30'), '/x/app.merged.bin')).toBe(0);
     expect(userImageOffset(getBoard('nucleo-f401re'), '/x/app.bin')).toBe(0x08000000);
     expect(userImageOffset(getBoard('rpi-pico'), '/x/app.uf2')).toBe(0);
+  });
+});
+
+describe('bare ESP32 modules (custom boards)', () => {
+  const MODULES = ALL.filter((b) => b.bareModule);
+  it('has the WROOM-32 and the S3-WROOM-1 module', () => {
+    expect(MODULES.map((b) => b.id).sort()).toEqual(['esp32-s3-wroom-1-module', 'esp32-wroom-32-module']);
+    for (const b of MODULES) {
+      expect(b.headerStyle).toBe('pad');
+      expect(b.usb).toEqual([]);
+      expect(b.module.startsWith('ESP32')).toBe(true);
+    }
+  });
+
+  it('keeps the checks for every other board: USB ids and the 2 mm pin gap', () => {
+    const uno = getBoard('arduino-uno-r3');
+    expect(checkBoard({ ...uno, usb: [] })).toContain('usb ids missing');
+    const m = getBoard('esp32-wroom-32-module');
+    expect(checkBoard({ ...m, usb: [] })).toEqual([]);
+    expect(checkBoard({ ...m, bareModule: undefined })).toEqual(expect.arrayContaining(['usb ids missing']));
+    expect(checkBoard({ ...m, headerStyle: 'male-down' })).toContain('a bare module has castellated pads: headerStyle must be pad');
+    // 1.27 mm pads are only allowed on a bare module
+    expect(checkBoard({ ...m, bareModule: undefined, usb: [{ vid: '10c4' }] }).some((e: string) => e.includes('mm apart'))).toBe(true);
+  });
+
+  it('WROOM-32: flash, input-only and strapping pins carry the datasheet flags', () => {
+    const b = getBoard('esp32-wroom-32-module');
+    for (const n of [6, 7, 8, 9, 10, 11]) expect(pinById(b, `IO${n}`)!.flags).toContain('flash');
+    for (const n of [34, 35, 36, 39]) expect(pinById(b, `IO${n}`)!.flags).toContain('input_only');
+    for (const n of [0, 2, 5, 12, 15]) expect(pinById(b, `IO${n}`)!.flags).toContain('strapping');
+    expect(pinById(b, 'IO12')!.flags).toContain('strapping_critical');
+    expect(b.pins.filter((p) => p.kind === 'gpio')).toHaveLength(32);
+    expect(canOutput(pinById(b, 'IO6')!)).toBe(false);
+    expect(canOutput(pinById(b, 'IO34')!)).toBe(false);
+  });
+
+  it('S3-WROOM-1: 36 usable signals, PSRAM pins and USB pins flagged', () => {
+    const b = getBoard('esp32-s3-wroom-1-module');
+    expect(b.pins.filter((p) => p.kind === 'gpio')).toHaveLength(36);
+    for (const n of [35, 36, 37]) expect(pinById(b, `IO${n}`)!.flags).toContain('flash');
+    for (const n of [19, 20]) expect(pinById(b, `IO${n}`)!.flags).toContain('usb');
+    expect(pinById(b, 'IO45')!.flags).toContain('strapping_critical');
+  });
+
+  it('are not picked by USB ids, and the chip check accepts the right chip only', () => {
+    expect(boardsForUsb('10c4', 'ea60')).not.toContain('esp32-wroom-32-module');
+    expect(boardsForUsb('303a', '1001')).not.toContain('esp32-s3-wroom-1-module');
+    expect(chipMatchesBoard('ESP32-D0WD-V3', getBoard('esp32-wroom-32-module'))).toBe(true);
+    expect(chipMatchesBoard('ESP32-S3 (QFN56)', getBoard('esp32-wroom-32-module'))).toBe(false);
+    expect(chipMatchesBoard('ESP32-S3 (QFN56)', getBoard('esp32-s3-wroom-1-module'))).toBe(true);
+  });
+
+  it('wiring checks flag the flash pads on the WROOM-32 module', () => {
+    const b = getBoard('esp32-wroom-32-module');
+    const scene: Scene = {
+      board: b.id,
+      parts: [{ id: 'led1', partId: 'led-resistor', position: [0, 0, 40] }],
+      wires: [{ id: 'w1', from: { part: 'board', pin: 'IO9' }, to: { part: 'led1', pin: 'A' }, color: '#fff' }],
+    };
+    expect(checkWiring(scene, b, PARTS).some((f) => f.severity === 'error')).toBe(true);
+  });
+});
+
+describe('bare module for a custom board', () => {
+  it('picks the module of the chip family a project names', () => {
+    expect(bareModuleForMcu('ESP32')?.id).toBe('esp32-wroom-32-module');
+    expect(bareModuleForMcu('ESP32-WROOM-32')?.id).toBe('esp32-wroom-32-module');
+    expect(bareModuleForMcu('ESP32-S3')?.id).toBe('esp32-s3-wroom-1-module');
+    expect(bareModuleForMcu('esp32s3')?.id).toBe('esp32-s3-wroom-1-module');
+    expect(bareModuleForMcu('ESP32-C3')).toBeNull(); // no bare C3 module in the library yet
+    expect(bareModuleForMcu('ESP32-S2')).toBeNull();
+    expect(bareModuleForMcu('STM32F401')).toBeNull();
+    expect(bareModuleForMcu('')).toBeNull();
+  });
+  it('the chip alone never picks a bare module over a DevKit', () => {
+    expect(boardForChip('ESP32-D0WD-V3')?.id).toBe('esp32-devkitc-30');
+    expect(boardForChip('ESP32-D0WD-V3', [], 'esp32-wroom-32-module')?.id).toBe('esp32-wroom-32-module');
   });
 });

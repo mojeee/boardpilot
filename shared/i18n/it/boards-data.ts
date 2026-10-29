@@ -429,6 +429,30 @@ const it: Record<string, string> = {
     "Portarlo a GND fa lo stesso del pulsante bianco: entra in modalità di programmazione. Non è un reset.",
   "Input for a 3 V coin cell (CR2032) to keep the real-time clock running. It does not supply power to parts.":
     "Ingresso per una batteria a bottone da 3 V (CR2032) che tiene in funzione l’orologio in tempo reale. Non alimenta i componenti.",
+  "The bare ESP32-WROOM-32 module, as found on custom boards: no USB chip and no regulator. 3.3 V logic.":
+    "Il modulo ESP32-WROOM-32 nudo, come si trova sulle schede personalizzate: senza chip USB e senza regolatore. Logica a 3,3 V.",
+  "The bare ESP32-S3-WROOM-1 module, as found on custom boards: no USB connector and no regulator. 3.3 V logic.":
+    "Il modulo ESP32-S3-WROOM-1 nudo, come si trova sulle schede personalizzate: senza connettore USB e senza regolatore. Logica a 3,3 V.",
+  "ESP32 chip only: about 20 to 68 mA running with Wi-Fi off (modem-sleep, by CPU speed), 240 mA peaks while Wi-Fi transmits, 10 µA in deep sleep.":
+    "Solo il chip ESP32: circa 20-68 mA in funzione con il Wi-Fi spento (modem-sleep, secondo la velocità della CPU), picchi di 240 mA mentre il Wi-Fi trasmette, 10 µA in deep sleep.",
+  "Strapping pin: LOW at reset starts upload mode instead of your program. Wire a button or jumper to GND for uploads.":
+    "Pin di strapping: se è LOW al reset parte la modalità di caricamento invece del tuo programma. Collega un pulsante o un ponticello a GND per caricare il firmware.",
+  "UART0 TX. The module has no USB-serial chip: connect an adapter here to upload and read the serial monitor.":
+    "TX di UART0. Il modulo non ha un chip USB-seriale: collega qui un adattatore per caricare il firmware e leggere il monitor seriale.",
+  "UART0 RX. The module has no USB-serial chip: connect an adapter here to upload and read the serial monitor.":
+    "RX di UART0. Il modulo non ha un chip USB-seriale: collega qui un adattatore per caricare il firmware e leggere il monitor seriale.",
+  "Power input, 3.0 to 3.6 V. The module has no regulator: it needs a clean 3.3 V supply that can give at least 500 mA.":
+    "Ingresso di alimentazione, da 3,0 a 3,6 V. Il modulo non ha un regolatore: serve un’alimentazione a 3,3 V pulita che dia almeno 500 mA.",
+  "Reset. Pulling it LOW resets the chip. Keep it HIGH (pulled up to 3.3 V) for the chip to run.":
+    "Reset. Portarlo a LOW riavvia il chip. Tienilo HIGH (con un pull-up a 3,3 V) perché il chip giri.",
+  "Connected to the flash memory inside the module. Not available: do not use.":
+    "Collegato alla memoria flash dentro il modulo. Non disponibile: non usarlo.",
+  "Strapping pin: must be LOW or floating to enter download mode.":
+    "Pin di strapping: deve essere LOW o scollegato per entrare in modalità di download.",
+  "The module has no USB chip: connect a USB-serial adapter to TXD0, RXD0 and GND. Hold IO0 to GND while you reset or power up the module, then release it.":
+    "Il modulo non ha un chip USB: collega un adattatore USB-seriale a TXD0, RXD0 e GND. Tieni IO0 a GND mentre riavvii o alimenti il modulo, poi rilascialo.",
+  "The module has no USB connector: use the native USB pins IO19 (D-) and IO20 (D+), or a USB-serial adapter on TXD0 and RXD0. Hold IO0 to GND while you reset or power up the module, then release it.":
+    "Il modulo non ha un connettore USB: usa i pin USB nativi IO19 (D-) e IO20 (D+), oppure un adattatore USB-seriale su TXD0 e RXD0. Tieni IO0 a GND mentre riavvii o alimenti il modulo, poi rilascialo.",
 };
 
 export default it;

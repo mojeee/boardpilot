@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { create } from 'zustand';
 import type { ArchiveEdit, ArchiveEntry, SimilarMatch } from '@shared/archive/types';
 import { similarProjects } from '@shared/archive/similarity';
-import { BOARDS, PARTS, DEFAULT_BOARD_ID } from '@shared/board';
+import { BOARDS, PARTS, DEFAULT_BOARD_ID, bareModuleForMcu } from '@shared/board';
 import { t } from '@shared/i18n';
 import { log, useAi, useApp, useScene } from './store';
 import { useProjects } from './projects';
@@ -151,7 +151,9 @@ export async function startFromArchive(e: ArchiveEntry) {
     useProjects.getState().add(e.scene, e.name);
     log('action', t('Opened “{name}” from the archive as a new project.', { name: e.name }), { source: `archive · ${e.name}` });
   } else {
-    const boardId = e.board?.value.boardId && BOARDS[e.board.value.boardId] ? e.board.value.boardId : useScene.getState().scene.board || DEFAULT_BOARD_ID;
+    // a custom board that is not one of ours opens on the bare module it is built around (its pin numbers still mean something there)
+    const bare = e.board?.value.boardId ? null : bareModuleForMcu(e.board?.value.mcu ?? '');
+    const boardId = e.board?.value.boardId && BOARDS[e.board.value.boardId] ? e.board.value.boardId : bare?.id ?? (useScene.getState().scene.board || DEFAULT_BOARD_ID);
     const ids = e.parts.map((p) => p.value.partId).filter((id): id is string => !!id && !!PARTS[id]);
     const { scene, notes } = projectFromParts(boardId, ids, sketchFileName(e.name));
     // the old code comes along when there is one: the code check then shows where its pins differ
@@ -165,7 +167,8 @@ export async function startFromArchive(e: ArchiveEntry) {
       source: `archive · ${e.name} (parts read from its files)`,
     });
     for (const n of notes) log('action', t('Pin assigned: {note}', { note: n }), { source: 'pin rules (safe pins)' });
-    if (!e.board?.value.boardId) log('warning', t('The board of “{name}” ({mcu}) is not one of BoardPilot’s boards: the project opens on {board}. Change it with the board picker.', { name: e.name, mcu: e.board?.value.mcu ?? t('unknown'), board: BOARDS[boardId]?.name ?? boardId }), { source: `archive · ${e.name}` });
+    if (bare) log('warning', t('“{name}” runs on a custom board ({mcu}). The project opens on the bare {board}: its pin numbers carry over, but the pad positions are not your board’s. Change it with the board picker.', { name: e.name, mcu: e.board?.value.mcu ?? '', board: bare.name }), { source: `archive · ${e.name}` });
+    else if (!e.board?.value.boardId) log('warning', t('The board of “{name}” ({mcu}) is not one of BoardPilot’s boards: the project opens on {board}. Change it with the board picker.', { name: e.name, mcu: e.board?.value.mcu ?? t('unknown'), board: BOARDS[boardId]?.name ?? boardId }), { source: `archive · ${e.name}` });
   }
   useApp.getState().setScreen('newProject');
 }

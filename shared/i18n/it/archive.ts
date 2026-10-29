@@ -91,4 +91,6 @@ export default {
   'The OpenTherm bus works at boiler voltages (well above 3.3 V): connect it only to the adapter\'s bus terminals, never to a board pin.':
     'Il bus OpenTherm lavora a tensioni da caldaia (ben sopra 3,3 V): collegalo solo ai morsetti bus dell’adattatore, mai a un pin della scheda.',
   'A Wi-Fi room thermostat with an NTC probe and a relay for the boiler': 'Termostato Wi-Fi con sonda NTC e relè per la caldaia',
+  '“{name}” runs on a custom board ({mcu}). The project opens on the bare {board}: its pin numbers carry over, but the pad positions are not your board’s. Change it with the board picker.':
+    '“{name}” gira su una scheda personalizzata ({mcu}). Il progetto si apre sul {board} nudo: i numeri dei pin restano validi, ma la posizione dei pad non è quella della tua scheda. Cambialo con il selettore di schede.',
 } as Record<string, string>;

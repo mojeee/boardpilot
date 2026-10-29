@@ -100,10 +100,12 @@ export function checkBoard(b) {
       else if (o.gpio !== p.gpio) e(`pin ${p.id}: sameAs ${p.sameAs} but gpio differs`);
     }
   }
+  // Castellated pads of a bare module sit 1.27 mm apart; header pins never closer than 2 mm.
+  const minGap = b.bareModule === true ? 1.0 : 2.0;
   for (let i = 0; i < pos.length; i++)
     for (let j = i + 1; j < pos.length; j++) {
       const d = Math.hypot(pos[i].x - pos[j].x, pos[i].z - pos[j].z);
-      if (d < 2.0) e(`pins ${pos[i].id} and ${pos[j].id} are only ${d.toFixed(2)} mm apart`);
+      if (d < minGap) e(`pins ${pos[i].id} and ${pos[j].id} are only ${d.toFixed(2)} mm apart`);
     }
   const pin = (id) => b.pins?.find((p) => p.id === id);
   const r = b.rules ?? {};
@@ -188,7 +190,10 @@ export function checkBoard(b) {
       if (!(Number.isInteger(s.baud) && s.baud > 0) || !s.note) e('toolchain.stm32Hal.stdio needs baud and a note');
     }
   } else if (tc.stm32Hal !== undefined) e('toolchain.stm32Hal is only for STM32 boards');
-  if (!Array.isArray(b.usb) || !b.usb.length) e('usb ids missing');
+  // A bare module has no USB chip of its own, so it has no ids to detect it by.
+  if (!Array.isArray(b.usb) || (!b.usb.length && b.bareModule !== true)) e('usb ids missing');
+  if (b.bareModule !== undefined && typeof b.bareModule !== 'boolean') e('bareModule must be true or false');
+  if (b.bareModule === true && b.headerStyle !== 'pad') e('a bare module has castellated pads: headerStyle must be pad');
   for (const u of b.usb ?? []) if (!/^[0-9a-f]{4}$/.test(u.vid) || (u.pid !== undefined && !/^[0-9a-f]{4}$/.test(u.pid))) e(`usb id ${u.vid}:${u.pid} must be 4 lower-case hex digits`);
   const s = b.layoutPxPerMm;
   for (const c of b.components ?? []) {

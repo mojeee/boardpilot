@@ -60,7 +60,7 @@ function wire(id: string, boardPin: string, part: string, pin: string) {
 describe('starter toolchains', () => {
   it('offers Pico SDK on RP boards, ESP-IDF on ESP32 boards, STM32 HAL on STM32 boards, Arduino first', () => {
     expect(rpBoards.map((b) => b.id).sort()).toEqual(['rpi-pico', 'rpi-pico-2', 'rpi-pico-w']);
-    expect(espBoards.map((b) => b.id).sort()).toEqual(['esp32-c3-devkitm-1', 'esp32-devkitc-30', 'esp32-s3-devkitc-1']);
+    expect(espBoards.map((b) => b.id).sort()).toEqual(['esp32-c3-devkitm-1', 'esp32-devkitc-30', 'esp32-s3-devkitc-1', 'esp32-s3-wroom-1-module', 'esp32-wroom-32-module']);
     expect(stmBoards.map((b) => b.id).sort()).toEqual(['blackpill-f411ce', 'nucleo-f401re']);
     for (const b of Object.values(BOARDS)) {
       const rp = b.family === 'rp2040' || b.family === 'rp2350';

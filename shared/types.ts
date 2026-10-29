@@ -382,7 +382,12 @@ export interface BoardDef {
   components: BoardComponent[];
   rules: BoardRules;
   toolchain: BoardToolchain;
-  /** USB ids that identify this board (lower-case hex, no 0x). pid omitted = any product of the vendor. */
+  /**
+   * A bare chip module with castellated pads and no USB chip or regulator (the part a custom board is
+   * built around). Such a board may have no `usb` ids and its pads sit closer than header pins.
+   */
+  bareModule?: boolean;
+  /** USB ids that identify this board (lower-case hex, no 0x). pid omitted = any product of the vendor. Empty for a bare module. */
   usb: { vid: string; pid?: string; note?: string }[];
   /** Short plain-language description for the board picker. */
   summary: string;

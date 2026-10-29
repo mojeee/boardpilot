@@ -52,11 +52,24 @@ const FAMILY_NAME: Record<BoardDef['family'], RegExp> = {
  */
 export function boardForChip(chip: string, usbBoardIds: string[] = [], current?: string): BoardDef | null {
   const c = chip.toUpperCase();
-  const fits = Object.values(BOARDS).filter((b) => chipMatchesBoard(chip, b) && FAMILY_NAME[b.family].test(c));
+  // a bare module has no USB ids of its own, so a chip alone never picks it; only a project already on it keeps it
+  const fits = Object.values(BOARDS).filter((b) => (!b.bareModule || b.id === current) && chipMatchesBoard(chip, b) && FAMILY_NAME[b.family].test(c));
   if (!fits.length) return null;
   const cur = fits.find((b) => b.id === current);
   if (cur) return cur;
   return fits.find((b) => usbBoardIds.includes(b.id)) ?? (fits.length === 1 ? fits[0] : null);
+}
+
+/**
+ * The bare module to offer for a custom board whose chip is known only as text ("ESP32-S3", "ESP32-WROOM-32",
+ * "esp32"). Null when no bare module of that family exists. Used when a past project names a board that is not
+ * one of /boards: its pin numbers still mean something on the module the custom board is built around.
+ */
+export function bareModuleForMcu(mcu: string): BoardDef | null {
+  const m = mcu.toUpperCase();
+  const family: BoardDef['family'] | null = /ESP32-?S3/.test(m) ? 'esp32s3' : /ESP32-?C3/.test(m) ? 'esp32c3' : /ESP32(?!-?(S2|C2|C5|C6|H2|P4))/.test(m) ? 'esp32' : null;
+  if (!family) return null;
+  return Object.values(BOARDS).find((b) => b.bareModule && b.family === family) ?? null;
 }
 
 /**

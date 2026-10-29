@@ -1,0 +1,853 @@
+{
+  "id": "esp32-wroom-32-module",
+  "name": "ESP32-WROOM-32 module (bare)",
+  "vendor": "Espressif",
+  "family": "esp32",
+  "module": "ESP32-WROOM-32",
+  "chip": "ESP32",
+  "cpu": "Dual-core Xtensa LX6 at 240 MHz, 520 KB SRAM, 4 MB flash, Wi-Fi and Bluetooth",
+  "logicVolt": 3.3,
+  "flashBytes": 4194304,
+  "ramBytes": 532480,
+  "bareModule": true,
+  "power": {
+    "typMa": 40,
+    "sleepMa": 0.01,
+    "peakMa": 240,
+    "note": "ESP32 chip only: about 20 to 68 mA running with Wi-Fi off (modem-sleep, by CPU speed), 240 mA peaks while Wi-Fi transmits, 10 µA in deep sleep.",
+    "source": {
+      "title": "Espressif ESP32 Series Datasheet",
+      "section": "Power consumption by power modes; RF current consumption"
+    }
+  },
+  "clocks": {
+    "cpuHz": 240000000,
+    "pwmHz": 80000000,
+    "uartHz": 80000000,
+    "note": "CPU at 240 MHz; LEDC (PWM) and UART run from APB_CLK, 80 MHz.",
+    "source": {
+      "title": "ESP32 Technical Reference Manual",
+      "section": "Reset and Clock: CPU_CLK and APB_CLK; LED_PWM; UART"
+    }
+  },
+  "pcbMm": {
+    "length": 25.5,
+    "width": 18.0,
+    "thickness": 3.1
+  },
+  "layoutPxPerMm": 20,
+  "headerStyle": "pad",
+  "summary": "The bare ESP32-WROOM-32 module, as found on custom boards: no USB chip and no regulator. 3.3 V logic.",
+  "pins": [
+    {
+      "id": "GND1",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0,
+      "gpio": null,
+      "label": "GND",
+      "posMm": [
+        7.19,
+        17.4
+      ]
+    },
+    {
+      "id": "3V3",
+      "gpio": null,
+      "posMm": [
+        8.46,
+        17.4
+      ],
+      "label": "3V3",
+      "kind": "power",
+      "functions": [
+        "3V3"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "supplies": 3.3,
+      "notes": "Power input, 3.0 to 3.6 V. The module has no regulator: it needs a clean 3.3 V supply that can give at least 500 mA."
+    },
+    {
+      "id": "EN",
+      "gpio": null,
+      "posMm": [
+        9.73,
+        17.4
+      ],
+      "label": "EN",
+      "kind": "enable",
+      "functions": [
+        "CHIP_PU"
+      ],
+      "flags": [],
+      "maxVolt": 3.3,
+      "notes": "Reset. Pulling it LOW resets the chip. Keep it HIGH (pulled up to 3.3 V) for the chip to run."
+    },
+    {
+      "id": "IO36",
+      "gpio": 36,
+      "posMm": [
+        11.0,
+        17.4
+      ],
+      "label": "IO36",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH0",
+        "SENSOR_VP"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO39",
+      "gpio": 39,
+      "posMm": [
+        12.27,
+        17.4
+      ],
+      "label": "IO39",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH3",
+        "SENSOR_VN"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO34",
+      "gpio": 34,
+      "posMm": [
+        13.54,
+        17.4
+      ],
+      "label": "IO34",
+      "kind": "gpio",
+      "functions": [
+        "ADC1_CH6"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO35",
+      "gpio": 35,
+      "posMm": [
+        14.81,
+        17.4
+      ],
+      "label": "IO35",
+      "kind": "gpio",
+      "functions": [
+        "ADC1_CH7"
+      ],
+      "flags": [
+        "input_only",
+        "adc1",
+        "no_internal_pull"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO32",
+      "gpio": 32,
+      "posMm": [
+        16.08,
+        17.4
+      ],
+      "label": "IO32",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH4",
+        "TOUCH9",
+        "XTAL_32K_P"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO33",
+      "gpio": 33,
+      "posMm": [
+        17.35,
+        17.4
+      ],
+      "label": "IO33",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC1_CH5",
+        "TOUCH8",
+        "XTAL_32K_N"
+      ],
+      "flags": [
+        "adc1",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO25",
+      "gpio": 25,
+      "posMm": [
+        18.62,
+        17.4
+      ],
+      "label": "IO25",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH8",
+        "DAC_1"
+      ],
+      "flags": [
+        "adc2",
+        "dac"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO26",
+      "gpio": 26,
+      "posMm": [
+        19.89,
+        17.4
+      ],
+      "label": "IO26",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH9",
+        "DAC_2"
+      ],
+      "flags": [
+        "adc2",
+        "dac"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO27",
+      "gpio": 27,
+      "posMm": [
+        21.16,
+        17.4
+      ],
+      "label": "IO27",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH7",
+        "TOUCH7"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO14",
+      "gpio": 14,
+      "posMm": [
+        22.43,
+        17.4
+      ],
+      "label": "IO14",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH6",
+        "TOUCH6",
+        "HSPI_SCK",
+        "MTMS"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Outputs a short PWM signal at boot."
+    },
+    {
+      "id": "IO12",
+      "gpio": 12,
+      "posMm": [
+        23.7,
+        17.4
+      ],
+      "label": "IO12",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH5",
+        "TOUCH5",
+        "HSPI_MISO",
+        "MTDI"
+      ],
+      "flags": [
+        "strapping",
+        "strapping_critical",
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: HIGH at reset selects 1.8 V flash voltage, so the board may not boot. Keep it LOW or floating at reset."
+    },
+    {
+      "id": "GND2",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0,
+      "gpio": null,
+      "label": "GND",
+      "posMm": [
+        24.9,
+        14.71
+      ]
+    },
+    {
+      "id": "IO13",
+      "gpio": 13,
+      "posMm": [
+        24.9,
+        13.45
+      ],
+      "label": "IO13",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH4",
+        "TOUCH4",
+        "HSPI_MOSI",
+        "MTCK"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO9",
+      "gpio": 9,
+      "posMm": [
+        24.9,
+        12.18
+      ],
+      "label": "IO9",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SD_DATA2"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Connected to the flash memory inside the module. Not available: do not use."
+    },
+    {
+      "id": "IO10",
+      "gpio": 10,
+      "posMm": [
+        24.9,
+        10.9
+      ],
+      "label": "IO10",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SD_DATA3"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Connected to the flash memory inside the module. Not available: do not use."
+    },
+    {
+      "id": "IO11",
+      "gpio": 11,
+      "posMm": [
+        24.9,
+        9.63
+      ],
+      "label": "IO11",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SD_CMD"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Connected to the flash memory inside the module. Not available: do not use."
+    },
+    {
+      "id": "IO6",
+      "gpio": 6,
+      "posMm": [
+        24.9,
+        8.37
+      ],
+      "label": "IO6",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SD_CLK"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Connected to the flash memory inside the module. Not available: do not use."
+    },
+    {
+      "id": "IO7",
+      "gpio": 7,
+      "posMm": [
+        24.9,
+        7.09
+      ],
+      "label": "IO7",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SD_DATA0"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Connected to the flash memory inside the module. Not available: do not use."
+    },
+    {
+      "id": "IO8",
+      "gpio": 8,
+      "posMm": [
+        24.9,
+        5.82
+      ],
+      "label": "IO8",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "SD_DATA1"
+      ],
+      "flags": [
+        "flash"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Connected to the flash memory inside the module. Not available: do not use."
+    },
+    {
+      "id": "IO15",
+      "gpio": 15,
+      "posMm": [
+        24.9,
+        4.55
+      ],
+      "label": "IO15",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH3",
+        "TOUCH3",
+        "HSPI_CS",
+        "MTDO"
+      ],
+      "flags": [
+        "strapping",
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: LOW at reset silences the boot messages."
+    },
+    {
+      "id": "IO2",
+      "gpio": 2,
+      "posMm": [
+        24.9,
+        3.29
+      ],
+      "label": "IO2",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH2",
+        "TOUCH2"
+      ],
+      "flags": [
+        "strapping",
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: must be LOW or floating to enter download mode."
+    },
+    {
+      "id": "IO0",
+      "gpio": 0,
+      "posMm": [
+        23.7,
+        0.6
+      ],
+      "label": "IO0",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH1",
+        "TOUCH1",
+        "CLK_OUT1"
+      ],
+      "flags": [
+        "strapping",
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin: LOW at reset starts upload mode instead of your program. Wire a button or jumper to GND for uploads."
+    },
+    {
+      "id": "IO4",
+      "gpio": 4,
+      "posMm": [
+        22.43,
+        0.6
+      ],
+      "label": "IO4",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "ADC2_CH0",
+        "TOUCH0"
+      ],
+      "flags": [
+        "adc2",
+        "touch"
+      ],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO16",
+      "gpio": 16,
+      "posMm": [
+        21.16,
+        0.6
+      ],
+      "label": "IO16",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U2RXD"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO17",
+      "gpio": 17,
+      "posMm": [
+        19.89,
+        0.6
+      ],
+      "label": "IO17",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U2TXD"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO5",
+      "gpio": 5,
+      "posMm": [
+        18.62,
+        0.6
+      ],
+      "label": "IO5",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_CS"
+      ],
+      "flags": [
+        "strapping"
+      ],
+      "maxVolt": 3.3,
+      "notes": "Strapping pin (SDIO timing). Pulled up at reset. Fine to use after boot."
+    },
+    {
+      "id": "IO18",
+      "gpio": 18,
+      "posMm": [
+        17.35,
+        0.6
+      ],
+      "label": "IO18",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_SCK"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO19",
+      "gpio": 19,
+      "posMm": [
+        16.08,
+        0.6
+      ],
+      "label": "IO19",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_MISO",
+        "U0CTS"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO21",
+      "gpio": 21,
+      "posMm": [
+        13.54,
+        0.6
+      ],
+      "label": "IO21",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SDA_default"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO3",
+      "gpio": 3,
+      "posMm": [
+        12.27,
+        0.6
+      ],
+      "label": "IO3",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0RXD"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "UART0 RX. The module has no USB-serial chip: connect an adapter here to upload and read the serial monitor."
+    },
+    {
+      "id": "IO1",
+      "gpio": 1,
+      "posMm": [
+        11.0,
+        0.6
+      ],
+      "label": "IO1",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "U0TXD"
+      ],
+      "flags": [
+        "uart0"
+      ],
+      "maxVolt": 3.3,
+      "notes": "UART0 TX. The module has no USB-serial chip: connect an adapter here to upload and read the serial monitor."
+    },
+    {
+      "id": "IO22",
+      "gpio": 22,
+      "posMm": [
+        9.73,
+        0.6
+      ],
+      "label": "IO22",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "I2C_SCL_default",
+        "U0RTS"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "IO23",
+      "gpio": 23,
+      "posMm": [
+        8.46,
+        0.6
+      ],
+      "label": "IO23",
+      "kind": "gpio",
+      "functions": [
+        "GPIO",
+        "VSPI_MOSI"
+      ],
+      "flags": [],
+      "maxVolt": 3.3
+    },
+    {
+      "id": "GND3",
+      "kind": "ground",
+      "functions": [
+        "GND"
+      ],
+      "flags": [],
+      "maxVolt": 0,
+      "gpio": null,
+      "label": "GND",
+      "posMm": [
+        7.19,
+        0.6
+      ]
+    }
+  ],
+  "components": [
+    {
+      "type": "module",
+      "label": "ESP32-WROOM-32",
+      "rect": [
+        0,
+        0,
+        510,
+        360
+      ]
+    }
+  ],
+  "rules": {
+    "datasheet": "ESP32 Series Datasheet",
+    "i2c": {
+      "sda": "IO21",
+      "scl": "IO22",
+      "remappable": true
+    },
+    "spi": {
+      "mosi": "IO23",
+      "miso": "IO19",
+      "sck": "IO18",
+      "cs": "IO5"
+    },
+    "safeIo": [
+      "IO25",
+      "IO26",
+      "IO27",
+      "IO32",
+      "IO33",
+      "IO23",
+      "IO19",
+      "IO18",
+      "IO4",
+      "IO13",
+      "IO14",
+      "IO16",
+      "IO17"
+    ],
+    "adcPins": [
+      "IO34",
+      "IO35",
+      "IO36",
+      "IO39",
+      "IO32",
+      "IO33"
+    ],
+    "inputPins": [
+      "IO35",
+      "IO36",
+      "IO39",
+      "IO34"
+    ],
+    "adcWifiConflict": true,
+    "adcMaxMv": 3300
+  },
+  "toolchain": {
+    "flasher": "esptool",
+    "fqbn": "esp32:esp32:esp32",
+    "core": "esp32:esp32",
+    "coreUrl": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
+    "esptoolChip": "esp32",
+    "idfTarget": "esp32",
+    "imageFormat": "bin",
+    "agent": true,
+    "link": "usb-serial",
+    "uploadNote": "The module has no USB chip: connect a USB-serial adapter to TXD0, RXD0 and GND. Hold IO0 to GND while you reset or power up the module, then release it."
+  },
+  "usb": [],
+  "links": [
+    {
+      "title": "ESP32-WROOM-32 Datasheet",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf"
+    },
+    {
+      "title": "ESP32 Series Datasheet",
+      "url": "https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf"
+    }
+  ],
+  "sources": [
+    {
+      "title": "ESP32-WROOM-32 Datasheet",
+      "section": "Pin Definitions (module pins 1 to 38)"
+    },
+    {
+      "title": "ESP32-WROOM-32 Datasheet",
+      "section": "Strapping pins; Recommended operating conditions"
+    },
+    {
+      "title": "Espressif ESP32 Series Datasheet",
+      "section": "Pin Description (IO_MUX pin functions)"
+    },
+    {
+      "title": "Espressif ESP32 Series Datasheet",
+      "section": "Strapping Pins (GPIO 0, 2, 5, 12, 15)"
+    },
+    {
+      "title": "Espressif ESP32 Technical Reference Manual",
+      "section": "IO_MUX and GPIO Matrix: GPIO 34-39 input only, no pull-ups"
+    },
+    {
+      "title": "Espressif ESP-IDF Programming Guide",
+      "section": "ADC: ADC2 cannot be used while Wi-Fi is running"
+    }
+  ]
+}
